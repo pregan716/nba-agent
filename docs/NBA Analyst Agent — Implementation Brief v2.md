@@ -46,6 +46,7 @@ What stays: the market line as the question, because it controls difficulty and 
 - Budget structure agreed with pregame cap matched and a pilot procedure for the numbers. Implementation choices agreed and given their own section. Model access method added to the harness version.
 - Output contract schema and the paired-bootstrap comparison method confirmed as Agreed. Control-and-data-flow diagram redrawn as text.
 - Model verified: Claude Opus 4.6 training data cutoff Aug 2025. Status changed from "Agreed, verify" to Agreed.
+- Effort level named as part of the harness version and pinned during the pilot.
 - Research budget profile and harness version added as per-run descriptors that must match across compared runs.
 - De-vig method resolved to proportional normalization and added as a named per-run descriptor.
 - Static-dossier configuration rejected. B-frozen, C, and D moved to a follow-up table conditional on a v1 effect. Research budget promoted to its own section.
@@ -343,7 +344,7 @@ Three further fields are declared on every run and printed with the profile. The
 | Descriptor | What it declares |
 | --- | --- |
 | Research budget | The pregame and postgame token caps, the submission reserve, the rollover rule, the tool-call and wall-clock ceilings, and the pinned price schedule used to report spend. Recorded as a named, versioned budget profile so a run can be described as "budget v3" rather than by its numbers. |
-| Harness version | One identifier that resolves to the exact set of: system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters, model access method and SDK version, and the harness code revision. Changing any component yields a new harness version. |
+| Harness version | One identifier that resolves to the exact set of: system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, and the harness code revision. Changing any component yields a new harness version. |
 | De-vig method | The named, versioned method that converts the two quoted prices into the market-implied P(over). Initial value: `proportional-v1`, proportional normalization. Changing the method changes the baseline every question is scored against, so it must match across compared runs. |
 
 Harness version and the agent-capabilities axis are different things. Capabilities say which tools the agent may use. Harness version says exactly how those tools, prompts, and the loop were implemented for this run. Two runs can share capabilities and differ in harness version, and that difference must be visible.
@@ -418,7 +419,7 @@ Reserve part of the pregame cap for the final submission. Warn the agent when th
 
 Procedure for choosing the numbers, status Agreed:
 
-1. Run the 10 development games with generous ceilings and record spend per phase, token mix, tool calls, elapsed time, and submission validity.
+1. Run the 10 development games with generous ceilings and record spend per phase, token mix, tool calls, elapsed time, and submission validity. Pick one effort level for the pinned model during this step (Opus 4.6 accepts `low`, `medium`, `high`, `max`; default `high`) and hold it fixed across A and B. Effort is part of the harness version; it is a candidate cost lever to vary only after the main comparison.
 2. Set the pregame cap at the 90th percentile of observed pregame spend, and the postgame cap for B at the 90th percentile of observed postgame spend. Set the reserve at a fixed multiple of the observed submission cost.
 3. Re-run the development games at one smaller and one larger pregame cap. Keep the cap at which submission validity and deviation behavior are stable.
 4. Record the chosen numbers as budget profile v1 in the run manifest. Any later change is a new budget profile.
