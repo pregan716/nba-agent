@@ -30,6 +30,10 @@ v1 framed the task as allocating $100 of simulated prop bets per game and scorin
 
 What stays: the market line as the question, because it controls difficulty and supplies a baseline for free. What is removed: money, stakes, bet counts, book selection, the LLM evidence judge (deferred, not rejected), and dollar-based research budgets (replaced with token caps for v1). The temporal access rules, source contracts, run isolation, and experiment record carry over unchanged in intent.
 
+### Finalization changes (Oct 21, 2026)
+
+- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
+
 ### Finalization changes (Oct 20, 2026)
 
 - Season pinned to the 2025–26 regular season.
@@ -324,7 +328,7 @@ Every run declares a profile on four independent axes. The profile is part of th
 
 | Axis | What it declares | Initial values |
 | --- | --- | --- |
-| Memory mode | What the agent carries between games and when it may write to it | v1: A stateless, B persistent. Follow-ups: B-frozen, C explicit reflection, D independent critique (see Experimental configurations) |
+| Memory mode | What the agent carries between games and when it may write to it. Declared on three sub-axes: horizon (stateless or persistent), revision rights (editable or append-only), process (voluntary or mandated reflection) | v1: A stateless, B persistent, editable, voluntary. Sequenced follow-ups: B-append, C mandated reflection. Second tier: B-frozen, D independent critique (see Experimental configurations) |
 | Data sources | Which source types the environment exposes to the agent, each with its dataset manifest version | Coach media transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting, consensus odds history (always on; it defines the questions and includes current-game and prior-game observations, line and probability only). Later: per-book quotes and dispersion fields. |
 | Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write. Later candidates: code execution, training and using statistical models, external calculators |
 | Model roles | Which pinned model serves each role, with version | v1: one role, analyst. Later candidates: reflector, critic, researcher, each independently pinned |
@@ -353,14 +357,28 @@ The first scored comparison varies the memory-mode axis only. The initial data-s
 
 ## Experimental configurations
 
-The configurations below are values of the memory-mode axis. v1 is one comparison: A versus B. Everything else is held fixed: source access, question sets, output contract, model roles, harness version other than the memory-mode instructions, de-vig method, and research budget.
+The configurations below are values of the memory-mode axis. That axis decomposes into three sub-axes, each a single flag on the same harness:
+
+1. Horizon: stateless versus persistent. Whether the agent carries a workspace between games at all.
+2. Revision rights: editable versus append-only. Whether the agent may rewrite or delete its own notes, or only add to them.
+3. Process: voluntary versus mandated reflection. Whether the postgame phase includes a required step comparing stated probabilities with outcomes, or leaves reflection to the agent.
+
+Configurations are run as a stack, not a grid. Each scored comparison differs from the previous one by exactly one flag, and each stage runs only if the previous stage justifies it. Everything else is held fixed: source access, question sets, output contract, model roles, harness version other than the memory-mode instructions, de-vig method, and research budget.
+
+| Stage | Comparison | Flag varied | Runs if | Why this order |
+| --- | --- | --- | --- | --- |
+| 1 | A versus B | Horizon | Always. This is v1. | The gate. If persistence shows no effect, nothing downstream matters and the null result is the write-up. It is also the cleanest claim: giving the agent a file it can write to did or did not improve its judgment over a season. |
+| 2 | B versus B-append | Revision rights | Stage 1 shows a B-over-A effect that survives the paired bootstrap and the B replicate spread | The first design decision anyone building agent memory faces, and the one with the most legible failure mode. Either result is publishable: editing lets the agent correct itself, or editing lets it erase evidence of being wrong. It also yields the stale-belief diagnostic regardless of which arm wins. |
+| 3 | B\* versus C | Process | Stage 2 complete; B\* is whichever of B or B-append scored better | The build or no-build decision with the largest engineering implication. If a bare writable workspace captures most of the benefit, teams can skip building a reflection loop. If the mandated step is where the gain comes from, that is the thing to invest in. One extra prompt per postgame. |
 
 ### v1 configurations
 
 | Configuration | Memory-mode difference | Status |
 | --- | --- | --- |
 | A Stateless | Historical sources accessible; no carried interpretations, notes, or conversation memory between games | Agreed, v1 |
-| B Persistent knowledge | Agent retains and freely edits its own workspace between games. It may reflect voluntarily during the postgame phase. | Agreed, v1 |
+| B Persistent knowledge | Agent retains and freely edits its own workspace between games (persistent, editable, voluntary). It may reflect voluntarily during the postgame phase. | Agreed, v1 |
+
+A and B run on the same harness code. A is B with the workspace tools disabled and a fresh empty workspace per game; it is not a separate harness or a single-shot call, since A still queries the environment within the pregame cap.
 
 B's workspace write opportunities, Agreed: throughout pregame research and throughout the postgame phase, and never during the commit step, so the frozen submission and the workspace checkpoint are cleanly separable. Because B may already reflect voluntarily in postgame, the later C configuration tests whether a mandated, structured reflection beats voluntary reflection, not whether postgame writing helps at all.
 
@@ -379,27 +397,37 @@ Policy, status Agreed:
 
 ### Learning diagnostics
 
-Applies to every configuration with a persistent workspace (B, B-frozen, C, D), not to A. A score alone does not establish that the agent learned; the report must connect score differences to observable changes in what the agent believed. Workspace diffs between sessions are the evidence. For each persistent run, collect and report examples of:
+Applies to every configuration with a persistent workspace (B, B-append, C, and any second-tier persistent configuration), not to A. A score alone does not establish that the agent learned; the report must connect score differences to observable changes in what the agent believed. Workspace diffs between sessions are the evidence. For each persistent run, collect and report examples of:
 
 - Stale beliefs: a claim retained past the point where eligible evidence contradicted it.
 - Useful transfer: knowledge written after one game that correctly changed a probability in a later game.
 - Repeated errors: the same mistake made again after feedback that should have corrected it.
 
-For B-frozen, stale beliefs are the experiment itself rather than a diagnostic, since a frozen workspace is guaranteed to go stale.
+Stage 2 (B versus B-append) produces the stale-belief diagnostic whichever arm wins: under append-only, a contradicted claim stays visible next to the evidence against it; under editable, the diff shows whether the agent corrected it or erased it. For B-frozen, stale beliefs are the experiment itself rather than a diagnostic, since a frozen workspace is guaranteed to go stale.
 
-### Follow-up configurations, conditional on v1
+### Sequenced follow-ups
 
-None of these runs unless v1 shows a B-over-A effect that survives the paired bootstrap and, once B replicates exist, the spread between B runs. Each is a further value of the memory-mode axis and is compared against B, not A.
+Status Agreed. Each is one flag away from the configuration it is compared against.
 
-| Configuration | Memory-mode difference | What it isolates |
+| Configuration | Memory-mode difference | Compared against | What it isolates |
+| --- | --- | --- | --- |
+| B-append | B with the workspace append-only: the agent may add entries but never edit or delete an existing one | B | Whether restricting revision hurts (the agent cannot correct itself) or helps (the agent cannot erase being wrong). Implemented as one permission flag on the workspace write tool. |
+| C Mandated reflection | B\* plus a required postgame step comparing stated probabilities with outcomes and revising the workspace, where B\* is the better-scoring of B and B-append | B\* | Whether a dedicated reflection process beats the mere possibility of reflecting. |
+
+### Second tier
+
+These are not scheduled. Each is listed with the reason it ranks below the stack, so that it is not reintroduced without addressing that reason.
+
+| Configuration | Memory-mode difference | Why second tier |
 | --- | --- | --- |
-| B-frozen | B's workspace checkpoint at a predeclared game k, then read-only for the rest of the season | Knowledge obsolescence: whether a frozen body of knowledge decays relative to live B as the season moves on, and therefore how much of B's effect comes from ongoing revision rather than accumulation. Cheap: it starts from B's existing checkpoint at k and runs only games k+1 onward. Pin k before the run; Proposed: the midpoint of the scored games. |
-| C Explicit reflection | B plus a mandated postgame step comparing stated probabilities with outcomes and revising the workspace | Whether a dedicated reflection process beats the mere possibility of reflecting. |
-| D Independent critique | B plus a second agent, in its own model role, that scrutinizes B's workspace updates | Whether external challenge to the agent's knowledge improves it. |
+| B-frozen | B's workspace checkpoint at a predeclared game k, then read-only for the rest of the season. Pin k before the run; Proposed: the midpoint of the scored games. | A diagnostic of knowledge obsolescence, run only if B wins and only if the question of accumulation versus ongoing revision becomes load-bearing for the write-up. Cheap when run, since it starts from B's existing checkpoint. Stale beliefs are its experiment, not a side diagnostic. |
+| D Independent critique | B plus a second agent, in its own model role, that scrutinizes B's workspace updates | Expensive, and its answer depends on critic quality, which would then need to be varied in turn. |
+| Context versus retrieval | Whole workspace in context versus retrieved on demand | Will not bind at 82 games of notes, so the result would not generalize to the long horizons where it matters. |
+| Skills | Agent writes and reuses executable procedures | Requires building the code-execution capability first. A capabilities-axis change, not purely a memory-mode one. |
 
 ### Considered and rejected
 
-A static-dossier configuration (stateless, but every game starts from the same fixed, hand-prepared preseason dossier) was proposed to separate having background knowledge from updating it. It is rejected. The dossier's author is an uncontrolled variable, a stateless agent can already query every preseason source, and the cost of locating that information is now measured directly as a secondary metric. The question it targeted is answered more cleanly by B-frozen, which uses the agent's own knowledge rather than a hand-written stand-in. Do not reintroduce it without a new argument.
+A static-dossier configuration (stateless, but every game starts from the same fixed, hand-prepared preseason dossier) was proposed to separate having background knowledge from updating it. It is rejected. The dossier's author is an uncontrolled variable, a stateless agent can already query every preseason source, and the cost of locating that information is now measured directly as a secondary metric. It mainly measures the dossier. The question it targeted is answered more cleanly by B-frozen, which uses the agent's own knowledge rather than a hand-written stand-in. Do not reintroduce it without a new argument.
 
 ### Dev and evaluation games
 
@@ -472,7 +500,7 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Implementation | TypeScript on Node; direct Anthropic SDK (recorded in harness version); SQLite plus files; adapters over R2; local for Gates 1–3, AWS for scored runs with checkpoints synced to R2; in-process transport behind an MCP-wrappable interface. |
 | Research budget and harness version | Both recorded on every run as named, versioned identifiers, printed with the profile, and required to match across compared runs. |
 | De-vig method | Proportional normalization (`proportional-v1`) for v1. Recorded as a named per-run descriptor and on every question record; must match across compared runs. Power and Shin are later values. |
-| Configuration set | v1 is A versus B only. B-frozen, C, and D are follow-ups conditional on a v1 effect. The static-dossier configuration is rejected. |
+| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
 
 ## Open decisions
 
