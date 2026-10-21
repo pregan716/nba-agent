@@ -32,6 +32,7 @@ What stays: the market line as the question, because it controls difficulty and 
 
 ### Finalization changes (Oct 21, 2026)
 
+- Code execution sandbox specified as a v1 capability: per-session container, cutoff-filtered read-only mounts, scratch directory, writable workspace in persistent configurations, no network, pinned image, compute budget, planted-future-record fixture.
 - Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
 
 ### Finalization changes (Oct 20, 2026)
@@ -155,7 +156,7 @@ where p\_i is the agent's P(over) and q\_i is the market-implied P(over). Lower 
 - Calibration table in deciles of stated probability.
 - Breakdown by stat, by player, and by game index (first third, middle, last third of the season).
 - Failed sessions, exclusions, and unresolved questions, each with reason.
-- Cost: input, output, cached, and reasoning tokens separately; spend at the pinned price schedule; compute for any tool execution outside the model. Reported per game, per phase, and as a season total.
+- Cost: input, output, cached, and reasoning tokens separately; spend at the pinned price schedule; sandbox compute seconds and any other tool execution outside the model. Reported per game, per phase, and as a season total.
 - Time: wall-clock per game and per phase (pregame research, commit, postgame including reflection), with a season total.
 
 Cost and time are evaluation metrics, not only budget accounting. A configuration that matches another on the target metrics but is cheaper or faster is the better configuration, and the report must make that comparison visible.
@@ -311,6 +312,7 @@ These are capability contracts, not final API names.
 | Read injuries and schedule | Return eligible status reports and schedule information with timestamps |
 | Query odds history | Return eligible consensus observations for the current game and prior games: availability time, consensus line, and market-implied P(over) per (player, stat), plus settled outcomes for prior games once released. No per-book or dispersion fields in v1. |
 | List questions | Return the frozen question set for the current game: question\_id, player, stat, line, and market-implied P(over). Complete, no pagination needed at this size. |
+| Execute code | Run a Python program in the session sandbox against the mounted session datasets, scratch directory, and workspace; return stdout, stderr, and exit status, truncated to the stdout cap. Compute time is metered against the phase's compute cap. |
 | Submit | Validate completeness, ids, and ranges; atomically freeze; return a receipt |
 | Read released results | Expose, at the next-morning release, eligible game observations and each prior question's outcome, agent probability, market probability, and per-question score. The agent's own past rationales and notes are part of its workspace, so B sees them and A does not; released results never carry rationales themselves. |
 
@@ -318,9 +320,23 @@ Whether the agent sees the market-implied probability alongside each question is
 
 Workspace read and write belong to the harness, not the environment. The experiment record separately captures tool calls, responses or replayable references, errors, submissions, and workspace checkpoints.
 
+### Code execution sandbox
+
+Status Agreed. The agent is given more data than it can use by reading alone; the value is in aggregating, joining, and modelling it, which means writing and running code. Code execution is therefore a v1 capability, on for every configuration in the stack so it never confounds the memory comparison. Anything the code produces that should outlive the game, such as a fitted model or a cached table, is written to the workspace and follows the memory mode.
+
+Each session (one pregame or one postgame phase) gets:
+
+- A fresh container from a pinned image: Python with pandas, numpy, scipy, and scikit-learn. No network. No package installs beyond the image. The image digest is part of the harness version.
+- The eligible datasets materialized as files by the environment, filtered to the cutoff before they are mounted, and mounted read-only. The export is a SQLite file with the same tables the environment tools expose (game history, box scores, injuries, lineups, odds history, released results) plus source text as files. Filtering inside the sandbox is a leak waiting to happen; the sandbox never holds a record it is not allowed to see.
+- A scratch directory for the session, writable, discarded when the session ends. It does not survive from pregame to postgame.
+- In persistent configurations, the workspace mounted writable. In A, a fresh empty workspace. Workspace writes from code obey the same opportunity rules as writes from the harness: pregame and postgame, never during commit.
+- CPU and memory limits, a wall-clock limit per call, a cumulative compute cap per phase, and a cap on the bytes of stdout returned to the model. The numbers are chosen in the budget pilot alongside the token caps.
+
+The sandbox runs on the same host as the harness, as a per-session Docker container. Anthropic's hosted code-execution tool is not used: the data would have to be uploaded per session and the temporal filter would sit outside the environment's control. A remote sandbox service adds a vendor for no gain on a single-host deployment.
+
 ### Isolation and reproducibility
 
-Enforce session identity and cutoff outside the model prompt, with a scoped token or trusted session object. Agents have no unrestricted internet or storage credentials. Optional code execution operates only on permitted exports and the isolated workspace, with no path to future data. Pin code revision, configuration, harness version (prompts, tool definitions, loop parameters), research budget profile, model identifiers, and dataset manifests. Capture observations or immutable references sufficient to reconstruct them; model text may still vary between runs.
+Enforce session identity and cutoff outside the model prompt, with a scoped token or trusted session object. Agents have no unrestricted internet or storage credentials. Code execution operates only on the session's cutoff-filtered exports, its scratch directory, and the isolated workspace, with no network and no path to future data; the acceptance fixture for this is a future record planted on the host that must be invisible from inside the container. Pin code revision, configuration, harness version (prompts, tool definitions, loop parameters), research budget profile, model identifiers, and dataset manifests. Capture observations or immutable references sufficient to reconstruct them; model text may still vary between runs.
 
 ## Run profile
 
@@ -330,7 +346,7 @@ Every run declares a profile on four independent axes. The profile is part of th
 | --- | --- | --- |
 | Memory mode | What the agent carries between games and when it may write to it. Declared on three sub-axes: horizon (window of k games: stateless k = 0, full season, or intermediate), revision rights (editable or append-only), process (voluntary or mandated reflection) | v1: A stateless, B persistent, editable, voluntary. Sequenced follow-ups: B-append, C mandated reflection. Second tier: B-k (k = 1), B-frozen, D independent critique (see Experimental configurations) |
 | Data sources | Which source types the environment exposes to the agent, each with its dataset manifest version | Coach media transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting, consensus odds history (always on; it defines the questions and includes current-game and prior-game observations, line and probability only). Later: per-book quotes and dispersion fields. |
-| Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write. Later candidates: code execution, training and using statistical models, external calculators |
+| Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write, code execution in the session sandbox (see Code execution sandbox). Later candidates: external calculators, skills (reusable executable procedures) |
 | Model roles | Which pinned model serves each role, with version | v1: one role, analyst. Later candidates: reflector, critic, researcher, each independently pinned |
 
 Rules for the axes:
@@ -348,7 +364,7 @@ Three further fields are declared on every run and printed with the profile. The
 | Descriptor | What it declares |
 | --- | --- |
 | Research budget | The pregame and postgame token caps, the submission reserve, the rollover rule, the tool-call and wall-clock ceilings, and the pinned price schedule used to report spend. Recorded as a named, versioned budget profile so a run can be described as "budget v3" rather than by its numbers. |
-| Harness version | One identifier that resolves to the exact set of: system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, and the harness code revision. Changing any component yields a new harness version. |
+| Harness version | One identifier that resolves to the exact set of: system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, the sandbox image digest, and the harness code revision. Changing any component yields a new harness version. |
 | De-vig method | The named, versioned method that converts the two quoted prices into the market-implied P(over). Initial value: `proportional-v1`, proportional normalization. Changing the method changes the baseline every question is scored against, so it must match across compared runs. |
 
 Harness version and the agent-capabilities axis are different things. Capabilities say which tools the agent may use. Harness version says exactly how those tools, prompts, and the loop were implemented for this run. Two runs can share capabilities and differ in harness version, and that difference must be visible.
@@ -440,6 +456,7 @@ Structure, status Agreed. Numbers, status Open until the development pilot, chos
 
 - Separate pregame and postgame caps; report their sum per game. Memory maintenance and reflection count against the postgame cap, so a memory-enabled agent gets no free compute.
 - Unused postgame allowance does not roll into the next pregame.
+- Sandbox compute is budgeted separately from tokens: a wall-clock limit per code call, a cumulative compute cap per phase, and a stdout cap per call so a careless print cannot consume the token budget. The compute cap is matched between configurations in the same way as the token cap: pregame matched, B's postgame additional.
 - Generous tool-call and wall-clock ceilings exist as loop safeguards only. Log which limit ended each session. Tool-call count and wall-clock are never the comparison budget.
 
 What is matched between configurations is the pregame cap. A has nothing to do in postgame because it retains nothing, so matching total tokens would hand A extra research budget equal to B's postgame allowance and change what A is. B's postgame spend is therefore additional, reported as the measured cost of memory, and the cost-adjusted comparison shows whether it paid for itself.
@@ -448,8 +465,8 @@ Reserve part of the pregame cap for the final submission. Warn the agent when th
 
 Procedure for choosing the numbers, status Agreed:
 
-1. Run the 10 development games with generous ceilings and record spend per phase, token mix, tool calls, elapsed time, and submission validity. Pick one effort level for the pinned model during this step (Opus 4.6 accepts `low`, `medium`, `high`, `max`; default `high`) and hold it fixed across A and B. Effort is part of the harness version; it is a candidate cost lever to vary only after the main comparison.
-2. Set the pregame cap at the 90th percentile of observed pregame spend, and the postgame cap for B at the 90th percentile of observed postgame spend. Set the reserve at a fixed multiple of the observed submission cost.
+1. Run the 10 development games with generous ceilings and record spend per phase, token mix, tool calls, sandbox compute seconds and stdout sizes, elapsed time, and submission validity. Pick one effort level for the pinned model during this step (Opus 4.6 accepts `low`, `medium`, `high`, `max`; default `high`) and hold it fixed across A and B. Effort is part of the harness version; it is a candidate cost lever to vary only after the main comparison.
+2. Set the pregame cap at the 90th percentile of observed pregame spend, and the postgame cap for B at the 90th percentile of observed postgame spend. Set the reserve at a fixed multiple of the observed submission cost. Set the sandbox limits (per-call wall-clock, per-phase compute, stdout cap) by the same percentile rule.
 3. Re-run the development games at one smaller and one larger pregame cap. Keep the cap at which submission validity and deviation behavior are stable.
 4. Record the chosen numbers as budget profile v1 in the run manifest. Any later change is a new budget profile.
 
@@ -462,6 +479,7 @@ Every scored claim must be reconstructible from the record alone.
 - Question record: question\_id, player, stat, consensus line, market-implied probability, observation `requested_at` and `snapshot_at`, contributing books and count, each contributing book's raw two-sided prices, rejected pairs with reasons, book-update time range, identity-inference flag, line-selection and de-vig rule versions, and any exclusion reason.
 - Submission record: immutable submission id, per-question probabilities and rationales, evidence references, notes, commitment timestamp, and clip events.
 - Outcome record: actual stat and its source, resolution status, per-question score, scorer version; release eligibility recorded separately.
+- Code execution record: every program the agent ran, with its stdout, stderr, exit status, compute seconds, and whether a limit truncated it. Programs are stored verbatim so a result can be re-derived.
 - Workspace checkpoints: isolated snapshots before and after each session, with diffs available for diagnosis.
 
 ### Contamination
@@ -501,6 +519,7 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Implementation | TypeScript on Node; direct Anthropic SDK (recorded in harness version); SQLite plus files; adapters over R2; local for Gates 1–3, AWS for scored runs with checkpoints synced to R2; in-process transport behind an MCP-wrappable interface. |
 | Research budget and harness version | Both recorded on every run as named, versioned identifiers, printed with the profile, and required to match across compared runs. |
 | De-vig method | Proportional normalization (`proportional-v1`) for v1. Recorded as a named per-run descriptor and on every question record; must match across compared runs. Power and Shin are later values. |
+| Code execution | A v1 capability for every configuration, run in a per-session Docker sandbox on the harness host with cutoff-filtered read-only data mounts, a session scratch directory, the workspace mounted writable in persistent configurations, no network, and a pinned image. Compute is budgeted separately from tokens; numbers set in the pilot. |
 | Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
 
 ## Open decisions
@@ -509,7 +528,7 @@ Each must be resolved by the user before a scored run. Coding agents list the re
 
 | Decision | Proposed starting point or required input |
 | --- | --- |
-| Budget numbers | Set by the agreed pilot procedure in Research budget, recorded as budget profile v1. The only decision that remains open at finalization, by design. |
+| Budget numbers | Token caps, reserve, and sandbox limits (per-call wall-clock, per-phase compute, stdout cap), set by the agreed pilot procedure in Research budget and recorded as budget profile v1. The only decision that remains open at finalization, by design. |
 
 ## Implementation choices
 
@@ -522,6 +541,7 @@ Status: Agreed. These are the choices the project specs build against.
 | Record storage | SQLite for the experiment record (events, questions, submissions, outcomes, manifests), plus files on disk for workspaces and workspace checkpoints. | Sufficient for one team and one season; the whole record is a single file plus a directory, which keeps reconstruction simple. |
 | Data access | Read adapters over the ingestion archives in R2. | The data already lives there; R2 egress is free, so compute location is unconstrained. |
 | Compute | Gates 1 through 3 run locally. Scored runs execute on AWS: one small always-on instance with a persistent volume (EC2 with EBS, or Fargate with EFS). Checkpoints and the SQLite record sync to R2 at every checkpoint. | The workload is a long-lived sequential loop that mostly waits on API calls and needs a real filesystem. Cloudflare Workers lack that; Modal is Python-first. Keeping artifacts in R2 puts every output next to the data. |
+| Sandbox | Per-session Docker container on the harness host, from a pinned image (Python, pandas, numpy, scipy, scikit-learn). No network, read-only data mounts, writable scratch and workspace, resource limits. Image digest in the harness version. | Keeps the temporal boundary inside the environment: the container only ever holds cutoff-filtered exports. Same host means no new vendor and no data egress. The harness stays TypeScript; the sandbox language is Python because that is where the data tooling is. |
 | Session transport | In-process. The environment sits behind a typed interface; the harness calls it directly. The interface is designed so it can be wrapped as an MCP server later without changing the contract. | Simplest path to Gate 1. Isolation is met by construction: the harness receives a scoped session object and no credentials. |
 
 ## Implementation projects
@@ -545,23 +565,23 @@ Six projects, each with inputs, outputs, dependencies, and acceptance criteria. 
 ### P3 Replay environment
 
 - Inputs: P1 adapters, P2 builder, temporal access rules, tool contracts, output contract.
-- Outputs: scoped session objects; cutoff-filtered tool implementations; submission validation and freeze; released-results tool; phase enforcement.
+- Outputs: scoped session objects; cutoff-filtered tool implementations; per-session dataset export (SQLite plus source files, filtered to the cutoff before mounting); submission validation and freeze; released-results tool; phase enforcement.
 - Depends on: P1, P2.
-- Acceptance: an adversarial fixture containing future records is unreachable by every tool path including search, counts, and pagination; a submission missing one question is rejected with the ids named; identical resubmission returns the same receipt; a submission after reveal is refused; released results appear only after the runner advances to 9 a.m.; the odds-history tool returns no snapshot collected at or after the cutoff and no settlement before release.
+- Acceptance: an adversarial fixture containing future records is unreachable by every tool path including search, counts, and pagination; a submission missing one question is rejected with the ids named; identical resubmission returns the same receipt; a submission after reveal is refused; released results appear only after the runner advances to 9 a.m.; the odds-history tool returns no snapshot collected at or after the cutoff and no settlement before release; the session export contains no record past the cutoff, checked against the same adversarial fixture.
 
 ### P4 Runner and experiment record
 
 - Inputs: configuration schema; P3 session interface; record schema.
-- Outputs: run creation and isolation; chronological scheduling; phase transitions; budget enforcement with warn, stop, and reserve; checkpoint and resume; immutable event log; workspace snapshotting; manifest writing including run profile, budget profile, and harness version.
+- Outputs: run creation and isolation; chronological scheduling; phase transitions; budget enforcement with warn, stop, and reserve, covering tokens and sandbox compute; checkpoint and resume; immutable event log; workspace snapshotting; manifest writing including run profile, budget profile, and harness version.
 - Depends on: P3 interface (can be built against a stub).
 - Acceptance: a run killed mid-game resumes without duplicating a submission; a stateless run and a persistent run share no workspace state; every session ends with one of the defined statuses and the limit that ended it; the manifest reproduces a run's configuration exactly, including all four run-profile axes.
 
 ### P5 Agent harness
 
 - Inputs: P3 tools, P4 workspace and budget hooks, model configuration, memory-mode specification for A and B.
-- Outputs: model loop; prompts; workspace read and write; persistence and reset per configuration; submission formatting and retry on validation error; null-baseline agents (market, naive stats, random); a harness-version identifier derived from prompts, tool definitions, loop parameters, and code revision.
+- Outputs: model loop; prompts; workspace read and write; persistence and reset per configuration; sandbox lifecycle (create the container per session from the pinned image, mount the P3 export read-only, the scratch directory and, for persistent configurations, the workspace writable, enforce limits, destroy at session end); submission formatting and retry on validation error; null-baseline agents (market, naive stats, random); a harness-version identifier derived from prompts, tool definitions, loop parameters, and code revision.
 - Depends on: P3, P4.
-- Acceptance: configuration A starts each game from an empty workspace and no conversation history; B's workspace diff is captured per session; the agent never holds credentials or paths that bypass the environment; the three baselines run end to end on the same question sets; the contamination probe script exists and its output is stored in the run manifest; changing any prompt or tool definition changes the harness version.
+- Acceptance: configuration A starts each game from an empty workspace and no conversation history; B's workspace diff is captured per session; the agent never holds credentials or paths that bypass the environment; a future record planted on the host is invisible from inside the sandbox, and a program that attempts network access or a package install fails; the three baselines run end to end on the same question sets; the contamination probe script exists and its output is stored in the run manifest; changing any prompt or tool definition changes the harness version.
 
 ### P6 Evaluators and reporting
 
@@ -578,14 +598,14 @@ P1 first. P2 and P4 in parallel once P1's raw-quote odds adapter is in. P3 after
 
 Four gates, in order. Do not start the next until the current one passes.
 
-1. One game on fixtures. Small fixed datasets including future records that must stay hidden. All six projects wired. The market baseline runs end to end and scores zero.
+1. One game on fixtures. Small fixed datasets including future records that must stay hidden, on the host as well as in the adapters. All six projects wired, including the sandbox. The market baseline runs end to end and scores zero.
 2. One real game. Real adapters connected; the environment's consensus reproduces the ingestion reference export for that game; a hand check of five questions against the raw per-book quotes.
 3. Several chronological games. Configuration B's workspace persists and diffs are captured; A's does not; a forced crash mid-game resumes without a duplicate submission; the next-morning release exposes scores and nothing later.
 4. Scored comparison. Development games pinned and excluded; contamination probe stored; one replicate of A and B for the first comparison, with further B replicates before any published B-over-A claim; report generated from the record alone.
 
 Minimum acceptance checks across all gates:
 
-- Future evidence is unreachable by every tool path.
+- Future evidence is unreachable by every tool path, including from inside the sandbox. The fixture is a future record planted on the host filesystem that must not be visible to a program running in the container.
 - Every eligible main line appears in the question set exactly once; exclusions carry reasons.
 - A submission is complete, in range, and frozen before reveal; retries are idempotent.
 - Pushes and did-not-play questions are excluded, never scored as losses.
