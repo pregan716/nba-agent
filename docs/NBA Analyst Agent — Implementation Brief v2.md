@@ -32,6 +32,7 @@ What stays: the market line as the question, because it controls difficulty and 
 
 ### Finalization changes (Oct 21, 2026)
 
+- Harness contract added. v1 is a homemade harness; a third-party harness may be swapped in later as a new harness version. Workspace tools with memory-mode enforcement and sandbox lifecycle moved to the environment (P3); a metering proxy for model calls added to the runner (P4). P5 is the loop and prompts only.
 - Code execution sandbox specified as a v1 capability: per-session container, cutoff-filtered read-only mounts, scratch directory, writable workspace in persistent configurations, no network, pinned image, compute budget, planted-future-record fixture.
 - Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
 
@@ -182,14 +183,14 @@ If the stateless agent does not beat naive stats, that is reportable on its own.
 
 ## System architecture and module ownership
 
-Five logical modules in one core repository, plus external ingestion repositories. These are ownership boundaries, not a requirement for separate deployed services. The environment controls the observable world and legal actions; the harness controls the agent's reasoning loop and workspace; the runner controls the experiment; evaluators measure frozen records.
+Five logical modules in one core repository, plus external ingestion repositories. These are ownership boundaries, not a requirement for separate deployed services. The environment controls the observable world and legal actions, including the workspace and the sandbox; the harness is the agent's reasoning loop; the runner controls the experiment and meters the model; evaluators measure frozen records.
 
 | Component | Owns | Does not own |
 | --- | --- | --- |
 | External ingestion | Collecting, normalizing, and preserving source records with provenance | Run-specific access rules or agent interpretations |
 | Runner | Configuration, schedules, budgets, run isolation, checkpoints, controlled clock advancement | Basketball reasoning or source ingestion |
-| Environment | Read adapters, temporal filtering, question-set construction, submission validation, frozen submissions, released outcomes | Agent research strategy or memory contents |
-| Agent harness | Model and tool loop, prompts, workspace access, memory persistence and reflection modes | Authority to reveal future sources or change the output contract |
+| Environment | Read adapters, temporal filtering, question-set construction, submission validation, frozen submissions, released outcomes, the workspace tools with memory-mode enforcement, the code execution sandbox | Agent research strategy or memory contents |
+| Agent harness | The model loop and prompts: deciding which tools to call and what to write. v1 is the homemade harness; later versions may swap in a third-party harness under the same contract | Workspace enforcement, sandbox lifecycle, token metering, authority to reveal future sources or change the output contract |
 | Evaluators | Resolution, scoring, baselines, calibration, matched comparisons, reports | Changing frozen submissions or unrestricted feedback to the agent |
 | Experiment record | Immutable events, source references, configurations, workspace checkpoints | A shared memory accessible to every agent |
 
@@ -318,7 +319,7 @@ These are capability contracts, not final API names.
 
 Whether the agent sees the market-implied probability alongside each question is Agreed: yes. It is part of the question, and hiding it would turn the task into reconstructing the market rather than beating it.
 
-Workspace read and write belong to the harness, not the environment. The experiment record separately captures tool calls, responses or replayable references, errors, submissions, and workspace checkpoints.
+Workspace read and write are environment tools, and the memory mode is enforced there: editable or append-only, writable in pregame and postgame and locked during commit, reset to empty per game for A. The harness cannot reach the workspace except through these tools, so the memory mode holds for any harness by construction. The experiment record separately captures tool calls, responses or replayable references, errors, submissions, and workspace checkpoints.
 
 ### Code execution sandbox
 
@@ -334,9 +335,21 @@ Each session (one pregame or one postgame phase) gets:
 
 The sandbox runs on the same host as the harness, as a per-session Docker container. Anthropic's hosted code-execution tool is not used: the data would have to be uploaded per session and the temporal filter would sit outside the environment's control. A remote sandbox service adds a vendor for no gain on a single-host deployment.
 
+### Harness contract
+
+The harness is the agent's reasoning loop and nothing else. v1 is a homemade harness: a hand-written tool loop over direct Anthropic SDK calls. Future versions may swap in a third-party harness such as a coding-agent framework or the Claude Agent SDK. To make that a configuration change rather than a rebuild, every harness runs under the same contract:
+
+- It receives three handles and nothing else: a session endpoint (the in-process interface, or its MCP wrapping) exposing the environment tools above, including workspace and code execution; a metered model endpoint (a base URL and scoped key issued by the runner); and the memory-mode instructions for its prompts.
+- It holds no credentials, no data paths, and no direct access to the workspace directory, the sandbox, or R2.
+- Every model call passes through the runner's metering proxy, which counts tokens, enforces caps, pins the model and effort, and records usage. Token accounting therefore does not depend on the harness reporting it.
+- It submits only through the Submit tool.
+- Its identity, version, and configuration are the harness version. A run that swaps the harness is a new harness version, and the per-run descriptor rules apply: a comparison that varies the harness and anything else cannot attribute its result to either.
+
+A third-party harness that ships its own file or shell tools must have them disabled or pointed at nothing; the only writable surfaces are the workspace tool and the sandbox scratch directory. Gate tests for isolation run against whatever harness is configured, not only the homemade one.
+
 ### Isolation and reproducibility
 
-Enforce session identity and cutoff outside the model prompt, with a scoped token or trusted session object. Agents have no unrestricted internet or storage credentials. Code execution operates only on the session's cutoff-filtered exports, its scratch directory, and the isolated workspace, with no network and no path to future data; the acceptance fixture for this is a future record planted on the host that must be invisible from inside the container. Pin code revision, configuration, harness version (prompts, tool definitions, loop parameters), research budget profile, model identifiers, and dataset manifests. Capture observations or immutable references sufficient to reconstruct them; model text may still vary between runs.
+Enforce session identity and cutoff outside the model prompt, with a scoped token or trusted session object. Agents have no unrestricted internet or storage credentials. Code execution operates only on the session's cutoff-filtered exports, its scratch directory, and the isolated workspace, with no network and no path to future data; the acceptance fixture for this is a future record planted on the host that must be invisible from inside the container. Pin code revision, configuration, harness version (identity, prompts, tool definitions, loop parameters), research budget profile, model identifiers, and dataset manifests. Capture observations or immutable references sufficient to reconstruct them; model text may still vary between runs.
 
 ## Run profile
 
@@ -364,7 +377,7 @@ Three further fields are declared on every run and printed with the profile. The
 | Descriptor | What it declares |
 | --- | --- |
 | Research budget | The pregame and postgame token caps, the submission reserve, the rollover rule, the tool-call and wall-clock ceilings, and the pinned price schedule used to report spend. Recorded as a named, versioned budget profile so a run can be described as "budget v3" rather than by its numbers. |
-| Harness version | One identifier that resolves to the exact set of: system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, the sandbox image digest, and the harness code revision. Changing any component yields a new harness version. |
+| Harness version | One identifier that resolves to the exact set of: harness identity (v1: homemade; later possibly a named third-party harness and its version), system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, the sandbox image digest, and the harness code revision. Changing any component yields a new harness version. |
 | De-vig method | The named, versioned method that converts the two quoted prices into the market-implied P(over). Initial value: `proportional-v1`, proportional normalization. Changing the method changes the baseline every question is scored against, so it must match across compared runs. |
 
 Harness version and the agent-capabilities axis are different things. Capabilities say which tools the agent may use. Harness version says exactly how those tools, prompts, and the loop were implemented for this run. Two runs can share capabilities and differ in harness version, and that difference must be visible.
@@ -519,6 +532,7 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Implementation | TypeScript on Node; direct Anthropic SDK (recorded in harness version); SQLite plus files; adapters over R2; local for Gates 1–3, AWS for scored runs with checkpoints synced to R2; in-process transport behind an MCP-wrappable interface. |
 | Research budget and harness version | Both recorded on every run as named, versioned identifiers, printed with the profile, and required to match across compared runs. |
 | De-vig method | Proportional normalization (`proportional-v1`) for v1. Recorded as a named per-run descriptor and on every question record; must match across compared runs. Power and Shin are later values. |
+| Harness | v1 is a homemade harness (hand-written loop, direct SDK). Future versions may swap in a third-party harness under the Harness contract. Workspace enforcement, sandbox lifecycle, and token metering live in the environment and runner so a swap is a new harness version, not a rebuild. |
 | Code execution | A v1 capability for every configuration, run in a per-session Docker sandbox on the harness host with cutoff-filtered read-only data mounts, a session scratch directory, the workspace mounted writable in persistent configurations, no network, and a pinned image. Compute is budgeted separately from tokens; numbers set in the pilot. |
 | Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
 
@@ -537,7 +551,7 @@ Status: Agreed. These are the choices the project specs build against.
 | Choice | Decision | Reason |
 | --- | --- | --- |
 | Language | TypeScript, Node | One language across runner, environment, harness, and evaluators. |
-| Model access | Direct Anthropic SDK with a hand-written tool loop. The SDK name and version, and the access method, are part of the harness version and recorded in the run manifest. | Full control over the loop and exact token accounting, which the budget rules require. The Claude Agent SDK is a later alternative; switching is a new harness version. |
+| Harness | v1 is a homemade harness: a hand-written tool loop over direct Anthropic SDK calls, routed through the runner's metering proxy. Harness identity, SDK name and version, and access method are part of the harness version. | Full control over the loop for v1. Because the workspace, sandbox, and metering live outside the harness (see Harness contract), a third-party harness or the Claude Agent SDK can be swapped in later as a new harness version without touching the isolation or budget guarantees. |
 | Record storage | SQLite for the experiment record (events, questions, submissions, outcomes, manifests), plus files on disk for workspaces and workspace checkpoints. | Sufficient for one team and one season; the whole record is a single file plus a directory, which keeps reconstruction simple. |
 | Data access | Read adapters over the ingestion archives in R2. | The data already lives there; R2 egress is free, so compute location is unconstrained. |
 | Compute | Gates 1 through 3 run locally. Scored runs execute on AWS: one small always-on instance with a persistent volume (EC2 with EBS, or Fargate with EFS). Checkpoints and the SQLite record sync to R2 at every checkpoint. | The workload is a long-lived sequential loop that mostly waits on API calls and needs a real filesystem. Cloudflare Workers lack that; Modal is Python-first. Keeping artifacts in R2 puts every output next to the data. |
@@ -565,23 +579,23 @@ Six projects, each with inputs, outputs, dependencies, and acceptance criteria. 
 ### P3 Replay environment
 
 - Inputs: P1 adapters, P2 builder, temporal access rules, tool contracts, output contract.
-- Outputs: scoped session objects; cutoff-filtered tool implementations; per-session dataset export (SQLite plus source files, filtered to the cutoff before mounting); submission validation and freeze; released-results tool; phase enforcement.
+- Outputs: scoped session objects; cutoff-filtered tool implementations; workspace tools with memory-mode enforcement (editable or append-only, phase locking, per-game reset for A); per-session dataset export (SQLite plus source files, filtered to the cutoff before mounting); sandbox lifecycle (create the container per session from the pinned image, mount the export read-only and the scratch directory and, for persistent configurations, the workspace writable, enforce limits, destroy at session end) behind the Execute code tool; submission validation and freeze; released-results tool; phase enforcement.
 - Depends on: P1, P2.
-- Acceptance: an adversarial fixture containing future records is unreachable by every tool path including search, counts, and pagination; a submission missing one question is rejected with the ids named; identical resubmission returns the same receipt; a submission after reveal is refused; released results appear only after the runner advances to 9 a.m.; the odds-history tool returns no snapshot collected at or after the cutoff and no settlement before release; the session export contains no record past the cutoff, checked against the same adversarial fixture.
+- Acceptance: an adversarial fixture containing future records is unreachable by every tool path including search, counts, and pagination; a submission missing one question is rejected with the ids named; identical resubmission returns the same receipt; a submission after reveal is refused; released results appear only after the runner advances to 9 a.m.; the odds-history tool returns no snapshot collected at or after the cutoff and no settlement before release; the session export contains no record past the cutoff, checked against the same adversarial fixture; a future record planted on the host is invisible from inside the sandbox, and a program that attempts network access or a package install fails; an append-only workspace rejects edits and deletes; a workspace write during commit is refused.
 
 ### P4 Runner and experiment record
 
 - Inputs: configuration schema; P3 session interface; record schema.
-- Outputs: run creation and isolation; chronological scheduling; phase transitions; budget enforcement with warn, stop, and reserve, covering tokens and sandbox compute; checkpoint and resume; immutable event log; workspace snapshotting; manifest writing including run profile, budget profile, and harness version.
+- Outputs: run creation and isolation; chronological scheduling; phase transitions; the metering proxy (scoped model endpoint per session that pins model and effort, counts tokens, and enforces caps); budget enforcement with warn, stop, and reserve, covering tokens and sandbox compute; checkpoint and resume; immutable event log; workspace snapshotting; manifest writing including run profile, budget profile, and harness version.
 - Depends on: P3 interface (can be built against a stub).
-- Acceptance: a run killed mid-game resumes without duplicating a submission; a stateless run and a persistent run share no workspace state; every session ends with one of the defined statuses and the limit that ended it; the manifest reproduces a run's configuration exactly, including all four run-profile axes.
+- Acceptance: a run killed mid-game resumes without duplicating a submission; a stateless run and a persistent run share no workspace state; every session ends with one of the defined statuses and the limit that ended it; a model call that bypasses the proxy is impossible because the harness holds no direct key; the proxy's token counts match the SDK's reported usage on a fixture; the manifest reproduces a run's configuration exactly, including all four run-profile axes.
 
 ### P5 Agent harness
 
-- Inputs: P3 tools, P4 workspace and budget hooks, model configuration, memory-mode specification for A and B.
-- Outputs: model loop; prompts; workspace read and write; persistence and reset per configuration; sandbox lifecycle (create the container per session from the pinned image, mount the P3 export read-only, the scratch directory and, for persistent configurations, the workspace writable, enforce limits, destroy at session end); submission formatting and retry on validation error; null-baseline agents (market, naive stats, random); a harness-version identifier derived from prompts, tool definitions, loop parameters, and code revision.
+- Inputs: the harness contract: P3 session endpoint, P4 metered model endpoint, memory-mode instructions for A and B.
+- Outputs: the v1 homemade harness: model loop; prompts; submission formatting and retry on validation error; null-baseline agents (market, naive stats, random); a harness-version identifier derived from harness identity, prompts, tool definitions, loop parameters, and code revision. Workspace enforcement, sandbox lifecycle, and token metering are not here; they are P3 and P4.
 - Depends on: P3, P4.
-- Acceptance: configuration A starts each game from an empty workspace and no conversation history; B's workspace diff is captured per session; the agent never holds credentials or paths that bypass the environment; a future record planted on the host is invisible from inside the sandbox, and a program that attempts network access or a package install fails; the three baselines run end to end on the same question sets; the contamination probe script exists and its output is stored in the run manifest; changing any prompt or tool definition changes the harness version.
+- Acceptance: configuration A starts each game from no conversation history and, via P3, an empty workspace; B's workspace diff is captured per session; the harness holds only the three contract handles and nothing that bypasses the environment or the proxy; the three baselines run end to end on the same question sets; the contamination probe script exists and its output is stored in the run manifest; changing any prompt or tool definition changes the harness version.
 
 ### P6 Evaluators and reporting
 
