@@ -34,7 +34,7 @@ What stays: the market line as the question, because it controls difficulty and 
 
 - Harness contract added. v1 is a homemade harness; a third-party harness may be swapped in later as a new harness version. Workspace tools with memory-mode enforcement and sandbox lifecycle moved to the environment (P3); a metering proxy for model calls added to the runner (P4). P5 is the loop and prompts only.
 - Code execution sandbox specified as a v1 capability: per-session container, cutoff-filtered read-only mounts, scratch directory, writable workspace in persistent configurations, no network, pinned image, compute budget, planted-future-record fixture.
-- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
+- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, and context-versus-retrieval moved to a second tier with reasons. Scripts made explicit as persistent workspace content in B, which absorbs the former skills configuration. A and B stated to share harness code.
 
 ### Finalization changes (Oct 20, 2026)
 
@@ -323,14 +323,14 @@ Workspace read and write are environment tools, and the memory mode is enforced 
 
 ### Code execution sandbox
 
-Status Agreed. The agent is given more data than it can use by reading alone; the value is in aggregating, joining, and modelling it, which means writing and running code. Code execution is therefore a v1 capability, on for every configuration in the stack so it never confounds the memory comparison. Anything the code produces that should outlive the game, such as a fitted model or a cached table, is written to the workspace and follows the memory mode.
+Status Agreed. The agent is given more data than it can use by reading alone; the value is in aggregating, joining, and modelling it, which means writing and running code. Code execution is therefore a v1 capability, on for every configuration in the stack so it never confounds the memory comparison. Scripts are workspace content. In persistent configurations the agent saves the programs it writes to the workspace and re-runs or revises them in later games, so a feature pipeline or a model-fitting routine written once is available all season; in A every game starts without them. The same holds for what the code produces, such as a fitted model or a cached table. Under B-append, scripts can be added but not edited in place; a revised script is a new file.
 
 Each session (one pregame or one postgame phase) gets:
 
 - A fresh container from a pinned image: Python with pandas, numpy, scipy, and scikit-learn. No network. No package installs beyond the image. The image digest is part of the harness version.
 - The eligible datasets materialized as files by the environment, filtered to the cutoff before they are mounted, and mounted read-only. The export is a SQLite file with the same tables the environment tools expose (game history, box scores, injuries, lineups, odds history, released results) plus source text as files. Filtering inside the sandbox is a leak waiting to happen; the sandbox never holds a record it is not allowed to see.
 - A scratch directory for the session, writable, discarded when the session ends. It does not survive from pregame to postgame.
-- In persistent configurations, the workspace mounted writable. In A, a fresh empty workspace. Workspace writes from code obey the same opportunity rules as writes from the harness: pregame and postgame, never during commit.
+- In persistent configurations, the workspace mounted writable, so scripts, models, and cached results saved there persist to later games. In A, a fresh empty workspace. Workspace writes from code obey the same opportunity rules as writes from the harness: pregame and postgame, never during commit.
 - CPU and memory limits, a wall-clock limit per call, a cumulative compute cap per phase, and a cap on the bytes of stdout returned to the model. The numbers are chosen in the budget pilot alongside the token caps.
 
 The sandbox runs on the same host as the harness, as a per-session Docker container. Anthropic's hosted code-execution tool is not used: the data would have to be uploaded per session and the temporal filter would sit outside the environment's control. A remote sandbox service adds a vendor for no gain on a single-host deployment.
@@ -359,13 +359,13 @@ Every run declares a profile on four independent axes. The profile is part of th
 | --- | --- | --- |
 | Memory mode | What the agent carries between games and when it may write to it. Declared on three sub-axes: horizon (window of k games: stateless k = 0, full season, or intermediate), revision rights (editable or append-only), process (voluntary or mandated reflection) | v1: A stateless, B persistent, editable, voluntary. Sequenced follow-ups: B-append, C mandated reflection. Second tier: B-k (k = 1), B-frozen, D independent critique (see Experimental configurations) |
 | Data sources | Which source types the environment exposes to the agent, each with its dataset manifest version | Coach media transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting, consensus odds history (always on; it defines the questions and includes current-game and prior-game observations, line and probability only). Later: per-book quotes and dispersion fields. |
-| Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write, code execution in the session sandbox (see Code execution sandbox). Later candidates: external calculators, skills (reusable executable procedures) |
+| Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write, code execution in the session sandbox (see Code execution sandbox). Later candidates: external calculators |
 | Model roles | Which pinned model serves each role, with version | v1: one role, analyst. Later candidates: reflector, critic, researcher, each independently pinned |
 
 Rules for the axes:
 
 - Each axis is enumerated and versioned. Adding a new value (a new source type, a new capability, a new role) adds a named entry; it never changes the meaning of an existing one, so older runs stay comparable.
-- Memory mode and agent capabilities are distinct. Memory mode governs what persists across games. Capabilities govern what the agent can do inside a game. Anything a capability produces that should outlive the game, such as a trained model or a cached calculation, is written to the workspace and follows the memory mode. A stateless run therefore rebuilds it or goes without.
+- Memory mode and agent capabilities are distinct. Memory mode governs what persists across games. Capabilities govern what the agent can do inside a game. Anything a capability produces that should outlive the game, such as a script, a trained model, or a cached calculation, is written to the workspace and follows the memory mode. A stateless run therefore rebuilds it or goes without.
 - Data sources are declared by type and manifest version, not by what the agent happened to read. A source type is either exposed under the temporal access rules or absent from the run.
 - Model roles are pinned per role. Two runs with the same roles but different model versions in any role differ on this axis.
 - The consensus construction rules (line-selection rule, contributing-book rule, minimum book count, exclusion statuses) are question-set policy, not profile axes. They are pinned in the manifest and must be identical across any runs that are compared. The de-vig method is likewise question-set policy and is listed as a named descriptor below because it defines the scoring baseline.
@@ -405,7 +405,7 @@ Configurations are run as a stack, not a grid. Each scored comparison differs fr
 | Configuration | Memory-mode difference | Status |
 | --- | --- | --- |
 | A Stateless | Historical sources accessible; no carried interpretations, notes, or conversation memory between games | Agreed, v1 |
-| B Persistent knowledge | Agent retains and freely edits its own workspace between games (persistent, editable, voluntary). It may reflect voluntarily during the postgame phase. | Agreed, v1 |
+| B Persistent knowledge | Agent retains and freely edits its own workspace between games (persistent, editable, voluntary), including notes, scripts, fitted models, and cached results. It may reflect voluntarily during the postgame phase. | Agreed, v1 |
 
 A and B run on the same harness code. A is B with the workspace tools disabled and a fresh empty workspace per game; it is not a separate harness or a single-shot call, since A still queries the environment within the pregame cap.
 
@@ -453,7 +453,6 @@ These are not scheduled. Each is listed with the reason it ranks below the stack
 | B-frozen | B's workspace checkpoint at a predeclared game, then read-only for the rest of the season. Pin the checkpoint game before the run; Proposed: the midpoint of the scored games. | A diagnostic of knowledge obsolescence, run only if B wins and only if the question of accumulation versus ongoing revision becomes load-bearing for the write-up. Cheap when run, since it starts from B's existing checkpoint. Stale beliefs are its experiment, not a side diagnostic. |
 | D Independent critique | B plus a second agent, in its own model role, that scrutinizes B's workspace updates | Expensive, and its answer depends on critic quality, which would then need to be varied in turn. |
 | Context versus retrieval | Whole workspace in context versus retrieved on demand | Will not bind at 82 games of notes, so the result would not generalize to the long horizons where it matters. |
-| Skills | Agent writes and reuses executable procedures | Requires building the code-execution capability first. A capabilities-axis change, not purely a memory-mode one. |
 
 ### Considered and rejected
 
@@ -534,7 +533,7 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | De-vig method | Proportional normalization (`proportional-v1`) for v1. Recorded as a named per-run descriptor and on every question record; must match across compared runs. Power and Shin are later values. |
 | Harness | v1 is a homemade harness (hand-written loop, direct SDK). Future versions may swap in a third-party harness under the Harness contract. Workspace enforcement, sandbox lifecycle, and token metering live in the environment and runner so a swap is a new harness version, not a rebuild. |
 | Code execution | A v1 capability for every configuration, run in a per-session Docker sandbox on the harness host with cutoff-filtered read-only data mounts, a session scratch directory, the workspace mounted writable in persistent configurations, no network, and a pinned image. Compute is budgeted separately from tokens; numbers set in the pilot. |
-| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
+| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, and context-versus-retrieval are second tier with stated reasons. Persisting scripts is part of B, not a separate skills configuration. The static-dossier configuration is rejected. |
 
 ## Open decisions
 
