@@ -32,7 +32,7 @@ What stays: the market line as the question, because it controls difficulty and 
 
 ### Finalization changes (Oct 21, 2026)
 
-- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
+- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
 
 ### Finalization changes (Oct 20, 2026)
 
@@ -328,7 +328,7 @@ Every run declares a profile on four independent axes. The profile is part of th
 
 | Axis | What it declares | Initial values |
 | --- | --- | --- |
-| Memory mode | What the agent carries between games and when it may write to it. Declared on three sub-axes: horizon (stateless or persistent), revision rights (editable or append-only), process (voluntary or mandated reflection) | v1: A stateless, B persistent, editable, voluntary. Sequenced follow-ups: B-append, C mandated reflection. Second tier: B-frozen, D independent critique (see Experimental configurations) |
+| Memory mode | What the agent carries between games and when it may write to it. Declared on three sub-axes: horizon (window of k games: stateless k = 0, full season, or intermediate), revision rights (editable or append-only), process (voluntary or mandated reflection) | v1: A stateless, B persistent, editable, voluntary. Sequenced follow-ups: B-append, C mandated reflection. Second tier: B-k (k = 1), B-frozen, D independent critique (see Experimental configurations) |
 | Data sources | Which source types the environment exposes to the agent, each with its dataset manifest version | Coach media transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting, consensus odds history (always on; it defines the questions and includes current-game and prior-game observations, line and probability only). Later: per-book quotes and dispersion fields. |
 | Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write. Later candidates: code execution, training and using statistical models, external calculators |
 | Model roles | Which pinned model serves each role, with version | v1: one role, analyst. Later candidates: reflector, critic, researcher, each independently pinned |
@@ -359,7 +359,7 @@ The first scored comparison varies the memory-mode axis only. The initial data-s
 
 The configurations below are values of the memory-mode axis. That axis decomposes into three sub-axes, each a single flag on the same harness:
 
-1. Horizon: stateless versus persistent. Whether the agent carries a workspace between games at all.
+1. Horizon: stateless versus persistent. Whether the agent carries a workspace between games at all. In general a window of k games, where A is k = 0 and B is the full season; intermediate k is second tier.
 2. Revision rights: editable versus append-only. Whether the agent may rewrite or delete its own notes, or only add to them.
 3. Process: voluntary versus mandated reflection. Whether the postgame phase includes a required step comparing stated probabilities with outcomes, or leaves reflection to the agent.
 
@@ -397,7 +397,7 @@ Policy, status Agreed:
 
 ### Learning diagnostics
 
-Applies to every configuration with a persistent workspace (B, B-append, C, and any second-tier persistent configuration), not to A. A score alone does not establish that the agent learned; the report must connect score differences to observable changes in what the agent believed. Workspace diffs between sessions are the evidence. For each persistent run, collect and report examples of:
+Applies to every configuration with a persistent workspace (B, B-append, C, B-k, and any other second-tier persistent configuration), not to A. A score alone does not establish that the agent learned; the report must connect score differences to observable changes in what the agent believed. Workspace diffs between sessions are the evidence. For each persistent run, collect and report examples of:
 
 - Stale beliefs: a claim retained past the point where eligible evidence contradicted it.
 - Useful transfer: knowledge written after one game that correctly changed a probability in a later game.
@@ -420,7 +420,8 @@ These are not scheduled. Each is listed with the reason it ranks below the stack
 
 | Configuration | Memory-mode difference | Why second tier |
 | --- | --- | --- |
-| B-frozen | B's workspace checkpoint at a predeclared game k, then read-only for the rest of the season. Pin k before the run; Proposed: the midpoint of the scored games. | A diagnostic of knowledge obsolescence, run only if B wins and only if the question of accumulation versus ongoing revision becomes load-bearing for the write-up. Cheap when run, since it starts from B's existing checkpoint. Stale beliefs are its experiment, not a side diagnostic. |
+| B-k, k = 1 | B with a one-game memory window: the workspace carried into each game holds only what was written during the previous game. | A diagnostic of how much of B's effect comes from accumulation over the season versus the most recent game's context. Run only if B wins stage 1. Mechanically one flag: the workspace is reset to the previous game's writes at each pregame. |
+| B-frozen | B's workspace checkpoint at a predeclared game, then read-only for the rest of the season. Pin the checkpoint game before the run; Proposed: the midpoint of the scored games. | A diagnostic of knowledge obsolescence, run only if B wins and only if the question of accumulation versus ongoing revision becomes load-bearing for the write-up. Cheap when run, since it starts from B's existing checkpoint. Stale beliefs are its experiment, not a side diagnostic. |
 | D Independent critique | B plus a second agent, in its own model role, that scrutinizes B's workspace updates | Expensive, and its answer depends on critic quality, which would then need to be varied in turn. |
 | Context versus retrieval | Whole workspace in context versus retrieved on demand | Will not bind at 82 games of notes, so the result would not generalize to the long horizons where it matters. |
 | Skills | Agent writes and reuses executable procedures | Requires building the code-execution capability first. A capabilities-axis change, not purely a memory-mode one. |
@@ -500,7 +501,7 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Implementation | TypeScript on Node; direct Anthropic SDK (recorded in harness version); SQLite plus files; adapters over R2; local for Gates 1–3, AWS for scored runs with checkpoints synced to R2; in-process transport behind an MCP-wrappable interface. |
 | Research budget and harness version | Both recorded on every run as named, versioned identifiers, printed with the profile, and required to match across compared runs. |
 | De-vig method | Proportional normalization (`proportional-v1`) for v1. Recorded as a named per-run descriptor and on every question record; must match across compared runs. Power and Shin are later values. |
-| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
+| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
 
 ## Open decisions
 
