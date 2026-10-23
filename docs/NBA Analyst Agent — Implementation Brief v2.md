@@ -33,6 +33,7 @@ What stays: the market line as the question, because it controls difficulty and 
 ### Finalization changes (Oct 23, 2026)
 
 - Data contracts rewritten against the bucket guides in `docs/data-descriptions/`. The environment now consumes pinned, hash-manifested releases as published and no longer recomputes derived tables. Consensus corrected to the published method (median across contributing books, three exclusion statuses). Player reference added as an always-on static source. Injury and lineup ownership closed. Availability conventions stated per source. Beat reporting limited to NBA-related posts. Two new Open decisions: transcript availability time and play-by-play gap games. P1, P2, and Gate 2 rewritten accordingly.
+- P1a Data quality audit added as a seventh project, required before Gate 2. Linear issues SPO-776 to SPO-782 created for P1, P1a, P2 to P6.
 - Transcript availability closed the same day: index republished with `published_at` and livestream boundaries; coach media row pinned to the new commit and marked Agreed.
 - Play-by-play gap question closed the same day: three Celtics games among the gaps, all with play-by-play; resolution source fixed as the official box score; did-not-play fallback to box-score minutes for games with partial summaries.
 
@@ -561,7 +562,7 @@ Status: Agreed. These are the choices the project specs build against.
 
 ## Implementation projects
 
-Six projects, each with inputs, outputs, dependencies, and acceptance criteria. These are decomposition boundaries, not a mandate for separate repositories. Each project spec must state its remaining user decisions by reference to the Open decisions table.
+Seven projects, each with inputs, outputs, dependencies, and acceptance criteria. These are decomposition boundaries, not a mandate for separate repositories. Each project spec must state its remaining user decisions by reference to the Open decisions table.
 
 ### P1 Data contracts and adapters
 
@@ -569,6 +570,13 @@ Six projects, each with inputs, outputs, dependencies, and acceptance criteria. 
 - Outputs: canonical ID mappings across the four buckets; a read adapter per source that fetches a pinned release, verifies every object against its manifest, and serves records with their availability time and convention; the player-reference release id pinned after reading its coverage report; a coverage diagnostic for the pinned season that reports, per Celtics game, which products are `valid` in the play-by-play release, how many injury snapshots, lineup announcements, labelled posts, and transcripts fall before the cutoff, and the consensus row counts by status.
 - Depends on: nothing. Starts first.
 - Acceptance: every served record carries availability time and its convention; an object whose hash does not match the manifest is refused; no adapter lists a folder to assemble a dataset; ambiguous name joins fail loudly; the coverage diagnostic reproduces the counts stated in the bucket guides for the odds layer and the beat-post snapshot.
+
+### P1a Data quality audit
+
+- Inputs: P1 adapters over the pinned releases; the bucket guides; the availability conventions and resolution rules above.
+- Outputs: a report committed under `docs/` covering cross-bucket identity resolution for every propped Celtics player and every opponent starter; schedule agreement across the play-by-play games table, the ESPN schedule in the odds archive, and the `scheduled_start` observation; timestamp plausibility for lineups, final pregame injury reports, and pregame or postgame transcripts; resolution integrity for all 82 games including the Dec 5, 2025 fallback, with spot checks of consensus rows against `book-lines` and outcomes against a second source; content checks on samples of transcripts and labelled posts; a list of records whose availability falls within 30 minutes of a cutoff. Plus a list of proposed per-game exclusions or corrections with evidence.
+- Depends on: P1. Must pass before Gate 2.
+- Acceptance: every check has a result, pass or findings; any finding that changes a question set, a cutoff, or a resolution is a proposed brief change for the user, never applied unilaterally.
 
 ### P2 Question-set builder
 
@@ -607,14 +615,14 @@ Six projects, each with inputs, outputs, dependencies, and acceptance criteria. 
 
 ### Build order
 
-P1 first. P2 and P4 in parallel once P1's raw-quote odds adapter is in. P3 after P2. P5 and P6 after P3 and P4. The one-game end-to-end gate below needs all six on fixtures before any real adapter is connected.
+P1 first. P2 and P4 in parallel once P1's odds adapter is in; P1a once P1 is complete. P3 after P2. P5 and P6 after P3 and P4. Gate 1 needs P1 through P6 on fixtures before any real adapter is connected; Gate 2 additionally needs P1a passed.
 
 ## Delivery sequence and acceptance gates
 
 Four gates, in order. Do not start the next until the current one passes.
 
 1. One game on fixtures. Small fixed datasets including future records that must stay hidden, on the host as well as in the adapters. All six projects wired, including the sandbox. The market baseline runs end to end and scores zero.
-2. One real game. Real adapters connected over the pinned releases; the question set matches the consensus layer's `scheduled_start` rows for that game; a hand check of five questions against the accepted pairs in `book-lines`; every source's coverage for that game matches the P1 diagnostic.
+2. One real game. P1a audit passed; real adapters connected over the pinned releases; the question set matches the consensus layer's `scheduled_start` rows for that game; a hand check of five questions against the accepted pairs in `book-lines`; every source's coverage for that game matches the P1 diagnostic.
 3. Several chronological games. Configuration B's workspace persists and diffs are captured; A's does not; a forced crash mid-game resumes without a duplicate submission; the next-morning release exposes scores and nothing later.
 4. Scored comparison. Development games pinned and excluded; contamination probe stored; one replicate of A and B for the first comparison, with further B replicates before any published B-over-A claim; report generated from the record alone.
 
