@@ -33,6 +33,7 @@ What stays: the market line as the question, because it controls difficulty and 
 ### Finalization changes (Oct 23, 2026)
 
 - Data contracts rewritten against the bucket guides in `docs/data-descriptions/`. The environment now consumes pinned, hash-manifested releases as published and no longer recomputes derived tables. Consensus corrected to the published method (median across contributing books, three exclusion statuses). Player reference added as an always-on static source. Injury and lineup ownership closed. Availability conventions stated per source. Beat reporting limited to NBA-related posts. Two new Open decisions: transcript availability time and play-by-play gap games. P1, P2, and Gate 2 rewritten accordingly.
+- Play-by-play gap question closed the same day: three Celtics games among the gaps, all with play-by-play; resolution source fixed as the official box score; did-not-play fallback to box-score minutes for games with partial summaries.
 
 ### Finalization changes (Oct 21, 2026)
 
@@ -135,7 +136,7 @@ The primary score is the agent's mean log-loss improvement over the market acros
 
 ### Resolution
 
-For each question, the actual stat comes from the game-data repository. Outcome y = 1 if actual > line, 0 if actual < line.
+For each question, the actual stat is the official box-score value in the play-by-play release's box-score table, which is what sportsbooks settle on. Play-by-play-derived summaries are not the resolution source, so a game whose derived statistics disagree with the official box score still resolves normally. Outcome y = 1 if actual > line, 0 if actual < line.
 
 | Case | Handling |
 | --- | --- |
@@ -281,7 +282,7 @@ An old recording transcribed today represents information available at its publi
 
 ### Game data scope
 
-The two pinned play-by-play releases cover all teams for 2024–25 and 2025–26 (1,394 and 1,393 inventory games), with 41 gap games across the two seasons listed in the releases' coverage records. Whether any gap touches a Celtics game is Open (see Open decisions); if one does, the game's own questions cannot be resolved from the release and an exclusion policy is required. Phases are separated in the tables; preseason, play-in, Cup final, and playoff rows are excluded from the replay. Opponent substitutions can occur inside an own-team lineup stint, so opponent-context queries use event-level segments, which the release's stint tables already provide.
+The two pinned play-by-play releases cover all teams for 2024–25 and 2025–26 (1,394 and 1,393 inventory games), with 41 gap games across the two seasons listed in the releases' coverage records. Checked with the play-by-play maintainers on Oct 23, 2026: three gap games involve the Celtics and all three have play-by-play; none of the six games with no play-by-play at all is a Celtics game. The three are Celtics–Knicks `0022400061` (Oct 22, 2024, broken substitution chains, so lineup, stint, and possession products are incomplete), Celtics–Raptors `0022400230` (Nov 16, 2024, fifth overtime player unidentified), and Celtics–Lakers `0022500338` (Dec 5, 2025, play-by-play-derived statistics disagree with the official box score, summaries partial). The two 2024–25 games are historical evidence only and their incomplete products are served as absent under the coverage rule. The Dec 5, 2025 game is a scored game; its questions resolve from the official box score, which is unaffected, and did-not-play falls back to box-score minutes for that game because its play-by-play summaries are partial. No exclusion policy is needed. Phases are separated in the tables; preseason, play-in, Cup final, and playoff rows are excluded from the replay. Opponent substitutions can occur inside an own-team lineup stint, so opponent-context queries use event-level segments, which the release's stint tables already provide.
 
 ## Replay lifecycle and environment tool surface
 
@@ -518,7 +519,9 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Thin games and inferred identity | Thin games included and scored normally. Identity-inference flag carried as provenance, never an exclusion. |
 | Model | `claude-opus-4-6`. Training data cutoff Aug 2025 verified against Anthropic documentation on Oct 20, 2026. Sonnet 4.6 rejected: its training data cutoff of Jan 2026 falls inside the season. Opus 4.5 has the same cutoffs as Opus 4.6 but a 200K context window and a dated ID; it is the fallback if Opus 4.6 is retired. |
 | Replicates | One replicate of A and B for the first scored comparison. At least two further B replicates before any published B-over-A claim. None if the first comparison shows no effect. |
-| Did-not-play | Zero seconds on the floor in the play-by-play, whether inactive or active-but-unused. |
+| Did-not-play | Zero seconds on the floor in the play-by-play, whether inactive or active-but-unused. Where a game's play-by-play summaries are `partial` in the release, box-score minutes of zero is the fallback test. |
+| Resolution source | The official box-score table in the play-by-play release, not play-by-play-derived summaries. |
+| Play-by-play gap games | Three of the 41 gap games involve the Celtics, all with play-by-play present; one (Dec 5, 2025 vs. Lakers) is a scored game and resolves from the official box score. No exclusion policy needed. |
 | Development games | First 10 games of the season. Games 11 through 82 are scored. |
 | Rationale visibility | Past rationales live in the workspace. B sees its own; A sees none. Released results carry no rationales. |
 | No view and deviation | No view means submitting the market probability. Deviation is abs(p − q) against the market; 0.05 is the definition for rationale and deviation statistics, 0.10 a second reporting level. |
@@ -539,7 +542,6 @@ Each must be resolved by the user before a scored run. Coding agents list the re
 | Decision | Proposed starting point or required input |
 | --- | --- |
 | Transcript availability time | Coach media publication is recorded to the day. Proposed: ask the transcription maintainers whether source metadata (`audio/source/<hash>.json`) carries a time of day. If it does, that is the availability time. If not, a date-only recording becomes available at the end of that Eastern day, which hides game-day sessions until after the game; record the count of recordings affected. |
-| Play-by-play gap games | Whether any of the 41 gap games in the two pinned releases is a Celtics game or an opponent's prior game. Proposed: ask the play-by-play maintainers. If a Celtics game is a gap, its questions are unresolvable from the release and need an exclusion policy; if only opponent games, no policy is needed beyond serving them as absent. |
 | Budget numbers | Token caps, reserve, and sandbox limits (per-call wall-clock, per-phase compute, stdout cap), set by the agreed pilot procedure in Research budget and recorded as budget profile v1. Set by procedure, by design. |
 
 ## Implementation choices
