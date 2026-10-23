@@ -30,11 +30,18 @@ v1 framed the task as allocating $100 of simulated prop bets per game and scorin
 
 What stays: the market line as the question, because it controls difficulty and supplies a baseline for free. What is removed: money, stakes, bet counts, book selection, the LLM evidence judge (deferred, not rejected), and dollar-based research budgets (replaced with token caps for v1). The temporal access rules, source contracts, run isolation, and experiment record carry over unchanged in intent.
 
+### Finalization changes (Oct 23, 2026)
+
+- Data contracts rewritten against the bucket guides in `docs/data-descriptions/`. The environment now consumes pinned, hash-manifested releases as published and no longer recomputes derived tables. Consensus corrected to the published method (median across contributing books, three exclusion statuses). Player reference added as an always-on static source. Injury and lineup ownership closed. Availability conventions stated per source. Beat reporting limited to NBA-related posts. Two new Open decisions: transcript availability time and play-by-play gap games. P1, P2, and Gate 2 rewritten accordingly.
+- P1a Data quality audit added as a seventh project, required before Gate 2. Linear issues SPO-776 to SPO-782 created for P1, P1a, P2 to P6.
+- Transcript availability closed the same day: index republished with `published_at` and livestream boundaries; coach media row pinned to the new commit and marked Agreed.
+- Play-by-play gap question closed the same day: three Celtics games among the gaps, all with play-by-play; resolution source fixed as the official box score; did-not-play fallback to box-score minutes for games with partial summaries.
+
 ### Finalization changes (Oct 21, 2026)
 
 - Harness contract added. v1 is a homemade harness; a third-party harness may be swapped in later as a new harness version. Workspace tools with memory-mode enforcement and sandbox lifecycle moved to the environment (P3); a metering proxy for model calls added to the runner (P4). P5 is the loop and prompts only.
 - Code execution sandbox specified as a v1 capability: per-session container, cutoff-filtered read-only mounts, scratch directory, writable workspace in persistent configurations, no network, pinned image, compute budget, planted-future-record fixture.
-- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, context-versus-retrieval, and skills moved to a second tier with reasons. A and B stated to share harness code.
+- Memory mode decomposed into three sub-axes (horizon, revision rights, process). Configurations sequenced as a three-stage stack, each one flag from the last: A versus B, B versus B-append, then C against the better B variant. B-k (one-game memory window), B-frozen, D, and context-versus-retrieval moved to a second tier with reasons. Scripts made explicit as persistent workspace content in B, which absorbs the former skills configuration. A and B stated to share harness code.
 
 ### Finalization changes (Oct 20, 2026)
 
@@ -91,16 +98,16 @@ Each game, the environment constructs a question set from the frozen pregame odd
 
 A question is one (player, stat, line) tuple. The environment builds the set as follows:
 
-The market is a cross-book consensus, not a single reference book. The environment computes it from the raw per-book quotes preserved by ingestion, so the calculation is versioned with the environment and identical across runs. Status: Agreed.
+The market is a cross-book consensus, not a single reference book. It is the consensus layer published in the odds archive (`consensus/proportional/v1`), pinned by its manifest and consumed as published; the environment does not recompute it. Status: Agreed. The method, as recorded in that layer's `methodology.json`:
 
-1. Take the cutoff snapshot: the odds observation whose modeled availability time (`requested_at`) equals the game's scheduled start. Every book's quotes in that observation are inputs.
-2. For each Celtics player and each eligible stat, take every line each book quotes for that market, main and alternate. A (book, line) pair is valid only if the book quotes both sides of it; a pair with a missing side or conflicting prices is rejected with a reason.
-3. Select the consensus line: the median of the books' main (non-alternate) lines among books with at least one valid pair, recorded as line-selection rule `median_book_main_lines-v1`. Alternate lines do not vote on the line. Every sportsbook line observed in the 2025–26 data is a half-integer, so the median is a half-integer in practice; if an integer median ever occurs, retain it and let pushes be excluded at scoring.
-4. Compute each contributing book's P(over) at the selected line by de-vigging its two sides. Agreed: proportional normalization, p\_over = (1/d\_over) / (1/d\_over + 1/d\_under), recorded as de-vig method `proportional-v1`. Power and Shin methods are later values; the choice matters at the tails, so the method identifier is preserved on every question record and in the run manifest, and compared runs must use the same method.
-5. The market-implied P(over) is the mean of the contributing books' de-vigged P(over). The contributing set is every book with a valid pair at the selected line, whether that book offers the line as its main or as an alternate (Agreed, confirmed against the ingestion implementation). Record the contributing books and their count. Minimum contributing-book count: 1 (Agreed).
-6. Exclude a (player, stat) when no book quotes a valid pair (`no_quotes`) or only daily-fantasy operators post a line (`dfs_only`). Record exclusions with reasons.
+1. Take the cutoff observation: the odds observation whose modeled availability time (`requested_at`) equals the game's scheduled start (`snapshot_kind = scheduled_start`). Every sportsbook's quotes in that observation are inputs; daily-fantasy operators are not.
+2. For each Celtics player and each eligible stat, take every line each book quotes for that market, main and alternate. A (book, line) pair is valid only if the book quotes both sides of it; a pair with a missing side or conflicting prices is rejected with a reason and retained in `book-lines`.
+3. Select the consensus line. Each sportsbook votes once, with its line nearest 50/50 (its main line). The selected line is an offered line nearest the median of those votes. Alternate lines do not vote. Every selected line in the 2025–26 data is a half-integer; if an integer line is ever selected, the published probability is conditional on no push (`probability_basis = conditional_on_no_push`), which matches the push exclusion at scoring.
+4. De-vig each contributing book at the selected line by proportional normalization within the same book and line: p\_over = (1/d\_over) / (1/d\_over + 1/d\_under).
+5. The market-implied P(over) is the median of the contributing books' normalized P(over). The contributing set is every book with a valid pair at the selected line, whether that book offers the line as its main or as an alternate; books never get extra votes. The contributing books, their count, and the dispersion of their probabilities are on the row. Minimum contributing-book count: 1 (Agreed).
+6. A (player, stat) that does not resolve to a probability carries one of three statuses: `no_quotes` (no book quoted it), `dfs_only` (only daily-fantasy operators posted a line), or `no_complete_sportsbook_pair` (quotes exist but no book has a valid two-sided pair). Non-`ok` rows are exclusions and are logged with their status.
 
-The ingestion repository's reference export (`docs/data_schema/odds_data.csv`, 82 games, four observations per game) was produced by this same procedure. It is a validation fixture for the environment's implementation: the environment's consensus line and probability must reproduce the export for every `ok` row before Gate 2. It is not the environment's input.
+The environment reads the `ok` rows of the cutoff observation to build the question set, and every observation's `ok` rows to serve odds history. It verifies the layer's SHA-256 manifest before use and records the manifest and `methodology.json` hashes in the run manifest; those hashes are the de-vig descriptor. `docs/data-descriptions/odds_data.csv` is a convenience copy of the published `consensus.csv`, not a separate export.
 
 The rotation is defined by the market: a player is in the set if at least one book quotes a valid main-line pair for them at the cutoff. Agreed stat set: points, rebounds, assists. Three-pointers made, PRA, steals, blocks, and minutes are excluded even when books offer them.
 
@@ -131,7 +138,7 @@ The primary score is the agent's mean log-loss improvement over the market acros
 
 ### Resolution
 
-For each question, the actual stat comes from the game-data repository. Outcome y = 1 if actual > line, 0 if actual < line.
+For each question, the actual stat is the official box-score value in the play-by-play release's box-score table, which is what sportsbooks settle on. Play-by-play-derived summaries are not the resolution source, so a game whose derived statistics disagree with the official box score still resolves normally. Outcome y = 1 if actual > line, 0 if actual < line.
 
 | Case | Handling |
 | --- | --- |
@@ -228,56 +235,46 @@ The runner creates a run and sets the phase and cutoff. The harness invokes the 
 
 ## Data contracts and temporal access rules
 
-The environment consumes ingestion datasets through read adapters and does not duplicate their pipelines. Before integration, inspect representative records and schemas from each repository; the contents below are required semantics, not claims about existing implementations.
+Status Agreed (Oct 23, 2026): the environment consumes each source's published, immutable, hash-manifested release as-is, including derived tables that ingestion has already computed (the odds consensus, play-by-play lineups and stints, injury team snapshots, beat-post relevance labels, extracted starting lineups). It does not recompute them. The environment's responsibilities are verification against the manifest, temporal filtering, visibility projection, and canonical ID joins. Each release identifier is the dataset manifest version on the data-sources axis; a different release is a different data-sources value. The earlier principle that the environment performs all processing from raw records is withdrawn. The guides for each bucket are in `docs/data-descriptions/` and are the reference for layouts and field semantics.
 
-| Dataset | Required contents |
-| --- | --- |
-| Odds | Raw per-book, per-side quotes for each observation, keyed by game, player, stat, line, and side, with the observation's `requested_at`, the provider's `snapshot_at`, each book's last-update time, and the identity-inference flag. Consensus line and implied-probability derivation happen in the environment, not ingestion. |
-| Coach media | Recording identity, publication time, transcript, speaker labels where available, references to recording segments |
-| Beat reporting | Original posts or articles, author, publication time, source links, edit and version metadata where available |
-| Injuries and schedule | Timestamped availability reports, game identities, scheduled tip times, schedule changes. Repository ownership is Open. |
-| Starting lineups | Confirmed starters per team with publication time. Usually released shortly before tip, so the eligibility timestamp determines whether a given game's lineup is pregame-visible. Repository ownership is Open. |
-| Game data | Raw events, substitutions, player and lineup stints, opponent on-floor context, box-score stats per player per game |
+Every source has a stated availability convention. These are replay conventions, not measured delivery times: each guide says its timestamps do not certify when bytes were publicly accessible. The convention is recorded as the eligibility reason on every record.
+
+| Source | Bucket and prefix | Pinned release | What the environment exposes | Availability time |
+| --- | --- | --- | --- | --- |
+| Odds consensus | `pm-data-platform`, `external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/` | That layer's `_MANIFEST.json` checksums and `methodology.json` hash | `ok` rows: `selected_line` and `p_over` per (game, observation, player, prop). Nothing else from the row. | `requested_at` of the observation |
+| Play-by-play, box scores, lineups, stints | `sports-nba-data`, `nba/releases/spo-771-full-v1-2025-26/` and `nba/releases/spo-771-full-v1-2024-25/` | Each release's `manifest.json` | Release tables per the data dictionary. `coverage.jsonl` is consulted per game; a game not `valid` for the product being queried is served as absent with a recorded reason. | Postgame release at 9 a.m. America/New\_York on the morning after the game. 2024–25 games are eligible from the start of the replay. |
+| Injury reports | `sports-nba-data`, `nba/injury-reports/2025-26/` | Release key `61f65449f459752a0ad06c0f41efd1cc8c13494f7b5f9c838f6536637c411c2e` | Curated player observations and team snapshots as the PDF showed them, including `not_yet_submitted` placeholders and absent-team observations. The evidence register, `empty_report_corroborated` interpretations, and anything carrying an assessment time are retrospective and never agent-visible. Unmatched rows excluded. | Printed report timestamp (`report_timestamp_utc`). Agreed. A row whose UTC value is null because of daylight-saving ambiguity takes the later of the two readings. |
+| Player reference | `sports-nba-data`, `nba/player-reference/2025-26-opening/releases/<release-id>/` | The release manifest; P1 pins the release id after reading its coverage report | Release tables and SQL views only: opening roster profiles, career season totals through 2024–25, identity exceptions. `archive/` is never mounted or exposed. | Static. Built to a cutoff of 2025-10-21T23:29:59Z, before the opener, so eligible for every game. Age is computed for the replay date. |
+| Beat reporting | `sports-text`, `v1/relevance/celtics-2025-26/` | The snapshot manifest that `active.json` points to at pin time (hash recorded), over backfill report `a57664cd-e4d8-4aaf-9741-1ac0b6b4fcf1` | Only posts labelled NBA-related (1,303 of 1,425 at pin time), latest retained version, with text, author, publication time, and relationships. Unrelated posts are not exposed. The label policy (Jev 1.14.0, threshold 0.10) is part of the pinned manifest. | Publication time of the version. Agreed. A later version whose edit time is known is available at that time; one whose edit time is unknown is excluded rather than shown at the original time. |
+| Starting lineups | `sports-text`, `v1/research/celtics-lineups/extracted-2026-10-16/` and `v1/research/opponent-lineups/2026-10-19-complete/` | SHA-256 of the two JSON datasets | Announced starters per team, the preferred announcement per game, with source post and posting time. Alternates retained as evidence, not exposed. Announced lineups that disagree with box-score starters stay as announced. | Posting time of the announcement. Agreed. Usually shortly before tip, so eligibility against scheduled start decides whether a game's own lineup is pregame-visible. |
+| Coach media | `sports-transcription`, `dev/manifests/bos/<media-id>/<run-id>.json`, selected by the season manifest index at repository commit `cc28535292efc47316c163c6969d759875e95f86` (134 recordings) | The index plus each manifest's checksums; the index's `published_at_provenance` and `livestream_provenance` hashes | Readable transcript and structured transcript with provider speaker-cluster labels (not identities), title, source URL, publication time. Audio not exposed. | Agreed. `published_at` (UTC, second precision, the indexed video's publication, not last-modified or event time) for ordinary uploads. For the 10 livestreams and premieres, `stream_ended_at`, so a recording is visible only once the whole broadcast existed. An entry with `published_at_precision = day` would take the end of its Eastern `publicationDay`; none exist in this revision. An entry with `cutoff_requires_review = true` is excluded until reviewed; none exist. `publicationDay` is a local Eastern day and is never used as a UTC date. |
+| Schedule | Play-by-play release games table, cross-checked against the ESPN schedule preserved in the odds archive (`reference/schedule-response.json.gz`) | As above | Game identities, opponents, scheduled start, venue | Static for the season; schedule changes, if any, are recorded with the change's own timestamp. |
 
 ### Shared contract requirements
 
-- Stable canonical game, team, and player IDs with explicit mappings from provider IDs. Never join on ambiguous names.
-- Stable source and record IDs, schema versions, provenance, and immutable dataset manifests or equivalent snapshots.
-- Separate event time, public availability time, collection time, and revision time. Define timezone and precision. Each record carries a documented eligibility timestamp and the reason it was assigned.
-- Preserve corrections and revisions where available. If history cannot be reconstructed, document the limitation and apply a predetermined exclusion or approximation policy.
+- Stable canonical game, team, and player IDs with explicit mappings from provider IDs: ESPN event ids in the odds archive, NBA game and player ids in the NBA data bucket, X account and post ids in the text bucket, media ids in the transcription bucket. Never join on ambiguous names.
+- Every release is immutable and hash-manifested. The adapter verifies every object it reads against the manifest before serving it and refuses an unverified object. Folder listings are never used to assemble a dataset.
+- Separate event time, availability time, collection time, and revision time. Each record carries its availability time and the convention that assigned it, from the table above.
+- Preserve corrections and revisions where the source has them (post edit chains, injury report updates, multiple transcript runs). Where history cannot be reconstructed, the table's exclusion rule applies and is reported.
 
 ### Odds data: the critical dependency
 
-The odds audit is complete for the 2025–26 regular season. Findings, from the ingestion reference export:
+Findings for the 2025–26 regular season, from the published consensus layer:
 
-- Four observations per game: three `pregame` observations requested at fixed clock times roughly 9, 6, and 2 hours before scheduled start (the exact offsets vary with tip time), and one `scheduled_start` observation requested at the scheduled start itself.
-- Up to eight contributing sportsbooks. Two daily-fantasy operators are recorded separately and never contribute to the consensus.
-- Player, stat, and line coverage is complete for the agreed stat set across all 82 games. Lines move between observations on about one in six consensus quotes.
-- Raw per-book quotes are preserved in the ingestion archive, so the environment can recompute the consensus.
+- Four observations per game: three `pregame` observations requested at fixed Eastern clock times (11 a.m., 2 p.m., 6 p.m. for starts at or after 7 p.m.; tip minus six, three, and one hours for earlier starts), and one `scheduled_start` observation requested at the scheduled start itself. 328 observations.
+- Ten sources: eight sportsbooks and two daily-fantasy operators. Daily-fantasy operators never contribute to the consensus; their thresholds are retained on the row as reference and are not agent-visible.
+- 7,956 consensus rows: 6,666 `ok`, 1,178 `no_quotes`, 112 `dfs_only`, and the remainder `no_complete_sportsbook_pair`. All `ok` lines are half-integers. Celtics assists were unavailable in all four April 12 observations.
+- Per-book quotes and the accepted pairs behind every consensus row are preserved (`derived/v3/quotes`, `consensus/.../book-lines`), so any row can be audited. They are later values on the data-sources axis, not v1 inputs.
 
-Timestamps and availability. The provider returns the stored snapshot closest to and at or before the requested time, labeled `snapshot_at`, which runs about 4.4 minutes earlier than `requested_at`. Some contributing book updates are timestamped after `snapshot_at` by up to 68 seconds, but none after `requested_at`. The modeled availability time for every odds record is therefore `requested_at`, not `snapshot_at`. This is a modeling convention for replay, not proof of live delivery time; the backfill download time is recorded separately in the raw archive and is not an availability time. Do not interpolate between observations.
+Timestamps and availability. The provider returns the stored snapshot closest to and at or before the requested time, labeled `snapshot_at`, about 4.4 minutes earlier than `requested_at`. Some contributing book updates are timestamped after `snapshot_at` by up to 68 seconds, but none after `requested_at`. The modeled availability time for every odds record is therefore `requested_at`. This is a replay convention, not proof of live delivery time; the backfill download time (`receivedAt`) is provenance only. Do not interpolate between observations.
 
 | Field | Meaning |
 | --- | --- |
 | `requested_at` | The historical observation time chosen by ingestion. The environment's availability time. |
 | `snapshot_at` | The provider's stored snapshot label returned for that request. Provenance only. |
-| `last_update_oldest`, `last_update_newest` | Range of book update times among quotes contributing to the consensus. Provenance only. |
+| `last_update_oldest`, `last_update_newest` | Range of book update times among contributing quotes. Provenance only. |
 
-Player identity. Some input quotes carry a flag meaning the player's identity or team was inferred from other games' box scores because the player was absent from that game's box score, typically because props were posted and the player was later ruled out. The quote itself is genuine. The environment carries the flag onto the question record as provenance, does not exclude the question on that basis, and reports the count. Such players usually resolve as did-not-play.
-
-### Odds visibility
-
-Status: Agreed. The agent sees more than the cutoff snapshot.
-
-- Current game, line movement: every observation for the current game with availability time at or before the cutoff is queryable, for every Celtics (player, stat) with a consensus quote, not only the ones that became questions. Movement is public information that existed at the time, and reading it is a legitimate analyst skill held constant across configurations.
-- Previous games, line movement and settlement: every eligible observation for prior games is queryable, together with the settled outcome once the game's results are released. This is historical source data, not memory. Both stateless and persistent configurations may query it, so a persistent agent's advantage must come from retained interpretation, not from access the stateless agent lacks.
-- Consensus fields only. For each observation the agent sees the consensus line and the market-implied P(over), nothing else. It does not see per-book quotes, the contributing book list or count, the dispersion of book probabilities or lines, daily-fantasy lines, or the identity-inference flag. The reason is scope, not leakage: those fields would let the agent build expertise about sportsbooks instead of about the Celtics. Per-book and dispersion visibility are later values on the data-sources axis of the run profile.
-
-Eligibility rules for odds records:
-
-- An observation's availability time is its `requested_at`. It is visible when that time is at or before the session cutoff. The cutoff observation itself, requested at scheduled start, is visible and is the one the questions are built from.
-- Settlement of a prior game's markets follows the same next-morning release as game outcomes. The odds tool never reveals a result the game-data tool would still withhold.
-- The odds-history tool is broader than released results. Released results cover the agent's own questions, probabilities, and scores. Odds history covers any eligible Celtics consensus quote in the agreed stat set, for every observation.
+Player identity. `season_inferred_identity_in_inputs` means at least one input quote's player identity or team was inferred from season box scores because the player was absent from that game's box score, typically because props were posted and the player was later ruled out. The quote is genuine. The environment carries the flag onto the question record as provenance, does not exclude the question on that basis, and reports the count. Such players usually resolve as did-not-play.
 
 ### Temporal access rules
 
@@ -285,9 +282,9 @@ Apply the cutoff to every access path: search, direct fetch, metadata, aggregate
 
 An old recording transcribed today represents information available at its publication, provided the transformation uses only that recording. A retrospective article written today cannot be backdated. For completed games, define explicitly when results and derived views become available; reconstructed data is not necessarily a faithful snapshot of contemporary corrections.
 
-### Game data scope already requested
+### Game data scope
 
-Play-by-play collection covers all teams and games for the 2024–25 and 2025–26 seasons. Clarify competition coverage in the ingestion contract. Early replay games may use prior-season data if eligible under the cutoff. Opponent substitutions can occur inside an own-team lineup stint, so opponent-context queries need event-level segments.
+The two pinned play-by-play releases cover all teams for 2024–25 and 2025–26 (1,394 and 1,393 inventory games), with 41 gap games across the two seasons listed in the releases' coverage records. Checked with the play-by-play maintainers on Oct 23, 2026: three gap games involve the Celtics and all three have play-by-play; none of the six games with no play-by-play at all is a Celtics game. The three are Celtics–Knicks `0022400061` (Oct 22, 2024, broken substitution chains, so lineup, stint, and possession products are incomplete), Celtics–Raptors `0022400230` (Nov 16, 2024, fifth overtime player unidentified), and Celtics–Lakers `0022500338` (Dec 5, 2025, play-by-play-derived statistics disagree with the official box score, summaries partial). The two 2024–25 games are historical evidence only and their incomplete products are served as absent under the coverage rule. The Dec 5, 2025 game is a scored game; its questions resolve from the official box score, which is unaffected, and did-not-play falls back to box-score minutes for that game because its play-by-play summaries are partial. No exclusion policy is needed. Phases are separated in the tables; preseason, play-in, Cup final, and playoff rows are excluded from the replay. Opponent substitutions can occur inside an own-team lineup stint, so opponent-context queries use event-level segments, which the release's stint tables already provide.
 
 ## Replay lifecycle and environment tool surface
 
@@ -323,14 +320,14 @@ Workspace read and write are environment tools, and the memory mode is enforced 
 
 ### Code execution sandbox
 
-Status Agreed. The agent is given more data than it can use by reading alone; the value is in aggregating, joining, and modelling it, which means writing and running code. Code execution is therefore a v1 capability, on for every configuration in the stack so it never confounds the memory comparison. Anything the code produces that should outlive the game, such as a fitted model or a cached table, is written to the workspace and follows the memory mode.
+Status Agreed. The agent is given more data than it can use by reading alone; the value is in aggregating, joining, and modelling it, which means writing and running code. Code execution is therefore a v1 capability, on for every configuration in the stack so it never confounds the memory comparison. Scripts are workspace content. In persistent configurations the agent saves the programs it writes to the workspace and re-runs or revises them in later games, so a feature pipeline or a model-fitting routine written once is available all season; in A every game starts without them. The same holds for what the code produces, such as a fitted model or a cached table. Under B-append, scripts can be added but not edited in place; a revised script is a new file.
 
 Each session (one pregame or one postgame phase) gets:
 
 - A fresh container from a pinned image: Python with pandas, numpy, scipy, and scikit-learn. No network. No package installs beyond the image. The image digest is part of the harness version.
 - The eligible datasets materialized as files by the environment, filtered to the cutoff before they are mounted, and mounted read-only. The export is a SQLite file with the same tables the environment tools expose (game history, box scores, injuries, lineups, odds history, released results) plus source text as files. Filtering inside the sandbox is a leak waiting to happen; the sandbox never holds a record it is not allowed to see.
 - A scratch directory for the session, writable, discarded when the session ends. It does not survive from pregame to postgame.
-- In persistent configurations, the workspace mounted writable. In A, a fresh empty workspace. Workspace writes from code obey the same opportunity rules as writes from the harness: pregame and postgame, never during commit.
+- In persistent configurations, the workspace mounted writable, so scripts, models, and cached results saved there persist to later games. In A, a fresh empty workspace. Workspace writes from code obey the same opportunity rules as writes from the harness: pregame and postgame, never during commit.
 - CPU and memory limits, a wall-clock limit per call, a cumulative compute cap per phase, and a cap on the bytes of stdout returned to the model. The numbers are chosen in the budget pilot alongside the token caps.
 
 The sandbox runs on the same host as the harness, as a per-session Docker container. Anthropic's hosted code-execution tool is not used: the data would have to be uploaded per session and the temporal filter would sit outside the environment's control. A remote sandbox service adds a vendor for no gain on a single-host deployment.
@@ -358,14 +355,14 @@ Every run declares a profile on four independent axes. The profile is part of th
 | Axis | What it declares | Initial values |
 | --- | --- | --- |
 | Memory mode | What the agent carries between games and when it may write to it. Declared on three sub-axes: horizon (window of k games: stateless k = 0, full season, or intermediate), revision rights (editable or append-only), process (voluntary or mandated reflection) | v1: A stateless, B persistent, editable, voluntary. Sequenced follow-ups: B-append, C mandated reflection. Second tier: B-k (k = 1), B-frozen, D independent critique (see Experimental configurations) |
-| Data sources | Which source types the environment exposes to the agent, each with its dataset manifest version | Coach media transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting, consensus odds history (always on; it defines the questions and includes current-game and prior-game observations, line and probability only). Later: per-book quotes and dispersion fields. |
-| Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write, code execution in the session sandbox (see Code execution sandbox). Later candidates: external calculators, skills (reusable executable procedures) |
+| Data sources | Which source types the environment exposes to the agent, each with its pinned release identifier | Coach media transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting (NBA-related posts only), player reference (always on, static), consensus odds history (always on; it defines the questions and includes current-game and prior-game observations, line and probability only). Later: per-book quotes and dispersion fields. |
+| Agent capabilities | What the agent can do within a game beyond reading sources and submitting | v1: search and fetch, game-history queries, workspace read and write, code execution in the session sandbox (see Code execution sandbox). Later candidates: external calculators |
 | Model roles | Which pinned model serves each role, with version | v1: one role, analyst. Later candidates: reflector, critic, researcher, each independently pinned |
 
 Rules for the axes:
 
 - Each axis is enumerated and versioned. Adding a new value (a new source type, a new capability, a new role) adds a named entry; it never changes the meaning of an existing one, so older runs stay comparable.
-- Memory mode and agent capabilities are distinct. Memory mode governs what persists across games. Capabilities govern what the agent can do inside a game. Anything a capability produces that should outlive the game, such as a trained model or a cached calculation, is written to the workspace and follows the memory mode. A stateless run therefore rebuilds it or goes without.
+- Memory mode and agent capabilities are distinct. Memory mode governs what persists across games. Capabilities govern what the agent can do inside a game. Anything a capability produces that should outlive the game, such as a script, a trained model, or a cached calculation, is written to the workspace and follows the memory mode. A stateless run therefore rebuilds it or goes without.
 - Data sources are declared by type and manifest version, not by what the agent happened to read. A source type is either exposed under the temporal access rules or absent from the run.
 - Model roles are pinned per role. Two runs with the same roles but different model versions in any role differ on this axis.
 - The consensus construction rules (line-selection rule, contributing-book rule, minimum book count, exclusion statuses) are question-set policy, not profile axes. They are pinned in the manifest and must be identical across any runs that are compared. The de-vig method is likewise question-set policy and is listed as a named descriptor below because it defines the scoring baseline.
@@ -378,7 +375,7 @@ Three further fields are declared on every run and printed with the profile. The
 | --- | --- |
 | Research budget | The pregame and postgame token caps, the submission reserve, the rollover rule, the tool-call and wall-clock ceilings, and the pinned price schedule used to report spend. Recorded as a named, versioned budget profile so a run can be described as "budget v3" rather than by its numbers. |
 | Harness version | One identifier that resolves to the exact set of: harness identity (v1: homemade; later possibly a named third-party harness and its version), system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, the sandbox image digest, and the harness code revision. Changing any component yields a new harness version. |
-| De-vig method | The named, versioned method that converts the two quoted prices into the market-implied P(over). Initial value: `proportional-v1`, proportional normalization. Changing the method changes the baseline every question is scored against, so it must match across compared runs. |
+| De-vig method | The published consensus layer the questions come from, identified by its path and the hashes of its manifest and `methodology.json`. Initial value: `consensus/proportional/v1` (proportional normalization, median across contributing books). Changing the layer changes the baseline every question is scored against, so it must match across compared runs. |
 
 Harness version and the agent-capabilities axis are different things. Capabilities say which tools the agent may use. Harness version says exactly how those tools, prompts, and the loop were implemented for this run. Two runs can share capabilities and differ in harness version, and that difference must be visible.
 
@@ -405,7 +402,7 @@ Configurations are run as a stack, not a grid. Each scored comparison differs fr
 | Configuration | Memory-mode difference | Status |
 | --- | --- | --- |
 | A Stateless | Historical sources accessible; no carried interpretations, notes, or conversation memory between games | Agreed, v1 |
-| B Persistent knowledge | Agent retains and freely edits its own workspace between games (persistent, editable, voluntary). It may reflect voluntarily during the postgame phase. | Agreed, v1 |
+| B Persistent knowledge | Agent retains and freely edits its own workspace between games (persistent, editable, voluntary), including notes, scripts, fitted models, and cached results. It may reflect voluntarily during the postgame phase. | Agreed, v1 |
 
 A and B run on the same harness code. A is B with the workspace tools disabled and a fresh empty workspace per game; it is not a separate harness or a single-shot call, since A still queries the environment within the pregame cap.
 
@@ -453,7 +450,6 @@ These are not scheduled. Each is listed with the reason it ranks below the stack
 | B-frozen | B's workspace checkpoint at a predeclared game, then read-only for the rest of the season. Pin the checkpoint game before the run; Proposed: the midpoint of the scored games. | A diagnostic of knowledge obsolescence, run only if B wins and only if the question of accumulation versus ongoing revision becomes load-bearing for the write-up. Cheap when run, since it starts from B's existing checkpoint. Stale beliefs are its experiment, not a side diagnostic. |
 | D Independent critique | B plus a second agent, in its own model role, that scrutinizes B's workspace updates | Expensive, and its answer depends on critic quality, which would then need to be varied in turn. |
 | Context versus retrieval | Whole workspace in context versus retrieved on demand | Will not bind at 82 games of notes, so the result would not generalize to the long horizons where it matters. |
-| Skills | Agent writes and reuses executable procedures | Requires building the code-execution capability first. A capabilities-axis change, not purely a memory-mode one. |
 
 ### Considered and rejected
 
@@ -516,13 +512,19 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Cost and time in evaluation | Token cost, compute, and wall-clock time are reported as secondary metrics for every configuration and every paired comparison. |
 | Run profile | Four declared axes (memory mode, data sources, agent capabilities, model roles) recorded in the manifest and printed on every report. |
 | Odds visibility | Agent may query current-game line movement and prior-game movement and settlement, subject to cutoff and release rules. Consensus line and probability only; per-book and dispersion fields deferred. |
-| Market definition | Cross-book consensus computed in the environment from raw quotes: median of book main lines, mean of per-book proportional de-vigged P(over) among books at that line, minimum one book. The ingestion reference export is a validation fixture. |
+| Market definition | The published consensus layer `consensus/proportional/v1`, consumed as-is: each book votes with its main line, selected line nearest the median vote, proportional de-vig per book, median across books contributing at that line, minimum one book. Three exclusion statuses. The environment does not recompute it. |
+| Data processing principle | The environment consumes pinned, hash-manifested releases as published, including derived tables, and does verification, temporal filtering, visibility projection, and ID joins only. Decided Oct 23, 2026, replacing the earlier environment-recomputes principle. |
+| Source availability conventions | Odds `requested_at`; play-by-play next-morning release; injuries printed report timestamp; beat posts version publication time; lineups announcement posting time; player reference static; transcripts `published_at`, or `stream_ended_at` for livestreams. |
+| Transcript availability | Closed Oct 23, 2026. The transcription maintainers added source-provenanced publication timestamps to all 134 index entries (second precision, no day-only records), identified 10 livestreams with actual end times, and republished the index at commit `cc28535292efc47316c163c6969d759875e95f86`. Verified against the index: every timestamp matches its provenance value, every livestream has an end, and no entry requires review. |
+| Player reference | Added as an always-on static source, release tables only. |
 | Cutoff | Scheduled start. The cutoff odds observation is the one requested at scheduled start. No actual-tip source needed. |
 | Odds availability time | `requested_at`. `snapshot_at` and book update times are provenance only. |
 | Thin games and inferred identity | Thin games included and scored normally. Identity-inference flag carried as provenance, never an exclusion. |
 | Model | `claude-opus-4-6`. Training data cutoff Aug 2025 verified against Anthropic documentation on Oct 20, 2026. Sonnet 4.6 rejected: its training data cutoff of Jan 2026 falls inside the season. Opus 4.5 has the same cutoffs as Opus 4.6 but a 200K context window and a dated ID; it is the fallback if Opus 4.6 is retired. |
 | Replicates | One replicate of A and B for the first scored comparison. At least two further B replicates before any published B-over-A claim. None if the first comparison shows no effect. |
-| Did-not-play | Zero seconds on the floor in the play-by-play, whether inactive or active-but-unused. |
+| Did-not-play | Zero seconds on the floor in the play-by-play, whether inactive or active-but-unused. Where a game's play-by-play summaries are `partial` in the release, box-score minutes of zero is the fallback test. |
+| Resolution source | The official box-score table in the play-by-play release, not play-by-play-derived summaries. |
+| Play-by-play gap games | Three of the 41 gap games involve the Celtics, all with play-by-play present; one (Dec 5, 2025 vs. Lakers) is a scored game and resolves from the official box score. No exclusion policy needed. |
 | Development games | First 10 games of the season. Games 11 through 82 are scored. |
 | Rationale visibility | Past rationales live in the workspace. B sees its own; A sees none. Released results carry no rationales. |
 | No view and deviation | No view means submitting the market probability. Deviation is abs(p − q) against the market; 0.05 is the definition for rationale and deviation statistics, 0.10 a second reporting level. |
@@ -531,10 +533,10 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | Budget structure | Per-phase caps, no rollover, submission reserve, ceilings as safeguards only. Pregame cap matched between A and B; B's postgame spend is reported as the cost of memory. Numbers set by the agreed pilot procedure. |
 | Implementation | TypeScript on Node; direct Anthropic SDK (recorded in harness version); SQLite plus files; adapters over R2; local for Gates 1–3, AWS for scored runs with checkpoints synced to R2; in-process transport behind an MCP-wrappable interface. |
 | Research budget and harness version | Both recorded on every run as named, versioned identifiers, printed with the profile, and required to match across compared runs. |
-| De-vig method | Proportional normalization (`proportional-v1`) for v1. Recorded as a named per-run descriptor and on every question record; must match across compared runs. Power and Shin are later values. |
+| De-vig method | The published layer `consensus/proportional/v1` (proportional normalization per book, median across contributing books), identified by manifest and methodology hashes. Recorded as a per-run descriptor and on every question record; must match across compared runs. A power or Shin layer would be a new published layer. |
 | Harness | v1 is a homemade harness (hand-written loop, direct SDK). Future versions may swap in a third-party harness under the Harness contract. Workspace enforcement, sandbox lifecycle, and token metering live in the environment and runner so a swap is a new harness version, not a rebuild. |
 | Code execution | A v1 capability for every configuration, run in a per-session Docker sandbox on the harness host with cutoff-filtered read-only data mounts, a session scratch directory, the workspace mounted writable in persistent configurations, no network, and a pinned image. Compute is budgeted separately from tokens; numbers set in the pilot. |
-| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, context-versus-retrieval, and skills are second tier with stated reasons. The static-dossier configuration is rejected. |
+| Configuration set | Memory mode decomposes into horizon, revision rights, and process. Run as a stack: A versus B (v1), then B versus B-append if B wins, then C against the better B variant. B-k (k = 1), B-frozen, D, and context-versus-retrieval are second tier with stated reasons. Persisting scripts is part of B, not a separate skills configuration. The static-dossier configuration is rejected. |
 
 ## Open decisions
 
@@ -542,7 +544,7 @@ Each must be resolved by the user before a scored run. Coding agents list the re
 
 | Decision | Proposed starting point or required input |
 | --- | --- |
-| Budget numbers | Token caps, reserve, and sandbox limits (per-call wall-clock, per-phase compute, stdout cap), set by the agreed pilot procedure in Research budget and recorded as budget profile v1. The only decision that remains open at finalization, by design. |
+| Budget numbers | Token caps, reserve, and sandbox limits (per-call wall-clock, per-phase compute, stdout cap), set by the agreed pilot procedure in Research budget and recorded as budget profile v1. Set by procedure, by design. |
 
 ## Implementation choices
 
@@ -553,28 +555,35 @@ Status: Agreed. These are the choices the project specs build against.
 | Language | TypeScript, Node | One language across runner, environment, harness, and evaluators. |
 | Harness | v1 is a homemade harness: a hand-written tool loop over direct Anthropic SDK calls, routed through the runner's metering proxy. Harness identity, SDK name and version, and access method are part of the harness version. | Full control over the loop for v1. Because the workspace, sandbox, and metering live outside the harness (see Harness contract), a third-party harness or the Claude Agent SDK can be swapped in later as a new harness version without touching the isolation or budget guarantees. |
 | Record storage | SQLite for the experiment record (events, questions, submissions, outcomes, manifests), plus files on disk for workspaces and workspace checkpoints. | Sufficient for one team and one season; the whole record is a single file plus a directory, which keeps reconstruction simple. |
-| Data access | Read adapters over the ingestion archives in R2. | The data already lives there; R2 egress is free, so compute location is unconstrained. |
+| Data access | Read adapters over the pinned, hash-manifested releases in the four R2 buckets. | The data already lives there; R2 egress is free, so compute location is unconstrained. |
 | Compute | Gates 1 through 3 run locally. Scored runs execute on AWS: one small always-on instance with a persistent volume (EC2 with EBS, or Fargate with EFS). Checkpoints and the SQLite record sync to R2 at every checkpoint. | The workload is a long-lived sequential loop that mostly waits on API calls and needs a real filesystem. Cloudflare Workers lack that; Modal is Python-first. Keeping artifacts in R2 puts every output next to the data. |
 | Sandbox | Per-session Docker container on the harness host, from a pinned image (Python, pandas, numpy, scipy, scikit-learn). No network, read-only data mounts, writable scratch and workspace, resource limits. Image digest in the harness version. | Keeps the temporal boundary inside the environment: the container only ever holds cutoff-filtered exports. Same host means no new vendor and no data egress. The harness stays TypeScript; the sandbox language is Python because that is where the data tooling is. |
 | Session transport | In-process. The environment sits behind a typed interface; the harness calls it directly. The interface is designed so it can be wrapped as an MCP server later without changing the contract. | Simplest path to Gate 1. Isolation is met by construction: the harness receives a scoped session object and no credentials. |
 
 ## Implementation projects
 
-Six projects, each with inputs, outputs, dependencies, and acceptance criteria. These are decomposition boundaries, not a mandate for separate repositories. Each project spec must state its remaining user decisions by reference to the Open decisions table.
+Seven projects, each with inputs, outputs, dependencies, and acceptance criteria. These are decomposition boundaries, not a mandate for separate repositories. Each project spec must state its remaining user decisions by reference to the Open decisions table.
 
 ### P1 Data contracts and adapters
 
-- Inputs: the ingestion repositories (odds, coach media, beat reporting, play-by-play), sample records, and the contract requirements above.
-- Outputs: canonical ID mappings; a read-adapter interface per dataset; dataset manifests; a raw-quote odds adapter exposing per-book, per-side quotes by observation; a coverage diagnostic for the pinned season confirming the audit findings above against the raw archive.
+- Inputs: the bucket guides in `docs/data-descriptions/`, the pinned releases in the datasets table, and the contract requirements above.
+- Outputs: canonical ID mappings across the four buckets; a read adapter per source that fetches a pinned release, verifies every object against its manifest, and serves records with their availability time and convention; the player-reference release id pinned after reading its coverage report; a coverage diagnostic for the pinned season that reports, per Celtics game, which products are `valid` in the play-by-play release, how many injury snapshots, lineup announcements, labelled posts, and transcripts fall before the cutoff, and the consensus row counts by status.
 - Depends on: nothing. Starts first.
-- Acceptance: every record carries event, availability, collection, and revision time; adapters resolve any eligibility query without touching ingestion pipelines; the odds adapter returns every raw quote needed to reproduce the reference export; ambiguous name joins fail loudly.
+- Acceptance: every served record carries availability time and its convention; an object whose hash does not match the manifest is refused; no adapter lists a folder to assemble a dataset; ambiguous name joins fail loudly; the coverage diagnostic reproduces the counts stated in the bucket guides for the odds layer and the beat-post snapshot.
+
+### P1a Data quality audit
+
+- Inputs: P1 adapters over the pinned releases; the bucket guides; the availability conventions and resolution rules above.
+- Outputs: a report committed under `docs/` covering cross-bucket identity resolution for every propped Celtics player and every opponent starter; schedule agreement across the play-by-play games table, the ESPN schedule in the odds archive, and the `scheduled_start` observation; timestamp plausibility for lineups, final pregame injury reports, and pregame or postgame transcripts; resolution integrity for all 82 games including the Dec 5, 2025 fallback, with spot checks of consensus rows against `book-lines` and outcomes against a second source; content checks on samples of transcripts and labelled posts; a list of records whose availability falls within 30 minutes of a cutoff. Plus a list of proposed per-game exclusions or corrections with evidence.
+- Depends on: P1. Must pass before Gate 2.
+- Acceptance: every check has a result, pass or findings; any finding that changes a question set, a cutoff, or a resolution is a proposed brief change for the user, never applied unilaterally.
 
 ### P2 Question-set builder
 
-- Inputs: P1 raw-quote odds adapter; line-selection rule; contributing-book rule; de-vig method; stat set; the ingestion reference export as a fixture.
-- Outputs: a pure function from (snapshot, rules version) to a question set with full question records; exclusion log.
+- Inputs: P1 odds adapter over the pinned consensus layer; stat set.
+- Outputs: a pure function from (game, consensus layer version) to the question set: the `ok` rows of the `scheduled_start` observation for the agreed stats, each as a full question record carrying the row's provenance fields; an exclusion log of the non-`ok` rows by status.
 - Depends on: P1.
-- Acceptance: deterministic on fixed fixtures; every rotation player with a valid main-line pair at any book appears exactly once per stat; implied probabilities sum to one per question; rule versions are recorded; a fixture with a missing side at every book produces an exclusion, not a question; the builder reproduces the consensus line and probability of every `ok` row in the ingestion reference export.
+- Acceptance: deterministic on a pinned layer; every `ok` row for an agreed stat at the cutoff observation appears exactly once; no excluded stat appears; `p_over` and `p_under` sum to one within rounding; the layer's manifest and methodology hashes are on every question record; a non-`ok` row produces an exclusion with its status, not a question; the question count per game matches the layer's `summary.json`.
 
 ### P3 Replay environment
 
@@ -606,14 +615,14 @@ Six projects, each with inputs, outputs, dependencies, and acceptance criteria. 
 
 ### Build order
 
-P1 first. P2 and P4 in parallel once P1's raw-quote odds adapter is in. P3 after P2. P5 and P6 after P3 and P4. The one-game end-to-end gate below needs all six on fixtures before any real adapter is connected.
+P1 first. P2 and P4 in parallel once P1's odds adapter is in; P1a once P1 is complete. P3 after P2. P5 and P6 after P3 and P4. Gate 1 needs P1 through P6 on fixtures before any real adapter is connected; Gate 2 additionally needs P1a passed.
 
 ## Delivery sequence and acceptance gates
 
 Four gates, in order. Do not start the next until the current one passes.
 
 1. One game on fixtures. Small fixed datasets including future records that must stay hidden, on the host as well as in the adapters. All six projects wired, including the sandbox. The market baseline runs end to end and scores zero.
-2. One real game. Real adapters connected; the environment's consensus reproduces the ingestion reference export for that game; a hand check of five questions against the raw per-book quotes.
+2. One real game. P1a audit passed; real adapters connected over the pinned releases; the question set matches the consensus layer's `scheduled_start` rows for that game; a hand check of five questions against the accepted pairs in `book-lines`; every source's coverage for that game matches the P1 diagnostic.
 3. Several chronological games. Configuration B's workspace persists and diffs are captured; A's does not; a forced crash mid-game resumes without a duplicate submission; the next-morning release exposes scores and nothing later.
 4. Scored comparison. Development games pinned and excluded; contamination probe stored; one replicate of A and B for the first comparison, with further B replicates before any published B-over-A claim; report generated from the record alone.
 
