@@ -1,0 +1,1132 @@
+{
+  "retrievedAt": "2026-10-23T12:39:25Z",
+  "endpoint": "https://www.googleapis.com/youtube/v3/videos",
+  "parts": [
+    "snippet",
+    "liveStreamingDetails"
+  ],
+  "items": [
+    {
+      "id": "9ke5bKV86RU",
+      "snippet": {
+        "publishedAt": "2025-10-01T18:13:02Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "S-u3kdAuJzc",
+      "snippet": {
+        "publishedAt": "2025-10-06T19:36:18Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "gTtCZILgFf4",
+      "snippet": {
+        "publishedAt": "2025-10-08T23:22:25Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "SKJwNkGCFVo",
+      "snippet": {
+        "publishedAt": "2025-10-09T13:37:03Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "RaiMSQjD6B4",
+      "snippet": {
+        "publishedAt": "2025-10-11T02:36:06Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "zTusdU76Uz8",
+      "snippet": {
+        "publishedAt": "2025-10-10T22:31:07Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "FqBbn-vuoEU",
+      "snippet": {
+        "publishedAt": "2025-10-13T18:23:02Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "9wqIwlu79kY",
+      "snippet": {
+        "publishedAt": "2025-10-15T22:16:14Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "XNFDurCNo9M",
+      "snippet": {
+        "publishedAt": "2025-10-16T02:49:06Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "8aB8Uy3YVTk",
+      "snippet": {
+        "publishedAt": "2025-10-17T20:37:41Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "MGEmESm_Oek",
+      "snippet": {
+        "publishedAt": "2025-10-20T18:08:25Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "xS0LP3GFp6g",
+      "snippet": {
+        "publishedAt": "2025-10-21T19:17:29Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "6hEZbAutsK8",
+      "snippet": {
+        "publishedAt": "2025-10-24T22:48:11Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2025-10-24T22:48:11Z",
+        "actualEndTime": "2025-10-24T22:55:47Z",
+        "scheduledStartTime": "2025-10-24T22:47:48Z"
+      }
+    },
+    {
+      "id": "rSzp3mwT3Uw",
+      "snippet": {
+        "publishedAt": "2025-10-25T02:44:10Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2025-10-25T02:44:10Z",
+        "actualEndTime": "2025-10-25T02:51:47Z",
+        "scheduledStartTime": "2025-10-25T02:43:47Z"
+      }
+    },
+    {
+      "id": "iubpusbxllw",
+      "snippet": {
+        "publishedAt": "2025-10-26T23:35:03Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "q_TyJyqUaFs",
+      "snippet": {
+        "publishedAt": "2025-10-26T18:20:31Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "W7dvysuMPNY",
+      "snippet": {
+        "publishedAt": "2025-10-28T03:36:46Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "x2I9wNxbOsw",
+      "snippet": {
+        "publishedAt": "2025-10-27T23:27:03Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "3Z9Q3rSM1LE",
+      "snippet": {
+        "publishedAt": "2025-10-30T02:02:24Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "G9HyIZgeHXA",
+      "snippet": {
+        "publishedAt": "2025-10-29T22:17:28Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Qhx6bkaHxv4",
+      "snippet": {
+        "publishedAt": "2025-11-01T02:39:03Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "UOz58oypjFc",
+      "snippet": {
+        "publishedAt": "2025-10-31T21:47:58Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "04ydtri6oko",
+      "snippet": {
+        "publishedAt": "2025-11-01T23:43:30Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "XVaBogahfw0",
+      "snippet": {
+        "publishedAt": "2025-11-02T02:43:20Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Kkrp5eIQh5g",
+      "snippet": {
+        "publishedAt": "2025-11-03T23:20:47Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Y__q3G6xwA8",
+      "snippet": {
+        "publishedAt": "2025-11-04T03:47:08Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "ebSoNLUohzA",
+      "snippet": {
+        "publishedAt": "2025-11-06T00:31:27Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "VrrKYokTTRA",
+      "snippet": {
+        "publishedAt": "2025-11-08T02:53:26Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "n0yLEz9amQE",
+      "snippet": {
+        "publishedAt": "2025-11-07T22:54:19Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "2D8TQeDaQuA",
+      "snippet": {
+        "publishedAt": "2025-11-10T02:41:57Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "UhdPSxQ-u5Q",
+      "snippet": {
+        "publishedAt": "2025-11-09T21:41:38Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "CtB7qsOw90w",
+      "snippet": {
+        "publishedAt": "2025-11-12T04:12:27Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "iKhUMH6aoVo",
+      "snippet": {
+        "publishedAt": "2025-11-11T23:46:54Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "B8vhFIa1zQg",
+      "snippet": {
+        "publishedAt": "2025-11-13T03:17:02Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "qKg3bWIEiyA",
+      "snippet": {
+        "publishedAt": "2025-11-12T23:04:38Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "SU8dtJhvOpY",
+      "snippet": {
+        "publishedAt": "2025-11-14T19:04:58Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "gDYyRUMbvJE",
+      "snippet": {
+        "publishedAt": "2025-11-15T18:34:41Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "NWN0t5Pvd0g",
+      "snippet": {
+        "publishedAt": "2025-11-19T03:39:36Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Y0muhr818E8",
+      "snippet": {
+        "publishedAt": "2025-11-18T23:18:35Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "OKj89mewZPM",
+      "snippet": {
+        "publishedAt": "2025-11-20T20:25:57Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "_pRDlyg24Yw",
+      "snippet": {
+        "publishedAt": "2025-11-25T18:40:44Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "YhUNFEct4zk",
+      "snippet": {
+        "publishedAt": "2025-11-26T21:16:32Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Ar4XlJasE50",
+      "snippet": {
+        "publishedAt": "2025-12-01T18:15:40Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "PRr_gKBvlD4",
+      "snippet": {
+        "publishedAt": "2025-12-04T23:29:49Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "JyTJ5_6TWr0",
+      "snippet": {
+        "publishedAt": "2025-12-08T01:05:28Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "gdnoYbfDKO4",
+      "snippet": {
+        "publishedAt": "2025-12-12T18:00:53Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "UyLAY4gcQ7s",
+      "snippet": {
+        "publishedAt": "2025-12-13T21:40:35Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "woOCWwNwK48",
+      "snippet": {
+        "publishedAt": "2025-12-17T22:53:59Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "vfWiBFkuAWM",
+      "snippet": {
+        "publishedAt": "2025-12-20T03:26:18Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "1t599wQ3_mg",
+      "snippet": {
+        "publishedAt": "2025-12-21T06:15:27Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "tay23xGhA9g",
+      "snippet": {
+        "publishedAt": "2025-12-23T03:31:23Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "qSGa4Z0Oiy0",
+      "snippet": {
+        "publishedAt": "2026-01-04T09:20:47Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "4Sl8eQniAKE",
+      "snippet": {
+        "publishedAt": "2026-01-09T22:51:15Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "m8_1ooZkyRk",
+      "snippet": {
+        "publishedAt": "2026-01-10T03:15:06Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-01-10T03:15:06Z",
+        "actualEndTime": "2026-01-10T03:24:53Z",
+        "scheduledStartTime": "2026-01-10T03:15:00Z"
+      }
+    },
+    {
+      "id": "L392Goop794",
+      "snippet": {
+        "publishedAt": "2026-01-11T00:15:44Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "uZj53B1FJfA",
+      "snippet": {
+        "publishedAt": "2026-01-14T20:59:52Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "2gLI10p6oSc",
+      "snippet": {
+        "publishedAt": "2026-01-16T00:09:23Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "feMp_sq-rew",
+      "snippet": {
+        "publishedAt": "2026-01-18T03:13:06Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "qbNq7SENj1c",
+      "snippet": {
+        "publishedAt": "2026-01-17T23:14:00Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "PL7zggaAWLo",
+      "snippet": {
+        "publishedAt": "2026-01-20T04:17:36Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "TQZ_Gh4dqp8",
+      "snippet": {
+        "publishedAt": "2026-01-24T04:12:26Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-01-24T04:12:26Z",
+        "actualEndTime": "2026-01-24T04:22:32Z",
+        "scheduledStartTime": "2026-01-24T04:12:05Z"
+      }
+    },
+    {
+      "id": "lpRREFcsqb0",
+      "snippet": {
+        "publishedAt": "2026-01-23T23:20:59Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "D6I1atOUQrE",
+      "snippet": {
+        "publishedAt": "2026-01-29T04:11:03Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "LwguZt6Ct_c",
+      "snippet": {
+        "publishedAt": "2026-01-29T00:24:25Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "rI3A0t4w-Cc",
+      "snippet": {
+        "publishedAt": "2026-01-30T23:07:26Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "3PEcA36tF9Y",
+      "snippet": {
+        "publishedAt": "2026-02-01T19:36:29Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "aBzjmyiJNVY",
+      "snippet": {
+        "publishedAt": "2026-02-01T23:47:18Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "DQ9zRTs6G_U",
+      "snippet": {
+        "publishedAt": "2026-02-04T04:57:47Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "1eIXEMBtic0",
+      "snippet": {
+        "publishedAt": "2026-02-05T04:02:49Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "A9j_DKqvDTk",
+      "snippet": {
+        "publishedAt": "2026-02-07T03:46:04Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "kTzvDmdSEAI",
+      "snippet": {
+        "publishedAt": "2026-02-06T23:17:52Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Zvik0U6vvtw",
+      "snippet": {
+        "publishedAt": "2026-02-08T20:38:52Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "kA5J2RAU1Mw",
+      "snippet": {
+        "publishedAt": "2026-02-08T16:52:53Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "7y7wsjtvAdE",
+      "snippet": {
+        "publishedAt": "2026-02-10T18:34:13Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-02-10T18:34:13Z",
+        "actualEndTime": "2026-02-10T18:42:34Z",
+        "scheduledStartTime": "2026-02-10T18:33:59Z"
+      }
+    },
+    {
+      "id": "0lteZpbCRHg",
+      "snippet": {
+        "publishedAt": "2026-02-11T23:42:37Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "KI3Ug5Odkyw",
+      "snippet": {
+        "publishedAt": "2026-02-12T03:08:17Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "qD9H_lgJtlo",
+      "snippet": {
+        "publishedAt": "2026-02-20T02:14:16Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-02-20T02:14:16Z",
+        "actualEndTime": "2026-02-20T02:20:32Z",
+        "scheduledStartTime": "2026-02-20T02:14:01Z"
+      }
+    },
+    {
+      "id": "U-KVVicx_h0",
+      "snippet": {
+        "publishedAt": "2026-02-20T06:05:56Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-02-20T06:05:56Z",
+        "actualEndTime": "2026-02-20T06:13:42Z",
+        "scheduledStartTime": "2026-02-20T06:05:41Z"
+      }
+    },
+    {
+      "id": "vj3HXMOYJPI",
+      "snippet": {
+        "publishedAt": "2026-02-21T23:33:34Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "4VqdKZ2qu-8",
+      "snippet": {
+        "publishedAt": "2026-02-22T22:18:30Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "8Xs-D2oOWq0",
+      "snippet": {
+        "publishedAt": "2026-02-23T03:04:13Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "4wfKaCzwKuc",
+      "snippet": {
+        "publishedAt": "2026-02-25T04:46:08Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "CMoMVFhGbIQ",
+      "snippet": {
+        "publishedAt": "2026-02-25T01:38:34Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "9l1LlpfYEh0",
+      "snippet": {
+        "publishedAt": "2026-02-26T01:57:11Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-02-26T01:57:11Z",
+        "actualEndTime": "2026-02-26T02:03:18Z",
+        "scheduledStartTime": "2026-02-26T01:56:57Z"
+      }
+    },
+    {
+      "id": "nyzT-YnmVMU",
+      "snippet": {
+        "publishedAt": "2026-02-26T06:11:15Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-02-26T06:11:15Z",
+        "actualEndTime": "2026-02-26T06:15:51Z",
+        "scheduledStartTime": "2026-02-26T06:10:55Z"
+      }
+    },
+    {
+      "id": "cCKoHP6jpIg",
+      "snippet": {
+        "publishedAt": "2026-02-28T03:31:05Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "dXP5qPrwdnE",
+      "snippet": {
+        "publishedAt": "2026-02-27T23:32:02Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "8xNc-162izw",
+      "snippet": {
+        "publishedAt": "2026-03-02T04:12:35Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "BWxGI6dqR6E",
+      "snippet": {
+        "publishedAt": "2026-03-01T23:35:50Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "F3jFjXUVHH8",
+      "snippet": {
+        "publishedAt": "2026-03-05T03:27:14Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "mCYfHOxiapA",
+      "snippet": {
+        "publishedAt": "2026-03-04T23:47:43Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "CWQxh2f31u0",
+      "snippet": {
+        "publishedAt": "2026-03-06T22:45:20Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "_Rg7-tt20bs",
+      "snippet": {
+        "publishedAt": "2026-03-11T19:13:49Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Rag53fEBzGU",
+      "snippet": {
+        "publishedAt": "2026-03-15T00:57:25Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "SetvNA4DGQM",
+      "snippet": {
+        "publishedAt": "2026-03-14T20:39:09Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "Cm3zbzijjlo",
+      "snippet": {
+        "publishedAt": "2026-03-16T22:13:10Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "NVOLyr1G4z4",
+      "snippet": {
+        "publishedAt": "2026-03-19T01:54:33Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "pQowGPJWHD8",
+      "snippet": {
+        "publishedAt": "2026-03-18T21:57:17Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "atoBcU1Hjt0",
+      "snippet": {
+        "publishedAt": "2026-03-23T03:02:55Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "psR0UokCnho",
+      "snippet": {
+        "publishedAt": "2026-03-22T22:42:59Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "kGxnzWa0TZU",
+      "snippet": {
+        "publishedAt": "2026-03-24T17:24:27Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "maAKZvoeYJ4",
+      "snippet": {
+        "publishedAt": "2026-03-25T22:10:51Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "s3UbPY9DsxQ",
+      "snippet": {
+        "publishedAt": "2026-03-26T02:27:42Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "FxoJMC2-Lww",
+      "snippet": {
+        "publishedAt": "2026-03-27T22:07:30Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "sUMkpgBdfvE",
+      "snippet": {
+        "publishedAt": "2026-03-28T02:47:45Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "LMjTvRP-VG8",
+      "snippet": {
+        "publishedAt": "2026-04-02T02:47:16Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2026-04-02T02:47:16Z",
+        "actualEndTime": "2026-04-02T02:55:57Z",
+        "scheduledStartTime": "2026-04-02T02:46:56Z"
+      }
+    },
+    {
+      "id": "O4aeiXIDh4A",
+      "snippet": {
+        "publishedAt": "2026-04-05T18:01:23Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "rt9ACY8NdTw",
+      "snippet": {
+        "publishedAt": "2026-04-05T22:27:26Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "KSUBrzMzVyU",
+      "snippet": {
+        "publishedAt": "2026-04-08T02:55:13Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "mMYR8OWXldY",
+      "snippet": {
+        "publishedAt": "2026-04-07T22:37:52Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "ZZxg1d1R_vw",
+      "snippet": {
+        "publishedAt": "2026-04-10T02:33:57Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "CccC4rzBVWo",
+      "snippet": {
+        "publishedAt": "2026-04-10T22:09:00Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "zbrMn9Tsrhk",
+      "snippet": {
+        "publishedAt": "2026-04-11T03:08:39Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "36y_5bWN_SQ",
+      "snippet": {
+        "publishedAt": "2026-04-12T20:40:46Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "DN4TQmdRz30",
+      "snippet": {
+        "publishedAt": "2026-04-13T01:45:09Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "1kXXtnETUZk",
+      "snippet": {
+        "publishedAt": "2026-04-15T15:20:45Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "IwinvAvMniI",
+      "snippet": {
+        "publishedAt": "2026-04-17T15:23:25Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "FO-RD7q_V50",
+      "snippet": {
+        "publishedAt": "2026-04-18T15:34:08Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "1a7HEShDcpk",
+      "snippet": {
+        "publishedAt": "2026-04-19T15:30:09Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "jkckDXErVj4",
+      "snippet": {
+        "publishedAt": "2026-04-19T20:21:18Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "NXxT3ow0oko",
+      "snippet": {
+        "publishedAt": "2026-04-20T17:33:32Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "elMkZ1ddS38",
+      "snippet": {
+        "publishedAt": "2026-04-22T01:58:11Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "tOq8lLB7XIg",
+      "snippet": {
+        "publishedAt": "2026-04-21T21:25:07Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "DQXpKEhENKQ",
+      "snippet": {
+        "publishedAt": "2026-04-22T17:47:05Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "YEMFM4GdlIY",
+      "snippet": {
+        "publishedAt": "2026-04-25T03:00:18Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "o34krMCQmHU",
+      "snippet": {
+        "publishedAt": "2026-04-24T22:36:06Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "2r-GLTkGx2A",
+      "snippet": {
+        "publishedAt": "2026-04-25T17:28:02Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "EM2g2tW4mCc",
+      "snippet": {
+        "publishedAt": "2026-04-27T02:17:41Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "dmFVuFp5LmQ",
+      "snippet": {
+        "publishedAt": "2026-04-26T21:47:59Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "_YXEV0ul3N4",
+      "snippet": {
+        "publishedAt": "2026-04-28T21:59:35Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "--AaXBEK7ss",
+      "snippet": {
+        "publishedAt": "2026-05-01T03:13:22Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "s2jUEkadbYw",
+      "snippet": {
+        "publishedAt": "2026-04-30T22:59:55Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "81scFJhY_os",
+      "snippet": {
+        "publishedAt": "2026-05-03T02:32:25Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    },
+    {
+      "id": "9zt-ln9NbHw",
+      "snippet": {
+        "publishedAt": "2026-05-02T21:57:38Z",
+        "channelId": "UCTNMXdUDhy_ivZkhbsQ_7ZA",
+        "liveBroadcastContent": "none"
+      }
+    }
+  ]
+}

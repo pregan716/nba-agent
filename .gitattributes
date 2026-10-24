@@ -1,0 +1,5 @@
+config/datasets.json linguist-generated=true
+config/identities.json linguist-generated=true
+config/transcript-index.json linguist-generated=true
+config/transcript-publication-metadata.json linguist-generated=true
+docs/evidence/*.json linguist-generated=true
