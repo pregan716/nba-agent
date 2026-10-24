@@ -6,6 +6,7 @@ export interface Mapping {
   providerId: string;
   canonicalId: string;
   basis: string;
+  scope?: { teamId: string };
   evidence: ObjectRef[];
 }
 export const normalizeName = (name: string) =>
@@ -33,6 +34,36 @@ export function injuryPlayerName(name: string): string {
   if (parts.length !== 2 || parts.some((part) => !part.trim()))
     throw Error(`Invalid injury player name: ${name}`);
   return `${parts[1].trim()} ${parts[0].trim()}`;
+}
+// Only the injury-source exceptions accepted in the brief (SPO-783).
+// Keep the exact printed spelling; these are not general normalization rules.
+export function injuryIdentityKey(name: string, teamId: string) {
+  return name === "Williams, Jaylin" ? JSON.stringify([name, teamId]) : name;
+}
+export function resolveInjuryPlayer(
+  ids: Identities,
+  name: string,
+  teamId: string,
+) {
+  if (name === "Yang, Hansen")
+    return { playerId: "1642905", basis: "brief_sanctioned_alias" };
+  if (name === "Williams, Jaylin") {
+    if (teamId !== "1610612760")
+      throw new NameResolutionError(
+        "unresolved",
+        "player",
+        `${name} (team ${teamId})`,
+      );
+    return {
+      playerId: "1631119",
+      basis: "brief_sanctioned_team_scoped_name",
+      scope: { teamId },
+    };
+  }
+  return {
+    playerId: ids.byName("player", injuryPlayerName(name)),
+    basis: "unique_normalized_published_player_name",
+  };
 }
 export class Identities {
   private mappings = new Map<string, Mapping>();
@@ -62,13 +93,24 @@ export class Identities {
       throw Error("Mapping requires IDs and evidence");
     const key = `${mapping.entity}:${mapping.provider}:${mapping.providerId}`,
       existing = this.mappings.get(key);
-    if (existing && existing.canonicalId !== mapping.canonicalId)
+    if (
+      existing &&
+      (existing.canonicalId !== mapping.canonicalId ||
+        existing.scope?.teamId !== mapping.scope?.teamId)
+    )
       throw Error(`Conflicting identity mapping: ${key}`);
     this.mappings.set(key, mapping);
   }
-  resolve(entity: Entity, provider: string, id: string): string {
+  resolve(
+    entity: Entity,
+    provider: string,
+    id: string,
+    context?: { teamId?: string },
+  ): string {
     const row = this.mappings.get(`${entity}:${provider}:${id}`);
     if (!row) throw Error(`Unmapped ${entity}: ${provider}:${id}`);
+    if (row.scope && row.scope.teamId !== context?.teamId)
+      throw Error(`Identity mapping requires matching team: ${provider}:${id}`);
     return row.canonicalId;
   }
   rows(): Mapping[] {
