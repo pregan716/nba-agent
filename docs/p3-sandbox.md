@@ -118,8 +118,12 @@ The trusted supervisor measures the cgroup CPU delta (including native threads a
 kills the worker at the requested compute or wall limit and reports the observed
 usage. Memory OOM is reported as `limit: "memory"` when the supervisor survives; this
 extends P3a's result enum. The supervisor shares the worker memory cgroup: if OOM
-kills PID 1, the host reports an unexpected sandbox exit and retains the reservation.
-Robust group-OOM classification remains follow-up work.
+kills PID 1, the host checks Docker's OOM flag and exit status. A confirmed OOM
+returns `limit: "memory"`, marks output truncated and charges the full reserved
+compute allowance because the supervisor's final CPU measurement is unavailable.
+The dead sandbox cannot execute another program. Exited containers are retained
+until session cleanup so the host can inspect their final state; cleanup still
+removes them. Other unexpected exits remain errors.
 A negative exit status denotes termination by signal. Output is drained but retained
 only up to the configured byte cap, with `truncated` set explicitly.
 

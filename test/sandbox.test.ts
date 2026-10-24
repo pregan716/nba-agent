@@ -611,3 +611,47 @@ test("bulk session projections match the schedule, injury and odds tools", async
     s.clean();
   }
 });
+
+dockerTest(
+  "host classifies supervisor OOM and retains the full compute reservation",
+  async () => {
+    const s = fixture(false);
+    const box = new DockerSandbox(s.f.config, (dir, abort) =>
+      s.session.exportTo(dir, abort),
+    );
+    try {
+      await box.execute("pass", limits, signal());
+      const running = box.execute(
+        "import time; time.sleep(2); x=bytearray(1024*1024*1024)",
+        limits,
+        signal(),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      // Set PID 1's score after the worker starts, so the worker does not inherit
+      // the increased score. This setup is inaccessible to unprivileged code.
+      execFileSync("docker", [
+        "exec",
+        box.name,
+        "python",
+        "-c",
+        `import os, time
+for _ in range(100):
+    if any(p.isdigit() and os.stat('/proc/' + p).st_uid == 1000 for p in os.listdir('/proc')): break
+    time.sleep(0.01)
+else: raise RuntimeError('worker did not start')
+open('/proc/1/oom_score_adj', 'w').write('1000')`,
+      ]);
+      const result = await running;
+      assert.equal(result.limit, "memory");
+      assert.equal(result.computeSeconds, limits.computeSeconds);
+      assert.equal(result.truncated, true);
+      assert.match(result.stderr, /supervisor/);
+      await assert.rejects(() => box.execute("pass", limits, signal()), {
+        code: "phase_refused",
+      });
+    } finally {
+      await box.close();
+      s.clean();
+    }
+  },
+);

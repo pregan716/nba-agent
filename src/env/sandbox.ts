@@ -27,6 +27,8 @@ export class DockerSandbox {
   #closing?: Promise<void>;
   #closed = false;
   #busy = false;
+  #dead = false;
+  #allowance = 0;
   #result?: { resolve: (value: any) => void; reject: (error: Error) => void };
   #ready?: { resolve: () => void; reject: (error: Error) => void };
   #abort = new AbortController();
@@ -64,7 +66,6 @@ export class DockerSandbox {
       this.config.profile.memory.horizon !== "stateless" && !!this.#port;
     const args = [
       "create",
-      "--rm",
       "--interactive",
       "--name",
       this.name,
@@ -127,9 +128,9 @@ export class DockerSandbox {
       child.on("error", () =>
         this.#fail(new Error("Docker sandbox could not start")),
       );
-      child.on("exit", () =>
-        this.#fail(new Error("Docker sandbox exited unexpectedly")),
-      );
+      child.on("close", () => {
+        void this.#exited();
+      });
       createInterface({ input: child.stdout! }).on("line", (line) => {
         try {
           this.#message(JSON.parse(line));
@@ -139,6 +140,42 @@ export class DockerSandbox {
         }
       });
     });
+  }
+  async #exited() {
+    this.#dead = true;
+    if (this.#closed) return;
+    const pending = this.#result;
+    if (pending) {
+      try {
+        const { stdout } = await command(
+          "docker",
+          ["inspect", this.name, "--format", "{{json .State}}"],
+          { timeout: 3000 },
+        );
+        const state = JSON.parse(stdout);
+        if (this.#closed || this.#result !== pending) return;
+        if (state.OOMKilled === true && state.ExitCode === 137) {
+          this.#result = undefined;
+          // The supervisor's final CPU counter and output died with it. Retain
+          // the full reservation, never fabricate a measured CPU delta.
+          pending.resolve({
+            stdout: "",
+            stderr: Buffer.from(
+              "Container OOM killed the supervisor; full compute allowance charged.",
+            ).toString("base64"),
+            exitStatus: 137,
+            computeSeconds: this.#allowance,
+            truncated: true,
+            limit: "memory",
+          });
+          return;
+        }
+      } catch {
+        /* Unknown exits remain errors; never infer OOM from SIGKILL alone. */
+      }
+    }
+    if (!this.#closed)
+      this.#fail(new Error("Docker sandbox exited unexpectedly"));
   }
   #send(value: unknown) {
     this.#process?.stdin?.write(JSON.stringify(value) + "\n");
@@ -204,9 +241,10 @@ export class DockerSandbox {
     limits: Limits,
     signal: AbortSignal,
   ): Promise<CodeResult> {
-    if (this.#closed || this.#busy)
+    if (this.#closed || this.#dead || this.#busy)
       throw new SessionError("phase_refused", "Sandbox unavailable");
     this.#busy = true;
+    this.#allowance = limits.computeSeconds;
     const cancel = () => {
       void this.close().catch(() => {});
     };
