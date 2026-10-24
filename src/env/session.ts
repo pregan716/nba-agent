@@ -1022,6 +1022,7 @@ export function sessionEnvironment(
             config,
             (directory, abort) => session.exportTo(directory, abort),
             session.workspaceForSandbox(),
+            trusted.root,
           );
           return sandbox.execute(program, limits, signal);
         }),
