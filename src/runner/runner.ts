@@ -59,6 +59,7 @@ export interface SessionContext {
   game: Game;
   phase: Phase;
   cutoff: string;
+  capabilities: Manifest["config"]["profile"]["capabilities"]["enabled"];
   memory: Manifest["config"]["profile"]["memory"];
   dataSources: Manifest["config"]["profile"]["dataSources"];
 }
@@ -357,6 +358,7 @@ export class Runner {
             game,
             phase: budget.stage,
             cutoff: phase === "pregame" ? game.scheduledStart : game.release,
+            capabilities: this.manifest.config.profile.capabilities.enabled,
             memory: this.manifest.config.profile.memory,
             dataSources: this.manifest.config.profile.dataSources,
           },

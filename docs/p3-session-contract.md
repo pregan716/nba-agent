@@ -61,7 +61,7 @@ Result types in `contract.ts`, briefly:
 
 | Tool | Result carries | Result never carries |
 | --- | --- | --- |
-| `context` | team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, memory mode, dataset versions | run id, paths, anything about other replicates |
+| `context` | team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, enabled capability groups, memory mode, dataset versions | run id, paths, anything about other replicates |
 | `search_evidence` | hits with `evidence_id`, source, availability time, author, title, snippet; `total`, `next_cursor` | relevance scores, record provenance |
 | `fetch_evidence` | full text as published, segments with speaker-cluster labels, announced starters, references, explicit artifact provenance (SPO-788) | audio, speaker identities, alternates, box-score corrections |
 | `query_game_history` | published rows plus a `ColumnDefinition` per column, and `unavailable` games with reason; the six player-reference tables (`PLAYER_REFERENCE_TABLES`) by `player_id` or `team_id` | any 2025–26 game before its release; invalid-coverage products as data; the player-reference `archive/` |

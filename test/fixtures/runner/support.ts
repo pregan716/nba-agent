@@ -164,6 +164,7 @@ export const environment: EnvironmentFactory = async (
         phase,
         cutoff: context.cutoff,
         budget,
+        capabilities: [...context.capabilities].sort(),
         memory: {
           horizon: context.memory.horizon,
           revision: context.memory.revision,

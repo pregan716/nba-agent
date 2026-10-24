@@ -173,6 +173,8 @@ export interface ContextResult {
   /** Pregame and commit: the scheduled start. Postgame: the release time (9 a.m. ET next morning). */
   cutoff: Instant;
   budget: BudgetRemaining;
+  /** Capability groups enabled for this run (see TOOL_CAPABILITY). Tools whose group is absent are refused. */
+  capabilities: string[];
   memory: {
     horizon: "stateless" | "season" | "window";
     window_games?: number;
