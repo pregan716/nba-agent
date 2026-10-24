@@ -73,10 +73,11 @@ export class DopplerStore implements ObjectStore {
     }
   >();
   private sequence = 0;
+  constructor(private options: { project?: string; config?: string } = {}) {}
   get(bucket: Bucket, key: string): Promise<Buffer> {
     let worker = this.workers.get(bucket);
     if (!worker) {
-      const config = bucket === "pm-data-platform" ? "prd" : "dev";
+      const { project = "nba-agent", config = "prd" } = this.options;
       const env = Object.fromEntries(
         Object.entries(process.env).filter(
           ([name]) => !/^(R2_|AWS_|ANTHROPIC_|OPENAI_)/.test(name),
@@ -87,7 +88,7 @@ export class DopplerStore implements ObjectStore {
         [
           "run",
           "--project",
-          bucket,
+          project,
           "--config",
           config,
           "--no-fallback",
@@ -97,6 +98,7 @@ export class DopplerStore implements ObjectStore {
             new URL("../../scripts/r2-worker.mjs", import.meta.url),
           ),
           bucket,
+          project,
           config,
         ],
         { env, stdio: "pipe" },

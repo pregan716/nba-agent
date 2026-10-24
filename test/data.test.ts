@@ -11,6 +11,7 @@ import {
 } from "../src/data/store.js";
 import { Release, parquet } from "../src/data/release.js";
 import {
+  InjuryAdapter,
   OddsAdapter,
   BeatPostsAdapter,
   LineupsAdapter,
@@ -23,7 +24,11 @@ import {
   PlayByPlayAdapter,
 } from "../src/data/adapters.js";
 import { nextMorning, easternDayEnd, before } from "../src/data/time.js";
-import { Identities } from "../src/data/identity.js";
+import {
+  Identities,
+  injuryPlayerName,
+  NameResolutionError,
+} from "../src/data/identity.js";
 const bytes = (data: unknown) => Buffer.from(JSON.stringify(data));
 function fixture(objects: Record<string, Buffer>) {
   const calls: string[] = [];
@@ -208,6 +213,7 @@ test("edited posts never fall back to original publication time", async () => {
     }),
     adapter = new BeatPostsAdapter(await Release.open(f.ref("root"), f.store));
   assert.equal((await adapter.records()).length, 1);
+  await adapter.records();
   assert.equal(adapter.exclusions.length, 2);
 });
 
@@ -401,12 +407,98 @@ test("PBP suppresses partial products before reading their files; static schedul
     await adapter.records("v_player_game_summary", first.game_id),
     [],
   );
+  await adapter.records("v_player_game_summary", first.game_id);
+  assert.equal(adapter.exclusions.length, 1);
+  await adapter.records("v_team_game_summary", first.game_id);
+  assert.equal(adapter.exclusions.length, 2);
   assert.equal(adapter.exclusions[0].reason, "broken chain");
   const schedule = await adapter.games();
   assert.equal("home_score" in schedule[0].data, false);
   assert.equal("status" in schedule[0].data, false);
+  schedule[0].data.home_score = 999;
+  assert.equal("home_score" in (await adapter.games())[0].data, false);
+  assert.equal(
+    f.calls.filter((request) => request === "objects/" + key).length,
+    1,
+  );
+  assert.equal(
+    f.calls.filter((request) => request === "objects/coverage.jsonl").length,
+    1,
+  );
   await assert.rejects(
     adapter.records("raw_objects", first.game_id),
     /not replay evidence/,
   );
+});
+
+test("injury name joins retain original provider spelling and reject ambiguous or unknown names", () => {
+  const ids = new Identities();
+  ids.addName("player", "Xavier Tillman", "1");
+  assert.equal(
+    ids.byName("player", injuryPlayerName("Tillman Sr., Xavier")),
+    "1",
+  );
+  ids.addName("player", "Nikola Vučević", "2");
+  assert.equal(ids.byName("player", injuryPlayerName("Vucevic, Nikola")), "2");
+  assert.throws(
+    () => ids.byName("player", injuryPlayerName("Missing, Person")),
+    (error) =>
+      error instanceof NameResolutionError && error.kind === "unresolved",
+  );
+  ids.addName("player", "Xavier Tillman Jr.", "3");
+  assert.throws(
+    () => ids.byName("player", injuryPlayerName("Tillman, Xavier")),
+    (error) =>
+      error instanceof NameResolutionError && error.kind === "ambiguous",
+  );
+  assert.throws(
+    () => injuryPlayerName("malformed"),
+    /Invalid injury player name/,
+  );
+});
+
+test("injury and transcript exclusion logs remain stable across repeated reads", async () => {
+  const rows = bytes({
+    record_id: "unmatched",
+    phase: "regular_season",
+    game_link_status: "unmatched",
+  });
+  const f = fixture({
+    rows,
+    root: bytes({
+      team_snapshot_partitions: [{ key: "rows", sha256: sha256(rows) }],
+      partitions: [{ key: "rows", sha256: sha256(rows) }],
+    }),
+  });
+  const adapter = new InjuryAdapter(await Release.open(f.ref("root"), f.store));
+  for (let i = 0; i < 2; i++)
+    for await (const records of adapter.partitions())
+      assert.deepEqual(records, []);
+  assert.equal(adapter.exclusions.length, 1);
+  for (let i = 0; i < 2; i++)
+    for await (const records of adapter.partitions("players"))
+      assert.deepEqual(records, []);
+  assert.equal(adapter.exclusions.length, 2); // distinct table scope
+  const transcript = new TranscriptsAdapter(
+    [{ mediaId: "m", cutoff_requires_review: true }],
+    {},
+    f.store,
+  );
+  assert.deepEqual(await transcript.records(), []);
+  assert.deepEqual(await transcript.records(), []);
+  assert.equal(transcript.exclusions.length, 1);
+  const returned = transcript.exclusions;
+  returned[0].reason = "mutated";
+  returned.length = 0;
+  assert.equal(transcript.exclusions[0].reason, "Publication requires review");
+});
+
+test("published guest identity exceptions cannot re-enter NBA name joins", () => {
+  const ids = new Identities();
+  ids.addName("player", "Noa Essengue", "guest");
+  ids.addName("player", "Noa Essengue", "nba");
+  assert.throws(() => ids.byName("player", "Noa Essengue"), /Ambiguous/);
+  ids.excludeNameCandidate("player", "guest");
+  ids.addName("player", "Noa Essengue", "guest");
+  assert.equal(ids.byName("player", "Noa Essengue"), "nba");
 });

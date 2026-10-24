@@ -1,3 +1,4 @@
+import { ExclusionLog } from "./exclusions.js";
 import { Temporal } from "@js-temporal/polyfill";
 import type {
   Convention,
@@ -125,38 +126,47 @@ const PRODUCTS: Record<string, string> = {
   v_possession_matchup_segments: "possessions",
 };
 export class PlayByPlayAdapter {
-  readonly exclusions: Exclusion[] = [];
+  private cachedGames?: RecordEnvelope[];
+  private cachedCoverage?: Row[];
+  private cachedGameIndex?: Row;
+  private exclusionLog = new ExclusionLog();
+  get exclusions(): Exclusion[] {
+    return this.exclusionLog.values();
+  }
   constructor(readonly release: Release) {}
   async games(): Promise<RecordEnvelope[]> {
-    return (await this.release.table("games", "regular_season")).map(
-      ({ row, ref }) =>
-        envelope(
-          "schedule",
-          row.game_id,
-          pick(row, [
-            "game_id",
-            "season",
-            "phase",
-            "home_team_id",
-            "away_team_id",
-            "scheduled_tipoff",
-            "venue",
-            "neutral_site",
-          ]),
-          ref,
-          this.release.root.sha256,
-          STATIC_AT,
-          "schedule_static",
-          { event: row.scheduled_tipoff },
-        ),
+    this.cachedGames ??= (
+      await this.release.table("games", "regular_season")
+    ).map(({ row, ref }) =>
+      envelope(
+        "schedule",
+        row.game_id,
+        pick(row, [
+          "game_id",
+          "season",
+          "phase",
+          "home_team_id",
+          "away_team_id",
+          "scheduled_tipoff",
+          "venue",
+          "neutral_site",
+        ]),
+        ref,
+        this.release.root.sha256,
+        STATIC_AT,
+        "schedule_static",
+        { event: row.scheduled_tipoff },
+      ),
     );
+    return structuredClone(this.cachedGames);
   }
   async coverage(): Promise<Row[]> {
-    return jsonLines(
+    this.cachedCoverage ??= jsonLines(
       await this.release.bytes(
         this.release.manifest.object_prefix + "coverage.jsonl",
       ),
     );
+    return structuredClone(this.cachedCoverage);
   }
   async records(table: string, gameId: string): Promise<RecordEnvelope[]> {
     const product = PRODUCTS[table];
@@ -167,7 +177,7 @@ export class PlayByPlayAdapter {
       (r) => r.game_id === gameId && r.product === product,
     );
     if (coverage?.quality_status !== "valid") {
-      this.exclusions.push({
+      this.exclusionLog.add({
         source: table,
         id: gameId,
         reason: coverage?.missing_reason ?? `Product ${product} is not valid`,
@@ -175,9 +185,10 @@ export class PlayByPlayAdapter {
       return [];
     }
     const m = this.release.manifest;
-    const index = JSON.parse(
+    this.cachedGameIndex ??= JSON.parse(
       (await this.release.bytes(m.object_prefix + m.game_index)).toString(),
     );
+    const index = this.cachedGameIndex!;
     const files = index.tables[table] ?? {};
     for (const name of Object.keys(files))
       if (!m.tables[table].includes(name))
@@ -225,6 +236,8 @@ export function injuryObservation(
     (row.game_link_status && row.game_link_status !== "matched")
   )
     return null;
+  // The brief models availability from the printed time, not the source
+  // available_at / availability_basis (which describe unverified delivery).
   const ambiguous =
     row.report_timestamp_utc == null && row.timestamp_ambiguous === true;
   const at = ambiguous
@@ -262,7 +275,10 @@ export function injuryObservation(
   );
 }
 export class InjuryAdapter {
-  readonly exclusions: Exclusion[] = [];
+  private exclusionLog = new ExclusionLog();
+  get exclusions(): Exclusion[] {
+    return this.exclusionLog.values();
+  }
   constructor(readonly release: Release) {}
   async *partitions(
     kind: "teams" | "players" = "teams",
@@ -276,11 +292,14 @@ export class InjuryAdapter {
         const record = injuryObservation(row, ref, this.release.root.sha256);
         if (record) records.push(record);
         else
-          this.exclusions.push({
-            source: "injuries",
-            id: row.record_id,
-            reason: "Unmatched or non-regular-season observation",
-          });
+          this.exclusionLog.add(
+            {
+              source: "injuries",
+              id: row.record_id,
+              reason: "Unmatched or non-regular-season observation",
+            },
+            kind,
+          );
       }
       yield records;
     }
@@ -329,7 +348,10 @@ export function postAvailability(post: Row): string | null {
   return null;
 }
 export class BeatPostsAdapter {
-  readonly exclusions: Exclusion[] = [];
+  private exclusionLog = new ExclusionLog();
+  get exclusions(): Exclusion[] {
+    return this.exclusionLog.values();
+  }
   constructor(readonly release: Release) {}
   async auditRows(): Promise<Row[]> {
     return this.release.rows(this.release.manifest.rows.objectKey);
@@ -341,7 +363,7 @@ export class BeatPostsAdapter {
       const post = row.post,
         id = [post.accountId, post.postId, post.versionId].join(":");
       if (row.relevance.relevant !== true) {
-        this.exclusions.push({
+        this.exclusionLog.add({
           source: "posts",
           id,
           reason: "Not labelled NBA-related",
@@ -350,7 +372,7 @@ export class BeatPostsAdapter {
       }
       const at = postAvailability(post);
       if (!at) {
-        this.exclusions.push({
+        this.exclusionLog.add({
           source: "posts",
           id,
           reason: "Unknown version publication time",
@@ -454,7 +476,10 @@ export function transcriptAvailability(
   return { at: instant(row.published_at), convention: "video_publication" };
 }
 export class TranscriptsAdapter {
-  readonly exclusions: Exclusion[] = [];
+  private exclusionLog = new ExclusionLog();
+  get exclusions(): Exclusion[] {
+    return this.exclusionLog.values();
+  }
   constructor(
     private index: Row[],
     private manifests: Record<string, ObjectRef>,
@@ -465,7 +490,7 @@ export class TranscriptsAdapter {
     for (const entry of this.index) {
       const availability = transcriptAvailability(entry);
       if (!availability) {
-        this.exclusions.push({
+        this.exclusionLog.add({
           source: "transcripts",
           id: entry.mediaId,
           reason: "Publication requires review",

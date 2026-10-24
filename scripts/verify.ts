@@ -1,9 +1,19 @@
-import { DopplerStore } from "../src/data/store.js";
+import { DopplerStore, VerifiedStore } from "../src/data/store.js";
 import { openCorpus } from "../src/data/corpus.js";
 import assert from "node:assert/strict";
 const raw = new DopplerStore();
 try {
   const c = await openCorpus(raw, process.cwd(), ".cache/objects");
+  // Bypass the local cache to verify the configured Doppler credential in every bucket.
+  const remote = new VerifiedStore(raw);
+  for (const name of ["odds", "players", "posts", "transcripts"]) {
+    const ref =
+      name === "transcripts"
+        ? Object.values(c.pins.transcriptManifests)[0]
+        : c.pins.sources[name];
+    await remote.read(ref);
+    console.log("authenticated_bucket_read", ref.bucket);
+  }
   for (const table of [
     "player_profiles",
     "player_season_stats",

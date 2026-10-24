@@ -19,6 +19,11 @@ try {
     "[\n" + identities.map((row) => JSON.stringify(row)).join(",\n") + "\n]\n",
   );
   console.log(JSON.stringify(report.totals, null, 2));
+  for (const finding of report.injuryIdentityFindings) {
+    console.warn(
+      `INJURY IDENTITY JOIN REFUSED: ${finding.reason}; candidates=${finding.candidates?.join(",") || "none"}; observations=${finding.observations}`,
+    );
+  }
 } finally {
   raw.close();
 }

@@ -30,6 +30,10 @@ v1 framed the task as allocating $100 of simulated prop bets per game and scorin
 
 What stays: the market line as the question, because it controls difficulty and supplies a baseline for free. What is removed: money, stakes, bet counts, book selection, the LLM evidence judge (deferred, not rejected), and dollar-based research budgets (replaced with token caps for v1). The temporal access rules, source contracts, run isolation, and experiment record carry over unchanged in intent.
 
+### Finalization changes (Oct 24, 2026)
+
+- P1 pinned player-reference release `15fef7276244e616b0817be4` after reading its verified coverage report. The dataset table records the manifest hash and links to the coverage summary; historical-fidelity limitations remain explicit.
+
 ### Finalization changes (Oct 23, 2026)
 
 - Data contracts rewritten against the bucket guides in `docs/data-descriptions/`. The environment now consumes pinned, hash-manifested releases as published and no longer recomputes derived tables. Consensus corrected to the published method (median across contributing books, three exclusion statuses). Player reference added as an always-on static source. Injury and lineup ownership closed. Availability conventions stated per source. Beat reporting limited to NBA-related posts. Two new Open decisions: transcript availability time and play-by-play gap games. P1, P2, and Gate 2 rewritten accordingly.

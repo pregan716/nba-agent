@@ -1,6 +1,10 @@
 import { gunzipSync } from "node:zlib";
 import type { Corpus } from "./corpus.js";
-import { Identities } from "./identity.js";
+import {
+  Identities,
+  injuryPlayerName,
+  NameResolutionError,
+} from "./identity.js";
 import { before, instant } from "./time.js";
 import type { Row, RecordEnvelope } from "./contracts.js";
 const BOS = "1610612738";
@@ -28,6 +32,12 @@ export async function coverageDiagnostic(
   );
   const coverage = await c.pbp.coverage(),
     ids = new Identities();
+  const identityExceptions = await c.players.records(
+    "player_identity_exceptions",
+  );
+  const guestIds = new Set(identityExceptions.map((row) => row.data.player_id));
+  // Published guest IDs are preserved as distinct identities, never NBA name-join candidates.
+  for (const id of guestIds) ids.excludeNameCandidate("player", id);
   const players = await c.players.records();
   const playerEvidence = new Map(
     players.map((p) => [p.data.player_id, p.provenance.object]),
@@ -53,8 +63,15 @@ export async function coverageDiagnostic(
         provider: "nba",
         providerId: row.player_id,
         canonicalId: row.player_id,
-        basis: "published_player_id",
-        evidence: [ref],
+        basis: guestIds.has(row.player_id)
+          ? "published_guest_identity_exception"
+          : "published_player_id",
+        evidence: [
+          ref,
+          ...identityExceptions
+            .filter((e) => e.data.player_id === row.player_id)
+            .map((e) => e.provenance.object),
+        ],
       });
     }
   for (const { row, ref } of await c.pbp.release.table("teams")) {
@@ -195,6 +212,72 @@ export async function coverageDiagnostic(
       injuries.set(row.data.game_id, group);
     }
   progress(
+    "Joining injury player names against the pinned NBA identity catalogs",
+  );
+  const injuryNames = new Map<
+    string,
+    {
+      playerId: string | null;
+      observations: number;
+      evidence: RecordEnvelope["provenance"]["object"];
+      reason?: string;
+      failure?: string;
+      candidates?: string[];
+    }
+  >();
+  for await (const partition of c.injuries.partitions("players"))
+    for (const row of partition) {
+      const name = row.data.player_name;
+      if (!name) continue; // Explicit team placeholders have no player identity.
+      let match = injuryNames.get(name);
+      if (!match) {
+        let playerId: string | null = null,
+          reason: string | undefined,
+          failure: string | undefined,
+          candidates: string[] | undefined;
+        try {
+          playerId = ids.byName("player", injuryPlayerName(name));
+        } catch (error) {
+          // Refuse the individual join and preserve its failure for P1a. Never
+          // choose a candidate or emit a mapping for an unresolved/ambiguous name.
+          if (!(error instanceof NameResolutionError)) throw error;
+          reason = error.message;
+          failure = error.kind;
+          candidates = error.candidates;
+        }
+        match = {
+          playerId,
+          observations: 0,
+          evidence: row.provenance.object,
+          reason,
+          failure,
+          candidates,
+        };
+        injuryNames.set(name, match);
+        if (playerId)
+          ids.add({
+            entity: "player",
+            provider: "injury-name",
+            providerId: name,
+            canonicalId: playerId,
+            basis: "unique_normalized_published_player_name",
+            evidence: [row.provenance.object, playerEvidence.get(playerId)!],
+          });
+      }
+      match.observations++;
+    }
+  const injuryIdentityFindings = [...injuryNames]
+    .filter(([, match]) => match.playerId === null)
+    .map(([playerName, match]) => ({
+      playerName,
+      reason: match.reason,
+      failure: match.failure,
+      candidates: match.candidates,
+      observations: match.observations,
+      evidence: match.evidence,
+    }))
+    .sort((a, b) => a.playerName.localeCompare(b.playerName));
+  progress(
     "Verifying 134 transcript manifests, publication evidence, and transcript artifacts",
   );
   const transcripts = await c.transcripts.records();
@@ -287,6 +370,7 @@ export async function coverageDiagnostic(
     },
     exclusions: [...c.posts.exclusions, ...c.transcripts.exclusions],
     perGame,
+    injuryIdentityFindings,
     identities: ids.rows(),
   };
 }

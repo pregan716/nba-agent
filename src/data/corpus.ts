@@ -33,10 +33,11 @@ export async function openCorpus(
   for (const entry of index)
     if (sha256(metadata) !== entry.livestream_provenance.sha256)
       throw Error("Transcript publication evidence hash mismatch");
+  const odds = new OddsAdapter(await release("odds"));
   return {
     pins,
     verified,
-    odds: new OddsAdapter(await release("odds")),
+    odds,
     oddsArchive: await release("oddsArchive"),
     pbp: new PlayByPlayAdapter(await release("pbp-2025-26")),
     priorPbp: new PlayByPlayAdapter(await release("pbp-2024-25")),
@@ -60,7 +61,7 @@ export async function openCorpus(
     ),
     versions: {
       sources: pins.sources,
-      odds: new OddsAdapter(await release("odds")).version(),
+      odds: odds.version(),
       transcriptIndex: pins.transcriptIndex,
       transcriptManifests: pins.transcriptManifests,
     },

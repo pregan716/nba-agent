@@ -15,10 +15,36 @@ export const normalizeName = (name: string) =>
     .toLowerCase()
     .replace(/,?\s+(?:jr\.?|sr\.?|ii|iii|iv)$/, "")
     .replace(/[^a-z0-9]/g, "");
+export class NameResolutionError extends Error {
+  constructor(
+    readonly kind: "unresolved" | "ambiguous",
+    entity: Entity,
+    name: string,
+    readonly candidates: string[] = [],
+  ) {
+    super(
+      `${kind === "unresolved" ? "Unresolved" : "Ambiguous"} ${entity} name: ${name}`,
+    );
+  }
+}
+// Injury PDFs print "Family, Given"; keep the original spelling as provider ID.
+export function injuryPlayerName(name: string): string {
+  const parts = name.split(",");
+  if (parts.length !== 2 || parts.some((part) => !part.trim()))
+    throw Error(`Invalid injury player name: ${name}`);
+  return `${parts[1].trim()} ${parts[0].trim()}`;
+}
 export class Identities {
   private mappings = new Map<string, Mapping>();
   private names = new Map<string, Set<string>>();
+  private excludedNames = new Set<string>();
+  excludeNameCandidate(entity: Entity, canonicalId: string) {
+    this.excludedNames.add(`${entity}:${canonicalId}`);
+    for (const [key, candidates] of this.names)
+      if (key.startsWith(`${entity}:`)) candidates.delete(canonicalId);
+  }
   addName(entity: Entity, name: string, canonicalId: string) {
+    if (this.excludedNames.has(`${entity}:${canonicalId}`)) return;
     const key = `${entity}:${normalizeName(name)}`,
       ids = this.names.get(key) ?? new Set();
     ids.add(canonicalId);
@@ -26,8 +52,9 @@ export class Identities {
   }
   byName(entity: Entity, name: string): string {
     const ids = this.names.get(`${entity}:${normalizeName(name)}`);
-    if (!ids?.size) throw Error(`Unresolved ${entity} name: ${name}`);
-    if (ids.size !== 1) throw Error(`Ambiguous ${entity} name: ${name}`);
+    if (!ids?.size) throw new NameResolutionError("unresolved", entity, name);
+    if (ids.size !== 1)
+      throw new NameResolutionError("ambiguous", entity, name, [...ids].sort());
     return [...ids][0];
   }
   add(mapping: Mapping) {

@@ -1,8 +1,8 @@
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { createInterface } from "node:readline";
-const [bucket, config] = process.argv.slice(2);
+const [bucket, expectedProject, expectedConfig] = process.argv.slice(2);
 const env = process.env;
-const endpoint = env.R2_ENDPOINT_URL ?? env.R2_ENDPOINT;
+const endpoint = env.R2_ENDPOINT_URL;
 try {
   if (
     ![
@@ -11,9 +11,10 @@ try {
       "sports-text",
       "sports-transcription",
     ].includes(bucket) ||
-    env.DOPPLER_PROJECT !== bucket ||
-    env.DOPPLER_CONFIG !== config ||
-    (env.R2_BUCKET ?? env.R2_BUCKET_NAME ?? bucket) !== bucket
+    !expectedProject ||
+    !expectedConfig ||
+    env.DOPPLER_PROJECT !== expectedProject ||
+    env.DOPPLER_CONFIG !== expectedConfig
   )
     throw Error();
   const url = new URL(endpoint);
@@ -53,7 +54,7 @@ for await (const line of createInterface({ input: process.stdin })) {
       throw Error();
     const response = await client.send(
       new GetObjectCommand({ Bucket: bucket, Key: key }),
-      { abortSignal: AbortSignal.timeout(60000) },
+      { abortSignal: AbortSignal.timeout(180000) },
     );
     const body = Buffer.from(await response.Body.transformToByteArray());
     process.stdout.write(

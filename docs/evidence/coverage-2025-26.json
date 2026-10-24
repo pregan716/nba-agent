@@ -6137,5 +6137,49 @@
         "ok": 1
       }
     }
+  ],
+  "injuryIdentityFindings": [
+    {
+      "playerName": "Jones, Dillon",
+      "reason": "Ambiguous player name: Dillon Jones",
+      "failure": "ambiguous",
+      "candidates": [
+        "1641794",
+        "196295686"
+      ],
+      "observations": 1117,
+      "evidence": {
+        "bucket": "sports-nba-data",
+        "key": "nba/injury-reports/2025-26/curated/nba-injury-pdf-v2/report_date=2026-01-23/413baa172364de0314ea25e1bb28b2ddbecc4318b74944d63ba498148345618f.parquet",
+        "sha256": "413baa172364de0314ea25e1bb28b2ddbecc4318b74944d63ba498148345618f"
+      }
+    },
+    {
+      "playerName": "Williams, Jaylin",
+      "reason": "Ambiguous player name: Jaylin Williams",
+      "failure": "ambiguous",
+      "candidates": [
+        "1631119",
+        "1642444"
+      ],
+      "observations": 798,
+      "evidence": {
+        "bucket": "sports-nba-data",
+        "key": "nba/injury-reports/2025-26/curated/nba-injury-pdf-v2/report_date=2025-11-03/f5b1691c45f19c48a8ab403c07895c96ab309984129dcceb10cb78f66fbedcf0.parquet",
+        "sha256": "f5b1691c45f19c48a8ab403c07895c96ab309984129dcceb10cb78f66fbedcf0"
+      }
+    },
+    {
+      "playerName": "Yang, Hansen",
+      "reason": "Unresolved player name: Hansen Yang",
+      "failure": "unresolved",
+      "candidates": [],
+      "observations": 854,
+      "evidence": {
+        "bucket": "sports-nba-data",
+        "key": "nba/injury-reports/2025-26/curated/nba-injury-pdf-v2/report_date=2025-11-13/fec54f1e6a32aef4f2e6e267f837b59fde19fa2d6032a3a08aa0bbe04bb73d07.parquet",
+        "sha256": "fec54f1e6a32aef4f2e6e267f837b59fde19fa2d6032a3a08aa0bbe04bb73d07"
+      }
+    }
   ]
 }

@@ -29,6 +29,18 @@ statuses and provenance for P2 and the exclusion log. The run data-source descri
 includes the odds manifest and methodology hashes, every root selection, the exact
 transcript index revision/hash, and the 134 transcript manifest hashes.
 
+Credential reads use the `nba-agent` Doppler project, `prd` configuration, for all four
+buckets. `dev` and `stg` are empty as of October 24, 2026. `DopplerStore({project, config})`
+allows explicit alternatives; the worker validates injected project/config markers and
+uses only `R2_ENDPOINT_URL`, `R2_ACCESS_KEY_ID`, and `R2_SECRET_ACCESS_KEY`. Injection is
+confined to reader subprocesses. GETs allow 180 seconds; `verify:live` performs an
+uncached, hash-verified read from each bucket so warm caches cannot mask access failures.
+
+Exclusion logs are unique by source/record/table scope, so repeated reads do not grow
+duplicate diagnostic entries. Callers receive snapshots rather than mutable log arrays.
+P2 reads `snapshot_kind` and `season_inferred_identity_in_inputs` from trusted odds
+`auditRows()`; these provenance fields intentionally stay out of the analyst projection.
+
 ## Availability
 
 | Source | Convention |
@@ -89,7 +101,21 @@ International preseason guest IDs stay separate and must not be merged by name.
 evidence. NBA game/team/player IDs are canonical decimal strings; ESPN and Odds API
 events map explicitly to NBA IDs. ESPN games are joined by both teams and UTC game
 date, with scheduled-time agreement reported independently. X account/post IDs and
-media IDs retain their stable namespaces. Lineup names map to NBA IDs.
+media IDs retain their stable namespaces. Lineup and injury names map to NBA IDs.
+The injury join converts the printed `Family, Given` ordering before normalization,
+while preserving the original printed name as the `injury-name` provider ID. Each
+mapping includes the injury partition and NBA catalog evidence. Explicit team
+placeholders have no player mapping. Unresolved names are recorded under
+`injuryIdentityFindings`; no mapping is invented, and `Identities.resolve()` fails for
+these names. Ambiguous name joins also throw; the diagnostic catches those failures,
+records candidate IDs and observation counts, and prints an explicit refused-join
+warning. It does not choose a candidate or publish a mapping. P1a must resolve those
+findings before downstream consumers can resolve the affected injury-name IDs.
+
+The 31 published player-reference identity exceptions retain distinct source IDs but
+are excluded from name-join candidates, as required by their release. This prevents a
+preseason guest ID (for example Noa Essengue's `196295093`) from competing with an NBA
+ID (`1642855`) without merging or guessing a crosswalk.
 
 Name matching normalizes accents, punctuation, and trailing Jr./Sr./II/III/IV suffixes
 against the complete pinned player catalogs. It requires exactly one candidate;
@@ -126,3 +152,16 @@ announcement for each team, 204 eligible posts, and 12 eligible transcripts. Its
 scheduled-start observation contains 21 usable prop rows. The final game's observation
 contains one usable row, seven `no_quotes`, and four `dfs_only` rows, matching the
 published thin-game behavior.
+
+The review follow-up scans all matched regular-season injury-player observations and
+adds **556** unique `injury-name` mappings. Three joins are refused and preserved for
+P1a: `Jones, Dillon` (IDs `1641794` / `196295686`, 1,117 observations), `Williams, Jaylin`
+(IDs `1631119` / `1642444`, 798 observations), and `Yang, Hansen` (no unique normalized
+match, 854 observations). The diagnostic records source-partition evidence for each
+finding. These names have no published injury-name mapping; downstream resolution
+must fail rather than join them at query time. All existing per-game coverage fields
+and totals remain unchanged.
+
+PBP adapters reuse verified schedule, coverage, and game-index metadata for their
+pinned release; public metadata reads return copies. `openCorpus` opens the odds
+release once. Per-record/lazy transcript access remains a P3 integration follow-up.
