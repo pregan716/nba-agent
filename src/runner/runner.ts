@@ -1,3 +1,5 @@
+import type { LifecyclePhase } from "../env/lifecycle.js";
+import type { RecordedGame } from "../env/results.js";
 import {
   mkdirSync,
   existsSync,
@@ -63,7 +65,7 @@ export interface Validation {
 export interface Environment {
   context(budget: BudgetRemaining): Promise<ContextResult>;
   questions(): Promise<QuestionSet>;
-  transition(phase: Phase, cutoff: string): Promise<void>;
+  transition(phase: LifecyclePhase, cutoff: string): Promise<void>;
   call(name: string, args: unknown, signal: AbortSignal): Promise<unknown>;
   validateSubmission(value: unknown): Promise<Validation>;
   execute(
@@ -81,7 +83,11 @@ export interface Environment {
 }
 export type EnvironmentFactory = (
   context: SessionContext,
-  trusted: { workspace: string; submission: unknown | null },
+  trusted: {
+    workspace: string;
+    submission: unknown | null;
+    results: () => RecordedGame[];
+  },
 ) => Promise<Environment>;
 export type SessionEndpoint = SessionTools;
 export interface HarnessHandles {
@@ -318,6 +324,17 @@ export class Runner {
             dataSources: this.manifest.config.profile.dataSources,
           },
           {
+            results: () =>
+              this.record.events("questions").map((event) => ({
+                questions: structuredClone(event.data),
+                submission: structuredClone(
+                  this.record.events("phase_end", `${event.scope}:pregame`)[0]
+                    ?.data.status === "completed"
+                    ? (this.record.events("submission", event.scope)[0]?.data
+                        .value.submission ?? null)
+                    : null,
+                ),
+              })),
             workspace: this.workspace,
             submission: frozen?.data.value.submission ?? null,
           },
@@ -637,7 +654,12 @@ export class Runner {
       if (endpoint) await this.proxy.revoke(endpoint);
       if (environment)
         try {
-          await environment.close();
+          try {
+            if (phase === "postgame")
+              await environment.transition("checkpoint", game.release);
+          } finally {
+            await environment.close();
+          }
         } catch {
           status = "infrastructure_failure";
           limit = "infrastructure";

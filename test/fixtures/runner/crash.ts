@@ -1,3 +1,4 @@
+import { validateSubmission } from "../../../src/env/submission.js";
 import { manifest } from "../../../src/runner/config.js";
 import { Runner } from "../../../src/runner/runner.js";
 import { MeteringProxy } from "../../../src/runner/proxy.js";
@@ -10,7 +11,14 @@ const runner = new Runner(
     { gameId: "g1", scheduledStart: "2025-10-22T23:30:00Z" },
   ]),
   proxy,
-  environment,
+  async (context, trusted) => {
+    const env = await environment(context, trusted);
+    return {
+      ...env,
+      validateSubmission: async (value) =>
+        validateSubmission(value, await env.questions()),
+    };
+  },
 );
 try {
   await runner.run(async ({ session }) => {
@@ -22,8 +30,15 @@ try {
         path: "notes.txt",
         content: "committed memory",
       });
+      const { questions } = await session.call("list_questions", {});
       await session.call("begin_commit", {});
-      await session.call("submit", { answers: [], notes: "valid" });
+      await session.call("submit", {
+        answers: questions.map((q) => ({
+          question_id: q.question_id,
+          p_over: q.p_over,
+        })),
+        notes: "valid",
+      });
       process.kill(process.pid, "SIGKILL");
     } else
       await session.call("workspace_write", {

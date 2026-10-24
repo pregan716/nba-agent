@@ -1,3 +1,11 @@
+import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
+import {
+  resolveOutcome,
+  pendingScorer,
+  type QuestionScorer,
+  type RecordedGame,
+} from "./results.js";
+import { validateSubmission } from "./submission.js";
 import { EvidenceIndex } from "./evidence.js";
 import { Temporal } from "@js-temporal/polyfill";
 import type { RecordEnvelope } from "../data/contracts.js";
@@ -59,6 +67,7 @@ export class Session {
   #cutoff: string;
   #source: SessionSource;
   #closed = false;
+  #lifecycle: Lifecycle;
   #evidenceIndex?: Promise<EvidenceIndex>;
   constructor(
     config: RunConfig,
@@ -66,22 +75,14 @@ export class Session {
     phase: Phase,
     cutoff: string,
     source: SessionSource,
+    private records: () => RecordedGame[] = () => [],
+    private scorer: QuestionScorer = pendingScorer,
   ) {
     this.#config = deepFreeze(structuredClone(config));
     this.#game = deepFreeze(structuredClone(game));
     this.#phase = phase;
     this.#cutoff = Temporal.Instant.from(cutoff).toString();
-    if (
-      compare(game.release, releaseTime(game.scheduledStart)) !== 0 ||
-      compare(
-        cutoff,
-        phase === "postgame" ? game.release : game.scheduledStart,
-      ) !== 0
-    )
-      throw new SessionError(
-        "cutoff_refused",
-        "Cutoff does not match the game phase",
-      );
+    this.#lifecycle = new Lifecycle(this.#game, phase, cutoff);
     const configured = config.profile.dataSources.map((d) => ({
       source: d.type,
       release: d.release,
@@ -609,34 +610,14 @@ export class Session {
         observations.map((o) => [`${o.player.id}:${o.stat}:${o.line}`, o]),
       );
       for (const o of lines.values()) {
-        const box = boxes.filter((b) => b.data.player_id === o.player.id),
-          summary = summaries.filter((s) => s.data.player_id === o.player.id);
-        const actual =
-          box.length === 1 &&
-          Number.isInteger(box[0].data[o.stat]) &&
-          box[0].data[o.stat] >= 0
-            ? (box[0].data[o.stat] as number)
-            : null;
-        // P1a Dec 5: partial derived products stay absent; official minutes survive.
-        const seconds =
-          summary.length === 1
-            ? summary[0].data.reconstructed_minutes * 60
-            : id === "0022500338" && box.length === 1
-              ? box[0].data.minutes_seconds
-              : null;
-        const outcome =
-          seconds === 0
-            ? "did_not_play"
-            : actual === null ||
-                typeof seconds !== "number" ||
-                !Number.isFinite(seconds) ||
-                seconds < 0
-              ? "unresolved"
-              : actual === o.line
-                ? "push"
-                : actual > o.line
-                  ? "over"
-                  : "under";
+        const { actual, outcome } = resolveOutcome(
+          id,
+          o.player.id,
+          o.stat,
+          o.line,
+          boxes,
+          summaries,
+        );
         settlements.push({
           game_id: id,
           player: o.player,
@@ -649,18 +630,88 @@ export class Session {
     }
     return { observations, settlements };
   }
-  /** Only runner-controlled phase entry; a Session never advances to a new game's cutoff. */
-  async transition(phase: Phase, cutoff: string) {
-    if (
-      this.#closed ||
-      compare(cutoff, this.#cutoff) !== 0 ||
-      !(
-        phase === this.#phase ||
-        (this.#phase === "pregame" && phase === "commit")
+  async validateSubmission(value: unknown) {
+    if (this.#closed || this.#phase !== "commit")
+      throw new SessionError(
+        "phase_refused",
+        "Submit only before reveal, during commit",
+      );
+    return validateSubmission(value, await this.questions());
+  }
+  async read_released_results(
+    input: ToolInput<"read_released_results">,
+  ): Promise<ToolResult<"read_released_results">> {
+    this.#check("read_released_results", input);
+    const games: ToolResult<"read_released_results">["games"] = [];
+    const schedule = await this.#games();
+    for (const record of this.records()) {
+      const game = schedule.find((g) => g.id === record.questions.game.game_id);
+      if (
+        !game ||
+        (input.game_id && game.id !== input.game_id) ||
+        !visible(releasedGame(game), this.#cutoff)
       )
-    )
-      throw new SessionError("phase_refused", "Invalid session transition");
+        continue;
+      const box = await this.#source.history("player_box_scores", game);
+      const summary = await this.#source.history("player_game_summary", game);
+      const questions = record.questions.questions.map((q) => {
+        const resolved = resolveOutcome(
+          game.id,
+          q.player.id,
+          q.stat,
+          q.selected_line,
+          box.reason ? [] : this.#eligible(box.records),
+          summary.reason ? [] : this.#eligible(summary.records),
+        );
+        const p =
+          record.submission?.answers.find(
+            (a) => a.question_id === q.question_id,
+          )?.p_over ?? null;
+        return {
+          question_id: q.question_id,
+          player: { ...q.player },
+          stat: q.stat,
+          line: q.selected_line,
+          market_p_over: q.p_over,
+          agent_p_over: p,
+          ...resolved,
+          score:
+            p === null || !["over", "under"].includes(resolved.outcome)
+              ? null
+              : this.scorer({
+                  ...resolved,
+                  agent_p_over: p,
+                  market_p_over: q.p_over,
+                }),
+        };
+      });
+      games.push({
+        game_id: game.id,
+        released_at: releaseTime(game.data.scheduled_tipoff),
+        questions,
+      });
+    }
+    return {
+      games: games.sort(
+        (a, b) =>
+          compare(a.released_at, b.released_at) ||
+          a.game_id.localeCompare(b.game_id),
+      ),
+    };
+  }
+  /** Runner-only clock advancement; never included in the agent tool surface. */
+  async transition(phase: LifecyclePhase, cutoff: string) {
+    if (this.#closed) throw new SessionError("phase_refused", "Session closed");
+    this.#lifecycle.advance(phase, cutoff);
+    if (phase === "checkpoint") {
+      this.#closed = true;
+      return;
+    }
+    if (phase === "initialize")
+      throw new SessionError("phase_refused", "Already initialized");
     this.#phase = phase;
+    this.#cutoff = this.#lifecycle.cutoff;
+    this.#evidenceIndex = undefined;
   }
   async call<N extends ToolName>(
     name: N,
@@ -669,6 +720,7 @@ export class Session {
   ): Promise<ToolResult<N>> {
     this.#check(name, input);
     const methods = {
+      read_released_results: this.read_released_results.bind(this),
       search_evidence: this.search_evidence.bind(this),
       fetch_evidence: this.fetch_evidence.bind(this),
       query_game_history: this.query_game_history.bind(this),
@@ -689,19 +741,23 @@ export class Session {
   }
 }
 
-/** P3d–f supply their own validation/sandbox hooks; absent hooks fail closed. */
+/** Trusted adapter: durable records stay behind the tool boundary. */
 export function sessionEnvironment(
   config: RunConfig,
   source: SessionSource,
-  hooks: Partial<Pick<Environment, "validateSubmission" | "execute">> = {},
+  hooks: Partial<Pick<Environment, "validateSubmission" | "execute">> & {
+    scorer?: QuestionScorer;
+  } = {},
 ): EnvironmentFactory {
-  return async (context) => {
+  return async (context, trusted) => {
     const session = new Session(
       config,
       context.game,
       context.phase,
       context.cutoff,
       source,
+      trusted.results,
+      hooks.scorer,
     );
     return {
       context: (budget) => session.context(budget),
@@ -713,12 +769,7 @@ export function sessionEnvironment(
       },
       validateSubmission:
         hooks.validateSubmission ??
-        (async () => {
-          throw new SessionError(
-            "capability_disabled",
-            "Submission validator is not installed",
-          );
-        }),
+        ((value) => session.validateSubmission(value)),
       execute:
         hooks.execute ??
         (async () => {

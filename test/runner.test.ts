@@ -990,3 +990,120 @@ test("runner refusals use SessionError codes for memory, disabled capabilities a
     }
   }
 });
+
+test("real P3 submissions freeze once, persist clips, expose redacted results and survive reopen", async () => {
+  const { sessionEnvironment } = await import("../src/env/session.js");
+  const { fixtureCorpus } = await import("./fixtures/session/corpus.js");
+  const f = fixtureCorpus();
+  const s = await setup(
+    f.config,
+    provider,
+    sessionEnvironment(f.config, f.source),
+    [{ gameId: f.game.gameId, scheduledStart: f.game.scheduledStart }],
+  );
+  let receipt = "",
+    postgame = false;
+  try {
+    await s.runner.run(async ({ session }) => {
+      const ctx = await session.call("context", {});
+      if (ctx.phase === "postgame") {
+        const results = await session.call("read_released_results", {});
+        assert.equal(results.games[0].questions[0].agent_p_over, 0.99);
+        assert.ok(!JSON.stringify(results).includes("SECRET"));
+        await assert.rejects(() => session.call("submit", { answers: [] }), {
+          code: "phase_refused",
+        });
+        postgame = true;
+        return;
+      }
+      const { questions } = await session.call("list_questions", {});
+      await session.call("begin_commit", {});
+      await assert.rejects(() => session.call("submit", { answers: [] }), {
+        code: "validation_failed",
+        attemptsRemaining: 2,
+      });
+      const input = {
+        answers: questions.map((q) => ({
+          question_id: q.question_id,
+          p_over: 2,
+          rationale: "SECRET",
+        })),
+        notes: "SECRET",
+      };
+      const first = await session.call("submit", input);
+      assert.equal(first.attempt, 2);
+      assert.equal(first.clips.length, 1);
+      receipt = first.receipt;
+      assert.deepEqual(await session.call("submit", input), first);
+      await assert.rejects(
+        () => session.call("submit", { ...input, notes: "changed" }),
+        { code: "phase_refused" },
+      );
+    });
+    assert.ok(postgame);
+    assert.equal(s.runner.record.events("submission").length, 1);
+    assert.equal(s.runner.record.events("submission_attempt").length, 2);
+    assert.equal(
+      s.runner.record.events("phase_end")[0].data.status,
+      "completed",
+    );
+    s.runner.close();
+    const reopened = new RecordStore(s.runner.root, s.m);
+    assert.equal(reopened.events("submission")[0].data.receipt, receipt);
+    assert.equal(
+      reopened.events("submission")[0].data.value.submission.answers[0].p_over,
+      0.99,
+    );
+    reopened.close();
+  } finally {
+    await s.close();
+  }
+});
+
+test("third real validation failure persists every problem and never fabricates market answers", async () => {
+  const { sessionEnvironment } = await import("../src/env/session.js");
+  const { fixtureCorpus } = await import("./fixtures/session/corpus.js");
+  const f = fixtureCorpus();
+  const s = await setup(
+    f.config,
+    provider,
+    sessionEnvironment(f.config, f.source),
+    [{ gameId: f.game.gameId, scheduledStart: f.game.scheduledStart }],
+  );
+  let checked = false;
+  try {
+    await s.runner.run(async ({ session }) => {
+      if ((await session.call("context", {})).phase === "postgame") {
+        const result = await session.call("read_released_results", {});
+        assert.equal(result.games[0].questions[0].agent_p_over, null);
+        assert.equal(result.games[0].questions[0].score, null);
+        checked = true;
+        return;
+      }
+      await session.call("begin_commit", {});
+      for (let i = 0; i < 3; i++)
+        await assert.rejects(() => session.call("submit", { answers: [] }), {
+          code: "validation_failed",
+          attemptsRemaining: 2 - i,
+        });
+      await assert.rejects(() => session.call("submit", { answers: [] }), {
+        code: "budget_exhausted",
+      });
+    });
+    assert.ok(checked);
+    assert.equal(s.runner.record.events("submission").length, 0);
+    const attempts = s.runner.record.events("submission_attempt");
+    assert.equal(attempts.length, 3);
+    assert.ok(
+      attempts[2].data.validation.errors.some((e: string) =>
+        e.includes("Missing question_id"),
+      ),
+    );
+    assert.equal(
+      s.runner.record.events("phase_end")[0].data.status,
+      "invalid_output",
+    );
+  } finally {
+    await s.close();
+  }
+});

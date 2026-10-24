@@ -228,7 +228,7 @@ export const environment: EnvironmentFactory = async (
       return set;
     },
     async transition(next) {
-      phase = next;
+      if (next !== "initialize" && next !== "checkpoint") phase = next;
     },
     async call(name, args) {
       if (name === "list_questions")
