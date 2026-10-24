@@ -20,7 +20,7 @@ The constructor copies and freezes run metadata, checks the phase cutoff against
 
 P4 implements the public `SessionTools` type, capability-group lookup, snake_case budgets/code results, object code inputs, submission receipts with attempts and clips, and `SessionError` refusals. Validation failures throw with every reported problem and attempts remaining. `LimitError` now subclasses `SessionError`, preserving P4's limit classification and accounting. Identical normalized resubmission returns the persisted receipt, attempt and clips.
 
-Evidence search/fetch, submission validation/released results, workspace operations and the sandbox remain P3c–f. Unsupported tools and absent validation/sandbox hooks fail closed. The core's trusted transition permits only pregame → commit at the same cutoff; P4 constructs a separate postgame Session. This does not implement the later submission validator or sandbox.
+Evidence search/fetch is implemented by SPO-788 (see `p3-evidence.md`). Submission validation/released results, workspace operations and the sandbox remain P3d–f. Unsupported tools and absent validation/sandbox hooks fail closed. The core's trusted transition permits only pregame → commit at the same cutoff; P4 constructs a separate postgame Session. This does not implement the later submission validator or sandbox.
 
 ## Verification
 

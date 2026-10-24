@@ -411,3 +411,218 @@ test("player-grained history reads each eligible game once without loading membe
     assert.deepEqual(calls, [`prior:${table}`]);
   }
 });
+
+test("evidence search filters future records before counts, snippets and pages", async () => {
+  const results = [];
+  for (const includeFuture of [true, false]) {
+    const f = fixtureCorpus(includeFuture),
+      s = create(f);
+    assert.deepEqual(await s.search_evidence({ query: "FUTURE_SECRET" }), {
+      items: [],
+      total: 0,
+      next_cursor: null,
+    });
+    const first = await s.search_evidence({ query: "visible", limit: 1 });
+    assert.equal(first.total, 3);
+    const second = await s.search_evidence({
+      query: "visible",
+      limit: 1,
+      cursor: first.next_cursor!,
+    });
+    const third = await s.search_evidence({
+      query: "visible",
+      limit: 1,
+      cursor: second.next_cursor!,
+    });
+    assert.equal(third.next_cursor, null);
+    const fetched = await Promise.all(
+      [...first.items, ...second.items, ...third.items].map((hit) =>
+        s.fetch_evidence({ evidence_id: hit.evidence_id }),
+      ),
+    );
+    noType(fetched);
+    results.push([first, second, third, fetched]);
+    assert.deepEqual(
+      await s.search_evidence({ query: "visible", limit: 1 }),
+      first,
+    );
+    await assert.rejects(
+      () =>
+        s.search_evidence({
+          query: "different",
+          limit: 1,
+          cursor: first.next_cursor!,
+        }),
+      code("invalid_input"),
+    );
+    await assert.rejects(
+      () => s.search_evidence({ query: "!!!" }),
+      code("invalid_input"),
+    );
+    await assert.rejects(
+      () => s.search_evidence({ query: "visible", cursor: "broken" }),
+      code("invalid_input"),
+    );
+    assert.equal(
+      (await s.search_evidence({ query: "visible", sources: ["posts"] })).total,
+      1,
+    );
+    assert.equal(
+      (await s.search_evidence({ query: "visible", from: cutoff })).total,
+      0,
+    );
+  }
+  assert.deepEqual(results[0], results[1]);
+});
+
+test("fetch hides future, equality, superseded and unknown ids identically; references remain eligible", async () => {
+  const { evidenceId } = await import("../src/env/evidence.js");
+  const f = fixtureCorpus();
+  f.records.posts[0].data.references = [
+    { postId: f.records.posts[2].data.postId },
+    { postId: "absent" },
+  ];
+  const s = create(f);
+  let expected;
+  for (const id of [
+    evidenceId(f.records.posts[2]),
+    evidenceId(f.records.posts[1]),
+    "unknown",
+  ]) {
+    try {
+      await s.fetch_evidence({ evidence_id: id });
+      assert.fail("must refuse");
+    } catch (e) {
+      assert.ok(e instanceof SessionError);
+      assert.equal(e.code, "not_found");
+      if (expected) assert.deepEqual(e.toJSON(), expected);
+      else expected = e.toJSON();
+    }
+  }
+  assert.deepEqual(
+    (await s.fetch_evidence({ evidence_id: evidenceId(f.records.posts[0]) }))
+      .references,
+    [],
+  );
+  const edit = structuredClone(f.records.posts[0]);
+  edit.id = "eligible-edit";
+  edit.availableAt = "2025-11-02T22:59:59.5Z";
+  edit.data.text = "replacement version";
+  f.records.posts.push(edit);
+  const later = create(f);
+  assert.equal(
+    (await later.search_evidence({ query: "replacement" })).total,
+    1,
+  );
+  await assert.rejects(
+    () => later.fetch_evidence({ evidence_id: evidenceId(f.records.posts[0]) }),
+    code("not_found"),
+  );
+  const reply = structuredClone(edit);
+  reply.id = "reply";
+  reply.data.postId = "reply";
+  reply.data.references = [{ postId: edit.data.postId, type: "quote" }];
+  f.records.posts.push(reply);
+  assert.deepEqual(
+    (await create(f).fetch_evidence({ evidence_id: evidenceId(reply) }))
+      .references,
+    [evidenceId(edit)],
+  );
+});
+
+test("transcripts preserve published defects, speaker clusters and artifact provenance; titles never set time", async () => {
+  const { evidenceId } = await import("../src/env/evidence.js");
+  const f = fixtureCorpus();
+  const r = f.records.transcripts[0];
+  r.data.title = "POSTGAME future title words";
+  r.data.readable = "  Misspeled repeat repeat\n[foreign text retained]  ";
+  r.data.normalized = {
+    utterances: [
+      { speaker: "speaker_X", start: 1.25, text: "segmentonly defect" },
+    ],
+    speakers: [{ name: "SECRET IDENTITY" }],
+  };
+  r.data.readable_ref = {
+    bucket: "sports-transcription",
+    key: "readable",
+    sha256: "b".repeat(64),
+  };
+  const s = create(f),
+    hit = (await s.search_evidence({ query: "segmentonly" })).items[0];
+  assert.ok(hit.snippet.includes("segmentonly"));
+  const fetched = await s.fetch_evidence({ evidence_id: hit.evidence_id });
+  assert.equal(fetched.text, r.data.readable);
+  assert.deepEqual(fetched.segments, [
+    {
+      speaker_label: "speaker_X",
+      start_seconds: 1.25,
+      text: "segmentonly defect",
+    },
+  ]);
+  assert.equal(fetched.provenance.objects.length, 2);
+  assert.ok(!JSON.stringify(fetched).includes("SECRET IDENTITY"));
+  assert.equal(fetched.evidence_id, evidenceId(r));
+  fetched.text = "mutated";
+  assert.equal(
+    (await s.fetch_evidence({ evidence_id: hit.evidence_id })).text,
+    r.data.readable,
+  );
+  assert.equal(
+    (await s.search_evidence({ query: "postgame", sources: ["transcripts"] }))
+      .total,
+    1,
+  );
+});
+
+test("lineup equality is unavailable even after release; eligible announcements retain starters", async () => {
+  const f = fixtureCorpus();
+  const s = create(f, "postgame");
+  const result = await s.search_evidence({
+    query: "visible",
+    sources: ["lineups"],
+  });
+  assert.equal(result.total, 1);
+  const fetched = await s.fetch_evidence({
+    evidence_id: result.items[0].evidence_id,
+  });
+  assert.deepEqual(fetched.starters, [
+    { id: "player", name: "Fixture Player" },
+  ]);
+  await s.close();
+  await assert.rejects(
+    () => s.search_evidence({ query: "visible" }),
+    code("phase_refused"),
+  );
+  const pre = create(f);
+  await pre.transition("commit", cutoff);
+  await assert.rejects(
+    () => pre.fetch_evidence({ evidence_id: result.items[0].evidence_id }),
+    code("phase_refused"),
+  );
+});
+
+test("evidence index is deterministic under input order and future edits, cached per session", async () => {
+  const f = fixtureCorpus();
+  f.records.posts[2].data.postId = f.records.posts[0].data.postId;
+  const expected = await create(f).search_evidence({ query: "visible" });
+  Object.values(f.records).forEach((records) => records.reverse());
+  let calls = 0;
+  const original = f.source.evidence;
+  f.source.evidence = async (source) => {
+    calls++;
+    return original(source);
+  };
+  const s = create(f);
+  assert.deepEqual(await s.search_evidence({ query: "VISIBLE" }), expected);
+  await s.fetch_evidence({ evidence_id: expected.items[0].evidence_id });
+  assert.equal(calls, 3);
+  assert.equal(
+    (await s.search_evidence({ query: "visible", sources: [] })).total,
+    0,
+  );
+  f.config.profile.capabilities.enabled = [];
+  await assert.rejects(
+    () => create(f).search_evidence({ query: "visible" }),
+    code("capability_disabled"),
+  );
+});

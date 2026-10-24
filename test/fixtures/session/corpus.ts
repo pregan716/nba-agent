@@ -137,6 +137,33 @@ export function fixtureCorpus(includeFuture = true) {
         }),
     );
   }
+  for (const r of records.posts)
+    Object.assign(r.data, {
+      accountId: "account",
+      postId: r.id,
+      versionId: "v1",
+      references: [],
+    });
+  for (const r of records.transcripts)
+    Object.assign(r.data, {
+      readable: r.data.text,
+      normalized: {
+        utterances: [{ speaker: "speaker_A", start: 0, text: r.data.text }],
+      },
+    });
+  for (const r of records.lineups)
+    Object.assign(r.data, {
+      gameId: "current",
+      startingLineup: ["Fixture Player"],
+    });
+  ids.add({
+    entity: "player",
+    provider: "lineup-name",
+    providerId: "Fixture Player",
+    canonicalId: "player",
+    basis: "fixture",
+    evidence: [ref],
+  });
   const profiles = [
     envelope(
       "profile",
@@ -270,6 +297,9 @@ export function fixtureCorpus(includeFuture = true) {
     },
     async *injuries() {
       yield records.injuries;
+    },
+    async evidence(source) {
+      return records[source];
     },
     async odds() {
       return records.odds;

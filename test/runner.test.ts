@@ -800,26 +800,13 @@ test("runner implements typed SessionTools results and capability groups at ever
       };
     },
   });
-  // Later P3c–f methods are trusted fixture implementations; verify delegation
+  // Later P3d–f methods are trusted fixture implementations; verify delegation
   // still uses the exact public types without making their features part of P3b.
   const routed: Partial<{
     [
       N in import("../src/env/contract.js").ToolName
     ]: import("../src/env/contract.js").ToolResult<N>;
   }> = {
-    search_evidence: { items: [], total: 0, next_cursor: null },
-    fetch_evidence: {
-      evidence_id: "e",
-      source: "posts",
-      available_at: f.game.scheduledStart,
-      author: null,
-      title: null,
-      url: null,
-      text: "fixture",
-      segments: null,
-      starters: null,
-      references: [],
-    },
     workspace_list: { entries: [] },
     workspace_read: { path: "notes", content: "", bytes: 0 },
     workspace_write: { path: "notes", bytes: 1 },
@@ -881,11 +868,14 @@ test("runner implements typed SessionTools results and capability groups at ever
         await typed.call("query_odds_history", {});
       assert.equal(odds.observations.length, 2);
       const search: import("../src/env/contract.js").ToolResult<"search_evidence"> =
-        await typed.call("search_evidence", { query: "x" });
-      assert.equal(search.total, 0);
+        await typed.call("search_evidence", { query: "visible" });
+      assert.equal(search.total, 3);
       const fetch: import("../src/env/contract.js").ToolResult<"fetch_evidence"> =
-        await typed.call("fetch_evidence", { evidence_id: "e" });
-      assert.equal(fetch.text, "fixture");
+        await typed.call("fetch_evidence", {
+          evidence_id: search.items[0].evidence_id,
+        });
+      assert.equal(fetch.text, "visible");
+      assert.equal(fetch.provenance.objects.length, 1);
       const list: import("../src/env/contract.js").ToolResult<"workspace_list"> =
         await typed.call("workspace_list", {});
       assert.deepEqual(list.entries, []);

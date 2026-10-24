@@ -539,6 +539,7 @@ export class TranscriptsAdapter {
             published_at: entry.published_at,
             stream_ended_at: entry.stream_ended_at,
             readable,
+            readable_ref: ref(manifest.artifacts.readable),
             normalized,
           },
           normalizedRef,

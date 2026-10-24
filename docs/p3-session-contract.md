@@ -63,7 +63,7 @@ Result types in `contract.ts`, briefly:
 | --- | --- | --- |
 | `context` | team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, memory mode, dataset versions | run id, paths, anything about other replicates |
 | `search_evidence` | hits with `evidence_id`, source, availability time, author, title, snippet; `total`, `next_cursor` | relevance scores, record provenance |
-| `fetch_evidence` | full text as published, segments with speaker-cluster labels, announced starters, references | audio, speaker identities, alternates, box-score corrections |
+| `fetch_evidence` | full text as published, segments with speaker-cluster labels, announced starters, references, explicit artifact provenance (SPO-788) | audio, speaker identities, alternates, box-score corrections |
 | `query_game_history` | published rows plus a `ColumnDefinition` per column, and `unavailable` games with reason; the six player-reference tables (`PLAYER_REFERENCE_TABLES`) by `player_id` or `team_id` | any 2025–26 game before its release; invalid-coverage products as data; the player-reference `archive/` |
 | `read_schedule_and_injuries` | schedule entries; injury rows with printed time, status, reason, resolved `player_id` or null; team snapshots as `listed` / `not_yet_submitted` / `unknown` | evidence register, corroborations, assessment times, a healthy reading of an absent team |
 | `query_odds_history` | observations (`available_at`, player, stat, line, `p_over`) and settlements for released games | per-book quotes, contributing books, dispersion, DFS lines, `snapshot_at`, `p_under` |
@@ -132,3 +132,5 @@ The P4 runner routes `context`, `begin_commit`, `submit` and `execute_code` itse
 - P3d implements the phase machine behind `TOOL_PHASES`, `validateSubmission` producing `validation_failed` with every problem named, and `read_released_results`.
 - P3e implements the five `workspace_*` tools and `memory_mode_refused`.
 - P3f implements `execute_code` and the `/data`, `/scratch`, `/workspace` mounts the tool description promises.
+
+SPO-788 adds `FetchEvidenceResult.provenance`: `manifest_sha256` and an `objects` list containing only `bucket`, `key` and `sha256`. This supplies the issue's citation provenance without exposing raw envelopes, retrieval metadata, relevance judgments or credentials. Transcript provenance includes both the normalized segments artifact and the readable-text artifact. Future and nonexistent IDs both use P3a's `not_found` error; this supersedes SPO-788's earlier `cutoff_refused` wording to avoid an existence oracle.
