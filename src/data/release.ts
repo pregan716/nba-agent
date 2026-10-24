@@ -27,14 +27,44 @@ export async function parquet(body: Buffer): Promise<Row[]> {
     }),
   );
 }
+export interface RowCacheLimits {
+  maxEntries: number;
+  /** Sum of serialized decoded row sizes; excludes transient decoder memory. */
+  maxBytes: number;
+}
+const DEFAULT_ROW_CACHE: RowCacheLimits = {
+  maxEntries: 8,
+  maxBytes: 128 * 1024 * 1024,
+};
+function freezeRows<T>(value: T): T {
+  if (value && typeof value === "object" && !Object.isFrozen(value)) {
+    for (const child of Object.values(value)) freezeRows(child);
+    Object.freeze(value);
+  }
+  return value;
+}
 export class Release {
+  private rowCache = new Map<string, { rows: Row[]; bytes: number }>();
+  private rowCacheBytes = 0;
+  private rowLoads = new Map<string, Promise<Row[]>>();
   private constructor(
     readonly root: ObjectRef,
     readonly manifest: Row,
     private store: VerifiedStore,
     readonly objects: Map<string, ObjectRef>,
+    private rowCacheLimits: RowCacheLimits,
   ) {}
-  static async open(root: ObjectRef, store: VerifiedStore): Promise<Release> {
+  static async open(
+    root: ObjectRef,
+    store: VerifiedStore,
+    rowCacheLimits: RowCacheLimits = DEFAULT_ROW_CACHE,
+  ): Promise<Release> {
+    if (
+      ![rowCacheLimits.maxEntries, rowCacheLimits.maxBytes].every(
+        (n) => Number.isSafeInteger(n) && n >= 0,
+      )
+    )
+      throw Error("Invalid row cache limits");
     const manifest = await store.json(root),
       objects = new Map<string, ObjectRef>();
     const add = (key: string, sha256: string, bytes?: number) => {
@@ -59,7 +89,7 @@ export class Release {
         add(ref.key, ref.sha256, ref.bytes);
     if (manifest.rows?.objectKey)
       add(manifest.rows.objectKey, manifest.rows.sha256);
-    return new Release(root, manifest, store, objects);
+    return new Release(root, manifest, store, objects, { ...rowCacheLimits });
   }
   ref(key: string): ObjectRef {
     const ref = this.objects.get(key);
@@ -69,11 +99,55 @@ export class Release {
   async bytes(key: string): Promise<Buffer> {
     return this.store.read(this.ref(key));
   }
+  /** Shared immutable decoded rows. Clone before modifying. Visibility is still
+   * enforced by the Session on every read, never by this cutoff-independent cache. */
   async rows(key: string): Promise<Row[]> {
-    const body = await this.bytes(key);
-    if (key.endsWith(".parquet")) return parquet(body);
-    if (key.endsWith(".gz")) return jsonLines(gunzipSync(body));
-    return jsonLines(body);
+    const ref = this.ref(key); // Even a cache hit must be a manifest-listed object.
+    const format = key.endsWith(".parquet")
+      ? "parquet"
+      : key.endsWith(".gz")
+        ? "gzip"
+        : "jsonl";
+    const cacheKey = `${format}:${ref.sha256}`;
+    const cached = this.rowCache.get(cacheKey);
+    if (cached) {
+      this.rowCache.delete(cacheKey);
+      this.rowCache.set(cacheKey, cached);
+      return cached.rows;
+    }
+    const pending = this.rowLoads.get(cacheKey);
+    if (pending) return pending;
+    const load = async () => {
+      const body = await this.store.read(ref);
+      const rows = freezeRows(
+        format === "parquet"
+          ? await parquet(body)
+          : jsonLines(format === "gzip" ? gunzipSync(body) : body),
+      );
+      const bytes = Buffer.byteLength(JSON.stringify(rows));
+      const limits = this.rowCacheLimits;
+      // Oversized objects remain readable but never evict useful entries.
+      if (limits.maxEntries > 0 && bytes <= limits.maxBytes) {
+        while (
+          this.rowCache.size >= limits.maxEntries ||
+          this.rowCacheBytes + bytes > limits.maxBytes
+        ) {
+          const oldest = this.rowCache.keys().next().value!;
+          this.rowCacheBytes -= this.rowCache.get(oldest)!.bytes;
+          this.rowCache.delete(oldest);
+        }
+        this.rowCache.set(cacheKey, { rows, bytes });
+        this.rowCacheBytes += bytes;
+      }
+      return rows;
+    };
+    const request = load();
+    this.rowLoads.set(cacheKey, request);
+    try {
+      return await request;
+    } finally {
+      this.rowLoads.delete(cacheKey);
+    }
   }
   async table(
     name: string,

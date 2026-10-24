@@ -38,6 +38,37 @@ try {
     config,
     gs.map((g) => ({ gameId: g.id, scheduledStart: g.data.scheduled_tipoff })),
   );
+  // Run before other reads so the first measurement has a cold parsed-row cache
+  // (the verified on-disk object cache may already be populated).
+  const benchmarkGame = m.games[40];
+  const benchmarkSession = new Session(
+    config,
+    benchmarkGame,
+    "postgame",
+    benchmarkGame.release,
+    source,
+  );
+  let previous;
+  for (const pass of ["cold parsed cache", "warm parsed cache"]) {
+    const started = performance.now();
+    const result = await benchmarkSession.query_game_history({
+      table: "player_box_scores",
+      player_id: "1627759",
+      season: "2025-26",
+      limit: 100,
+    });
+    console.log(
+      JSON.stringify({
+        benchmark: "Jaylen Brown season boxes at game 41 postgame",
+        pass,
+        seconds: (performance.now() - started) / 1000,
+        rows: result.total,
+      }),
+    );
+    assert.ok(result.total > 0);
+    if (previous) assert.deepEqual(result, previous);
+    previous = result;
+  }
   for (const id of [m.games[0].gameId, "0022500338"]) {
     const g = m.games.find((g) => g.gameId === id)!;
     for (const phase of ["pregame", "postgame"] as const) {

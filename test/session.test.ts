@@ -353,3 +353,61 @@ test("injury window filters printed report time, not scheduled tipoff", async ()
     0,
   );
 });
+
+test("persisted I2 injury mapping resolves Jaylin Williams only for Oklahoma City", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const mappings = JSON.parse(await readFile("config/identities.json", "utf8"));
+  const mapping = mappings.find(
+    (m: any) =>
+      m.entity === "player" &&
+      m.provider === "injury-name" &&
+      m.providerId === "Williams, Jaylin",
+  );
+  assert.equal(mapping.canonicalId, "1631119");
+  assert.deepEqual(mapping.scope, { teamId: "1610612760" });
+  for (const team of ["1610612760", BOS]) {
+    const f = fixtureCorpus();
+    f.source.identities.add(mapping);
+    f.source.teams.push({
+      team_id: "1610612760",
+      abbreviation: "OKC",
+      name: "Oklahoma City Thunder",
+    });
+    f.schedule.find((g) => g.id === "current")!.data.home_team_id = team;
+    f.records.injuries[0].data.team_id = team;
+    f.records.injuries[0].data.player_name = "Williams, Jaylin";
+    const result = await create(f).read_schedule_and_injuries({
+      game_id: "current",
+      team_id: team,
+    });
+    assert.equal(result.injury_reports.length, 1);
+    assert.equal(
+      result.injury_reports[0].player_id,
+      team === "1610612760" ? "1631119" : null,
+    );
+  }
+});
+
+test("player-grained history reads each eligible game once without loading membership boxes", async () => {
+  for (const table of [
+    "player_box_scores",
+    "player_game_summary",
+    "player_stints",
+  ] as const) {
+    const f = fixtureCorpus();
+    f.history["prior:player_stints"] = f.history["prior:player_box_scores"];
+    const calls: string[] = [];
+    const original = f.source.history;
+    f.source.history = async (...args) => {
+      calls.push(`${args[1].id}:${args[0]}`);
+      return original(...args);
+    };
+    const result = await create(f).query_game_history({
+      table,
+      player_id: "player",
+      season: "2025-26",
+    });
+    assert.equal(result.total, 1);
+    assert.deepEqual(calls, [`prior:${table}`]);
+  }
+});

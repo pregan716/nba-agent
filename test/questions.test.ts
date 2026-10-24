@@ -321,7 +321,13 @@ test("loader verifies all source bytes and published summary totals", async () =
   ]) {
     const previous = objects[key];
     objects[key] = Buffer.from("tampered");
-    await assert.rejects(loadQuestionLayer(adapter, ids), /Integrity mismatch/);
+    // A fresh release must verify every input; a warm parsed-row cache keeps
+    // the already verified immutable revision rather than rereading storage.
+    const uncached = new OddsAdapter(await Release.open(root, store));
+    await assert.rejects(
+      loadQuestionLayer(uncached, ids),
+      /Integrity mismatch/,
+    );
     objects[key] = previous;
   }
   const changed = structuredClone(loaded);

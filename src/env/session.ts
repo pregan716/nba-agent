@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import type { RecordEnvelope } from "../data/contracts.js";
-import { injuryIdentityKey, Identities } from "../data/identity.js";
+import { Identities } from "../data/identity.js";
 import { agentQuestion, buildQuestionSet } from "../questions/builder.js";
 import {
   deepFreeze,
@@ -249,7 +249,16 @@ export class Session {
           game.data.home_team_id,
           game.data.away_team_id,
         ]);
-        if (input.player_id) {
+        // These published tables carry their own canonical player_id. Loading
+        // official boxes first repeats the same partition scan for every game.
+        if (
+          input.player_id &&
+          ![
+            "player_box_scores",
+            "player_stints",
+            "player_game_summary",
+          ].includes(input.table)
+        ) {
           const boxes = await this.#source.history("player_box_scores", game);
           const players = boxes.reason
             ? []
@@ -436,7 +445,7 @@ export class Session {
           player_id = this.#source.identities.resolve(
             "player",
             "injury-name",
-            injuryIdentityKey(r.data.player_name, team),
+            r.data.player_name,
             { teamId: team },
           );
         } catch {
