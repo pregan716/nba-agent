@@ -109,8 +109,22 @@ placeholders have no player mapping. Unresolved names are recorded under
 `injuryIdentityFindings`; no mapping is invented, and `Identities.resolve()` fails for
 these names. Ambiguous name joins also throw; the diagnostic catches those failures,
 records candidate IDs and observation counts, and prints an explicit refused-join
-warning. It does not choose a candidate or publish a mapping. P1a must resolve those
-findings before downstream consumers can resolve the affected injury-name IDs.
+warning. Ordinary ambiguous joins do not produce mappings.
+
+The [brief's shared contract requirements](NBA%20Analyst%20Agent%20%E2%80%94%20Implementation%20Brief%20v2.md#shared-contract-requirements)
+accept exactly two injury-source exceptions (SPO-783, implemented in SPO-784):
+`Yang, Hansen` → `1642905` with basis `brief_sanctioned_alias`, and
+`Williams, Jaylin` → `1631119` only for Oklahoma City (`1610612760`), with basis
+`brief_sanctioned_team_scoped_name`. The latter mapping stores `scope.teamId`;
+`Identities.resolve()` requires matching `{ teamId }` context and refuses missing
+or other-team context. Diagnostic caching includes team for this spelling, so an
+OKC observation cannot authorize a later non-OKC observation. Player `1642444`
+remains distinct. No generic alias or other disambiguation is introduced.
+
+`injuryObservation` already preserves `player_name` and `team_id`. It serves the
+observed PDF fields, not a canonical player ID; resolution and mapping publication
+happen in the diagnostic. Downstream mapping consumers must pass the retained team
+to `Identities.resolve()` for scoped mappings.
 
 The 31 published player-reference identity exceptions retain distinct source IDs but
 are excluded from name-join candidates, as required by their release. This prevents a
@@ -153,14 +167,15 @@ scheduled-start observation contains 21 usable prop rows. The final game's obser
 contains one usable row, seven `no_quotes`, and four `dfs_only` rows, matching the
 published thin-game behavior.
 
-The review follow-up scans all matched regular-season injury-player observations and
-adds **556** unique `injury-name` mappings. Three joins are refused and preserved for
-P1a: `Jones, Dillon` (IDs `1641794` / `196295686`, 1,117 observations), `Williams, Jaylin`
-(IDs `1631119` / `1642444`, 798 observations), and `Yang, Hansen` (no unique normalized
-match, 854 observations). The diagnostic records source-partition evidence for each
-finding. These names have no published injury-name mapping; downstream resolution
-must fail rather than join them at query time. All existing per-game coverage fields
-and totals remain unchanged.
+The diagnostic scans all matched regular-season injury-player observations and
+publishes **558** unique `injury-name` mappings, including the two sanctioned
+exceptions (854 Yang Hansen observations and 798 OKC Jaylin Williams observations).
+`injuryIdentityFindings` now contains only `Jones, Dillon` (IDs `1641794` /
+`196295686`, 1,117 observations), with its source-partition evidence unchanged.
+Dillon Jones remains refused pending a published maintainer exception. All existing
+per-game coverage fields and totals remain unchanged. The P1a audit evidence remains
+its original pre-disposition snapshot; the regenerated P1 coverage reflects these
+accepted rules.
 
 PBP adapters reuse verified schedule, coverage, and game-index metadata for their
 pinned release; public metadata reads return copies. `openCorpus` opens the odds

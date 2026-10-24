@@ -2,7 +2,8 @@ import { gunzipSync } from "node:zlib";
 import type { Corpus } from "./corpus.js";
 import {
   Identities,
-  injuryPlayerName,
+  injuryIdentityKey,
+  resolveInjuryPlayer,
   NameResolutionError,
 } from "./identity.js";
 import { before, instant } from "./time.js";
@@ -217,6 +218,8 @@ export async function coverageDiagnostic(
   const injuryNames = new Map<
     string,
     {
+      playerName: string;
+      teamId?: string;
       playerId: string | null;
       observations: number;
       evidence: RecordEnvelope["provenance"]["object"];
@@ -229,14 +232,17 @@ export async function coverageDiagnostic(
     for (const row of partition) {
       const name = row.data.player_name;
       if (!name) continue; // Explicit team placeholders have no player identity.
-      let match = injuryNames.get(name);
+      const key = injuryIdentityKey(name, row.data.team_id);
+      let match = injuryNames.get(key);
       if (!match) {
         let playerId: string | null = null,
           reason: string | undefined,
           failure: string | undefined,
           candidates: string[] | undefined;
+        let resolved: ReturnType<typeof resolveInjuryPlayer> | undefined;
         try {
-          playerId = ids.byName("player", injuryPlayerName(name));
+          resolved = resolveInjuryPlayer(ids, name, row.data.team_id);
+          playerId = resolved.playerId;
         } catch (error) {
           // Refuse the individual join and preserve its failure for P1a. Never
           // choose a candidate or emit a mapping for an unresolved/ambiguous name.
@@ -246,6 +252,8 @@ export async function coverageDiagnostic(
           candidates = error.candidates;
         }
         match = {
+          playerName: name,
+          ...(name === "Williams, Jaylin" ? { teamId: row.data.team_id } : {}),
           playerId,
           observations: 0,
           evidence: row.provenance.object,
@@ -253,14 +261,15 @@ export async function coverageDiagnostic(
           failure,
           candidates,
         };
-        injuryNames.set(name, match);
+        injuryNames.set(key, match);
         if (playerId)
           ids.add({
             entity: "player",
             provider: "injury-name",
             providerId: name,
             canonicalId: playerId,
-            basis: "unique_normalized_published_player_name",
+            basis: resolved!.basis,
+            ...(resolved!.scope ? { scope: resolved!.scope } : {}),
             evidence: [row.provenance.object, playerEvidence.get(playerId)!],
           });
       }
@@ -268,8 +277,9 @@ export async function coverageDiagnostic(
     }
   const injuryIdentityFindings = [...injuryNames]
     .filter(([, match]) => match.playerId === null)
-    .map(([playerName, match]) => ({
-      playerName,
+    .map(([, match]) => ({
+      playerName: match.playerName,
+      ...(match.teamId ? { teamId: match.teamId } : {}),
       reason: match.reason,
       failure: match.failure,
       candidates: match.candidates,
