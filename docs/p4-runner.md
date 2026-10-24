@@ -4,7 +4,7 @@ The runner in `src/runner/` controls configuration, chronological scheduling, ph
 
 ## Run a fixture
 
-Use Node 22.13 or later (the tested runtime is 22.22.3):
+Use Node 22.16 or later (the tested runtime is 22.22.3):
 
 ```sh
 npm ci
@@ -53,7 +53,7 @@ Two provider limitations are explicit:
 - The token-count API is a preflight estimate. Actual usage is retained even if it exceeds that estimate; an overrun stops further spending and is recorded, never clipped to the configured cap. A remote provider cannot retroactively unspend an input-count discrepancy. See [Anthropic token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting).
 - Opus usage does not expose a separate thinking-token count in the tested SDK response. `reasoning` is `null` (unavailable), while output includes thinking. No text-length estimate is substituted. See [Anthropic thinking documentation](https://platform.claude.com/docs/en/build-with-claude/extended-thinking).
 
-On a transport error or process death, an unsettled model reservation stays fully charged because the provider may have generated an unseen answer. An interrupted code execution likewise retains its compute reservation. Resume does not reset either ledger. A recovered attempt's wall time includes downtime, conservatively preventing fresh wall-clock allowance after interruption.
+On a transport error or process death, an unsettled model reservation stays fully charged because the provider may have generated an unseen answer. An interrupted code execution likewise retains its compute reservation. Resume does not reset either ledger. A recovered attempt's wall time runs from its start through its latest recorded event in the same scope. Outage time and unobserved time after that event are not charged; the interruption remains an infrastructure failure rather than consuming the session's wall-clock allowance.
 
 Statuses are `completed`, `budget_exhausted`, `invalid_output`, `infrastructure_failure` and `skipped`. Every phase has a status and nullable terminating limit (`tokens`, `research_tokens`, `compute`, `tool_calls`, `wall_clock`, `submission_attempts`, `interrupted`, `infrastructure`). Invalid third submissions are invalid output, not budget exhaustion. Stateless postgame is explicitly skipped. Failed sessions remain visible and cannot become valid market-copy submissions.
 

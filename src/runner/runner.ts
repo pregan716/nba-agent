@@ -225,7 +225,15 @@ export class Runner {
         after: before,
         diff: diff(prior.data.before, before),
         usage: budget.totals(),
-        elapsedMs: Date.now() - Date.parse(prior.at),
+        // Charge only observed work in this attempt, not the outage before resume.
+        elapsedMs:
+          this.record
+            .events(undefined, scope)
+            .filter((event) => event.seq > prior.seq)
+            .reduce(
+              (latest, event) => Math.max(latest, Date.parse(event.at)),
+              Date.parse(prior.at),
+            ) - Date.parse(prior.at),
       });
     } else {
       if (

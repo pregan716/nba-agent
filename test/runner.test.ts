@@ -721,3 +721,37 @@ test("workspace snapshots preserve nested paths and refuse links to host data", 
     await s.close();
   }
 });
+
+test("resume charges observed attempt time but excludes a long outage and other scopes", async (t) => {
+  const s = await setup(fixtureConfig(), provider, environment, [games[0]]);
+  t.mock.timers.enable({
+    apis: ["Date"],
+    now: new Date("2026-10-24T00:00:00Z"),
+  });
+  try {
+    const scope = "g1:pregame";
+    const before = snapshot(s.runner.root, s.runner.workspace);
+    s.runner.record.append("session_start", scope, { attempt: 1, before });
+    t.mock.timers.tick(2000);
+    s.runner.record.append("tool_result", scope, {
+      name: "context",
+      result: {},
+    });
+    t.mock.timers.tick(60 * 60 * 1000);
+    s.runner.record.append("diagnostic", "other-scope", {});
+    await s.runner.run(harness);
+    const attempts = s.runner.record.events("session_end", scope);
+    assert.equal(attempts[0].data.status, "infrastructure_failure");
+    assert.equal(attempts[0].data.limit, "interrupted");
+    assert.equal(attempts[0].data.elapsedMs, 2000);
+    assert.equal(attempts[1].data.status, "completed");
+    assert.equal(s.runner.record.events("submission", "g1").length, 1);
+    assert.equal(
+      s.runner.record.events("phase_end", scope)[0].data.status,
+      "completed",
+    );
+  } finally {
+    t.mock.timers.reset();
+    await s.close();
+  }
+});
