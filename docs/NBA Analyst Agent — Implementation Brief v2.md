@@ -34,6 +34,7 @@ What stays: the market line as the question, because it controls difficulty and 
 
 - P1 pinned player-reference release `15fef7276244e616b0817be4` after reading its verified coverage report. The dataset table records the manifest hash and links to the coverage summary; historical-fidelity limitations remain explicit.
 - P1a data quality audit complete ([report](p1a-data-quality-audit.md), SPO-777). All 82 schedules agree, 663 of 663 propped game-player rows resolve from official box scores, 50 of 50 consensus rows and 50 of 50 outcomes reproduce. The user accepted all eight proposed dispositions (I1–I3 identities, T1–T3 timestamps, C1–C2 content). None changes a question set, a cutoff, or a resolution. Recorded below in the shared contract requirements, the datasets table, and Resolved decisions. Gate 2's P1a prerequisite is met.
+- P2 question-set builder complete (SPO-778). Acceptance amended (SPO-785): the published consensus `summary.json` is aggregate-only, so the per-game count check is against the P1 coverage diagnostic and the season total is checked against the summary. No behaviour change.
 
 ### Finalization changes (Oct 23, 2026)
 
@@ -591,7 +592,8 @@ Seven projects, each with inputs, outputs, dependencies, and acceptance criteria
 - Inputs: P1 odds adapter over the pinned consensus layer; stat set.
 - Outputs: a pure function from (game, consensus layer version) to the question set: the `ok` rows of the `scheduled_start` observation for the agreed stats, each as a full question record carrying the row's provenance fields; an exclusion log of the non-`ok` rows by status.
 - Depends on: P1.
-- Acceptance: deterministic on a pinned layer; every `ok` row for an agreed stat at the cutoff observation appears exactly once; no excluded stat appears; `p_over` and `p_under` sum to one within rounding; the layer's manifest and methodology hashes are on every question record; a non-`ok` row produces an exclusion with its status, not a question; the question count per game matches the layer's `summary.json`.
+- Acceptance: deterministic on a pinned layer; every `ok` row for an agreed stat at the cutoff observation appears exactly once; no excluded stat appears; `p_over` and `p_under` sum to one within rounding; the layer's manifest and methodology hashes are on every question record; a non-`ok` row produces an exclusion with its status, not a question; the season total of cutoff questions matches the layer's `summary.json` (`usableBySnapshotKind.scheduled_start`), and per-game question and exclusion counts are reported in the evidence file and cross-checked against the P1 coverage diagnostic pinned to the same manifest. The published `summary.json` carries aggregate counts only, so a per-game comparison against it is not possible.
+- Status: complete Oct 24, 2026 (SPO-778). 82 games, 1,779 questions, 210 exclusions on the pinned layer; the one-question Apr 12 game is included. Census at `docs/evidence/question-sets-2025-26.json`; builder notes in `docs/p2-question-sets.md`.
 
 ### P3 Replay environment
 
