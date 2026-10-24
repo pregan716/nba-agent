@@ -107,13 +107,15 @@ export function analystHarness(options: AnalystOptions): Harness {
     let submitted = false,
       committed = false,
       nudges = 0,
-      rounds = 0;
+      rounds = 0,
+      maxTokens = loop.maxTokens,
+      truncations = 0;
     for (let turn = 1; turn <= loop.maxTurns; turn++) {
       let response: Message;
       try {
         response = await client.messages.create({
           model: options.model,
-          max_tokens: loop.maxTokens,
+          max_tokens: maxTokens,
           system,
           messages,
           tools,
@@ -135,8 +137,34 @@ export function analystHarness(options: AnalystOptions): Harness {
         });
         continue;
       }
-      messages.push({ role: "assistant", content: toParams(response.content) });
-      const uses = response.content.filter((b) => b.type === "tool_use");
+      const truncatedToolCall =
+        response.stop_reason === "max_tokens" &&
+        response.content.some((b) => b.type === "tool_use");
+      if (truncatedToolCall && truncations < loop.truncationRetries) {
+        // A tool call cut at max_tokens has incomplete arguments and no
+        // tool_result can be paired with it. Do not commit it to history; retry
+        // the same request with a larger output allowance (the proxy still
+        // clamps to the remaining budget). Documented stop-reason handling.
+        truncations++;
+        maxTokens = Math.min(loop.maxTokensCeiling, maxTokens * 2);
+        options.onTurn?.({
+          phase,
+          turn,
+          stopReason: response.stop_reason,
+          toolCalls: [],
+        });
+        continue;
+      }
+      // After the retries are spent, keep the text and thinking but drop the
+      // unfinished tool_use blocks, so history never holds an unmatched call.
+      const content = truncatedToolCall
+        ? response.content.filter((b) => b.type !== "tool_use")
+        : response.content;
+      if (content.length)
+        messages.push({ role: "assistant", content: toParams(content) });
+      const uses = truncatedToolCall
+        ? []
+        : response.content.filter((b) => b.type === "tool_use");
       options.onTurn?.({
         phase,
         turn,
@@ -192,8 +220,9 @@ export function analystHarness(options: AnalystOptions): Harness {
       if (response.stop_reason === "max_tokens") {
         messages.push({
           role: "user",
-          content:
-            phase === "postgame"
+          content: truncatedToolCall
+            ? "Your tool call was cut off at the output limit and was not executed. Make smaller tool calls: shorter programs, fewer fields, less text per call."
+            : phase === "postgame"
               ? "Your reply was cut off at the output limit. Finish briefly."
               : "Your reply was cut off at the output limit. Keep replies short and proceed to begin_commit and submit.",
         });

@@ -24,7 +24,7 @@ import type { ContextResult } from "../src/env/contract.js";
 
 type Request = MessageCreateParamsNonStreaming;
 // Content blocks are loosely typed here so the script does not track SDK block shape churn.
-type Step = (request: Request, calls: number) => any[] | "cut";
+type Step = (request: Request, calls: number) => any[] | "cut" | { cut: any[] };
 const usage = {
   input_tokens: 20,
   output_tokens: 10,
@@ -65,19 +65,27 @@ function scripted(steps: Step[], seen: Request[] = []): ModelProvider {
     create: async (request) => {
       seen.push(structuredClone(request));
       const step = steps[Math.min(calls, steps.length - 1)];
-      const content = step(request, calls++);
-      const cut = content === "cut";
+      const produced = step(request, calls++);
+      const cut =
+        produced === "cut" ||
+        (typeof produced === "object" &&
+          !Array.isArray(produced) &&
+          "cut" in produced);
+      const content: any[] =
+        produced === "cut"
+          ? [{ type: "text", text: "partial", citations: null }]
+          : Array.isArray(produced)
+            ? produced
+            : produced.cut;
       return {
         id: `msg_${calls}`,
         type: "message",
         role: "assistant",
         model: "claude-opus-4-6",
-        content: cut
-          ? [{ type: "text", text: "partial", citations: null }]
-          : content,
+        content,
         stop_reason: cut
           ? "max_tokens"
-          : (content as any[]).some((b) => b.type === "tool_use")
+          : content.some((b) => b.type === "tool_use")
             ? "tool_use"
             : "end_turn",
         stop_sequence: null,
@@ -110,6 +118,9 @@ async function run(
       events: runner.record.events(),
       submission: runner.record.events("submission")[0]?.data.value,
       ends: runner.record.events("phase_end").map((e) => e.data),
+      errors: runner.record
+        .events("session_error")
+        .map((e) => String(e.data.message)),
     };
   } finally {
     runner.close();
@@ -471,4 +482,146 @@ test("harness version changes with any prompt, tool definition, loop parameter o
     ),
   );
   assert.equal(base().sdkVersion, f.config.harness.sdkVersion);
+});
+
+/** Reject a conversation in which an assistant tool_use is not answered by a tool_result. */
+function assertPaired(request: Request) {
+  for (let i = 0; i < request.messages.length; i++) {
+    const m = request.messages[i];
+    if (m.role !== "assistant" || typeof m.content === "string") continue;
+    const uses = (m.content as any[]).filter((b) => b.type === "tool_use");
+    if (!uses.length) continue;
+    const next = request.messages[i + 1];
+    const results =
+      next && typeof next.content !== "string"
+        ? (next.content as any[])
+            .filter((b) => b.type === "tool_result")
+            .map((b) => b.tool_use_id)
+        : [];
+    for (const u of uses)
+      assert.ok(
+        results.includes(u.id),
+        `unmatched tool_use ${u.id} at message ${i}`,
+      );
+  }
+}
+
+test("a tool call cut at max_tokens is retried with a larger allowance, never committed unmatched, then dropped with a nudge", async () => {
+  const f = configFor({ horizon: "stateless" });
+  // A budget large enough that the proxy's clamp does not bind, so the
+  // harness-side max_tokens growth is observable at the provider.
+  f.config.budget.pregame.tokens = 1_000_000;
+  f.config.budget.submissionReserve = 10_000;
+  f.config.budget.warnRemainingTokens = 1_000;
+  const seen: Request[] = [];
+  const cutCall = () => ({
+    cut: [
+      { type: "text", text: "let me search", citations: null },
+      {
+        type: "tool_use",
+        id: `toolu_cut_${++ids}`,
+        name: "search_evidence",
+        input: { query: "visi" },
+      },
+    ],
+  });
+  const provider = scripted(
+    [
+      (r) => {
+        assertPaired(r);
+        assert.equal(r.max_tokens, 16000);
+        assert.equal(r.messages.length, 1);
+        return cutCall();
+      },
+      (r) => {
+        assertPaired(r);
+        assert.equal(r.max_tokens, 32000); // retry 1, same history
+        assert.equal(r.messages.length, 1);
+        return cutCall();
+      },
+      (r) => {
+        assertPaired(r);
+        assert.equal(r.max_tokens, 64000); // retry 2, ceiling
+        assert.equal(r.messages.length, 1);
+        return cutCall();
+      },
+      (r) => {
+        // Retries spent: the text survived, the tool_use did not, and a nudge followed.
+        assertPaired(r);
+        assert.equal(r.messages.length, 3);
+        const assistant = r.messages[1].content as any[];
+        assert.deepEqual(
+          assistant.map((b) => b.type),
+          ["text"],
+        );
+        assert.match(textOf(r, 2), /not executed/);
+        return [use("begin_commit", {})];
+      },
+      (r) => {
+        assertPaired(r);
+        return [
+          use("submit", {
+            answers: questionIds(r).map((id) => ({
+              question_id: id,
+              p_over: 0.5,
+            })),
+          }),
+        ];
+      },
+    ],
+    seen,
+  );
+  const result = await run(
+    f.config,
+    provider,
+    analystHarness({ model: "claude-opus-4-6" }),
+    f,
+  );
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.ends[0].status, "completed");
+  assert.equal(seen.length, 5);
+  for (const r of seen) assertPaired(r);
+});
+
+test("probe record round-trip: the writer's shape projects to the strict manifest field", async () => {
+  const { buildProbeRecord, probeForManifest, PROBE_PROMPT } =
+    await import("../src/harness/probe.js");
+  const { configSchema } = await import("../src/runner/config.js");
+  const f = fixtureCorpus();
+  const record = buildProbeRecord({
+    model: "claude-opus-4-6",
+    prompt: PROBE_PROMPT,
+    output: "[UNKNOWN] no regular-season results",
+    executedAt: "2026-10-24T22:00:00.000Z",
+    usage: { input_tokens: 500, output_tokens: 300 },
+    responseModel: "claude-opus-4-6-20260101",
+  });
+  // The stored file shape (through JSON) fails the strict schema as-is...
+  const stored = JSON.parse(JSON.stringify(record));
+  assert.throws(
+    () => configSchema.parse({ ...f.config, contaminationProbe: stored }),
+    /usage|Unrecognized|unrecognized/,
+  );
+  // ...and passes once projected, keeping exactly the five fields.
+  const projected = probeForManifest(stored);
+  assert.deepEqual(Object.keys(projected).sort(), [
+    "executedAt",
+    "model",
+    "output",
+    "prompt",
+    "tools",
+  ]);
+  const parsed = configSchema.parse({
+    ...f.config,
+    contaminationProbe: projected,
+  });
+  assert.equal(parsed.contaminationProbe?.output, record.output);
+  assert.throws(
+    () => probeForManifest({ ...stored, tools: ["web_search"] }),
+    /no tools/,
+  );
+  assert.throws(
+    () => probeForManifest({ ...stored, output: "" }),
+    /missing output/,
+  );
 });

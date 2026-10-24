@@ -33,6 +33,7 @@ import {
 } from "../src/harness/baselines.js";
 import { presetConfig } from "../src/harness/presets.js";
 import type { BaselineName } from "../src/harness/version.js";
+import { probeForManifest } from "../src/harness/probe.js";
 
 const arg = (name: string, fallback?: string) =>
   process.argv
@@ -90,7 +91,7 @@ try {
     seed: baseline === "random-deviation" ? seed : undefined,
     codeExecution: flag("code"),
     contaminationProbe: probeFile
-      ? JSON.parse(await readFile(probeFile, "utf8"))
+      ? probeForManifest(JSON.parse(await readFile(probeFile, "utf8")))
       : null,
   });
   const m = manifest(

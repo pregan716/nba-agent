@@ -26,6 +26,10 @@ export interface LoopParameters {
   nudges: number;
   /** Refresh the budget line (via the context tool) every N tool rounds. */
   contextEvery: number;
+  /** Retries of a response whose tool call was cut at max_tokens, each with a larger allowance. */
+  truncationRetries: number;
+  /** Upper bound on the per-call max_tokens the retries may grow to (the proxy still clamps to budget). */
+  maxTokensCeiling: number;
 }
 export const DEFAULT_LOOP: LoopParameters = {
   maxTokens: 16000,
@@ -33,6 +37,8 @@ export const DEFAULT_LOOP: LoopParameters = {
   maxTurns: 200,
   nudges: 2,
   contextEvery: 5,
+  truncationRetries: 2,
+  maxTokensCeiling: 64000,
 };
 export type BaselineName = "market" | "naive-stats" | "random-deviation";
 
