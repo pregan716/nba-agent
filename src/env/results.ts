@@ -6,6 +6,7 @@ import type { ReleasedQuestion, SubmitInput } from "./contract.js";
 export interface RecordedGame {
   questions: QuestionSet;
   submission: SubmitInput | null;
+  resolution?: ResolutionInput;
 }
 export type Resolution = Pick<ReleasedQuestion, "actual" | "outcome">;
 /** P6 supplies the scoring implementation; unavailable scores remain explicit null. */
@@ -13,6 +14,33 @@ export type QuestionScorer = (
   question: Resolution & { agent_p_over: number; market_p_over: number },
 ) => number | null;
 export const pendingScorer: QuestionScorer = () => null;
+
+export interface ResolutionInput {
+  gameId: string;
+  status: string;
+  boxes: RecordEnvelope[];
+  summaries: RecordEnvelope[];
+  boxReason: string | null;
+  summaryReason: string | null;
+}
+export function resolveFrozen(
+  input: ResolutionInput,
+  player: string,
+  stat: Stat,
+  line: number,
+): Resolution {
+  if (/postponed|cancelled|canceled/i.test(input.status))
+    return { actual: null, outcome: "void" };
+  return resolveOutcome(
+    input.gameId,
+    player,
+    stat,
+    line,
+    input.boxReason ? [] : input.boxes,
+    input.summaryReason ? [] : input.summaries,
+    /partial/i.test(input.summaryReason ?? ""),
+  );
+}
 
 /** Shared by released feedback and odds settlement; official stats, PBP participation. */
 export function resolveOutcome(
@@ -22,6 +50,7 @@ export function resolveOutcome(
   line: number,
   boxes: RecordEnvelope[],
   summaries: RecordEnvelope[],
+  partial = false,
 ): Resolution {
   const box = boxes.filter((b) => b.data.player_id === playerId);
   const summary = summaries.filter((s) => s.data.player_id === playerId);
@@ -35,7 +64,9 @@ export function resolveOutcome(
   const seconds =
     summary.length === 1 && typeof minutes === "number"
       ? minutes * 60
-      : id === "0022500338" && box.length === 1 && summary.length === 0
+      : (partial || id === "0022500338") &&
+          box.length === 1 &&
+          summary.length === 0
         ? box[0].data.minutes_seconds
         : null;
   const outcome =

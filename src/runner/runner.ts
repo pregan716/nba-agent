@@ -1,3 +1,4 @@
+import type { ResolutionInput } from "../env/results.js";
 import {
   WorkspacePolicy,
   type WorkspaceOperation,
@@ -71,6 +72,7 @@ export interface Validation {
 }
 /** Trusted P3 adapter. Paths and persistence hooks are never exposed to the harness. */
 export interface Environment {
+  resolutionInput?(): Promise<ResolutionInput>;
   context(budget: BudgetRemaining): Promise<ContextResult>;
   questions(): Promise<QuestionSet>;
   transition(phase: LifecyclePhase, cutoff: string): Promise<void>;
@@ -190,6 +192,36 @@ export class Runner {
           if (this.record.events("phase_end", scope).length) continue;
           await this.session(game, phase, harness);
           await checkpoint(this.record, this.sink);
+        }
+        // Stateless runs skip the postgame harness, but still need frozen outcomes.
+        // Also retry capture if a postgame session failed before reading its source.
+        if (!this.record.events("resolution_input", game.gameId).length) {
+          const env = await this.environment(
+            {
+              game,
+              phase: "postgame",
+              cutoff: game.release,
+              capabilities: this.manifest.config.profile.capabilities.enabled,
+              memory: this.manifest.config.profile.memory,
+              dataSources: this.manifest.config.profile.dataSources,
+            },
+            {
+              workspace: this.workspace,
+              root: this.root,
+              submission: null,
+              results: () => [],
+            },
+          );
+          try {
+            if (env.resolutionInput)
+              this.record.append(
+                "resolution_input",
+                game.gameId,
+                await env.resolutionInput(),
+              );
+          } finally {
+            await env.close();
+          }
         }
         this.record.append("game_end", game.gameId, {
           development: game.development,
@@ -366,6 +398,9 @@ export class Runner {
             results: () =>
               this.record.events("questions").map((event) => ({
                 questions: structuredClone(event.data),
+                resolution: structuredClone(
+                  this.record.events("resolution_input", event.scope)[0]?.data,
+                ),
                 submission: structuredClone(
                   this.record.events("phase_end", `${event.scope}:pregame`)[0]
                     ?.data.status === "completed"
@@ -397,6 +432,16 @@ export class Runner {
           budget.stage,
           phase === "pregame" ? game.scheduledStart : game.release,
         );
+        if (
+          phase === "postgame" &&
+          env.resolutionInput &&
+          !this.record.events("resolution_input", game.gameId).length
+        ) {
+          const input = await env.resolutionInput();
+          if (!active || controller.signal.aborted)
+            throw new LimitError("wall_clock");
+          this.record.append("resolution_input", game.gameId, input);
+        }
         if (phase === "pregame") {
           const questions = await env.questions();
           if (!active || controller.signal.aborted)

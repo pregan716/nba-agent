@@ -95,7 +95,7 @@ test("five-phase lifecycle accepts runner order, rejects clock drift, reverse an
   assert.throws(() => l.advance("postgame", game.release), refused);
 });
 
-test("release gate, shared outcomes, null scorer stub and explicit projection keep private material out", async () => {
+test("release gate, shared outcomes, shared scorer and explicit projection keep private material out", async () => {
   const f = fixtureCorpus();
   const s0 = new Session(
     f.config,
@@ -147,7 +147,7 @@ test("release gate, shared outcomes, null scorer stub and explicit projection ke
   assert.equal(q.market_p_over, 0.5);
   assert.equal(q.actual, 11);
   assert.equal(q.outcome, "over");
-  assert.equal(q.score, null);
+  assert.equal(q.score, Math.log(0.6) - Math.log(0.5));
   assert.ok(!JSON.stringify(result).includes("SECRET"));
   assert.ok(!JSON.stringify(result).includes("provenance"));
   const odds = await s.query_odds_history({});

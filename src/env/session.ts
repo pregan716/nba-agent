@@ -1,3 +1,4 @@
+import { logSkill } from "../evaluation/scoring.js";
 import { DockerSandbox } from "./sandbox.js";
 import {
   projectHistory,
@@ -9,7 +10,8 @@ import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
 import {
   resolveOutcome,
-  pendingScorer,
+  resolveFrozen,
+  type ResolutionInput,
   type QuestionScorer,
   type RecordedGame,
 } from "./results.js";
@@ -84,7 +86,7 @@ export class Session {
     cutoff: string,
     source: SessionSource,
     private records: () => RecordedGame[] = () => [],
-    private scorer: QuestionScorer = pendingScorer,
+    private scorer: QuestionScorer = logSkill,
     workspacePath?: string,
     runRoot?: string,
   ) {
@@ -678,6 +680,23 @@ export class Session {
       );
     return validateSubmission(value, await this.questions());
   }
+  /** Trusted runner hook, never part of the model tool surface. */
+  async resolutionInput(gameId: string): Promise<ResolutionInput> {
+    const game = (await this.#games()).find((g) => g.id === gameId);
+    if (!game || !visible(releasedGame(game), this.#cutoff))
+      throw new SessionError("cutoff_refused", "Outcome data is not released");
+    const box = await this.#source.history("player_box_scores", game);
+    const summary = await this.#source.history("player_game_summary", game);
+    return {
+      gameId,
+      status: String(game.data.status ?? ""),
+      boxes: this.#eligible(box.records),
+      summaries: this.#eligible(summary.records),
+      boxReason: box.reason,
+      summaryReason: summary.reason,
+    };
+  }
+
   async read_released_results(
     input: ToolInput<"read_released_results">,
   ): Promise<ToolResult<"read_released_results">> {
@@ -692,16 +711,14 @@ export class Session {
         !visible(releasedGame(game), this.#cutoff)
       )
         continue;
-      const box = await this.#source.history("player_box_scores", game);
-      const summary = await this.#source.history("player_game_summary", game);
+      const resolution =
+        record.resolution ?? (await this.resolutionInput(game.id));
       const questions = record.questions.questions.map((q) => {
-        const resolved = resolveOutcome(
-          game.id,
+        const resolved = resolveFrozen(
+          resolution,
           q.player.id,
           q.stat,
           q.selected_line,
-          box.reason ? [] : this.#eligible(box.records),
-          summary.reason ? [] : this.#eligible(summary.records),
         );
         const p =
           record.submission?.answers.find(
@@ -987,6 +1004,7 @@ export function sessionEnvironment(
       workspaceChanges: () => session.workspaceChanges(),
       context: (budget) => session.context(budget),
       questions: () => session.questions(),
+      resolutionInput: () => session.resolutionInput(context.game.gameId),
       transition: (phase, cutoff) => session.transition(phase, cutoff),
       call: (name, input, signal) => {
         validateInput(name, input);
