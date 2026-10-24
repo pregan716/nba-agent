@@ -9,6 +9,7 @@
 import { createHash } from "node:crypto";
 import {
   GAME_HISTORY_TABLES,
+  PLAYER_REFERENCE_TABLES,
   TOOL_NAMES,
   type Phase,
   type ToolName,
@@ -51,7 +52,7 @@ const object = (
 });
 
 const CUTOFF =
-  "The environment applies the session cutoff before searching, counting, paging or returning anything; a record published at or after the cutoff does not exist from your point of view, and no query, count or error reveals it.";
+  "The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them.";
 
 export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
@@ -98,10 +99,13 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "query_game_history",
-    description: `Query published play-by-play release tables for completed games: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions. Rows come with a column definition for every field. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game. Filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. ${CUTOFF} A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.`,
+    description: `Query published play-by-play release tables for completed games, or the static player reference. Game tables: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions; filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game, including the game just played when you are in its postgame. Player-reference tables (player_profiles, player_reference, player_season_stats, player_2024_25_summary, player_career_summary, player_identity_exceptions) are the opening-night roster and career history through 2024-25, built before the season and available in every game; filter by player_id or team_id. Rows come with a column definition for every field. ${CUTOFF} A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.`,
     input_schema: object(
       {
-        table: { type: "string", enum: [...GAME_HISTORY_TABLES] },
+        table: {
+          type: "string",
+          enum: [...GAME_HISTORY_TABLES, ...PLAYER_REFERENCE_TABLES],
+        },
         game_id: id("NBA game id, e.g. 0022500083."),
         team_id: id("NBA team id, e.g. 1610612738."),
         player_id: id("NBA player id."),

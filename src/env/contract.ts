@@ -246,9 +246,30 @@ export const GAME_HISTORY_TABLES = [
   "possessions",
 ] as const;
 export type GameHistoryTable = (typeof GAME_HISTORY_TABLES)[number];
+/**
+ * The always-on, static player reference (brief, datasets table): opening
+ * roster profiles, season and career totals through 2024-25, identity
+ * exceptions. The six published tables P1's PlayerReferenceAdapter allows.
+ * Built to 2025-10-21T23:29:59Z, so eligible for every game; age is computed
+ * for the replay date by the implementation.
+ */
+export const PLAYER_REFERENCE_TABLES = [
+  "player_profiles",
+  "player_reference",
+  "player_season_stats",
+  "player_2024_25_summary",
+  "player_career_summary",
+  "player_identity_exceptions",
+] as const;
+export type PlayerReferenceTable = (typeof PLAYER_REFERENCE_TABLES)[number];
+export type HistoryTable = GameHistoryTable | PlayerReferenceTable;
 export interface QueryGameHistoryInput {
-  table: GameHistoryTable;
-  /** At least one of game_id, team_id, player_id is required. */
+  table: HistoryTable;
+  /**
+   * For game-history tables at least one of game_id, team_id, player_id is
+   * required. Player-reference tables accept player_id and team_id only; the
+   * game and season filters are rejected with `invalid_input`.
+   */
   game_id?: GameId;
   team_id?: TeamId;
   player_id?: PlayerId;
@@ -267,11 +288,11 @@ export interface ColumnDefinition {
   description: string;
 }
 export interface QueryGameHistoryResult extends Page {
-  table: GameHistoryTable;
+  table: HistoryTable;
   /** Explicit definitions for every column returned, from the release data dictionary. */
   columns: ColumnDefinition[];
   rows: Record<string, Scalar>[];
-  /** Eligible games whose product is not `valid` in the release coverage; served as absent. */
+  /** Eligible games whose product is not `valid` in the release coverage; served as absent. Empty for player-reference tables. */
   unavailable: { game_id: GameId; reason: string }[];
 }
 
@@ -591,6 +612,30 @@ export class SessionError extends Error {
 // ---------------------------------------------------------------------------
 
 /**
+ * How a source's availability time compares with the session cutoff.
+ *
+ * `at_or_before`: the environment itself defines the availability instant as a
+ * scheduled boundary (an odds observation's `requested_at`; a game's 9 a.m. ET
+ * release, which is also the postgame cutoff), so a record whose availability
+ * equals the cutoff is eligible. This is what lets the scheduled-start
+ * observation define the questions and lets postgame reflection read the
+ * just-released box score.
+ *
+ * `strictly_before`: the availability time is a publication time outside the
+ * environment's control (posts, transcripts, lineup announcements, printed
+ * injury reports), so equality is not enough.
+ *
+ * `static`: eligible for every game.
+ */
+export type CutoffRule = "at_or_before" | "strictly_before" | "static";
+export interface VisibilityRule {
+  exposes: readonly string[];
+  never: readonly string[];
+  cutoff: CutoffRule;
+  equality: string;
+}
+
+/**
  * Per-source rules every implementation must satisfy. Written as data so the
  * doc, the fixture tests and reviewers can point at one list.
  */
@@ -613,6 +658,7 @@ export const VISIBILITY = {
       "any observation with requested_at after the cutoff",
       "settlement before the game's release time",
     ],
+    cutoff: "at_or_before",
     equality:
       "the observation whose requested_at equals the cutoff is eligible",
   },
@@ -624,7 +670,17 @@ export const VISIBILITY = {
       "any 2025-26 game whose release time is after the cutoff",
       "a product not valid in coverage.jsonl (served as absent with reason)",
     ],
-    equality: "strictly before the cutoff",
+    cutoff: "at_or_before",
+    equality:
+      "a game released at exactly the cutoff is eligible; the postgame cutoff is that game's release instant",
+  },
+  player_reference: {
+    exposes: [
+      "the six published tables: profiles, reference, season stats, 2024-25 summary, career summary, identity exceptions",
+    ],
+    never: ["archive/ contents", "anything built after 2025-10-21T23:29:59Z"],
+    cutoff: "static",
+    equality: "static; eligible for every game",
   },
   injuries: {
     exposes: [
@@ -637,6 +693,7 @@ export const VISIBILITY = {
       "anything carrying an assessment time",
       "a healthy-roster reading of an absent team",
     ],
+    cutoff: "strictly_before",
     equality: "strictly before the cutoff",
   },
   posts: {
@@ -648,6 +705,7 @@ export const VISIBILITY = {
       "a version whose edit time is unknown",
       "relevance scores",
     ],
+    cutoff: "strictly_before",
     equality: "strictly before the cutoff",
   },
   lineups: {
@@ -659,6 +717,7 @@ export const VISIBILITY = {
       "box-score starters as a correction",
       "announcements at or after the cutoff for their own game",
     ],
+    cutoff: "strictly_before",
     equality: "strictly before the cutoff",
   },
   transcripts: {
@@ -670,12 +729,14 @@ export const VISIBILITY = {
       "publication time",
     ],
     never: ["audio", "speaker identities", "title words as availability"],
+    cutoff: "strictly_before",
     equality: "strictly before the cutoff (livestreams: stream end)",
   },
   questions: {
     exposes: ["question_id", "player", "stat", "line", "p_over"],
     never: ["p_under", "provenance", "exclusions", "the full question record"],
-    equality: "n/a",
+    cutoff: "at_or_before",
+    equality: "built from the observation whose requested_at equals the cutoff",
   },
   released_results: {
     exposes: [
@@ -690,6 +751,7 @@ export const VISIBILITY = {
       "evidence_refs",
       "any game whose release time is after the cutoff",
     ],
+    cutoff: "at_or_before",
     equality: "release time at or before the cutoff",
   },
-} as const;
+} as const satisfies Record<string, VisibilityRule>;

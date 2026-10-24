@@ -2,12 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   CAPABILITY_TOOLS,
+  GAME_HISTORY_TABLES,
+  PLAYER_REFERENCE_TABLES,
   SessionError,
   TOOL_CAPABILITY,
   TOOL_NAMES,
   TOOL_PHASES,
   VISIBILITY,
   type ContextResult,
+  type CutoffRule,
   type FetchEvidenceResult,
   type ListQuestionsResult,
   type OddsObservation,
@@ -155,19 +158,63 @@ test("SessionError serializes to the stable error shape", () => {
   });
   assert.ok(e instanceof Error);
 });
-test("visibility rules cover every source the run profile can expose", () => {
-  assert.deepEqual(Object.keys(VISIBILITY).sort(), [
+test("visibility rules cover every source in the brief's datasets table, including the static player reference", () => {
+  const required = [
+    "odds",
     "game_history",
     "injuries",
-    "lineups",
-    "odds",
+    "player_reference",
     "posts",
+    "lineups",
+    "transcripts",
     "questions",
     "released_results",
-    "transcripts",
-  ]);
+  ];
+  for (const source of required) assert.ok(source in VISIBILITY, source);
   for (const rule of Object.values(VISIBILITY)) {
     assert.ok(rule.exposes.length > 0);
     assert.ok(rule.never.length > 0);
   }
+  // Every player-reference and game-history table has a typed route through query_game_history.
+  const history = TOOL_DEFINITIONS.find(
+    (d) => d.name === "query_game_history",
+  )!;
+  const tableEnum = (
+    history.input_schema.properties as Record<string, { enum: string[] }>
+  ).table.enum;
+  for (const t of PLAYER_REFERENCE_TABLES) assert.ok(tableEnum.includes(t), t);
+  for (const t of GAME_HISTORY_TABLES) assert.ok(tableEnum.includes(t), t);
+  assert.equal(VISIBILITY.player_reference.cutoff, "static");
+});
+test("cutoff equality: release-timed sources are eligible at equality, publication-timed sources are not", () => {
+  const atOrBefore: CutoffRule = "at_or_before",
+    strictly: CutoffRule = "strictly_before";
+  assert.equal(VISIBILITY.odds.cutoff, atOrBefore);
+  assert.equal(VISIBILITY.game_history.cutoff, atOrBefore);
+  assert.equal(VISIBILITY.released_results.cutoff, atOrBefore);
+  assert.equal(VISIBILITY.questions.cutoff, atOrBefore);
+  assert.equal(VISIBILITY.injuries.cutoff, strictly);
+  assert.equal(VISIBILITY.posts.cutoff, strictly);
+  assert.equal(VISIBILITY.lineups.cutoff, strictly);
+  assert.equal(VISIBILITY.transcripts.cutoff, strictly);
+  // The shared cutoff sentence in every research tool says the same thing.
+  for (const name of [
+    "search_evidence",
+    "fetch_evidence",
+    "query_game_history",
+    "read_schedule_and_injuries",
+    "query_odds_history",
+  ] as const) {
+    const d = TOOL_DEFINITIONS.find((x) => x.name === name)!.description;
+    assert.match(d, /released after it, do not exist/, name);
+    assert.doesNotMatch(
+      d,
+      /published at or after the cutoff does not exist/,
+      name,
+    );
+  }
+  assert.match(
+    TOOL_DEFINITIONS.find((d) => d.name === "query_game_history")!.description,
+    /including the game just played/,
+  );
 });
