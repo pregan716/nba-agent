@@ -363,7 +363,8 @@ export interface OddsObservation {
   line: number;
   p_over: number;
 }
-export type Outcome = "over" | "under" | "push" | "did_not_play" | "unresolved";
+export type Outcome =
+  "over" | "under" | "push" | "did_not_play" | "unresolved" | "void";
 export interface OddsSettlement {
   game_id: GameId;
   player: PlayerRef;
