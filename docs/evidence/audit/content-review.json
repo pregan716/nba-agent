@@ -1,0 +1,594 @@
+{
+  "reviewer": "Codex qualitative review, 2026-10-24",
+  "method": "Read all 20 complete readable transcripts and all 50 sampled posts plus matching retained reference text. Speaker clusters are local segmentation labels, not identities. Identification uses interview role, direct address and sustained Celtics coaching answers; audio/video voice identity was not independently authenticated. Post labels are not used as evidence for their own correctness. Missing linked context is indeterminate, never silently counted as a pass.",
+  "transcripts": [
+    {
+      "sampleIndex": 1,
+      "id": "media_b850646ed269b7e7e7953ccc7e895841387e41338d91c4a2a4377a98ec1a88c9:run_991663d776e3c9b24a52c9bf7e82dc371cc81c0608bd4ebb8f2b51badb278459",
+      "url": "https://www.youtube.com/watch?v=o34krMCQmHU",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "64.750\u201377.380",
+      "rationale": "Interviewee answers a question addressed to Joe about letting struggling shooters continue; the entire clip is a coach Q&A.",
+      "textSha256": "3082f7c902ccc394c708c8bc0cfc5d43fe1af2c0ceb5556ef6f7ecafc758dd43"
+    },
+    {
+      "sampleIndex": 2,
+      "id": "media_88f58ee717221284e029c684a1872a6c42e927f069128f6d089b3164e0d1c800:run_d1a401a7a5406954bfbcb0c74d7d52eb07f153b76aeee15566de7ec522c35a17",
+      "url": "https://www.youtube.com/watch?v=iKhUMH6aoVo",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "55.630\u2013114.140",
+      "rationale": "Coach explains his responsibility for making Anfernee Simons assertive and comfortable in the offense.",
+      "textSha256": "1fb470c96b1bebbfee47a21c6dec85a327954e83889581d9bdc4d55f89008779"
+    },
+    {
+      "sampleIndex": 3,
+      "id": "media_1dba7b3138b270c04769f5acbf39cf4f552169e8eea3d6441d6247cfa100cbe9:run_22882be4c6ef6e242206085858ce4b1f68e50d19a5338899cc9899ddbf757dff",
+      "url": "https://www.youtube.com/watch?v=1a7HEShDcpk",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "19.499\u201345.373",
+      "rationale": "Single answer to a question explicitly addressed to Joe about Celtics playoff expectations.",
+      "textSha256": "89dc1b863ec482bf947bbee547a210486578a522bf7b664dbc2e9cc5777a7499"
+    },
+    {
+      "sampleIndex": 4,
+      "id": "media_5cadeaf3d26bb6a080a96768a2a85595162f5af8c69cd08bdd24c0d6960266c7:run_15df3ae94835fda66f77aecde8dd77e9f26895bc519a833cbeb24c11ef81fdf6",
+      "url": "https://www.youtube.com/watch?v=jkckDXErVj4",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "67.010\u2013111.900",
+      "rationale": "Coach answers Joe-addressed questions about Vucevic, big-man rotations and rebounding throughout the press conference.",
+      "textSha256": "44a16684cc34c976e5c3f4d4bad95d3e20189bcfea3accd209eb697f867f108b"
+    },
+    {
+      "sampleIndex": 5,
+      "id": "media_2d27c49c9c295583a73cc0b08252b40197329e33fa2a6f47ddb2bf931c2859dd:run_735b40f187afbb1ad8a2cdf2b7210e96788109d72df2220402a30b721372405b",
+      "url": "https://www.youtube.com/watch?v=elMkZ1ddS38",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "13.700\u201350.170",
+      "rationale": "Interviewee answers Joe-addressed questions about second-quarter execution and offensive rebounds.",
+      "textSha256": "92636ce3714d72411175eb6a5ee76e221f82f37bfd5827d3290abe08176e9f85"
+    },
+    {
+      "sampleIndex": 6,
+      "id": "media_26c477df843b34347f689d0ca260091fdf8b3e148ba58b54405201b0464dae20:run_84094518d7e890699521dfb7c5fcc2b9529e582d7f6af8cb0df2831b19cffb24",
+      "url": "https://www.youtube.com/watch?v=BWxGI6dqR6E",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "85.810\u2013119.037",
+      "rationale": "Interviewee answers Joe-addressed question about Jaylen Brown leadership since joining Celtics staff in 2019.",
+      "textSha256": "fa5c8239b5449d1e2be461aa86e01321cda9729150a519925c7ec798ed388959"
+    },
+    {
+      "sampleIndex": 7,
+      "id": "media_336869985c255abc848353942b962637bc2236f01ad94057e6fb456eaee4958b:run_b60cc88ebcec21be301af6a242b2b80d2aacbedf4bc5b24674b57b2772f4045b",
+      "url": "https://www.youtube.com/watch?v=qD9H_lgJtlo",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "192.498\u2013232.302",
+      "rationale": "Coach describes calling Jaylen Brown and supporting him after the Beverly Hills incident; opening questions address Joe.",
+      "textSha256": "37304658248cc6cc7ede80059fe017c13da93a2e08080fb24a722cb9bb1d3de1"
+    },
+    {
+      "sampleIndex": 8,
+      "id": "media_25eb03818b2254a00f72bb185276899759a5b4439b038c41e9a1741425c12a7a:run_bcc0f5f3038ee5f28091074b205eee97c45ff9b879c37725bafd98c047d2e213",
+      "url": "https://www.youtube.com/watch?v=nyzT-YnmVMU",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "2.300\u201365.020",
+      "rationale": "Coach evaluates Denver defense and Boston execution; later reporter directly addresses Joe.",
+      "textSha256": "94c9468167cd7f80ae0f15645926f4327382ca521fb63e5764628eb946871b0e"
+    },
+    {
+      "sampleIndex": 9,
+      "id": "media_5f171f887883733d6bd0b8469d910990ee7f7d39c08563e3a3abe0951f29cc50:run_e09a432e26c781171f24fa5bb37e561b9e844129d5dc16556081223d10cc6679",
+      "url": "https://www.youtube.com/watch?v=O4aeiXIDh4A",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "26.680\u201379.900",
+      "rationale": "Reporter greets Joe; coach describes Vucevic recovery and reintegration.",
+      "textSha256": "9e85353aa99ead4ed0d54d2de5eb9c6285ddb964ebc9471eda94407ed0fe68ea"
+    },
+    {
+      "sampleIndex": 10,
+      "id": "media_07a66fc2a56cbbd4dc5442dee114bc0f96174ea384b8228e6718724fdb95eaa3:run_c63543a3ce44eb2df4f6a2c09f2cf569302264662c91aa071e42cc38229a71ea",
+      "url": "https://www.youtube.com/watch?v=_pRDlyg24Yw",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "A",
+      "evidenceSpanSeconds": "21.840\u201354.165",
+      "rationale": "Question addresses Joe about offensive changes; recurring interviewee explains pace and reads.",
+      "textSha256": "2e5eb30775fd508187c0bf4d0630bea363d3051cbed891cbdbe7ba6e0b5970ea"
+    },
+    {
+      "sampleIndex": 11,
+      "id": "media_c567097ad6744e0c4ee72f9d0119d0aea91290c7fb52270c934b9c0305e76f50:run_65025d18f5f545d532cc682c7ba8bcafc607c84a9e5f35a3b619b46e3f62a66e",
+      "url": "https://www.youtube.com/watch?v=tOq8lLB7XIg",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "C",
+      "evidenceSpanSeconds": "17.170\u201358.360",
+      "rationale": "Moderator announces questions for Joe; coach answers about big-man fouls and roster depth.",
+      "textSha256": "7a71175f41717caa8596e95e64b35dee1c9d250d0e0a5cca2bcf4fdf903400ea"
+    },
+    {
+      "sampleIndex": 12,
+      "id": "media_b9e7e14664757be17e0022079202607305de534692a543524f036f7f37e12133:run_f9d36c87ca3bc8504f67ddb02ccb1b7601a302ab5a84cdd7226ec94a25db5b22",
+      "url": "https://www.youtube.com/watch?v=W7dvysuMPNY",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "C",
+      "evidenceSpanSeconds": "72.420\u2013115.660",
+      "rationale": "Coach explains rotating starters and choosing Josh Minott; questions explicitly address Joe. One answer fragment at 19.900\u201324.880 is assigned D, illustrating unstable clusters.",
+      "textSha256": "81423d3041ecd965c55e85ad290cc73c59634738ffd507df43997d6a9ac4aa5a"
+    },
+    {
+      "sampleIndex": 13,
+      "id": "media_f08fa0acfbc7a6bde36f77776b0857914f4eab2fd92bda7a58076e63d74ad953:run_529907ea1b0c1142957103adadb5cfd7919a086c2475aa31aac344e4104cbc9e",
+      "url": "https://www.youtube.com/watch?v=CMoMVFhGbIQ",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "264.760\u2013309.525",
+      "rationale": "Coach answers about championship experience and young-player development; closing thanks explicitly address Joe.",
+      "textSha256": "60ab313c49f40c11eb2b4b1b9bdf7918fb149df94ba933f75026fbbb1e2ca079"
+    },
+    {
+      "sampleIndex": 14,
+      "id": "media_24331bb4a1d95dc0441f11d25aaaa9bb7a1d908f7f959ac16f4ac3c24a307a5a:run_668cb9b7c73a82adbe53c2c6abc486692df58b7b0f43d79dc32cb38cf52892ed",
+      "url": "https://www.youtube.com/watch?v=MGEmESm_Oek",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "220.810\u2013240.690",
+      "rationale": "Coach discusses Tom Thibodeau visit and Jaylen Brown practice availability; repeated Joe-addressed questions.",
+      "textSha256": "53252cf9185cf6d48d699cd0ecb30625822a14f0f5a82a3d161f2dfa122cba91"
+    },
+    {
+      "sampleIndex": 15,
+      "id": "media_8fc1b53d83a8998398b1f810108362db34788920fb7c10482469829d1ffc6de7:run_4f5de96e4edb97a18c4b8f7ff70014575cc483f10ce53fbbc98cb97674d4e16f",
+      "url": "https://www.youtube.com/watch?v=FqBbn-vuoEU",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "113.380\u2013229.178",
+      "rationale": "Coach discusses adapting to players and explicitly distinguishes working with Joe from obeying him; all answers form one coach interview.",
+      "textSha256": "720fbfe87380c30b42380cd7429aebdb6d49dff82f5287ffd9e652002e0dea10"
+    },
+    {
+      "sampleIndex": 16,
+      "id": "media_7cfac6a8a470d0aa769f5986c73a99d03d74985c3a1e0e6d7341bdaf540e06c0:run_cabeba834e156a55ff09458f8b19ebb6cfedf16abb15b4aafe7946c5716a3adc",
+      "url": "https://www.youtube.com/watch?v=qbNq7SENj1c",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "24.200\u201338.300",
+      "rationale": "Coach answers about Josh Minott return and earning minutes; later reporter addresses Joe. Apparent player-name corruption in question at 38.300\u201352.420 needs source review.",
+      "textSha256": "c1e1901b5001856784d0b8b5343b625b452269f34390f96cdea38296bfce5a1f"
+    },
+    {
+      "sampleIndex": 17,
+      "id": "media_8cfe3324d6350dfc3060e830528c1266174bb9ac3b26cb3dfd5d3b83486c054e:run_6ea3d556c431f2eabc60105ef77aef435a51cafd6a34e0a13c4febede8ada163",
+      "url": "https://www.youtube.com/watch?v=SetvNA4DGQM",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "73.920\u2013111.683",
+      "rationale": "Joe-addressed question about Ron Harper development; coach explains front-office and development staff work.",
+      "textSha256": "62d81b6969cdf621acb2f4b0ecd9870f5def95a55a7f275b17df60abc893c11d"
+    },
+    {
+      "sampleIndex": 18,
+      "id": "media_734746061630be41a4664e61f94bc70219723e972aa91affeb4c336afbc3d5a9:run_7699c011bbee23013986a9b89056f19193a903b0e063f50004cbf1be25a8c760",
+      "url": "https://www.youtube.com/watch?v=2gLI10p6oSc",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "59.790\u2013116.730",
+      "rationale": "Joe-addressed questions about his coaching changes and team learning; recurring respondent discusses his Celtics system.",
+      "textSha256": "af81861a32cea0c4745ea7f29e130c72931c0658b537d965286154ab5c150435"
+    },
+    {
+      "sampleIndex": 19,
+      "id": "media_1d533e277fdcd353c6d24b04a89911340ca658dc4a1c291adac5a39f1bcf8d71:run_91b190df5f8dc668d4c61db9937e4ff08c8b271cc248703aab809ecda2bbf794",
+      "url": "https://www.youtube.com/watch?v=PRr_gKBvlD4",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "183.955\u2013187.590",
+      "rationale": "Coach answers the question about Jaylen Brown illness carrying into the Lakers game; repeated Joe-addressed questions.",
+      "textSha256": "e35aeb92a24b787f299ab65e40de3658a5309b72b04253d79163e023762a1820"
+    },
+    {
+      "sampleIndex": 20,
+      "id": "media_bb0f255642e323c8999f8094149e04bbe21944feb76066830e67cbf8c49ec1e5:run_a68cb0f304c063d6ccd458017011b78161e0a42969852de6f4c48aaec7dac47b",
+      "url": "https://www.youtube.com/watch?v=1eIXEMBtic0",
+      "judgment": "mazzulla_primary",
+      "answerCluster": "B",
+      "evidenceSpanSeconds": "140.100\u2013180.340",
+      "rationale": "Coach explains Ron Harper preparation in Maine and starting him against Houston; questions explicitly address Joe.",
+      "textSha256": "0a116aed84204dc99535c0ac007854aa68ee7ddc7bbf647fd91dae1460c45241"
+    }
+  ],
+  "posts": [
+    {
+      "sampleIndex": 1,
+      "postId": "1984577168928538827",
+      "judgment": "basketball_with_retained_context",
+      "rationale": "Retained linked post establishes basketball context; see retainedContext in content-sample.json.",
+      "textSha256": "2174d663beb4b6d38f1a8d0a98e72c3522cd4863be98f422d4c696b79cdc8d90"
+    },
+    {
+      "sampleIndex": 2,
+      "postId": "1995662070231310429",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "4159db6d6792a5923996e3e492a398e7ff2fa55d1c62b0f08358a51b982fb708"
+    },
+    {
+      "sampleIndex": 3,
+      "postId": "1978417521167343641",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "11d72d2c45e75594d0b7c554459e1d0a5c89328ff52b6ca44124dd90b99fb5d8"
+    },
+    {
+      "sampleIndex": 4,
+      "postId": "1986983975693525326",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "a61c875fc8e6809cb318685449c1e84f6d86885229c64e205648a8eacfeaa1cd"
+    },
+    {
+      "sampleIndex": 5,
+      "postId": "2014484313841004935",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "5d47a8808c16bb4d50ca9b589db57659c08b2e67bc06b19542158b012a7323b0"
+    },
+    {
+      "sampleIndex": 6,
+      "postId": "1986979356602688000",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "2e0530de977790dfeb2e3ecfa88e1dbf8543826a4f19f7176749c593cad66bfd"
+    },
+    {
+      "sampleIndex": 7,
+      "postId": "2012178481619120282",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "3953cff15df55ae3b7649de8170a7d14720d5f7b978ad650321bce34da6861cc"
+    },
+    {
+      "sampleIndex": 8,
+      "postId": "1982625744485584987",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "71d9255cba7af27bcd2b1cd18f238087ba4febb9e323d8770f505c9c4a358281"
+    },
+    {
+      "sampleIndex": 9,
+      "postId": "2014185669296304257",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "3edf3b31d0fcead107baf043ad26fd7ec09870c85ccbf7b7732969f02c0d6947"
+    },
+    {
+      "sampleIndex": 10,
+      "postId": "2029677504131195268",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "e9ede31af94ad18001ae953652da89b352344b2a827c2f476c598aac952a19d8"
+    },
+    {
+      "sampleIndex": 11,
+      "postId": "2024493438457278924",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "9b3d3e996e7926a1a17d9c52602ca0914bd81ef952f83110cf5935b240e71274"
+    },
+    {
+      "sampleIndex": 12,
+      "postId": "2014408696978112527",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "c393feb06edf6d468aae80e40c7da0d8ccfb149b331ac6e850bca262fab069cd"
+    },
+    {
+      "sampleIndex": 13,
+      "postId": "1978453958931652759",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "20c8d0e41bf12f54837b342acc2e5f355e628d68d544dadefce4e113907ac1eb"
+    },
+    {
+      "sampleIndex": 14,
+      "postId": "1984713920310100161",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "6f9300483918c7d33813850c55c607743c775901d831bda4dfe55cdd4ad2499e"
+    },
+    {
+      "sampleIndex": 15,
+      "postId": "2000648852718649578",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "3313241f96933f692148d68d218e31fceef5e5e354e3c9dab63220aef8b68732"
+    },
+    {
+      "sampleIndex": 16,
+      "postId": "1990403624455778313",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "2fa2db96d0e5357d78b89aa222b8d2d2b7beabe38cfc01f487946bbed976ff2d"
+    },
+    {
+      "sampleIndex": 17,
+      "postId": "1984427946648760515",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "9f01784622572dd3ce836663da00effdc97ae2525f4a0f89e81f7058b397f45d"
+    },
+    {
+      "sampleIndex": 18,
+      "postId": "2005846638942728533",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "fefa46e980b2f468986352c444ad9a4c7dd61e66869f297108442c2c2ef0c391"
+    },
+    {
+      "sampleIndex": 19,
+      "postId": "1986255265662947545",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "d223097065b16758a0a468e0be913fb6a016d15693f32aa9298cb5beaadfeeaa"
+    },
+    {
+      "sampleIndex": 20,
+      "postId": "2005849436312699260",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "bc8fca3166fec3c1f3a66704d2b74fd41e55bd40e4ff510afad9278f57125f58"
+    },
+    {
+      "sampleIndex": 21,
+      "postId": "2030666518535553247",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "db604acd49a3bbacb514052e64a41cfbcdcf5026a0e00924aa61efb340879e8b"
+    },
+    {
+      "sampleIndex": 22,
+      "postId": "2015971492886880403",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "530345e772c1c17fec12c7a86d9bd29a28d4b37e58bbb0cbaa7f39f11da54020"
+    },
+    {
+      "sampleIndex": 23,
+      "postId": "1978791949541786021",
+      "judgment": "basketball_with_retained_context",
+      "rationale": "Retained linked post establishes basketball context; see retainedContext in content-sample.json.",
+      "textSha256": "8f696e48ba52f925e61aeb49ce9e30b327034cf3328357fe254b78bfd2c04fae"
+    },
+    {
+      "sampleIndex": 24,
+      "postId": "2019487602227737003",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "bf7d0c1b49d648566a40c3c5aca7d9d7936ea43d9e5a87b1ce57d0f373d0a09c"
+    },
+    {
+      "sampleIndex": 25,
+      "postId": "2001386863219839139",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "059ceb46014b0c33e136e144ba999c1fcbad715b16ea4f897bc00d192300b524"
+    },
+    {
+      "sampleIndex": 26,
+      "postId": "1999090706003222542",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "3f6766634abce3ce4d6af2c4d9b14a7b10195661129a2649d4b1ef47920b45ec"
+    },
+    {
+      "sampleIndex": 27,
+      "postId": "2016717903484080596",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "905409be339e4a999da3a58222654fabf201720fda84f10aa759219b68b9ceb0"
+    },
+    {
+      "sampleIndex": 28,
+      "postId": "1984777552641273886",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "b006a98b4893b2f977d02abf6aca8778630f331860cb921f062521ff84bcb30b"
+    },
+    {
+      "sampleIndex": 29,
+      "postId": "1990261005222560220",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "95c357c22d7925895e52cc8c260eedfff4423a1513c5397a458eb0d442a92594"
+    },
+    {
+      "sampleIndex": 30,
+      "postId": "2019116464704483354",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "f9cd5c850d160e0108ae64be59001397c8663f3507e45f2c47a7c4c26220ac03"
+    },
+    {
+      "sampleIndex": 31,
+      "postId": "2030073910998225305",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "9bba4c9a875eb26147cd6050278bcf52aa2ba7247bc45b4546d65167169e15c0"
+    },
+    {
+      "sampleIndex": 32,
+      "postId": "2019079336179925206",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "81133d0bebfb67ace246c33562ba3696152e368eb3aada6bf476f3d1e1ccae28"
+    },
+    {
+      "sampleIndex": 33,
+      "postId": "2016704517169983544",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "0caaf17aff02e4b4df0113b4cb242cf65910929a6b4f7f6a99f5b99542307c77"
+    },
+    {
+      "sampleIndex": 34,
+      "postId": "1988019334753788345",
+      "judgment": "basketball_with_retained_context",
+      "rationale": "Retained linked post establishes basketball context; see retainedContext in content-sample.json.",
+      "textSha256": "592f332e326051950be801840508abdc8721bf739891f5518d3ffa279946bc09"
+    },
+    {
+      "sampleIndex": 35,
+      "postId": "2010819373661933801",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "d764d6ea6d33b6cf3c1081fdfdb938d525bf9466e9f96de0e497626fff5bdcb4"
+    },
+    {
+      "sampleIndex": 36,
+      "postId": "2020697047540871380",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "735fa7cacd0c3c5fc1eb0481b71bff030049573d777c240bcbc0ccf1ec6d01a8"
+    },
+    {
+      "sampleIndex": 37,
+      "postId": "1996745552986255504",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "102dba355a205bb4e5c360464644a898d179d479dd09936fa7b7774568f30ab2"
+    },
+    {
+      "sampleIndex": 38,
+      "postId": "2006226257147736450",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "f22a18143f4318b44e19df010698c77fe95fca7af7a522730ec708205de60097"
+    },
+    {
+      "sampleIndex": 39,
+      "postId": "2001683168584479177",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "091246bfab9cd3fcfa010c5cb750105688becd2c96f9542b2d970cd4b7d11174"
+    },
+    {
+      "sampleIndex": 40,
+      "postId": "2031404761535201325",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "3359c669a630290f2a363e20342e110bbb18a4b187625e577019371e58fa0dea"
+    },
+    {
+      "sampleIndex": 41,
+      "postId": "1976110822301761819",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "fd9b13a2733f245ea5c6e5150554e66bbfbca01377ccf00b347a290f5adc837d"
+    },
+    {
+      "sampleIndex": 42,
+      "postId": "2018798604073529474",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "4d51b58cc98dbe9595223403ce511ac4a39a9fe98526c362b38b2529da7f1fc9"
+    },
+    {
+      "sampleIndex": 43,
+      "postId": "1988440200444346855",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "d7ab9de98d604bc8056808193298009aaa227d62b039feeeb48f1c19dce55918"
+    },
+    {
+      "sampleIndex": 44,
+      "postId": "1984650180847681784",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "af9ddfb2c23eac6b675807f4392776f28837ead80c9282be97bc3ce2c131bd70"
+    },
+    {
+      "sampleIndex": 45,
+      "postId": "1977762465485066614",
+      "judgment": "basketball_with_retained_context",
+      "rationale": "Retained linked post establishes basketball context; see retainedContext in content-sample.json.",
+      "textSha256": "71eb750427438d86a773a88be8a9add8183179c754984d5680678375cfda3e3d"
+    },
+    {
+      "sampleIndex": 46,
+      "postId": "2019056742932336724",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "3f721557144b433cf3850a6b2ea4a091b9027bab558ed2d126900fcda3ceb317"
+    },
+    {
+      "sampleIndex": 47,
+      "postId": "1981168915830231404",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "3766f284c064fe4a7e6db1fa56bcd0f0d23c8e7aebe69612c29728b84a95fc6b"
+    },
+    {
+      "sampleIndex": 48,
+      "postId": "2002059847504703577",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "2dd786c240daefa65f61a23d04c8bd4de7e548a8d3ea65a5f2c38f24c1dd6d4c"
+    },
+    {
+      "sampleIndex": 49,
+      "postId": "2011576634395304046",
+      "judgment": "indeterminate",
+      "rationale": "Text alone does not establish basketball/NBA relevance and the referenced content is not retained in this pinned label dataset.",
+      "textSha256": "c82d10718efeb51b74ac6578146fc998f34cbac9ecad06ab9e7c77592fbf53b6"
+    },
+    {
+      "sampleIndex": 50,
+      "postId": "2019220348525506801",
+      "judgment": "basketball",
+      "rationale": "Served text names basketball players, teams, play, transactions, or Celtics media.",
+      "textSha256": "66ffca0233cda596cc3712edffc8d57e519a2eff47c2fdd44e3d1be669a3f128"
+    }
+  ],
+  "results": {
+    "transcripts": {
+      "reviewed": 20,
+      "mazzullaPrimary": 20,
+      "observedAdmissionErrors": 0,
+      "observedErrorRate": 0
+    },
+    "posts": {
+      "reviewed": 50,
+      "confirmedBasketball": 33,
+      "confirmedOffTopic": 0,
+      "indeterminate": 17,
+      "confirmedOffTopicFraction": 0,
+      "errorRateBounds": [
+        0,
+        0.34
+      ],
+      "note": "No defensible point estimate of true label error; unresolved cases bound sample error, not a confidence interval for population error."
+    }
+  },
+  "additionalFindings": [
+    {
+      "id": "ASR-1",
+      "sampleIndex": 16,
+      "spanSeconds": "38.300\u201352.420",
+      "classification": "suspected_data_error",
+      "detail": "Question says Luka Doncic came from college and became useful for the Lakers, while answer describes our player. Context suggests corrupted player/team names; confirm original media before correcting."
+    },
+    {
+      "id": "ASR-2",
+      "sampleIndex": 2,
+      "spanSeconds": "77.380\u201390.470",
+      "classification": "suspected_data_error",
+      "detail": "Question about integrating Anfernee Simons contains Ben Affleck. Flag transcription for source review, not canonical identity mapping."
+    }
+  ]
+}

@@ -1,0 +1,2790 @@
+[
+  {
+    "gameId": "0022500083",
+    "espnId": "401809936",
+    "nba": "2025-10-22T23:30:00Z",
+    "espn": "2025-10-22T23:30:00Z",
+    "requested": [
+      "2025-10-22T23:30:00Z"
+    ],
+    "starts": [
+      "2025-10-22T23:30:00Z"
+    ],
+    "cutoff": "2025-10-22T23:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500018",
+    "espnId": "401809945",
+    "nba": "2025-10-24T23:30:00Z",
+    "espn": "2025-10-24T23:30:00Z",
+    "requested": [
+      "2025-10-24T23:30:00Z"
+    ],
+    "starts": [
+      "2025-10-24T23:30:00Z"
+    ],
+    "cutoff": "2025-10-24T23:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500106",
+    "espnId": "401809961",
+    "nba": "2025-10-26T19:30:00Z",
+    "espn": "2025-10-26T19:30:00Z",
+    "requested": [
+      "2025-10-26T19:30:00Z"
+    ],
+    "starts": [
+      "2025-10-26T19:30:00Z"
+    ],
+    "cutoff": "2025-10-26T19:30:00Z",
+    "rows": 18,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500117",
+    "espnId": "401809972",
+    "nba": "2025-10-28T00:00:00Z",
+    "espn": "2025-10-28T00:00:00Z",
+    "requested": [
+      "2025-10-28T00:00:00Z"
+    ],
+    "starts": [
+      "2025-10-28T00:00:00Z"
+    ],
+    "cutoff": "2025-10-28T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500128",
+    "espnId": "401809983",
+    "nba": "2025-10-29T23:00:00Z",
+    "espn": "2025-10-29T23:00:00Z",
+    "requested": [
+      "2025-10-29T23:00:00Z"
+    ],
+    "starts": [
+      "2025-10-29T23:00:00Z"
+    ],
+    "cutoff": "2025-10-29T23:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500021",
+    "espnId": "401809503",
+    "nba": "2025-10-31T23:00:00Z",
+    "espn": "2025-10-31T23:00:00Z",
+    "requested": [
+      "2025-10-31T23:00:00Z"
+    ],
+    "starts": [
+      "2025-10-31T23:00:00Z"
+    ],
+    "cutoff": "2025-10-31T23:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500146",
+    "espnId": "401810001",
+    "nba": "2025-11-02T00:00:00Z",
+    "espn": "2025-11-02T00:00:00Z",
+    "requested": [
+      "2025-11-02T00:00:00Z"
+    ],
+    "starts": [
+      "2025-11-02T00:00:00Z"
+    ],
+    "cutoff": "2025-11-02T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500158",
+    "espnId": "401810013",
+    "nba": "2025-11-04T00:30:00Z",
+    "espn": "2025-11-04T00:30:00Z",
+    "requested": [
+      "2025-11-04T00:30:00Z"
+    ],
+    "starts": [
+      "2025-11-04T00:30:00Z"
+    ],
+    "cutoff": "2025-11-04T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500174",
+    "espnId": "401810029",
+    "nba": "2025-11-06T00:30:00Z",
+    "espn": "2025-11-06T00:30:00Z",
+    "requested": [
+      "2025-11-06T00:30:00Z"
+    ],
+    "starts": [
+      "2025-11-06T00:30:00Z"
+    ],
+    "cutoff": "2025-11-06T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500028",
+    "espnId": "401809510",
+    "nba": "2025-11-08T00:00:00Z",
+    "espn": "2025-11-08T00:00:00Z",
+    "requested": [
+      "2025-11-08T00:00:00Z"
+    ],
+    "starts": [
+      "2025-11-08T00:00:00Z"
+    ],
+    "cutoff": "2025-11-08T00:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500193",
+    "espnId": "401810048",
+    "nba": "2025-11-09T23:00:00Z",
+    "espn": "2025-11-09T23:00:00Z",
+    "requested": [
+      "2025-11-09T23:00:00Z"
+    ],
+    "starts": [
+      "2025-11-09T23:00:00Z"
+    ],
+    "cutoff": "2025-11-09T23:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500209",
+    "espnId": "401810064",
+    "nba": "2025-11-12T01:00:00Z",
+    "espn": "2025-11-12T01:00:00Z",
+    "requested": [
+      "2025-11-12T01:00:00Z"
+    ],
+    "starts": [
+      "2025-11-12T01:00:00Z"
+    ],
+    "cutoff": "2025-11-12T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500216",
+    "espnId": "401810071",
+    "nba": "2025-11-13T00:30:00Z",
+    "espn": "2025-11-13T00:30:00Z",
+    "requested": [
+      "2025-11-13T00:30:00Z"
+    ],
+    "starts": [
+      "2025-11-13T00:30:00Z"
+    ],
+    "cutoff": "2025-11-13T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500233",
+    "espnId": "401810088",
+    "nba": "2025-11-16T20:30:00Z",
+    "espn": "2025-11-16T20:30:00Z",
+    "requested": [
+      "2025-11-16T20:30:00Z"
+    ],
+    "starts": [
+      "2025-11-16T20:30:00Z"
+    ],
+    "cutoff": "2025-11-16T20:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500250",
+    "espnId": "401810105",
+    "nba": "2025-11-19T00:30:00Z",
+    "espn": "2025-11-19T00:30:00Z",
+    "requested": [
+      "2025-11-19T00:30:00Z"
+    ],
+    "starts": [
+      "2025-11-19T00:30:00Z"
+    ],
+    "cutoff": "2025-11-19T00:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500049",
+    "espnId": "401809791",
+    "nba": "2025-11-22T00:30:00Z",
+    "espn": "2025-11-22T00:30:00Z",
+    "requested": [
+      "2025-11-22T00:30:00Z"
+    ],
+    "starts": [
+      "2025-11-22T00:30:00Z"
+    ],
+    "cutoff": "2025-11-22T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500277",
+    "espnId": "401810132",
+    "nba": "2025-11-23T23:00:00Z",
+    "espn": "2025-11-23T23:00:00Z",
+    "requested": [
+      "2025-11-23T23:00:00Z"
+    ],
+    "starts": [
+      "2025-11-23T23:00:00Z"
+    ],
+    "cutoff": "2025-11-23T23:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500060",
+    "espnId": "401809802",
+    "nba": "2025-11-26T22:00:00Z",
+    "espn": "2025-11-26T22:00:00Z",
+    "requested": [
+      "2025-11-26T22:00:00Z"
+    ],
+    "starts": [
+      "2025-11-26T22:00:00Z"
+    ],
+    "cutoff": "2025-11-26T22:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500293",
+    "espnId": "401810148",
+    "nba": "2025-11-29T22:00:00Z",
+    "espn": "2025-11-29T22:00:00Z",
+    "requested": [
+      "2025-11-29T22:00:00Z"
+    ],
+    "starts": [
+      "2025-11-29T22:00:00Z"
+    ],
+    "cutoff": "2025-11-29T22:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500302",
+    "espnId": "401810157",
+    "nba": "2025-11-30T23:00:00Z",
+    "espn": "2025-11-30T23:00:00Z",
+    "requested": [
+      "2025-11-30T23:00:00Z"
+    ],
+    "starts": [
+      "2025-11-30T23:00:00Z"
+    ],
+    "cutoff": "2025-11-30T23:00:00Z",
+    "rows": 33,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500320",
+    "espnId": "401810175",
+    "nba": "2025-12-03T01:00:00Z",
+    "espn": "2025-12-03T01:00:00Z",
+    "requested": [
+      "2025-12-03T01:00:00Z"
+    ],
+    "starts": [
+      "2025-12-03T01:00:00Z"
+    ],
+    "cutoff": "2025-12-03T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500334",
+    "espnId": "401810189",
+    "nba": "2025-12-05T00:00:00Z",
+    "espn": "2025-12-05T00:00:00Z",
+    "requested": [
+      "2025-12-05T00:00:00Z"
+    ],
+    "starts": [
+      "2025-12-05T00:00:00Z"
+    ],
+    "cutoff": "2025-12-05T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500338",
+    "espnId": "401810193",
+    "nba": "2025-12-06T00:00:00Z",
+    "espn": "2025-12-06T00:00:00Z",
+    "requested": [
+      "2025-12-06T00:00:00Z"
+    ],
+    "starts": [
+      "2025-12-06T00:00:00Z"
+    ],
+    "cutoff": "2025-12-06T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500358",
+    "espnId": "401810213",
+    "nba": "2025-12-07T20:30:00Z",
+    "espn": "2025-12-07T20:30:00Z",
+    "requested": [
+      "2025-12-07T20:30:00Z"
+    ],
+    "starts": [
+      "2025-12-07T20:30:00Z"
+    ],
+    "cutoff": "2025-12-07T20:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501206",
+    "espnId": "401836747",
+    "nba": "2025-12-12T01:00:00Z",
+    "espn": "2025-12-12T01:00:00Z",
+    "requested": [
+      "2025-12-12T01:00:00Z"
+    ],
+    "starts": [
+      "2025-12-12T01:00:00Z"
+    ],
+    "cutoff": "2025-12-12T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501222",
+    "espnId": "401836803",
+    "nba": "2025-12-16T00:00:00Z",
+    "espn": "2025-12-16T00:00:00Z",
+    "requested": [
+      "2025-12-16T00:00:00Z"
+    ],
+    "starts": [
+      "2025-12-16T00:00:00Z"
+    ],
+    "cutoff": "2025-12-16T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500381",
+    "espnId": "401810236",
+    "nba": "2025-12-20T00:00:00Z",
+    "espn": "2025-12-20T00:00:00Z",
+    "requested": [
+      "2025-12-20T00:00:00Z"
+    ],
+    "starts": [
+      "2025-12-20T00:00:00Z"
+    ],
+    "cutoff": "2025-12-20T00:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500388",
+    "espnId": "401810243",
+    "nba": "2025-12-21T00:00:00Z",
+    "espn": "2025-12-21T00:00:00Z",
+    "requested": [
+      "2025-12-21T00:00:00Z"
+    ],
+    "starts": [
+      "2025-12-21T00:00:00Z"
+    ],
+    "cutoff": "2025-12-21T00:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500403",
+    "espnId": "401810258",
+    "nba": "2025-12-23T00:30:00Z",
+    "espn": "2025-12-23T00:30:00Z",
+    "requested": [
+      "2025-12-23T00:30:00Z"
+    ],
+    "starts": [
+      "2025-12-23T00:30:00Z"
+    ],
+    "cutoff": "2025-12-23T00:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500426",
+    "espnId": "401810281",
+    "nba": "2025-12-27T00:00:00Z",
+    "espn": "2025-12-27T00:00:00Z",
+    "requested": [
+      "2025-12-27T00:00:00Z"
+    ],
+    "starts": [
+      "2025-12-27T00:00:00Z"
+    ],
+    "cutoff": "2025-12-27T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500444",
+    "espnId": "401810299",
+    "nba": "2025-12-28T23:00:00Z",
+    "espn": "2025-12-28T23:00:00Z",
+    "requested": [
+      "2025-12-28T23:00:00Z"
+    ],
+    "starts": [
+      "2025-12-28T23:00:00Z"
+    ],
+    "cutoff": "2025-12-28T23:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500459",
+    "espnId": "401810314",
+    "nba": "2025-12-31T02:00:00Z",
+    "espn": "2025-12-31T02:00:00Z",
+    "requested": [
+      "2025-12-31T02:00:00Z"
+    ],
+    "starts": [
+      "2025-12-31T02:00:00Z"
+    ],
+    "cutoff": "2025-12-31T02:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500474",
+    "espnId": "401810329",
+    "nba": "2026-01-02T03:00:00Z",
+    "espn": "2026-01-02T03:00:00Z",
+    "requested": [
+      "2026-01-02T03:00:00Z"
+    ],
+    "starts": [
+      "2026-01-02T03:00:00Z"
+    ],
+    "cutoff": "2026-01-02T03:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500493",
+    "espnId": "401810348",
+    "nba": "2026-01-04T03:30:00Z",
+    "espn": "2026-01-04T03:30:00Z",
+    "requested": [
+      "2026-01-04T03:30:00Z"
+    ],
+    "starts": [
+      "2026-01-04T03:30:00Z"
+    ],
+    "cutoff": "2026-01-04T03:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500503",
+    "espnId": "401810358",
+    "nba": "2026-01-06T00:30:00Z",
+    "espn": "2026-01-06T00:30:00Z",
+    "requested": [
+      "2026-01-06T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-06T00:30:00Z"
+    ],
+    "cutoff": "2026-01-06T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500520",
+    "espnId": "401810375",
+    "nba": "2026-01-08T00:00:00Z",
+    "espn": "2026-01-08T00:00:00Z",
+    "requested": [
+      "2026-01-08T00:00:00Z"
+    ],
+    "starts": [
+      "2026-01-08T00:00:00Z"
+    ],
+    "cutoff": "2026-01-08T00:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500532",
+    "espnId": "401810387",
+    "nba": "2026-01-10T00:00:00Z",
+    "espn": "2026-01-10T00:00:00Z",
+    "requested": [
+      "2026-01-10T00:00:00Z"
+    ],
+    "starts": [
+      "2026-01-10T00:00:00Z"
+    ],
+    "cutoff": "2026-01-10T00:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500545",
+    "espnId": "401810400",
+    "nba": "2026-01-11T01:00:00Z",
+    "espn": "2026-01-11T01:00:00Z",
+    "requested": [
+      "2026-01-11T01:00:00Z"
+    ],
+    "starts": [
+      "2026-01-11T01:00:00Z"
+    ],
+    "cutoff": "2026-01-11T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500559",
+    "espnId": "401810414",
+    "nba": "2026-01-13T00:30:00Z",
+    "espn": "2026-01-13T00:30:00Z",
+    "requested": [
+      "2026-01-13T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-13T00:30:00Z"
+    ],
+    "cutoff": "2026-01-13T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500580",
+    "espnId": "401810435",
+    "nba": "2026-01-16T00:30:00Z",
+    "espn": "2026-01-16T00:30:00Z",
+    "requested": [
+      "2026-01-16T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-16T00:30:00Z"
+    ],
+    "cutoff": "2026-01-16T00:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500594",
+    "espnId": "401810449",
+    "nba": "2026-01-18T00:30:00Z",
+    "espn": "2026-01-18T00:30:00Z",
+    "requested": [
+      "2026-01-18T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-18T00:30:00Z"
+    ],
+    "cutoff": "2026-01-18T00:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500017",
+    "espnId": "401809250",
+    "nba": "2026-01-20T01:00:00Z",
+    "espn": "2026-01-20T01:00:00Z",
+    "requested": [
+      "2026-01-20T01:00:00Z"
+    ],
+    "starts": [
+      "2026-01-20T01:00:00Z"
+    ],
+    "cutoff": "2026-01-20T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500621",
+    "espnId": "401810476",
+    "nba": "2026-01-22T00:30:00Z",
+    "espn": "2026-01-22T00:30:00Z",
+    "requested": [
+      "2026-01-22T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-22T00:30:00Z"
+    ],
+    "cutoff": "2026-01-22T00:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500637",
+    "espnId": "401810492",
+    "nba": "2026-01-24T00:30:00Z",
+    "espn": "2026-01-24T00:30:00Z",
+    "requested": [
+      "2026-01-24T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-24T00:30:00Z"
+    ],
+    "cutoff": "2026-01-24T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500647",
+    "espnId": "401810502",
+    "nba": "2026-01-25T01:00:00Z",
+    "espn": "2026-01-25T01:00:00Z",
+    "requested": [
+      "2026-01-25T01:00:00Z"
+    ],
+    "starts": [
+      "2026-01-25T01:00:00Z"
+    ],
+    "cutoff": "2026-01-25T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500660",
+    "espnId": "401810515",
+    "nba": "2026-01-27T01:00:00Z",
+    "espn": "2026-01-27T01:00:00Z",
+    "requested": [
+      "2026-01-27T01:00:00Z"
+    ],
+    "starts": [
+      "2026-01-27T01:00:00Z"
+    ],
+    "cutoff": "2026-01-27T01:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500673",
+    "espnId": "401810528",
+    "nba": "2026-01-29T00:30:00Z",
+    "espn": "2026-01-29T00:30:00Z",
+    "requested": [
+      "2026-01-29T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-29T00:30:00Z"
+    ],
+    "cutoff": "2026-01-29T00:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500689",
+    "espnId": "401810544",
+    "nba": "2026-01-31T00:30:00Z",
+    "espn": "2026-01-31T00:30:00Z",
+    "requested": [
+      "2026-01-31T00:30:00Z"
+    ],
+    "starts": [
+      "2026-01-31T00:30:00Z"
+    ],
+    "cutoff": "2026-01-31T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500702",
+    "espnId": "401810557",
+    "nba": "2026-02-01T20:30:00Z",
+    "espn": "2026-02-01T20:30:00Z",
+    "requested": [
+      "2026-02-01T20:30:00Z"
+    ],
+    "starts": [
+      "2026-02-01T20:30:00Z"
+    ],
+    "cutoff": "2026-02-01T20:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500721",
+    "espnId": "401810576",
+    "nba": "2026-02-04T01:00:00Z",
+    "espn": "2026-02-04T01:00:00Z",
+    "requested": [
+      "2026-02-04T01:00:00Z"
+    ],
+    "starts": [
+      "2026-02-04T01:00:00Z"
+    ],
+    "cutoff": "2026-02-04T01:00:00Z",
+    "rows": 30,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500728",
+    "espnId": "401810583",
+    "nba": "2026-02-05T01:00:00Z",
+    "espn": "2026-02-05T01:00:00Z",
+    "requested": [
+      "2026-02-05T01:00:00Z"
+    ],
+    "starts": [
+      "2026-02-05T01:00:00Z"
+    ],
+    "cutoff": "2026-02-05T01:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500741",
+    "espnId": "401810596",
+    "nba": "2026-02-07T00:30:00Z",
+    "espn": "2026-02-07T00:30:00Z",
+    "requested": [
+      "2026-02-07T00:30:00Z"
+    ],
+    "starts": [
+      "2026-02-07T00:30:00Z"
+    ],
+    "cutoff": "2026-02-07T00:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500757",
+    "espnId": "401810612",
+    "nba": "2026-02-08T17:30:00Z",
+    "espn": "2026-02-08T17:30:00Z",
+    "requested": [
+      "2026-02-08T17:30:00Z"
+    ],
+    "starts": [
+      "2026-02-08T17:30:00Z"
+    ],
+    "cutoff": "2026-02-08T17:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500778",
+    "espnId": "401810633",
+    "nba": "2026-02-12T00:30:00Z",
+    "espn": "2026-02-12T00:30:00Z",
+    "requested": [
+      "2026-02-12T00:30:00Z"
+    ],
+    "starts": [
+      "2026-02-12T00:30:00Z"
+    ],
+    "cutoff": "2026-02-12T00:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500799",
+    "espnId": "401810654",
+    "nba": "2026-02-20T03:00:00Z",
+    "espn": "2026-02-20T03:00:00Z",
+    "requested": [
+      "2026-02-20T03:00:00Z"
+    ],
+    "starts": [
+      "2026-02-20T03:00:00Z"
+    ],
+    "cutoff": "2026-02-20T03:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500823",
+    "espnId": "401810678",
+    "nba": "2026-02-22T23:30:00Z",
+    "espn": "2026-02-22T23:30:00Z",
+    "requested": [
+      "2026-02-22T23:30:00Z"
+    ],
+    "starts": [
+      "2026-02-22T23:30:00Z"
+    ],
+    "cutoff": "2026-02-22T23:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500839",
+    "espnId": "401810694",
+    "nba": "2026-02-25T02:00:00Z",
+    "espn": "2026-02-25T02:00:00Z",
+    "requested": [
+      "2026-02-25T02:00:00Z"
+    ],
+    "starts": [
+      "2026-02-25T02:00:00Z"
+    ],
+    "cutoff": "2026-02-25T02:00:00Z",
+    "rows": 30,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500847",
+    "espnId": "401810702",
+    "nba": "2026-02-26T03:00:00Z",
+    "espn": "2026-02-26T03:00:00Z",
+    "requested": [
+      "2026-02-26T03:00:00Z"
+    ],
+    "starts": [
+      "2026-02-26T03:00:00Z"
+    ],
+    "cutoff": "2026-02-26T03:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500859",
+    "espnId": "401810714",
+    "nba": "2026-02-28T00:30:00Z",
+    "espn": "2026-02-28T00:30:00Z",
+    "requested": [
+      "2026-02-28T00:30:00Z"
+    ],
+    "starts": [
+      "2026-02-28T00:30:00Z"
+    ],
+    "cutoff": "2026-02-28T00:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500874",
+    "espnId": "401810729",
+    "nba": "2026-03-02T01:00:00Z",
+    "espn": "2026-03-02T01:00:00Z",
+    "requested": [
+      "2026-03-02T01:00:00Z"
+    ],
+    "starts": [
+      "2026-03-02T01:00:00Z"
+    ],
+    "cutoff": "2026-03-02T01:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500880",
+    "espnId": "401810735",
+    "nba": "2026-03-03T00:30:00Z",
+    "espn": "2026-03-03T00:30:00Z",
+    "requested": [
+      "2026-03-03T00:30:00Z"
+    ],
+    "starts": [
+      "2026-03-03T00:30:00Z"
+    ],
+    "cutoff": "2026-03-03T00:30:00Z",
+    "rows": 33,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500894",
+    "espnId": "401810749",
+    "nba": "2026-03-05T00:30:00Z",
+    "espn": "2026-03-05T00:30:00Z",
+    "requested": [
+      "2026-03-05T00:30:00Z"
+    ],
+    "starts": [
+      "2026-03-05T00:30:00Z"
+    ],
+    "cutoff": "2026-03-05T00:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500908",
+    "espnId": "401810763",
+    "nba": "2026-03-07T00:00:00Z",
+    "espn": "2026-03-07T00:00:00Z",
+    "requested": [
+      "2026-03-07T00:00:00Z"
+    ],
+    "starts": [
+      "2026-03-07T00:00:00Z"
+    ],
+    "cutoff": "2026-03-07T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500921",
+    "espnId": "401810776",
+    "nba": "2026-03-08T17:00:00Z",
+    "espn": "2026-03-08T17:00:00Z",
+    "requested": [
+      "2026-03-08T17:00:00Z"
+    ],
+    "starts": [
+      "2026-03-08T17:00:00Z"
+    ],
+    "cutoff": "2026-03-08T17:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500942",
+    "espnId": "401810797",
+    "nba": "2026-03-11T00:00:00Z",
+    "espn": "2026-03-11T00:00:00Z",
+    "requested": [
+      "2026-03-11T00:00:00Z"
+    ],
+    "starts": [
+      "2026-03-11T00:00:00Z"
+    ],
+    "cutoff": "2026-03-11T00:00:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500959",
+    "espnId": "401810814",
+    "nba": "2026-03-13T01:30:00Z",
+    "espn": "2026-03-13T01:30:00Z",
+    "requested": [
+      "2026-03-13T01:30:00Z"
+    ],
+    "starts": [
+      "2026-03-13T01:30:00Z"
+    ],
+    "cutoff": "2026-03-13T01:30:00Z",
+    "rows": 30,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500971",
+    "espnId": "401810826",
+    "nba": "2026-03-14T22:00:00Z",
+    "espn": "2026-03-14T22:00:00Z",
+    "requested": [
+      "2026-03-14T22:00:00Z"
+    ],
+    "starts": [
+      "2026-03-14T22:00:00Z"
+    ],
+    "cutoff": "2026-03-14T22:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500986",
+    "espnId": "401810841",
+    "nba": "2026-03-16T23:30:00Z",
+    "espn": "2026-03-16T23:30:00Z",
+    "requested": [
+      "2026-03-16T23:30:00Z"
+    ],
+    "starts": [
+      "2026-03-16T23:30:00Z"
+    ],
+    "cutoff": "2026-03-16T23:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022500999",
+    "espnId": "401810854",
+    "nba": "2026-03-18T23:00:00Z",
+    "espn": "2026-03-18T23:00:00Z",
+    "requested": [
+      "2026-03-18T23:00:00Z"
+    ],
+    "starts": [
+      "2026-03-18T23:00:00Z"
+    ],
+    "cutoff": "2026-03-18T23:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501019",
+    "espnId": "401810874",
+    "nba": "2026-03-21T00:00:00Z",
+    "espn": "2026-03-21T00:00:00Z",
+    "requested": [
+      "2026-03-21T00:00:00Z"
+    ],
+    "starts": [
+      "2026-03-21T00:00:00Z"
+    ],
+    "cutoff": "2026-03-21T00:00:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501035",
+    "espnId": "401810890",
+    "nba": "2026-03-23T00:00:00Z",
+    "espn": "2026-03-23T00:00:00Z",
+    "requested": [
+      "2026-03-23T00:00:00Z"
+    ],
+    "starts": [
+      "2026-03-23T00:00:00Z"
+    ],
+    "cutoff": "2026-03-23T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501054",
+    "espnId": "401810909",
+    "nba": "2026-03-25T23:30:00Z",
+    "espn": "2026-03-25T23:30:00Z",
+    "requested": [
+      "2026-03-25T23:30:00Z"
+    ],
+    "starts": [
+      "2026-03-25T23:30:00Z"
+    ],
+    "cutoff": "2026-03-25T23:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501067",
+    "espnId": "401810922",
+    "nba": "2026-03-27T23:30:00Z",
+    "espn": "2026-03-27T23:30:00Z",
+    "requested": [
+      "2026-03-27T23:30:00Z"
+    ],
+    "starts": [
+      "2026-03-27T23:30:00Z"
+    ],
+    "cutoff": "2026-03-27T23:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501085",
+    "espnId": "401810940",
+    "nba": "2026-03-29T22:00:00Z",
+    "espn": "2026-03-29T22:00:00Z",
+    "requested": [
+      "2026-03-29T22:00:00Z"
+    ],
+    "starts": [
+      "2026-03-29T22:00:00Z"
+    ],
+    "cutoff": "2026-03-29T22:00:00Z",
+    "rows": 30,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501092",
+    "espnId": "401810947",
+    "nba": "2026-03-30T23:30:00Z",
+    "espn": "2026-03-30T23:30:00Z",
+    "requested": [
+      "2026-03-30T23:30:00Z"
+    ],
+    "starts": [
+      "2026-03-30T23:30:00Z"
+    ],
+    "cutoff": "2026-03-30T23:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501106",
+    "espnId": "401810961",
+    "nba": "2026-04-01T23:30:00Z",
+    "espn": "2026-04-01T23:30:00Z",
+    "requested": [
+      "2026-04-01T23:30:00Z"
+    ],
+    "starts": [
+      "2026-04-01T23:30:00Z"
+    ],
+    "cutoff": "2026-04-01T23:30:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501126",
+    "espnId": "401810981",
+    "nba": "2026-04-04T00:00:00Z",
+    "espn": "2026-04-04T00:00:00Z",
+    "requested": [
+      "2026-04-04T00:00:00Z"
+    ],
+    "starts": [
+      "2026-04-04T00:00:00Z"
+    ],
+    "cutoff": "2026-04-04T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501132",
+    "espnId": "401810987",
+    "nba": "2026-04-05T19:30:00Z",
+    "espn": "2026-04-05T19:30:00Z",
+    "requested": [
+      "2026-04-05T19:30:00Z"
+    ],
+    "starts": [
+      "2026-04-05T19:30:00Z"
+    ],
+    "cutoff": "2026-04-05T19:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501149",
+    "espnId": "401811004",
+    "nba": "2026-04-08T00:00:00Z",
+    "espn": "2026-04-08T00:00:00Z",
+    "requested": [
+      "2026-04-08T00:00:00Z"
+    ],
+    "starts": [
+      "2026-04-08T00:00:00Z"
+    ],
+    "cutoff": "2026-04-08T00:00:00Z",
+    "rows": 24,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501168",
+    "espnId": "401811023",
+    "nba": "2026-04-09T23:30:00Z",
+    "espn": "2026-04-09T23:30:00Z",
+    "requested": [
+      "2026-04-09T23:30:00Z"
+    ],
+    "starts": [
+      "2026-04-09T23:30:00Z"
+    ],
+    "cutoff": "2026-04-09T23:30:00Z",
+    "rows": 27,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501174",
+    "espnId": "401811029",
+    "nba": "2026-04-10T23:30:00Z",
+    "espn": "2026-04-10T23:30:00Z",
+    "requested": [
+      "2026-04-10T23:30:00Z"
+    ],
+    "starts": [
+      "2026-04-10T23:30:00Z"
+    ],
+    "cutoff": "2026-04-10T23:30:00Z",
+    "rows": 21,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  },
+  {
+    "gameId": "0022501186",
+    "espnId": "401811041",
+    "nba": "2026-04-12T22:00:00Z",
+    "espn": "2026-04-12T22:00:00Z",
+    "requested": [
+      "2026-04-12T22:00:00Z"
+    ],
+    "starts": [
+      "2026-04-12T22:00:00Z"
+    ],
+    "cutoff": "2026-04-12T22:00:00Z",
+    "rows": 12,
+    "agrees": true,
+    "evidence": [
+      {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/games/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "73ab2e48700e35bf62340ad5f3eaa8f35de0a3ff6170779e9ab74f0e59ab2f2e"
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/schedule-response.json.gz",
+        "sha256": "d3bcd5f8f67c53cba390a2b0dda8ff32d226bd86e9aa87df4ef06134528ff663",
+        "bytes": 53113
+      },
+      {
+        "bucket": "pm-data-platform",
+        "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+        "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+        "bytes": 743735
+      }
+    ]
+  }
+]

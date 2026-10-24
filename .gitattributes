@@ -3,3 +3,6 @@ config/identities.json linguist-generated=true
 config/transcript-index.json linguist-generated=true
 config/transcript-publication-metadata.json linguist-generated=true
 docs/evidence/*.json linguist-generated=true
+docs/evidence/audit/*.json linguist-generated=true
+docs/evidence/audit/*.jsonl linguist-generated=true
+docs/evidence/audit/content-review.json linguist-generated=false

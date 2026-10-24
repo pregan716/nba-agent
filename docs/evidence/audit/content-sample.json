@@ -1,0 +1,984 @@
+{
+  "seed": "SPO-777-v1",
+  "transcriptPopulation": 134,
+  "postPopulation": 1303,
+  "transcripts": [
+    {
+      "id": "media_b850646ed269b7e7e7953ccc7e895841387e41338d91c4a2a4377a98ec1a88c9:run_991663d776e3c9b24a52c9bf7e82dc371cc81c0608bd4ebb8f2b51badb278459",
+      "title": "Joe Mazzulla's Message to Celtics: Just Keep Shooting | Pregame Interview",
+      "url": "https://www.youtube.com/watch?v=o34krMCQmHU",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_b850646ed269b7e7e7953ccc7e895841387e41338d91c4a2a4377a98ec1a88c9/transcript/5ba28de6b7845f10446649275e5a90fa04104febe2515bcdce8db30fefe17004",
+        "sha256": "5ba28de6b7845f10446649275e5a90fa04104febe2515bcdce8db30fefe17004",
+        "bytes": 40092
+      },
+      "textSha256": "3082f7c902ccc394c708c8bc0cfc5d43fe1af2c0ceb5556ef6f7ecafc758dd43"
+    },
+    {
+      "id": "media_88f58ee717221284e029c684a1872a6c42e927f069128f6d089b3164e0d1c800:run_d1a401a7a5406954bfbcb0c74d7d52eb07f153b76aeee15566de7ec522c35a17",
+      "title": "Joe Mazzulla: \"I Can Do Better Job\" Making Anfernee Simons Assertive | Celtics Pregame",
+      "url": "https://www.youtube.com/watch?v=iKhUMH6aoVo",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_88f58ee717221284e029c684a1872a6c42e927f069128f6d089b3164e0d1c800/transcript/0eac4c4570f96ca6a83ed0ae9dd7c58679fab18d55f945274a11b2ad7a68c46a",
+        "sha256": "0eac4c4570f96ca6a83ed0ae9dd7c58679fab18d55f945274a11b2ad7a68c46a",
+        "bytes": 71593
+      },
+      "textSha256": "1fb470c96b1bebbfee47a21c6dec85a327954e83889581d9bdc4d55f89008779"
+    },
+    {
+      "id": "media_1dba7b3138b270c04769f5acbf39cf4f552169e8eea3d6441d6247cfa100cbe9:run_22882be4c6ef6e242206085858ce4b1f68e50d19a5338899cc9899ddbf757dff",
+      "title": "Joe Mazzulla on Going From UNDERDOGS to FAVORITES | Celtics vs 76ers Game 1 Pregame",
+      "url": "https://www.youtube.com/watch?v=1a7HEShDcpk",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_1dba7b3138b270c04769f5acbf39cf4f552169e8eea3d6441d6247cfa100cbe9/transcript/960ee4f0cc2ee90e5d0db2d3f9836761fe7c12a06bdb2646de3c15a7a4687702",
+        "sha256": "960ee4f0cc2ee90e5d0db2d3f9836761fe7c12a06bdb2646de3c15a7a4687702",
+        "bytes": 10129
+      },
+      "textSha256": "89dc1b863ec482bf947bbee547a210486578a522bf7b664dbc2e9cc5777a7499"
+    },
+    {
+      "id": "media_5cadeaf3d26bb6a080a96768a2a85595162f5af8c69cd08bdd24c0d6960266c7:run_15df3ae94835fda66f77aecde8dd77e9f26895bc519a833cbeb24c11ef81fdf6",
+      "title": "Joe Mazzulla on Celtics Game 1 Victory over 76ers | Celtics Press Conference",
+      "url": "https://www.youtube.com/watch?v=jkckDXErVj4",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_5cadeaf3d26bb6a080a96768a2a85595162f5af8c69cd08bdd24c0d6960266c7/transcript/f6babe6e66139fb88cb423113fff582f4653db85fb5b682ec93c177b4044d174",
+        "sha256": "f6babe6e66139fb88cb423113fff582f4653db85fb5b682ec93c177b4044d174",
+        "bytes": 149434
+      },
+      "textSha256": "44a16684cc34c976e5c3f4d4bad95d3e20189bcfea3accd209eb697f867f108b"
+    },
+    {
+      "id": "media_2d27c49c9c295583a73cc0b08252b40197329e33fa2a6f47ddb2bf931c2859dd:run_735b40f187afbb1ad8a2cdf2b7210e96788109d72df2220402a30b721372405b",
+      "title": "Joe Mazzulla on Celtics Game 2 Loss | Celtics vs 76ers Postgame Interview",
+      "url": "https://www.youtube.com/watch?v=elMkZ1ddS38",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_2d27c49c9c295583a73cc0b08252b40197329e33fa2a6f47ddb2bf931c2859dd/transcript/a805b32d82c1b57e0481d5d0dd829def72b873c9f80ab4f762b1059d30c25f0f",
+        "sha256": "a805b32d82c1b57e0481d5d0dd829def72b873c9f80ab4f762b1059d30c25f0f",
+        "bytes": 46265
+      },
+      "textSha256": "92636ce3714d72411175eb6a5ee76e221f82f37bfd5827d3290abe08176e9f85"
+    },
+    {
+      "id": "media_26c477df843b34347f689d0ca260091fdf8b3e148ba58b54405201b0464dae20:run_84094518d7e890699521dfb7c5fcc2b9529e582d7f6af8cb0df2831b19cffb24",
+      "title": "Joe Mazzulla Talks Jaylen Brown's Expanded Role | Celtics vs 76ers Pregame",
+      "url": "https://www.youtube.com/watch?v=BWxGI6dqR6E",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_26c477df843b34347f689d0ca260091fdf8b3e148ba58b54405201b0464dae20/transcript/4ca87e8feae83c1fbda7d8f4aa20f3a2894c5254dd3f7d67f4e69814ea85be44",
+        "sha256": "4ca87e8feae83c1fbda7d8f4aa20f3a2894c5254dd3f7d67f4e69814ea85be44",
+        "bytes": 49752
+      },
+      "textSha256": "fa5c8239b5449d1e2be461aa86e01321cda9729150a519925c7ec798ed388959"
+    },
+    {
+      "id": "media_336869985c255abc848353942b962637bc2236f01ad94057e6fb456eaee4958b:run_b60cc88ebcec21be301af6a242b2b80d2aacbedf4bc5b24674b57b2772f4045b",
+      "title": "Joe Mazzulla Called Jaylen Brown After Beverly Hills Police Exchange | Celtics vs Warriors Preview",
+      "url": "https://www.youtube.com/watch?v=qD9H_lgJtlo",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_336869985c255abc848353942b962637bc2236f01ad94057e6fb456eaee4958b/transcript/e0fa414a4cce32197c2eb4e18920c14f22ace46aec75107b157f49b293a7fd63",
+        "sha256": "e0fa414a4cce32197c2eb4e18920c14f22ace46aec75107b157f49b293a7fd63",
+        "bytes": 71878
+      },
+      "textSha256": "37304658248cc6cc7ede80059fe017c13da93a2e08080fb24a722cb9bb1d3de1"
+    },
+    {
+      "id": "media_25eb03818b2254a00f72bb185276899759a5b4439b038c41e9a1741425c12a7a:run_bcc0f5f3038ee5f28091074b205eee97c45ff9b879c37725bafd98c047d2e213",
+      "title": "Joe Mazzulla FULL Press Conference | Celtics vs Nuggets Postgame",
+      "url": "https://www.youtube.com/watch?v=nyzT-YnmVMU",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_25eb03818b2254a00f72bb185276899759a5b4439b038c41e9a1741425c12a7a/transcript/2297b57c026ccf8b570ac78658edabec4601e4529c5c8d66abc891761f1bd362",
+        "sha256": "2297b57c026ccf8b570ac78658edabec4601e4529c5c8d66abc891761f1bd362",
+        "bytes": 42045
+      },
+      "textSha256": "94c9468167cd7f80ae0f15645926f4327382ca521fb63e5764628eb946871b0e"
+    },
+    {
+      "id": "media_5f171f887883733d6bd0b8469d910990ee7f7d39c08563e3a3abe0951f29cc50:run_e09a432e26c781171f24fa5bb37e561b9e844129d5dc16556081223d10cc6679",
+      "title": "Joe Mazzulla PREVIEWS Nikola Vucevic's Return to Play | Celtics vs Raptors Pregame",
+      "url": "https://www.youtube.com/watch?v=O4aeiXIDh4A",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_5f171f887883733d6bd0b8469d910990ee7f7d39c08563e3a3abe0951f29cc50/transcript/7b86832b1385c9ad521b0c2a04a96fbac7bfcbb62a0fe70890fa39091a00a516",
+        "sha256": "7b86832b1385c9ad521b0c2a04a96fbac7bfcbb62a0fe70890fa39091a00a516",
+        "bytes": 34636
+      },
+      "textSha256": "9e85353aa99ead4ed0d54d2de5eb9c6285ddb964ebc9471eda94407ed0fe68ea"
+    },
+    {
+      "id": "media_07a66fc2a56cbbd4dc5442dee114bc0f96174ea384b8228e6718724fdb95eaa3:run_c63543a3ce44eb2df4f6a2c09f2cf569302264662c91aa071e42cc38229a71ea",
+      "title": "Joe Mazzulla Gives Neemias Queta INJURY UPDATE | Celtics Practice",
+      "url": "https://www.youtube.com/watch?v=_pRDlyg24Yw",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_07a66fc2a56cbbd4dc5442dee114bc0f96174ea384b8228e6718724fdb95eaa3/transcript/22d149c522b064c94c15b25000442ac4a7dbb1cc70ee3cd456cb7d418b44620d",
+        "sha256": "22d149c522b064c94c15b25000442ac4a7dbb1cc70ee3cd456cb7d418b44620d",
+        "bytes": 80596
+      },
+      "textSha256": "2e5eb30775fd508187c0bf4d0630bea363d3051cbed891cbdbe7ba6e0b5970ea"
+    },
+    {
+      "id": "media_c567097ad6744e0c4ee72f9d0119d0aea91290c7fb52270c934b9c0305e76f50:run_65025d18f5f545d532cc682c7ba8bcafc607c84a9e5f35a3b619b46e3f62a66e",
+      "title": "Joe Mazzulla: Today Will Be a MUCH HARDER Challenge | Celtics vs 76ers Pregame",
+      "url": "https://www.youtube.com/watch?v=tOq8lLB7XIg",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_c567097ad6744e0c4ee72f9d0119d0aea91290c7fb52270c934b9c0305e76f50/transcript/831b37fcda379e0627fe4b02b98bc3ac2a801a9f4ec1d634f1dda2d653ecf6d7",
+        "sha256": "831b37fcda379e0627fe4b02b98bc3ac2a801a9f4ec1d634f1dda2d653ecf6d7",
+        "bytes": 32694
+      },
+      "textSha256": "7a71175f41717caa8596e95e64b35dee1c9d250d0e0a5cca2bcf4fdf903400ea"
+    },
+    {
+      "id": "media_b9e7e14664757be17e0022079202607305de534692a543524f036f7f37e12133:run_f9d36c87ca3bc8504f67ddb02ccb1b7601a302ab5a84cdd7226ec94a25db5b22",
+      "title": "Joe Mazzulla on Celtics First Win of Season \"It Takes Time.\" | Postgame Interview (FULL)",
+      "url": "https://www.youtube.com/watch?v=W7dvysuMPNY",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_b9e7e14664757be17e0022079202607305de534692a543524f036f7f37e12133/transcript/2584bdbabbb68a1882939e4618078a912ada84a2ca63f991d09404da0c8574c7",
+        "sha256": "2584bdbabbb68a1882939e4618078a912ada84a2ca63f991d09404da0c8574c7",
+        "bytes": 113064
+      },
+      "textSha256": "81423d3041ecd965c55e85ad290cc73c59634738ffd507df43997d6a9ac4aa5a"
+    },
+    {
+      "id": "media_f08fa0acfbc7a6bde36f77776b0857914f4eab2fd92bda7a58076e63d74ad953:run_529907ea1b0c1142957103adadb5cfd7919a086c2475aa31aac344e4104cbc9e",
+      "title": "Joe Mazzulla Explains How Celtics Championship Experience Helps | Pregame Interview",
+      "url": "https://www.youtube.com/watch?v=CMoMVFhGbIQ",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_f08fa0acfbc7a6bde36f77776b0857914f4eab2fd92bda7a58076e63d74ad953/transcript/83ad2320f27e59f58c3c53e8f7adc0c361edfe55f037a42c0a8481c7610cf539",
+        "sha256": "83ad2320f27e59f58c3c53e8f7adc0c361edfe55f037a42c0a8481c7610cf539",
+        "bytes": 94839
+      },
+      "textSha256": "60ab313c49f40c11eb2b4b1b9bdf7918fb149df94ba933f75026fbbb1e2ca079"
+    },
+    {
+      "id": "media_24331bb4a1d95dc0441f11d25aaaa9bb7a1d908f7f959ac16f4ac3c24a307a5a:run_668cb9b7c73a82adbe53c2c6abc486692df58b7b0f43d79dc32cb38cf52892ed",
+      "title": "Joe Mazzulla Gives Jaylen Brown OPENING NIGHT Injury Update | Celtics Practice",
+      "url": "https://www.youtube.com/watch?v=MGEmESm_Oek",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_24331bb4a1d95dc0441f11d25aaaa9bb7a1d908f7f959ac16f4ac3c24a307a5a/transcript/1008b5ea187ca0d6a6108644f036f3f063255c0e3fe03f1d07ded295819b767d",
+        "sha256": "1008b5ea187ca0d6a6108644f036f3f063255c0e3fe03f1d07ded295819b767d",
+        "bytes": 127849
+      },
+      "textSha256": "53252cf9185cf6d48d699cd0ecb30625822a14f0f5a82a3d161f2dfa122cba91"
+    },
+    {
+      "id": "media_8fc1b53d83a8998398b1f810108362db34788920fb7c10482469829d1ffc6de7:run_4f5de96e4edb97a18c4b8f7ff70014575cc483f10ce53fbbc98cb97674d4e16f",
+      "title": "Joe Mazzulla: \"Unfortunate\" Players Hear Things About His Coaching | Practice Interview",
+      "url": "https://www.youtube.com/watch?v=FqBbn-vuoEU",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_8fc1b53d83a8998398b1f810108362db34788920fb7c10482469829d1ffc6de7/transcript/aa7b7ff98f9e10626d0acd0256afb69330ebb0e49618dca8b4b2e3a09038f989",
+        "sha256": "aa7b7ff98f9e10626d0acd0256afb69330ebb0e49618dca8b4b2e3a09038f989",
+        "bytes": 163555
+      },
+      "textSha256": "720fbfe87380c30b42380cd7429aebdb6d49dff82f5287ffd9e652002e0dea10"
+    },
+    {
+      "id": "media_7cfac6a8a470d0aa769f5986c73a99d03d74985c3a1e0e6d7341bdaf540e06c0:run_cabeba834e156a55ff09458f8b19ebb6cfedf16abb15b4aafe7946c5716a3adc",
+      "title": "Joe Mazzulla Gives a Josh Minott Injury Update | Celtics vs Hawks Pregame",
+      "url": "https://www.youtube.com/watch?v=qbNq7SENj1c",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_7cfac6a8a470d0aa769f5986c73a99d03d74985c3a1e0e6d7341bdaf540e06c0/transcript/cecc8cb6d41fd1ea61faed3e8b53039cb0ee16ad2a81c991098ec3453cba4e63",
+        "sha256": "cecc8cb6d41fd1ea61faed3e8b53039cb0ee16ad2a81c991098ec3453cba4e63",
+        "bytes": 58679
+      },
+      "textSha256": "c1e1901b5001856784d0b8b5343b625b452269f34390f96cdea38296bfce5a1f"
+    },
+    {
+      "id": "media_8cfe3324d6350dfc3060e830528c1266174bb9ac3b26cb3dfd5d3b83486c054e:run_6ea3d556c431f2eabc60105ef77aef435a51cafd6a34e0a13c4febede8ada163",
+      "title": "Joe Mazzulla PRAISES Ron Harper Jr. After Recent Stellar Play | Celtics vs Wizards Pregame",
+      "url": "https://www.youtube.com/watch?v=SetvNA4DGQM",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_8cfe3324d6350dfc3060e830528c1266174bb9ac3b26cb3dfd5d3b83486c054e/transcript/a18c575eb5731a1a463bdb960f849afd312740ec807cbcf663d2f2d494b7d797",
+        "sha256": "a18c575eb5731a1a463bdb960f849afd312740ec807cbcf663d2f2d494b7d797",
+        "bytes": 104850
+      },
+      "textSha256": "62d81b6969cdf621acb2f4b0ecd9870f5def95a55a7f275b17df60abc893c11d"
+    },
+    {
+      "id": "media_734746061630be41a4664e61f94bc70219723e972aa91affeb4c336afbc3d5a9:run_7699c011bbee23013986a9b89056f19193a903b0e063f50004cbf1be25a8c760",
+      "title": "Joe Mazzulla: Anfernee Simons Has Taken Pride in DEFENSE | Celtics vs Heat Pregame",
+      "url": "https://www.youtube.com/watch?v=2gLI10p6oSc",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_734746061630be41a4664e61f94bc70219723e972aa91affeb4c336afbc3d5a9/transcript/056bf8d3eb466ceeddc4c4e891316950b0137e8af0c6bd9fe1c226fa714abdaa",
+        "sha256": "056bf8d3eb466ceeddc4c4e891316950b0137e8af0c6bd9fe1c226fa714abdaa",
+        "bytes": 79929
+      },
+      "textSha256": "af81861a32cea0c4745ea7f29e130c72931c0658b537d965286154ab5c150435"
+    },
+    {
+      "id": "media_1d533e277fdcd353c6d24b04a89911340ca658dc4a1c291adac5a39f1bcf8d71:run_91b190df5f8dc668d4c61db9937e4ff08c8b271cc248703aab809ecda2bbf794",
+      "title": "Joe Mazzulla on Jaylen Brown Illness: Not a Doctor | Celtics vs Wizards Pregame",
+      "url": "https://www.youtube.com/watch?v=PRr_gKBvlD4",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_1d533e277fdcd353c6d24b04a89911340ca658dc4a1c291adac5a39f1bcf8d71/transcript/2e9431bd2c6395ad8dd332c953fe0f38879fd3d523a31be92f0ed1296914460c",
+        "sha256": "2e9431bd2c6395ad8dd332c953fe0f38879fd3d523a31be92f0ed1296914460c",
+        "bytes": 118172
+      },
+      "textSha256": "e35aeb92a24b787f299ab65e40de3658a5309b72b04253d79163e023762a1820"
+    },
+    {
+      "id": "media_bb0f255642e323c8999f8094149e04bbe21944feb76066830e67cbf8c49ec1e5:run_a68cb0f304c063d6ccd458017011b78161e0a42969852de6f4c48aaec7dac47b",
+      "title": "Joe Mazzulla Postgame Interview | Celtics-Rockets",
+      "url": "https://www.youtube.com/watch?v=1eIXEMBtic0",
+      "object": {
+        "bucket": "sports-transcription",
+        "key": "dev/media/media_bb0f255642e323c8999f8094149e04bbe21944feb76066830e67cbf8c49ec1e5/transcript/570e16b4b95058e37ac76348fe3226e02f985be68cf08ef601873cbdef21dd58",
+        "sha256": "570e16b4b95058e37ac76348fe3226e02f985be68cf08ef601873cbdef21dd58",
+        "bytes": 101133
+      },
+      "textSha256": "0a116aed84204dc99535c0ac007854aa68ee7ddc7bbf647fd91dae1460c45241"
+    }
+  ],
+  "posts": [
+    {
+      "id": "38032945:1984577168928538827:x:1984577168928538827",
+      "text": "Listen to the full episode of Still Poddable here: https://t.co/7tCxgMFODq",
+      "retainedContext": [
+        {
+          "id": "1984577165887684889",
+          "type": "reply",
+          "text": "Packard told no lies here. Andre Drummond’s willingness to fire threes last night, including an above the break three, gave me great joy. https://t.co/xjRVKfXx2D"
+        }
+      ],
+      "url": "https://x.com/i/status/1984577168928538827",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1995662070231310429:x:1995662070231310429",
+      "text": "RT @StillPoddable: Are the Celtics actually good? https://t.co/mMQwKNsdnX",
+      "retainedContext": [
+        {
+          "id": "1995661680580444271",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1995662070231310429",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1978417521167343641:x:1978417521167343641",
+      "text": "I wrote about the most humiliating loss of my life.  https://t.co/xeUnO23XyO",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1978417521167343641",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1986983975693525326:x:1986983975693525326",
+      "text": "That Paolo Banchero 3-pointer just set a Magic season high for made 3-pointers. They're 17 for 35 tonight.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1986983975693525326",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2014484313841004935:x:2014484313841004935",
+      "text": "LISTEN TO US SPEAK. LIVE https://t.co/4PFLmhQ9Ts",
+      "retainedContext": [
+        {
+          "id": "2014484149663629795",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2014484313841004935",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1986979356602688000:x:1986979356602688000",
+      "text": "RT @DickLipe: Jaylen Brown has posted his 6th 30-point game of season. That ties the Celtic record for most 30-point games during the seaso…",
+      "retainedContext": [
+        {
+          "id": "1986976485199015993",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1986979356602688000",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2012178481619120282:x:2012178481619120282",
+      "text": "https://t.co/c3IalzzBuF",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2012178481619120282",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1982625744485584987:x:1982625744485584987",
+      "text": "We are going LIVE about the latest rebounding debacle. https://t.co/QXN9Ma5XkX",
+      "retainedContext": [
+        {
+          "id": "1982625546677940271",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1982625744485584987",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2014185669296304257:x:2014185669296304257",
+      "text": "@Jellyman15 @John_Karalis He took the video directly next to me. As he was shooting it he said, “What’s funny is I don’t like the wave either. But at Celtics games now I love it.”",
+      "retainedContext": [
+        {
+          "id": "2014183198586970430",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2014185669296304257",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2029677504131195268:x:2029677504131195268",
+      "text": "RT @TheRyenRussillo: NEW SHOW w/ @DMRussini and @ByJayKing \n\n-Tatum's Return\n-Patriots Regression?\n-The Hornets Surge\n-Life Advice\n\nhttps:/…",
+      "retainedContext": [
+        {
+          "id": "2029675882504188071",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2029677504131195268",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2024493438457278924:x:2024493438457278924",
+      "text": "RT @MikeAScotto: The Boston Celtics plan to sign Dalano Banton to a 10-day deal, sources told @hoopshype. Banton just completed a 10-day de…",
+      "retainedContext": [
+        {
+          "id": "2024491489552638275",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2024493438457278924",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2014408696978112527:x:2014408696978112527",
+      "text": "@BTC_Bash Nah I stunk man lol",
+      "retainedContext": [
+        {
+          "id": "2014407778752675840",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2014408696978112527",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1978453958931652759:x:1978453958931652759",
+      "text": "Unfortunately, the kid expected little but belt to ass. https://t.co/WDJ4zDGIj6",
+      "retainedContext": [
+        {
+          "id": "1978451602835988626",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1978453958931652759",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1984713920310100161:x:1984713920310100161",
+      "text": "RT @NoaDalzell: This was a great read — perfectly captures the vibe of this team right now",
+      "retainedContext": [
+        {
+          "id": "1984689191863660678",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1984713920310100161",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2000648852718649578:x:2000648852718649578",
+      "text": "RT @BrianTRobb: Check out full new episode of @StillPoddable \nApple: https://t.co/c4RQ5gIXaq\nSpotify: https://t.co/5N26IwcDbY\nYoutube @Celt…",
+      "retainedContext": [
+        {
+          "id": "2000647671204184565",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2000648852718649578",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "79806078:1990403624455778313:x:1990403624455778313",
+      "text": "Jordan Walsh logged 8:38 of matchup time vs. James Harden. That's far and away the most time a Celtics player has spent on an opponent in a single game this season. \n\n11 free throw attempts helped Harden generate 17 points on 3-of-7 shooting. \n\nWalsh's top covers this season: https://t.co/Z6MURydVSb",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1990403624455778313",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1984427946648760515:x:1984427946648760515",
+      "text": "Hugo Gonzalez's motor is special.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1984427946648760515",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2005846638942728533:x:2005846638942728533",
+      "text": "Don’t be scared. Ain’t nothing to worry about. https://t.co/QQSz9DZF9l",
+      "retainedContext": [
+        {
+          "id": "2005846516120899831",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2005846638942728533",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1986255265662947545:x:1986255265662947545",
+      "text": "Jaylen Brown has obliterated the Wizards tonight. He has 35 points on 13-for-19 shooting. So much midrange work.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1986255265662947545",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2005849436312699260:x:2005849436312699260",
+      "text": "@Willpower1016 Naturally",
+      "retainedContext": [
+        {
+          "id": "2005848429558214917",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2005849436312699260",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2030666518535553247:x:2030666518535553247",
+      "text": "Kenny Atkinson just called Derrick White “a top-five player in the league.”",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2030666518535553247",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2015971492886880403:x:2015971492886880403",
+      "text": "Payton Pritchard has hit buzzer beaters in each quarter so far.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2015971492886880403",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1978791949541786021:x:1978791949541786021",
+      "text": "https://t.co/pm0PMn1t92",
+      "retainedContext": [
+        {
+          "id": "1978791947092283523",
+          "type": "reply",
+          "text": "Hard coaching from his father. Halftime lessons from Damian Lillard. \n\nAnfernee Simons has always been a learner. He’s eager for the Celtics to push him in ways he’s never been pushed. \n\nMy story is below. 👇 https://t.co/ckGIZnKEWP"
+        }
+      ],
+      "url": "https://x.com/i/status/1978791949541786021",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2019487602227737003:x:2019487602227737003",
+      "text": "Celtics moving closer and closer to getting out of the tax. https://t.co/Y3DW2QKfiZ",
+      "retainedContext": [
+        {
+          "id": "2019485135742058868",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2019487602227737003",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2001386863219839139:x:2001386863219839139",
+      "text": "Brad Stevens: Celtics could be trade deadline buyers ‘if it makes sense’  https://t.co/tuFrWUSyFV",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2001386863219839139",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "79806078:1999090706003222542:x:1999090706003222542",
+      "text": "Sam Cassell x Celtics Talk\n\nhttps://t.co/n9FBsOqvSq",
+      "retainedContext": [
+        {
+          "id": "1999090702286987650",
+          "type": "reply",
+          "text": "☘️🎙️ NEW CELTICS TALK POD\n\nCeltics assistant coach and four-time NBA champ Sam Cassell details Boston’s quest to be the hardest playing team every night. \n\n🎧 https://t.co/nroPps0oEk https://t.co/aMgLDsSKjt"
+        }
+      ],
+      "url": "https://x.com/i/status/1999090706003222542",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2016717903484080596:x:2016717903484080596",
+      "text": "Jaylen Brown said his flagrant foul wasn't intentional: \"Just being aggressive like I always am. Just a basketball play. It's unfortunate. Okongwu's a good player.\"",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2016717903484080596",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1984777552641273886:x:1984777552641273886",
+      "text": "The good news for the Celtics: The Rockets don't have an offensive rebound yet. \n\nThe bad news: That's partially because they have made seven of their first nine shots. Can't rebound if you don't miss.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1984777552641273886",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1990261005222560220:x:1990261005222560220",
+      "text": "Come join us. https://t.co/WQOdQlOo6v",
+      "retainedContext": [
+        {
+          "id": "1990260845448937487",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1990261005222560220",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2019116464704483354:x:2019116464704483354",
+      "text": "Jaylen Brown is doubtful tonight. Sam Hauser is out. And personal reasons are really going around. https://t.co/YtQtCTFADt",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2019116464704483354",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "79806078:2030073910998225305:x:2030073910998225305",
+      "text": "“Annnnnd from Duke … “ https://t.co/0qhUwQNK9N",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2030073910998225305",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2019079336179925206:x:2019079336179925206",
+      "text": "RT @eric_nehm: Last night, I chatted with Giannis Antetokounmpo about how he is feeling heading into the trade deadline.\n\n\"I want to be her…",
+      "retainedContext": [
+        {
+          "id": "2019070812632818067",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2019079336179925206",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2016704517169983544:x:2016704517169983544",
+      "text": "@JamPackard The Packard jinx.",
+      "retainedContext": [
+        {
+          "id": "2016704014763671684",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2016704517169983544",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1988019334753788345:x:1988019334753788345",
+      "text": "@tharealbiga https://t.co/oXBU573TQm https://t.co/NerZKQaGI2",
+      "retainedContext": [
+        {
+          "id": "1987689394770211252",
+          "type": "quote",
+          "text": "True sheep here in Orlando. The arena operations crew just led the crowd in the wave. One of the most pathetic things I've witnessed during my time as a sports writer. Have some respect."
+        },
+        {
+          "id": "1988018988849242496",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/1988019334753788345",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2010819373661933801:x:2010819373661933801",
+      "text": "@HasaunToure @Im_Coopy @JavieoX True story. I can’t jump for shit though so had to smack it away when he brought it back behind his head  lol.",
+      "retainedContext": [
+        {
+          "id": "2010818857665970555",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2010819373661933801",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2020697047540871380:x:2020697047540871380",
+      "text": "@RichFlerra lol you know who I meant",
+      "retainedContext": [
+        {
+          "id": "2020696861347082522",
+          "type": "reply",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2020697047540871380",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1996745552986255504:x:1996745552986255504",
+      "text": "The Celtics’ young wings are doing some thangs. Jordan Walsh is just one point shy of his career high (14) midway through the second quarter and also has two steals and a block.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1996745552986255504",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2006226257147736450:x:2006226257147736450",
+      "text": "RT @celtics_stats: Derrick White tied an NBA record tonight for most blocks by a guard with seven.",
+      "retainedContext": [
+        {
+          "id": "2006224700196675838",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2006226257147736450",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2001683168584479177:x:2001683168584479177",
+      "text": "RT @MikeAScotto: Sources: Boston Celtics G League GM Jarell Christian is joining the WNBA’s Seattle Storm as an assistant coach on Sonia Ra…",
+      "retainedContext": [
+        {
+          "id": "2001669226700943488",
+          "type": "retweet",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2001683168584479177",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2031404761535201325:x:2031404761535201325",
+      "text": "Maybe the coldest shot of all time. https://t.co/EWR4Jif5uE",
+      "retainedContext": [
+        {
+          "id": "2031402515007164607",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2031404761535201325",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "79806078:1976110822301761819:x:1976110822301761819",
+      "text": "Way-too-early Celtics newcomer Hype Train rankings, Game 1: \n\n🚄🚄🚄🚄🚄 Hugo\n🚊🚊🚊🚊 Minott\n🚂🚂🚂 Garza\n🚃🚃 Boucher\nStill in station:  Simons (DNP)",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1976110822301761819",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2018798604073529474:x:2018798604073529474",
+      "text": "https://t.co/4fphLXQN4M",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2018798604073529474",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1988440200444346855:x:1988440200444346855",
+      "text": "Great third quarter for the Celtics, but Quentin Grimes ends it with a heave at the buzzer to pull Philly within 77-71.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1988440200444346855",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1984650180847681784:x:1984650180847681784",
+      "text": "RT @ByJayKing: The Celtics are everything you think they are. That was enough against the 76ers.  https://t.co/1mWN0xgGaB",
+      "retainedContext": [
+        {
+          "id": "1984576842146209936",
+          "type": "retweet",
+          "text": "The Celtics are everything you think they are. That was enough against the 76ers.  https://t.co/1mWN0xgGaB"
+        }
+      ],
+      "url": "https://x.com/i/status/1984650180847681784",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1977762465485066614:x:1977762465485066614",
+      "text": "ICYMI https://t.co/qblqpB4WcN",
+      "retainedContext": [
+        {
+          "id": "1977675687176851664",
+          "type": "quote",
+          "text": "NEW STORY: During Sunday’s preseason win, Joe Mazzulla regularly pulled Celtics players after they gave up OREBs. The tactic left an impression on Luka Garza, one of the players yanked. \n\n“I think he’s just holding us to a standard. And it’s a mindset thing. It’s more than any play.” \n\nhttps://t.co/waAUv9oXVn"
+        }
+      ],
+      "url": "https://x.com/i/status/1977762465485066614",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2019056742932336724:x:2019056742932336724",
+      "text": "https://t.co/TJF2fjZhHD",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2019056742932336724",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:1981168915830231404:x:1981168915830231404",
+      "text": "Hugo Gonzalez checking in at the next whistle to make his NBA debut.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/1981168915830231404",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2002059847504703577:x:2002059847504703577",
+      "text": "I teach my one-and-half-year-old son to find entertainment in the fundamentals. He cheers for good passes and hard box outs. After we went to a game last week, he told me, “Dad, I don’t respect anyone who stands to applaud after the 67th point.” It was the proudest I’ve ever been.",
+      "retainedContext": [
+        {
+          "id": "2002051469084922140",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2002059847504703577",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2011576634395304046:x:2011576634395304046",
+      "text": "Good read here. https://t.co/eEAONUi3vE",
+      "retainedContext": [
+        {
+          "id": "2011574055955316883",
+          "type": "quote",
+          "text": null
+        }
+      ],
+      "url": "https://x.com/i/status/2011576634395304046",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    },
+    {
+      "id": "38032945:2019220348525506801:x:2019220348525506801",
+      "text": "Josh Minott getting a rotation chance here in Houston. He will check in with 5:23 left in the first quarter.",
+      "retainedContext": [],
+      "url": "https://x.com/i/status/2019220348525506801",
+      "object": {
+        "bucket": "sports-text",
+        "key": "v1/relevance/celtics-2025-26/snapshots/d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7.jsonl",
+        "sha256": "d2ae4a5cd2b9a13876eb55146302e0ea99e9e557e6652165d5316ccce05ffbc7"
+      }
+    }
+  ]
+}

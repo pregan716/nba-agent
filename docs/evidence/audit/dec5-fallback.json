@@ -1,0 +1,484 @@
+{
+  "gameId": "0022500338",
+  "summaryStatus": "partial",
+  "servedSummaryRows": 0,
+  "boxRows": 34,
+  "players": [
+    {
+      "id": "1627759",
+      "teamId": "1610612738",
+      "seconds": 2021,
+      "points": 30,
+      "rebounds": 8,
+      "assists": 8,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1628369",
+      "teamId": "1610612738",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1628401",
+      "teamId": "1610612738",
+      "seconds": 1777,
+      "points": 19,
+      "rebounds": 5,
+      "assists": 6,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1628449",
+      "teamId": "1610612738",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1628467",
+      "teamId": "1610612747",
+      "seconds": 930,
+      "points": 0,
+      "rebounds": 1,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629014",
+      "teamId": "1610612738",
+      "seconds": 952,
+      "points": 8,
+      "rebounds": 4,
+      "assists": 2,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629020",
+      "teamId": "1610612747",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629028",
+      "teamId": "1610612747",
+      "seconds": 1652,
+      "points": 6,
+      "rebounds": 10,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629029",
+      "teamId": "1610612747",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629060",
+      "teamId": "1610612747",
+      "seconds": 1756,
+      "points": 13,
+      "rebounds": 7,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629216",
+      "teamId": "1610612747",
+      "seconds": 1778,
+      "points": 18,
+      "rebounds": 1,
+      "assists": 1,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629637",
+      "teamId": "1610612747",
+      "seconds": 830,
+      "points": 3,
+      "rebounds": 4,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1629674",
+      "teamId": "1610612738",
+      "seconds": 1562,
+      "points": 10,
+      "rebounds": 6,
+      "assists": 2,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1630202",
+      "teamId": "1610612738",
+      "seconds": 1809,
+      "points": 15,
+      "rebounds": 2,
+      "assists": 6,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1630214",
+      "teamId": "1610612738",
+      "seconds": 198,
+      "points": 2,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1630559",
+      "teamId": "1610612747",
+      "seconds": 1999,
+      "points": 36,
+      "rebounds": 3,
+      "assists": 8,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1630568",
+      "teamId": "1610612738",
+      "seconds": 140,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 1,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1630573",
+      "teamId": "1610612738",
+      "seconds": 1461,
+      "points": 12,
+      "rebounds": 3,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1631166",
+      "teamId": "1610612747",
+      "seconds": 398,
+      "points": 0,
+      "rebounds": 2,
+      "assists": 3,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1631169",
+      "teamId": "1610612738",
+      "seconds": 1376,
+      "points": 6,
+      "rebounds": 3,
+      "assists": 3,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1631199",
+      "teamId": "1610612738",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1631222",
+      "teamId": "1610612747",
+      "seconds": 1249,
+      "points": 6,
+      "rebounds": 1,
+      "assists": 1,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1631248",
+      "teamId": "1610612738",
+      "seconds": 907,
+      "points": 3,
+      "rebounds": 1,
+      "assists": 2,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1641733",
+      "teamId": "1610612747",
+      "seconds": 1410,
+      "points": 13,
+      "rebounds": 2,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1641775",
+      "teamId": "1610612738",
+      "seconds": 1577,
+      "points": 17,
+      "rebounds": 4,
+      "assists": 1,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1642261",
+      "teamId": "1610612747",
+      "seconds": 830,
+      "points": 5,
+      "rebounds": 1,
+      "assists": 1,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1642355",
+      "teamId": "1610612747",
+      "seconds": 398,
+      "points": 5,
+      "rebounds": 0,
+      "assists": 1,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1642864",
+      "teamId": "1610612738",
+      "seconds": 480,
+      "points": 4,
+      "rebounds": 2,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1642873",
+      "teamId": "1610612738",
+      "seconds": 140,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1642876",
+      "teamId": "1610612747",
+      "seconds": 1170,
+      "points": 0,
+      "rebounds": 3,
+      "assists": 0,
+      "didNotPlay": false,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1642917",
+      "teamId": "1610612738",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "1643024",
+      "teamId": "1610612747",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "203935",
+      "teamId": "1610612747",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    },
+    {
+      "id": "2544",
+      "teamId": "1610612747",
+      "seconds": 0,
+      "points": 0,
+      "rebounds": 0,
+      "assists": 0,
+      "didNotPlay": true,
+      "object": {
+        "bucket": "sports-nba-data",
+        "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+        "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+      }
+    }
+  ]
+}
