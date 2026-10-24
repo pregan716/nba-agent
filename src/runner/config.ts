@@ -28,7 +28,8 @@ export const configSchema = z.strictObject({
   profile: z.strictObject({
     memory: z.strictObject({
       version: name,
-      horizon: z.enum(["stateless", "season"]),
+      horizon: z.enum(["stateless", "season", "window"]),
+      windowGames: z.number().int().min(1).max(82).optional(),
       revision: z.enum(["editable", "append-only"]),
       process: z.enum(["voluntary", "mandated-reflection"]),
     }),
@@ -148,6 +149,13 @@ export function manifest(
   schedule: ScheduledGame[],
 ): Manifest {
   const c = configSchema.parse(config);
+  if (
+    (c.profile.memory.horizon === "window") !==
+    (c.profile.memory.windowGames !== undefined)
+  )
+    throw Error(
+      "Window memory requires windowGames; other horizons must omit it",
+    );
   if (c.budget.submissionReserve >= c.budget.pregame.tokens)
     throw Error("Reserve must be smaller than pregame cap");
   if (

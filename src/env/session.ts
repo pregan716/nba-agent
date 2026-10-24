@@ -1,3 +1,4 @@
+import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
 import {
   resolveOutcome,
@@ -67,6 +68,7 @@ export class Session {
   #cutoff: string;
   #source: SessionSource;
   #closed = false;
+  #workspace?: Workspace;
   #lifecycle: Lifecycle;
   #evidenceIndex?: Promise<EvidenceIndex>;
   constructor(
@@ -77,12 +79,24 @@ export class Session {
     source: SessionSource,
     private records: () => RecordedGame[] = () => [],
     private scorer: QuestionScorer = pendingScorer,
+    workspacePath?: string,
+    runRoot?: string,
   ) {
     this.#config = deepFreeze(structuredClone(config));
     this.#game = deepFreeze(structuredClone(game));
     this.#phase = phase;
     this.#cutoff = Temporal.Instant.from(cutoff).toString();
     this.#lifecycle = new Lifecycle(this.#game, phase, cutoff);
+    if (workspacePath && !runRoot)
+      throw Error("Workspace requires the run root");
+    if (workspacePath)
+      this.#workspace = new Workspace(
+        workspacePath,
+        new WorkspacePolicy(this.#config.profile.memory, () =>
+          this.#closed ? "closed" : this.#phase,
+        ),
+        runRoot!,
+      );
     const configured = config.profile.dataSources.map((d) => ({
       source: d.type,
       release: d.release,
@@ -145,7 +159,8 @@ export class Session {
     this.#check("context", {});
     const game = await this.#current(),
       home = game.data.home_team_id === BOS;
-    const { horizon, revision, process } = this.#config.profile.memory;
+    const { horizon, revision, process, windowGames } =
+      this.#config.profile.memory;
     return {
       team: this.#team(BOS),
       season: "2025-26",
@@ -162,7 +177,12 @@ export class Session {
       phase: this.#phase,
       cutoff: this.#cutoff,
       budget: structuredClone(budget),
-      memory: { horizon, revision, process },
+      memory: {
+        horizon,
+        revision,
+        process,
+        ...(windowGames === undefined ? {} : { window_games: windowGames }),
+      },
       dataset_versions: [...this.#source.versions]
         .sort((a, b) => a.source.localeCompare(b.source))
         .map((d) => ({ ...d })),
@@ -719,6 +739,26 @@ export class Session {
     signal: AbortSignal,
   ): Promise<ToolResult<N>> {
     this.#check(name, input);
+    if (name.startsWith("workspace_")) {
+      if (!this.#workspace)
+        throw new SessionError(
+          "capability_disabled",
+          "Workspace is not installed",
+        );
+      const args = input as { path?: string; content?: string };
+      const w = this.#workspace;
+      const result =
+        name === "workspace_list"
+          ? w.list(args.path)
+          : name === "workspace_read"
+            ? w.read(args.path!)
+            : w.mutate(
+                name.slice(10) as "write" | "append" | "delete",
+                args.path!,
+                Buffer.from(args.content ?? "", "utf8"),
+              );
+      return result as ToolResult<N>;
+    }
     const methods = {
       read_released_results: this.read_released_results.bind(this),
       search_evidence: this.search_evidence.bind(this),
@@ -735,6 +775,20 @@ export class Session {
         "Tool implementation is not installed",
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
+  }
+  /** Trusted P3f integration; all calls use the same service and live policy as tools. */
+  workspaceForSandbox() {
+    const w = this.#workspace;
+    if (!w || !this.#config.profile.capabilities.enabled.includes("workspace"))
+      return undefined;
+    return Object.freeze({
+      list: w.list.bind(w),
+      readBytes: w.readBytes.bind(w),
+      mutate: w.mutate.bind(w),
+    });
+  }
+  workspaceChanges() {
+    return this.#workspace?.changes() ?? [];
   }
   async close() {
     this.#closed = true;
@@ -758,8 +812,12 @@ export function sessionEnvironment(
       source,
       trusted.results,
       hooks.scorer,
+      trusted.workspace,
+      trusted.root,
     );
     return {
+      workspace: session.workspaceForSandbox(),
+      workspaceChanges: () => session.workspaceChanges(),
       context: (budget) => session.context(budget),
       questions: () => session.questions(),
       transition: (phase, cutoff) => session.transition(phase, cutoff),

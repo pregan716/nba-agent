@@ -181,7 +181,12 @@ export function snapshot(root: string, workspace: string): Snapshot {
       else {
         const bytes = readFileSync(path),
           hash = digest(bytes.toString("base64"));
-        files[relative(workspace, path)] = hash;
+        Object.defineProperty(files, relative(workspace, path), {
+          value: hash,
+          enumerable: true,
+          configurable: true,
+          writable: true,
+        });
         try {
           writeFileSync(join(blobs, hash), bytes, {
             flag: "wx",
@@ -218,10 +223,15 @@ export function restore(root: string, workspace: string, snap: Snapshot): void {
 }
 export function diff(before: Snapshot, after: Snapshot) {
   return {
-    added: Object.keys(after.files).filter((p) => !(p in before.files)),
-    removed: Object.keys(before.files).filter((p) => !(p in after.files)),
+    added: Object.keys(after.files).filter(
+      (p) => !Object.hasOwn(before.files, p),
+    ),
+    removed: Object.keys(before.files).filter(
+      (p) => !Object.hasOwn(after.files, p),
+    ),
     changed: Object.keys(after.files).filter(
-      (p) => p in before.files && before.files[p] !== after.files[p],
+      (p) =>
+        Object.hasOwn(before.files, p) && before.files[p] !== after.files[p],
     ),
   };
 }

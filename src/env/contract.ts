@@ -87,7 +87,7 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
 /**
  * Phase legality. A call outside the listed phases fails with `phase_refused`.
  * Workspace tools are additionally refused for stateless runs
- * (`memory_mode_refused`), and `workspace_write`/`workspace_delete` under
+ * (`memory_mode_refused`), and replacement `workspace_write`/any `workspace_delete` under
  * append-only revision rights.
  */
 export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
@@ -174,7 +174,8 @@ export interface ContextResult {
   cutoff: Instant;
   budget: BudgetRemaining;
   memory: {
-    horizon: "stateless" | "season";
+    horizon: "stateless" | "season" | "window";
+    window_games?: number;
     revision: "editable" | "append-only";
     process: "voluntary" | "mandated-reflection";
   };
@@ -574,7 +575,7 @@ export type SessionErrorCode =
   | "phase_refused"
   /** The run profile does not enable the tool's capability. */
   | "capability_disabled"
-  /** Workspace tools in a stateless run, or write/delete under append-only rights. */
+  /** Workspace tools in a stateless run, or replacement/delete under append-only rights. */
   | "memory_mode_refused"
   /** Malformed input (schema violation, unknown table, bad path). */
   | "invalid_input"
