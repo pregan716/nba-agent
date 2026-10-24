@@ -181,7 +181,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_read",
     description:
-      "Read a workspace file as text. Files are whatever you or your earlier sessions wrote: notes, scripts, fitted-model parameters, cached tables.",
+      "Read a UTF-8 text file from your workspace; use code execution for binary files. Text files are whatever you or your earlier sessions wrote: notes, scripts, fitted-model parameters, cached tables.",
     input_schema: object(
       { path: id("File path relative to the workspace root.") },
       ["path"],

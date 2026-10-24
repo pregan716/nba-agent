@@ -432,8 +432,17 @@ test("SIGKILL after commit resumes from durable receipt and committed workspace,
       assert.equal(r.events("submission").length, 1);
       assert.equal(r.events("submission_attempt").length, 1);
       assert.equal(
-        r.events("submission")[0].data.value.workspaceChanges[0].content,
-        Buffer.from("committed memory").toString("base64"),
+        readFileSync(
+          join(
+            root,
+            "fixture",
+            "r1",
+            "blobs",
+            r.events("submission")[0].data.value.workspaceChanges[0].sha256,
+          ),
+          "utf8",
+        ),
+        "committed memory",
       );
       assert.equal(
         r.events("session_end", "g1:pregame")[0].data.limit,
@@ -1130,6 +1139,7 @@ test("real workspace service carries season memory, expires k-window writes and 
         new WorkspacePolicy(config.profile.memory, () =>
           phase === "initialize" || phase === "checkpoint" ? "closed" : phase,
         ),
+        trusted.root,
       );
       return {
         ...base,
@@ -1215,6 +1225,28 @@ test("real workspace service carries season memory, expires k-window writes and 
         const ends = s.runner.record.events("session_end");
         assert.equal(ends.length, 6);
         assert.ok(ends.every((e) => e.data.workspaceChanges.length === 1));
+        const persisted = [...ends, ...s.runner.record.events("submission")];
+        for (const event of persisted) {
+          const journal = (
+            event.kind === "submission" ? event.data.value : event.data
+          ).workspaceChanges;
+          assert.equal(Object.hasOwn(journal[0], "content"), false);
+          assert.deepEqual(Object.keys(journal[0]).sort(), [
+            "operation",
+            "path",
+            "sha256",
+          ]);
+          const bytes = readFileSync(
+            join(s.runner.root, "blobs", journal[0].sha256),
+          );
+          assert.equal(
+            bytes.toString(),
+            `${event.kind === "submission" || event.scope.endsWith(":pregame") ? "pre" : "post"}-${event.scope.split(":")[0]};`,
+          );
+          assert.ok(
+            !JSON.stringify(event.data).includes(bytes.toString("base64")),
+          );
+        }
         assert.deepEqual(ends[0].data.diff.added, ["notes"]);
         assert.deepEqual(ends[1].data.diff.changed, ["notes"]);
         assert.equal(

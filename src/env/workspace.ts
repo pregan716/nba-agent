@@ -1,3 +1,4 @@
+import { writeBlob } from "../runner/blobs.js";
 import {
   constants,
   closeSync,
@@ -20,7 +21,7 @@ export type WorkspaceOperation =
 export interface WorkspaceChange {
   operation: "write" | "append" | "delete";
   path: string;
-  content?: string;
+  sha256?: string;
 }
 /** Shared policy for tool calls and P3f's mediated filesystem operations. */
 export class WorkspacePolicy {
@@ -80,6 +81,7 @@ export class Workspace {
   constructor(
     root: string,
     readonly policy: WorkspacePolicy,
+    private runRoot: string,
   ) {
     this.#root = resolve(root);
     this.#ordinary(this.#root, true);
@@ -195,6 +197,10 @@ export class Workspace {
         existing = this.#exists(target);
       this.policy.authorize(operation, !!existing);
       if (existing && !existing.isFile()) throw invalid();
+      // Persist journal bytes before mutating; failed operations may leave an
+      // unreferenced blob, but successful operations never reference missing data.
+      const sha256 =
+        operation === "delete" ? undefined : writeBlob(this.runRoot, content);
       if (operation === "delete") {
         unlinkSync(target);
       } else {
@@ -220,9 +226,7 @@ export class Workspace {
       this.#changes.push({
         operation,
         path,
-        ...(operation === "delete"
-          ? {}
-          : { content: content.toString("base64") }),
+        ...(sha256 === undefined ? {} : { sha256 }),
       });
       return {
         path,

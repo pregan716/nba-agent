@@ -80,18 +80,22 @@ export class Session {
     private records: () => RecordedGame[] = () => [],
     private scorer: QuestionScorer = pendingScorer,
     workspacePath?: string,
+    runRoot?: string,
   ) {
     this.#config = deepFreeze(structuredClone(config));
     this.#game = deepFreeze(structuredClone(game));
     this.#phase = phase;
     this.#cutoff = Temporal.Instant.from(cutoff).toString();
     this.#lifecycle = new Lifecycle(this.#game, phase, cutoff);
+    if (workspacePath && !runRoot)
+      throw Error("Workspace requires the run root");
     if (workspacePath)
       this.#workspace = new Workspace(
         workspacePath,
         new WorkspacePolicy(this.#config.profile.memory, () =>
           this.#closed ? "closed" : this.#phase,
         ),
+        runRoot!,
       );
     const configured = config.profile.dataSources.map((d) => ({
       source: d.type,
@@ -809,6 +813,7 @@ export function sessionEnvironment(
       trusted.results,
       hooks.scorer,
       trusted.workspace,
+      trusted.root,
     );
     return {
       workspace: session.workspaceForSandbox(),

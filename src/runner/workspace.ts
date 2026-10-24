@@ -1,6 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { digest } from "./config.js";
+import { readBlob, writeBlob } from "./blobs.js";
 import type { Snapshot } from "./record.js";
 import type { WorkspaceChange } from "../env/workspace.js";
 
@@ -15,7 +13,7 @@ export function windowSnapshot(
   for (const change of changes) {
     if (change.operation === "delete") contents.delete(change.path);
     else {
-      const bytes = Buffer.from(change.content!, "base64");
+      const bytes = readBlob(root, change.sha256);
       contents.set(
         change.path,
         change.operation === "append"
@@ -25,19 +23,6 @@ export function windowSnapshot(
     }
   }
   const files: Record<string, string> = Object.create(null);
-  mkdirSync(join(root, "blobs"), { recursive: true });
-  for (const [path, bytes] of contents) {
-    const hash = digest(bytes.toString("base64"));
-    files[path] = hash;
-    try {
-      writeFileSync(join(root, "blobs", hash), bytes, {
-        flag: "wx",
-        mode: 0o600,
-        flush: true,
-      });
-    } catch (e: any) {
-      if (e.code !== "EEXIST") throw e;
-    }
-  }
+  for (const [path, bytes] of contents) files[path] = writeBlob(root, bytes);
   return { files };
 }

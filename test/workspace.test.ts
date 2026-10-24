@@ -25,7 +25,7 @@ const setup = () => {
   const f = fixtureCorpus();
   let phase: "pregame" | "commit" | "postgame" | "closed" = "pregame";
   const policy = new WorkspacePolicy(f.config.profile.memory, () => phase);
-  const w = new Workspace(path, policy);
+  const w = new Workspace(path, policy, root);
   return {
     root,
     path,
@@ -151,6 +151,7 @@ test("session routes workspace tools and revokes the shared service at commit an
     undefined,
     undefined,
     s.path,
+    s.root,
   );
   const signal = new AbortController().signal;
   try {
@@ -226,6 +227,40 @@ test("window snapshots expire inherited prefixes and preserve recent binary writ
     );
     s.f.config.profile.memory.horizon = "season";
     assert.throws(() => manifest(s.f.config, [s.f.game]), /windowGames/);
+  } finally {
+    s.close();
+  }
+});
+
+test("journal hashes deduplicate snapshot bytes and window replay rejects corrupt blobs", () => {
+  const s = setup();
+  try {
+    const bytes = Buffer.alloc(2 * 1024 * 1024, 65);
+    s.w.mutate("write", "large", bytes);
+    s.w.mutate("write", "large", bytes);
+    const journal = s.w.changes();
+    assert.equal(journal[0].sha256, journal[1].sha256);
+    assert.equal(journal[0].sha256, snapshot(s.root, s.path).files.large);
+    assert.ok(JSON.stringify(journal).length < 300);
+    assert.deepEqual(
+      readFileSync(join(s.root, "blobs", journal[0].sha256!)),
+      bytes,
+    );
+    s.w.mutate("append", "large", Buffer.from("tail"));
+    const append = s.w.changes().at(-1)!;
+    assert.equal(
+      readFileSync(join(s.root, "blobs", append.sha256!), "utf8"),
+      "tail",
+    );
+    writeFileSync(join(s.root, "blobs", append.sha256!), "corrupt");
+    assert.throws(() => windowSnapshot(s.root, [append]), /integrity mismatch/);
+    assert.throws(
+      () =>
+        windowSnapshot(s.root, [
+          { operation: "write", path: "x", sha256: "../escape" },
+        ]),
+      /Invalid workspace blob hash/,
+    );
   } finally {
     s.close();
   }

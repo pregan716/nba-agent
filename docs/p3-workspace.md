@@ -28,9 +28,11 @@ belongs to SPO-791. This issue supplies and tests the shared service, not a Dock
 filesystem implementation.
 
 P4 still captures content-addressed snapshots and per-session added/changed/removed
-file diffs. The service also records successful binary mutations as base64 data in
-`workspaceChanges`, captured atomically with a frozen submission and at session
-end. A crash after commit preserves the journal with the receipt and workspace;
+file diffs. The service also records successful binary mutations as blob hashes in
+`workspaceChanges` (`{ operation, path, sha256? }`), captured atomically with a frozen submission and at session
+end. Bytes live once in the run’s content-addressed `blobs/` directory; an append
+references only its appended bytes. Window reconstruction verifies each blob’s
+hash before replaying it. Journals contain no inline file content. A crash after commit preserves the journal with the receipt and workspace;
 interrupted uncommitted work is rolled back with the existing P4 snapshot recovery.
 
 Memory horizons:

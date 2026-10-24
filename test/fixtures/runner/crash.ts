@@ -21,6 +21,7 @@ const runner = new Runner(
       new WorkspacePolicy(context.memory, () =>
         phase === "initialize" || phase === "checkpoint" ? "closed" : phase,
       ),
+      trusted.root,
     );
     return {
       ...env,

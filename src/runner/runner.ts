@@ -94,6 +94,7 @@ export type EnvironmentFactory = (
   context: SessionContext,
   trusted: {
     workspace: string;
+    root: string;
     submission: unknown | null;
     results: () => RecordedGame[];
   },
@@ -371,6 +372,7 @@ export class Runner {
                     : null,
                 ),
               })),
+            root: this.root,
             workspace: this.workspace,
             submission: frozen?.data.value.submission ?? null,
           },
