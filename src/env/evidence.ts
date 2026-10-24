@@ -220,16 +220,14 @@ export class EvidenceIndex {
               "base64url",
             )
           : null,
-      items: ranked
-        .slice(offset, end)
-        .map(({ record: r, snippet }) => ({
-          evidence_id: r.evidence_id,
-          source: r.source,
-          available_at: r.available_at,
-          author: r.author,
-          title: r.title,
-          snippet,
-        })),
+      items: ranked.slice(offset, end).map(({ record: r, snippet }) => ({
+        evidence_id: r.evidence_id,
+        source: r.source,
+        available_at: r.available_at,
+        author: r.author,
+        title: r.title,
+        snippet,
+      })),
     };
   }
 }
