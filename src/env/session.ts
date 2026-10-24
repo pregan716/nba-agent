@@ -1,3 +1,5 @@
+import { DockerSandbox } from "./sandbox.js";
+import { writeSessionExport, type ExportBatch } from "./export.js";
 import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
 import {
@@ -21,6 +23,7 @@ import {
 import type { EnvironmentFactory, Environment } from "../runner/runner.js";
 import {
   PLAYER_REFERENCE_TABLES,
+  GAME_HISTORY_TABLES,
   SessionError,
   TOOL_CAPABILITY,
   TOOL_PHASES,
@@ -287,6 +290,7 @@ export class Session {
   async query_game_history(
     input: QueryGameHistoryInput,
     _signal?: AbortSignal,
+    exportAll = false,
   ): Promise<QueryGameHistoryResult> {
     this.#check("query_game_history", input);
     const ref = isReference(input.table);
@@ -463,7 +467,10 @@ export class Session {
       } catch {
         throw new SessionError("invalid_input", "Invalid history cursor");
       }
-    const end = Math.min(rows.length, offset + (input.limit ?? 20));
+    const end = Math.min(
+      rows.length,
+      offset + (exportAll ? rows.length : (input.limit ?? 20)),
+    );
     return {
       table: input.table,
       columns,
@@ -776,12 +783,122 @@ export class Session {
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
   }
+  async assertCodeAllowed(program: string) {
+    this.#check("execute_code", { program });
+  }
+  async exportTo(directory: string, signal: AbortSignal) {
+    this.#check("execute_code", { program: "pass" });
+    return writeSessionExport(directory, this.#exportBatches(signal), signal);
+  }
+  async *#exportBatches(signal: AbortSignal): AsyncGenerator<ExportBatch> {
+    const enabled = this.#config.profile.capabilities.enabled;
+    const games = await this.#games();
+    yield {
+      table: "session",
+      rows: [
+        {
+          game_id: this.#game.gameId,
+          phase: this.#phase,
+          cutoff: this.#cutoff,
+          dataset_versions: this.#source.versions,
+        },
+      ],
+    };
+    yield {
+      table: "questions",
+      rows: (await this.list_questions({})).questions,
+    };
+    if (enabled.includes("game_history")) {
+      for (const table of PLAYER_REFERENCE_TABLES) {
+        const result = await this.query_game_history(
+          { table },
+          undefined,
+          true,
+        );
+        yield {
+          table,
+          rows: result.rows,
+          columns: result.columns.map((c) => c.name),
+        };
+      }
+      for (const table of GAME_HISTORY_TABLES) {
+        yield { table, rows: [] };
+        for (const game of games.filter((g) =>
+          visible(releasedGame(g), this.#cutoff),
+        )) {
+          signal.throwIfAborted();
+          const result = await this.query_game_history(
+            { table, game_id: game.id },
+            undefined,
+            true,
+          );
+          yield {
+            table,
+            rows: result.rows,
+            columns: result.columns.map((c) => c.name),
+          };
+          yield {
+            table: "unavailable",
+            rows: result.unavailable.map((r) => ({ table, ...r })),
+          };
+        }
+      }
+    }
+    if (enabled.includes("game_history")) {
+      const schedule = new Map<string, object>();
+      for (const team of this.#source.teams) {
+        const result = await this.read_schedule_and_injuries({
+          team_id: team.team_id,
+        });
+        result.schedule.forEach((g) => schedule.set(g.game_id, g));
+        yield { table: "injuries", rows: result.injury_reports };
+        yield { table: "injury_team_snapshots", rows: result.team_snapshots };
+      }
+      yield { table: "schedule", rows: [...schedule.values()] };
+    }
+    if (enabled.includes("odds_history")) {
+      yield { table: "odds_history", rows: [] };
+      yield { table: "odds_settlements", rows: [] };
+      const oddsGames = new Set(
+        this.#eligible(await this.#source.odds()).map((r) =>
+          this.#source.identities.resolve("game", "espn", r.data.espn_event_id),
+        ),
+      );
+      for (const game of games.filter((g) => oddsGames.has(g.id))) {
+        signal.throwIfAborted();
+        const result = await this.query_odds_history({ game_id: game.id });
+        yield { table: "odds_history", rows: result.observations };
+        yield { table: "odds_settlements", rows: result.settlements };
+      }
+    }
+    if (enabled.includes("search_and_fetch")) {
+      const evidence = (await this.#evidence()).all();
+      yield { table: "evidence", rows: evidence };
+      for (const source of ["posts", "transcripts", "lineups"] as const)
+        yield {
+          table: source,
+          rows: evidence.filter((e) => e.source === source),
+        };
+    }
+    const released = await this.read_released_results({});
+    yield {
+      table: "released_results",
+      rows: released.games.flatMap((g) =>
+        g.questions.map((q) => ({
+          game_id: g.game_id,
+          released_at: g.released_at,
+          ...q,
+        })),
+      ),
+    };
+  }
   /** Trusted P3f integration; all calls use the same service and live policy as tools. */
   workspaceForSandbox() {
     const w = this.#workspace;
     if (!w || !this.#config.profile.capabilities.enabled.includes("workspace"))
       return undefined;
     return Object.freeze({
+      mkdir: w.mkdir.bind(w),
       list: w.list.bind(w),
       readBytes: w.readBytes.bind(w),
       mutate: w.mutate.bind(w),
@@ -815,6 +932,7 @@ export function sessionEnvironment(
       trusted.workspace,
       trusted.root,
     );
+    let sandbox: DockerSandbox | undefined;
     return {
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
@@ -830,13 +948,20 @@ export function sessionEnvironment(
         ((value) => session.validateSubmission(value)),
       execute:
         hooks.execute ??
-        (async () => {
-          throw new SessionError(
-            "capability_disabled",
-            "Code sandbox is not installed",
+        (async (program, limits, signal) => {
+          // Check the current phase before lazy export/container creation on every call.
+          await session.assertCodeAllowed(program);
+          sandbox ??= new DockerSandbox(
+            config,
+            (directory, abort) => session.exportTo(directory, abort),
+            session.workspaceForSandbox(),
           );
+          return sandbox.execute(program, limits, signal);
         }),
-      close: () => session.close(),
+      close: async () => {
+        await session.close();
+        await sandbox?.close();
+      },
     };
   };
 }
