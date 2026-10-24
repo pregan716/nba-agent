@@ -56,10 +56,10 @@ export const configSchema = z.strictObject({
     warnRemainingTokens: integer,
     rollover: z.literal(false),
     sandbox: z.strictObject({
-      perCallSeconds: positive,
-      stdoutBytes: integer,
-      cpu: positive,
-      memoryBytes: integer,
+      perCallSeconds: positive.default(60),
+      stdoutBytes: integer.default(1024 * 1024),
+      cpu: positive.default(2),
+      memoryBytes: integer.default(2 * 1024 * 1024 * 1024),
     }),
     price: z.strictObject({
       id: name,

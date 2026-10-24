@@ -1,3 +1,10 @@
+import { DockerSandbox } from "./sandbox.js";
+import {
+  projectHistory,
+  mountGameShards,
+  writeSessionExport,
+  type ExportBatch,
+} from "./export.js";
 import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
 import {
@@ -38,7 +45,6 @@ import {
   type ReadScheduleAndInjuriesResult,
   type QueryOddsHistoryInput,
   type QueryOddsHistoryResult,
-  type Scalar,
   type TeamRef,
 } from "./contract.js";
 import { validateInput } from "./input.js";
@@ -402,28 +408,9 @@ export class Session {
           a.id.localeCompare(b.id),
       );
     const definitions = await this.#source.columns(input.table, input.season);
-    const rows: Record<string, Scalar>[] = records.map((r) => {
-      const row: Record<string, Scalar> = {};
-      // Only dictionary-defined published columns, never internal envelopes.
-      for (const column of definitions)
-        if (Object.hasOwn(r.data, column.name)) {
-          const value = r.data[column.name];
-          row[column.name === "type" ? "kind" : column.name] =
-            value === null ||
-            ["string", "number", "boolean"].includes(typeof value)
-              ? value
-              : JSON.stringify(value);
-        }
-      if (ref && typeof r.data.birth_date === "string") {
-        const date = Temporal.Instant.from(this.#cutoff)
-          .toZonedDateTimeISO("America/New_York")
-          .toPlainDate();
-        row.age_on_replay_date = Temporal.PlainDate.from(
-          r.data.birth_date,
-        ).until(date, { largestUnit: "years" }).years;
-      }
-      return row;
-    });
+    const rows = records.map((r) =>
+      projectHistory(r, definitions, ref ? this.#cutoff : undefined),
+    );
     const names = new Set(rows.flatMap(Object.keys));
     const columns = definitions
       .filter((c) => names.has(c.name === "type" ? "kind" : c.name))
@@ -485,17 +472,29 @@ export class Session {
     _signal?: AbortSignal,
   ): Promise<ReadScheduleAndInjuriesResult> {
     this.#check("read_schedule_and_injuries", input);
-    const team = input.team_id ?? BOS;
+    return this.#scheduleAndInjuries(input, input.team_id ?? BOS);
+  }
+  async #scheduleAndInjuries(
+    input: ReadScheduleAndInjuriesInput,
+    team?: string,
+  ): Promise<ReadScheduleAndInjuriesResult> {
     const games = (await this.#games()).filter(
       (g) =>
-        [g.data.home_team_id, g.data.away_team_id].includes(team) &&
+        (!team || [g.data.home_team_id, g.data.away_team_id].includes(team)) &&
         (!input.game_id || input.game_id === g.id),
     );
     const gameIds = new Set(games.map((g) => g.id));
+    const gameTeams = new Map(
+      games.map((g) => [g.id, [g.data.home_team_id, g.data.away_team_id]]),
+    );
+    const knownTeams = new Set(this.#source.teams.map((t) => t.team_id));
     const snapshots = new Map<string, RecordEnvelope>();
     const matches = (r: RecordEnvelope) =>
       gameIds.has(r.data.game_id) &&
-      r.data.team_id === team &&
+      (team
+        ? r.data.team_id === team
+        : knownTeams.has(r.data.team_id) &&
+          !!gameTeams.get(r.data.game_id)?.includes(r.data.team_id)) &&
       inWindow(r.availableAt, input, this.#cutoff);
     for await (const batch of this.#source.injuries("teams"))
       for (const r of this.#eligible(batch).filter(matches)) {
@@ -520,7 +519,7 @@ export class Session {
             "player",
             "injury-name",
             r.data.player_name,
-            { teamId: team },
+            { teamId: r.data.team_id },
           );
         } catch {
           /* Refused/ambiguous joins remain explicit null. */
@@ -528,7 +527,7 @@ export class Session {
         injury_reports.push({
           report_time: r.availableAt,
           game_id: r.data.game_id,
-          team_id: team,
+          team_id: r.data.team_id,
           player_id,
           player_name: r.data.player_name,
           status: r.data.status,
@@ -574,18 +573,29 @@ export class Session {
     _signal?: AbortSignal,
   ): Promise<QueryOddsHistoryResult> {
     this.#check("query_odds_history", input);
+    return this.#oddsHistory(input);
+  }
+  async #oddsHistory(
+    input: QueryOddsHistoryInput,
+    known?: {
+      games: RecordEnvelope[];
+      profiles: RecordEnvelope[];
+      odds: RecordEnvelope[];
+      history?: { boxes: RecordEnvelope[]; summaries: RecordEnvelope[] };
+    },
+  ): Promise<QueryOddsHistoryResult> {
     const id = input.game_id ?? this.#game.gameId;
-    const game = (await this.#games()).find(
+    const game = (known?.games ?? (await this.#games())).find(
       (g) =>
         g.id === id &&
         compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
     );
     if (!game) return { observations: [], settlements: [] };
-    const profiles = this.#eligible(
-      await this.#source.reference("player_profiles"),
-    );
+    const profiles =
+      known?.profiles ??
+      this.#eligible(await this.#source.reference("player_profiles"));
     const observations: QueryOddsHistoryResult["observations"] = [];
-    for (const r of this.#eligible(await this.#source.odds())) {
+    for (const r of known?.odds ?? this.#eligible(await this.#source.odds())) {
       if (
         this.#source.identities.resolve(
           "game",
@@ -619,12 +629,21 @@ export class Session {
     }
     const settlements: QueryOddsHistoryResult["settlements"] = [];
     if (visible(releasedGame(game), this.#cutoff)) {
-      const boxBatch = await this.#source.history("player_box_scores", game),
-        summaryBatch = await this.#source.history("player_game_summary", game);
-      const boxes = boxBatch.reason ? [] : this.#eligible(boxBatch.records),
-        summaries = summaryBatch.reason
-          ? []
-          : this.#eligible(summaryBatch.records);
+      let history = known?.history;
+      if (!history) {
+        const boxBatch = await this.#source.history("player_box_scores", game);
+        const summaryBatch = await this.#source.history(
+          "player_game_summary",
+          game,
+        );
+        history = {
+          boxes: boxBatch.reason ? [] : this.#eligible(boxBatch.records),
+          summaries: summaryBatch.reason
+            ? []
+            : this.#eligible(summaryBatch.records),
+        };
+      }
+      const { boxes, summaries } = history;
       // One settled outcome per distinct offered line, not one per snapshot.
       const lines = new Map(
         observations.map((o) => [`${o.player.id}:${o.stat}:${o.line}`, o]),
@@ -776,12 +795,158 @@ export class Session {
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
   }
+  async assertCodeAllowed(program: string) {
+    this.#check("execute_code", { program });
+  }
+  async exportTo(directory: string, signal: AbortSignal) {
+    this.#check("execute_code", { program: "pass" });
+    if (this.#config.profile.capabilities.enabled.includes("game_history")) {
+      const games = (await this.#games()).filter((game) =>
+        visible(releasedGame(game), this.#cutoff),
+      );
+      await mountGameShards(
+        directory,
+        this.#source,
+        games,
+        this.#cutoff,
+        signal,
+      );
+    }
+    return writeSessionExport(directory, this.#exportBatches(signal), signal);
+  }
+  async *#exportBatches(signal: AbortSignal): AsyncGenerator<ExportBatch> {
+    const enabled = this.#config.profile.capabilities.enabled;
+    const games = await this.#games();
+    yield {
+      table: "session",
+      rows: [
+        {
+          game_id: this.#game.gameId,
+          phase: this.#phase,
+          cutoff: this.#cutoff,
+          dataset_versions: this.#source.versions,
+        },
+      ],
+    };
+    yield {
+      table: "questions",
+      rows: (await this.list_questions({})).questions,
+    };
+    if (enabled.includes("game_history")) {
+      for (const table of PLAYER_REFERENCE_TABLES) {
+        const definitions = await this.#source.columns(table);
+        yield {
+          table,
+          rows: this.#eligible(await this.#source.reference(table)).map((r) =>
+            projectHistory(r, definitions, this.#cutoff),
+          ),
+          columns: definitions.map((c) =>
+            c.name === "type" ? "kind" : c.name,
+          ),
+        };
+      }
+    }
+    if (enabled.includes("game_history")) {
+      const result = await this.#scheduleAndInjuries({});
+      yield { table: "injuries", rows: result.injury_reports };
+      yield { table: "injury_team_snapshots", rows: result.team_snapshots };
+      yield { table: "schedule", rows: result.schedule };
+    }
+    if (enabled.includes("odds_history")) {
+      yield { table: "odds_history", rows: [] };
+      yield { table: "odds_settlements", rows: [] };
+      const oddsByGame = new Map<string, RecordEnvelope[]>();
+      for (const r of this.#eligible(await this.#source.odds())) {
+        const id = this.#source.identities.resolve(
+          "game",
+          "espn",
+          r.data.espn_event_id,
+        );
+        const rows = oddsByGame.get(id) ?? [];
+        rows.push(r);
+        oddsByGame.set(id, rows);
+      }
+      const profiles = this.#eligible(
+        await this.#source.reference("player_profiles"),
+      );
+      const settlementHistory = new Map<
+        string,
+        { boxes: RecordEnvelope[]; summaries: RecordEnvelope[] }
+      >();
+      const released = games.filter(
+        (g) =>
+          oddsByGame.has(g.id) &&
+          visible(releasedGame(g), this.#cutoff) &&
+          compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
+      );
+      for (const game of released)
+        settlementHistory.set(game.id, { boxes: [], summaries: [] });
+      for (const table of [
+        "player_box_scores",
+        "player_game_summary",
+      ] as const) {
+        async function* individual(source: SessionSource) {
+          for (const game of released)
+            yield { gameId: game.id, ...(await source.history(table, game)) };
+        }
+        for await (const batch of this.#source.exportHistory?.(
+          table,
+          released,
+        ) ?? individual(this.#source)) {
+          signal.throwIfAborted();
+          const entry = settlementHistory.get(batch.gameId);
+          if (!entry)
+            throw Error("Settlement adapter returned an unselected game");
+          if (!batch.reason)
+            entry[table === "player_box_scores" ? "boxes" : "summaries"].push(
+              ...this.#eligible(batch.records),
+            );
+        }
+      }
+      for (const game of games.filter((g) => oddsByGame.has(g.id))) {
+        signal.throwIfAborted();
+        const result = await this.#oddsHistory(
+          { game_id: game.id },
+          {
+            games,
+            profiles,
+            odds: oddsByGame.get(game.id)!,
+            history: settlementHistory.get(game.id),
+          },
+        );
+        yield { table: "odds_history", rows: result.observations };
+        yield { table: "odds_settlements", rows: result.settlements };
+      }
+    }
+    if (enabled.includes("search_and_fetch")) {
+      const evidence = (await this.#evidence()).all();
+      yield { table: "evidence", rows: evidence };
+      for (const source of ["posts", "transcripts", "lineups"] as const)
+        yield {
+          table: source,
+          rows: evidence.filter((e) => e.source === source),
+        };
+    }
+    const released = await this.read_released_results({});
+    yield {
+      table: "released_results",
+      rows: released.games.flatMap((g) =>
+        g.questions.map((q) => ({
+          game_id: g.game_id,
+          released_at: g.released_at,
+          ...q,
+        })),
+      ),
+    };
+  }
   /** Trusted P3f integration; all calls use the same service and live policy as tools. */
   workspaceForSandbox() {
     const w = this.#workspace;
     if (!w || !this.#config.profile.capabilities.enabled.includes("workspace"))
       return undefined;
     return Object.freeze({
+      authorize: w.authorize.bind(w),
+      mkdir: w.mkdir.bind(w),
       list: w.list.bind(w),
       readBytes: w.readBytes.bind(w),
       mutate: w.mutate.bind(w),
@@ -815,6 +980,7 @@ export function sessionEnvironment(
       trusted.workspace,
       trusted.root,
     );
+    let sandbox: DockerSandbox | undefined;
     return {
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
@@ -830,13 +996,20 @@ export function sessionEnvironment(
         ((value) => session.validateSubmission(value)),
       execute:
         hooks.execute ??
-        (async () => {
-          throw new SessionError(
-            "capability_disabled",
-            "Code sandbox is not installed",
+        (async (program, limits, signal) => {
+          // Check the current phase before lazy export/container creation on every call.
+          await session.assertCodeAllowed(program);
+          sandbox ??= new DockerSandbox(
+            config,
+            (directory, abort) => session.exportTo(directory, abort),
+            session.workspaceForSandbox(),
           );
+          return sandbox.execute(program, limits, signal);
         }),
-      close: () => session.close(),
+      close: async () => {
+        await session.close();
+        await sandbox?.close();
+      },
     };
   };
 }

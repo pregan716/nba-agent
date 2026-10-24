@@ -168,6 +168,84 @@ export class PlayByPlayAdapter {
     );
     return structuredClone(this.cachedCoverage);
   }
+  /** Export a table in partition order, decoding each verified object only once. */
+  async *exportRecords(table: string, games: RecordEnvelope[]) {
+    if (!games.length) return;
+    if (!PRODUCTS[table]) throw Error(`Table is not replay evidence: ${table}`);
+    if (!this.cachedCoverage) await this.coverage();
+    const allowed = new Map(games.map((game) => [game.id, game]));
+    const releases = new Map(
+      games.map((game) => [
+        game.id,
+        nextMorning(
+          Temporal.Instant.from(timestamp(game.data.scheduled_tipoff)!)
+            .toZonedDateTimeISO("America/New_York")
+            .toPlainDate()
+            .toString(),
+        ),
+      ]),
+    );
+    const rowsByGame = new Map<string, RecordEnvelope[]>();
+    const reasons = new Map<string, string>();
+    for (const game of games) {
+      const coverage = this.cachedCoverage!.find(
+        (r) => r.game_id === game.id && r.product === PRODUCTS[table],
+      );
+      if (coverage?.quality_status !== "valid") {
+        reasons.set(
+          game.id,
+          coverage?.missing_reason ?? `Product ${PRODUCTS[table]} is not valid`,
+        );
+        allowed.delete(game.id);
+      }
+    }
+    const m = this.release.manifest;
+    this.cachedGameIndex ??= JSON.parse(
+      (await this.release.bytes(m.object_prefix + m.game_index)).toString(),
+    );
+    const index = this.cachedGameIndex!.tables[table] ?? {};
+    for (const name of Object.keys(index))
+      if (!m.tables[table].includes(name))
+        throw Error("Game index references an unlisted table file");
+    for (const name of m.tables[table] as string[]) {
+      if (
+        !index[name]?.some((entry: unknown[]) =>
+          allowed.has(entry[0] as string),
+        )
+      )
+        continue;
+      const key = m.object_prefix + name;
+      for (const [i, row] of (await this.release.rows(key)).entries()) {
+        const game = allowed.get(row.game_id);
+        if (!game) continue;
+        const records = rowsByGame.get(game.id) ?? [];
+        records.push(
+          envelope(
+            table,
+            `${game.id}:${name}:${i}`,
+            row,
+            this.release.ref(key),
+            this.release.root.sha256,
+            releases.get(game.id)!,
+            "game_next_morning_eastern",
+            {
+              event: row.event_time,
+              collected: row.retrieved_at,
+              revision: row.source_updated_at,
+            },
+          ),
+        );
+        rowsByGame.set(game.id, records);
+      }
+      // Published files contain whole games. Yield at the partition boundary so
+      // the exporter retains only one decoded partition, not the whole season.
+      for (const [gameId, records] of rowsByGame)
+        yield { gameId, records, reason: null };
+      rowsByGame.clear();
+    }
+    for (const [gameId, reason] of reasons)
+      yield { gameId, records: [], reason };
+  }
   async records(table: string, gameId: string): Promise<RecordEnvelope[]> {
     const product = PRODUCTS[table];
     if (!product) throw Error(`Table is not replay evidence: ${table}`);

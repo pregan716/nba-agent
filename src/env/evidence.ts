@@ -114,6 +114,9 @@ export class EvidenceIndex {
       this.#records.set(result.evidence_id, result);
     }
   }
+  all(): FetchEvidenceResult[] {
+    return structuredClone([...this.#records.values()]);
+  }
   fetch(id: string): FetchEvidenceResult {
     const record = this.#records.get(id);
     if (!record) throw new SessionError("not_found", "Evidence not found");

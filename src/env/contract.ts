@@ -396,7 +396,7 @@ export interface ExecuteCodeResult {
   compute_seconds: number;
   /** True if stdout or stderr was cut at the configured byte cap. */
   truncated: boolean;
-  limit: "wall_clock" | "compute" | null;
+  limit: "wall_clock" | "compute" | "memory" | null;
 }
 
 export interface WorkspaceListInput {

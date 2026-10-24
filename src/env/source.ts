@@ -20,6 +20,7 @@ export interface HistoryBatch {
 }
 /** Trusted P1 port. Every envelope is still filtered by Session after this port returns. */
 export interface SessionSource {
+  exportCacheDirectory?: string;
   versions: DatasetVersion[];
   layer: QuestionLayer;
   identities: Identities;
@@ -30,6 +31,10 @@ export interface SessionSource {
     game: RecordEnvelope,
     playerId?: string,
   ): Promise<HistoryBatch>;
+  exportHistory?(
+    table: GameHistoryTable,
+    games: RecordEnvelope[],
+  ): AsyncIterable<HistoryBatch & { gameId: string }>;
   reference(table: PlayerReferenceTable): Promise<RecordEnvelope[]>;
   columns(table: HistoryTable, season?: string): Promise<ColumnDefinition[]>;
   injuries(kind: "teams" | "players"): AsyncIterable<RecordEnvelope[]>;
@@ -133,6 +138,7 @@ export async function corpusSource(
       );
   }
   return {
+    exportCacheDirectory: ".cache/history-export-v2",
     layer,
     identities,
     teams,
@@ -177,6 +183,21 @@ export async function corpusSource(
             (e) => e.source === HISTORY_TABLE[table] && e.id === game.id,
           )?.reason ?? null,
       };
+    },
+    async *exportHistory(table, games) {
+      if (table === "games") {
+        for (const game of games)
+          yield { gameId: game.id, records: [game], reason: null };
+      } else {
+        for (const [season, adapter] of [
+          ["2024-25", corpus.priorPbp],
+          ["2025-26", corpus.pbp],
+        ] as const)
+          yield* adapter.exportRecords(
+            HISTORY_TABLE[table],
+            games.filter((g) => g.data.season === season),
+          );
+      }
     },
     reference: (table) => corpus.players.records(table),
     async columns(table) {

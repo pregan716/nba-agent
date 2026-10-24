@@ -62,6 +62,8 @@ const invalid = () =>
  * Unsupported filesystem operations (rename, link, truncate, mmap) must be refused.
  */
 export interface WorkspacePort {
+  authorize(operation: WorkspaceChange["operation"], path: string): void;
+  mkdir(path: string): void;
   list(path?: string): { entries: WorkspaceEntry[] };
   readBytes(path: string): Buffer;
   mutate(
@@ -138,6 +140,14 @@ export class Workspace {
     // Do not expose the host path from filesystem errors.
     throw invalid();
   }
+  authorize(operation: WorkspaceChange["operation"], path: string) {
+    this.policy.authorize(operation);
+    try {
+      this.policy.authorize(operation, !!this.#exists(this.#path(path)));
+    } catch (e) {
+      this.#error(e);
+    }
+  }
   list(path = "") {
     this.policy.authorize("list");
     try {
@@ -156,6 +166,16 @@ export class Workspace {
       return { entries };
     } catch (e) {
       return this.#error(e);
+    }
+  }
+  mkdir(path: string) {
+    this.policy.authorize("write");
+    try {
+      const target = this.#path(path);
+      mkdirSync(target, { recursive: true, mode: 0o700 });
+      this.#ordinary(target, true);
+    } catch (e) {
+      this.#error(e);
     }
   }
   readBytes(path: string): Buffer {
