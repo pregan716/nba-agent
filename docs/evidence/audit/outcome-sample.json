@@ -1,0 +1,1506 @@
+{
+  "seed": "SPO-777-v1:outcomes",
+  "population": 1779,
+  "rows": [
+    {
+      "key": "401810414:2026-01-13T00:30:00Z:4351851:player_points",
+      "gameId": "0022500559",
+      "name": "Anfernee Simons",
+      "prop": "player_points",
+      "line": 16.5,
+      "actual": 16,
+      "espnActual": 16,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810414/boxscore-response.json.gz",
+          "sha256": "291e64e0944a06847e96f5688e8a2fec73af4fc8b3df20cd5251356a18652982",
+          "bytes": 41508
+        }
+      }
+    },
+    {
+      "key": "401811023:2026-04-09T23:30:00Z:4065648:player_points",
+      "gameId": "0022501168",
+      "name": "Jayson Tatum",
+      "prop": "player_points",
+      "line": 25.5,
+      "actual": 24,
+      "espnActual": 24,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401811023/boxscore-response.json.gz",
+          "sha256": "31f3bd5401bc289fa9f60f7aba7f75b4a3cbbde96663b9fbed8631eb298895b1",
+          "bytes": 40638
+        }
+      }
+    },
+    {
+      "key": "401810854:2026-03-18T23:00:00Z:3917376:player_assists",
+      "gameId": "0022500999",
+      "name": "Jaylen Brown",
+      "prop": "player_assists",
+      "line": 4.5,
+      "actual": 5,
+      "espnActual": 5,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810854/boxscore-response.json.gz",
+          "sha256": "09328e4fb9b6fb347a67b53b86fd79e9659acc57d1e40d962a37294ad5355d23",
+          "bytes": 44533
+        }
+      }
+    },
+    {
+      "key": "401810854:2026-03-18T23:00:00Z:4593841:player_assists",
+      "gameId": "0022500999",
+      "name": "Baylor Scheierman",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 3,
+      "espnActual": 3,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810854/boxscore-response.json.gz",
+          "sha256": "09328e4fb9b6fb347a67b53b86fd79e9659acc57d1e40d962a37294ad5355d23",
+          "bytes": 44533
+        }
+      }
+    },
+    {
+      "key": "401810749:2026-03-05T00:30:00Z:6478:player_assists",
+      "gameId": "0022500894",
+      "name": "Nikola Vucevic",
+      "prop": "player_assists",
+      "line": 2.5,
+      "actual": 1,
+      "espnActual": 1,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810749/boxscore-response.json.gz",
+          "sha256": "b4b6328821b0c8a9a8b4c90e80281780041ffe5cba02e4059a0e8cac4e529b79",
+          "bytes": 42669
+        }
+      }
+    },
+    {
+      "key": "401810375:2026-01-08T00:00:00Z:5175647:player_rebounds",
+      "gameId": "0022500520",
+      "name": "Hugo Gonzalez",
+      "prop": "player_rebounds",
+      "line": 3.5,
+      "actual": 4,
+      "espnActual": 4,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810375/boxscore-response.json.gz",
+          "sha256": "0150bd18310274c0c2306cd3a27bd566ab696cae3c5a318ac90d64cac97a363c",
+          "bytes": 43493
+        }
+      }
+    },
+    {
+      "key": "401810678:2026-02-22T23:30:00Z:3917376:player_assists",
+      "gameId": "0022500823",
+      "name": "Jaylen Brown",
+      "prop": "player_assists",
+      "line": 4.5,
+      "actual": 7,
+      "espnActual": 7,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810678/boxscore-response.json.gz",
+          "sha256": "e9f3c5c93f4174215de6f87cdb6d0faf47a13ea95906872b0e92bd3ea3376a01",
+          "bytes": 45324
+        }
+      }
+    },
+    {
+      "key": "401810348:2026-01-04T03:30:00Z:5175647:player_points",
+      "gameId": "0022500493",
+      "name": "Hugo Gonzalez",
+      "prop": "player_points",
+      "line": 4.5,
+      "actual": 0,
+      "espnActual": 0,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810348/boxscore-response.json.gz",
+          "sha256": "d86ca68db67d15e625362d1672ed2a6be4c1f00153a085cb759ffea21a55e801",
+          "bytes": 41451
+        }
+      }
+    },
+    {
+      "key": "401810854:2026-03-18T23:00:00Z:3078576:player_rebounds",
+      "gameId": "0022500999",
+      "name": "Derrick White",
+      "prop": "player_rebounds",
+      "line": 4.5,
+      "actual": 6,
+      "espnActual": 6,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810854/boxscore-response.json.gz",
+          "sha256": "09328e4fb9b6fb347a67b53b86fd79e9659acc57d1e40d962a37294ad5355d23",
+          "bytes": 44533
+        }
+      }
+    },
+    {
+      "key": "401809510:2025-11-08T00:00:00Z:4351851:player_points",
+      "gameId": "0022500028",
+      "name": "Anfernee Simons",
+      "prop": "player_points",
+      "line": 13.5,
+      "actual": 11,
+      "espnActual": 11,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809510/boxscore-response.json.gz",
+          "sha256": "552575c644e29f32939a943f6667cd7f51efa0410a2c21206d6cb398a536a355",
+          "bytes": 43256
+        }
+      }
+    },
+    {
+      "key": "401809802:2025-11-26T22:00:00Z:4351851:player_rebounds",
+      "gameId": "0022500060",
+      "name": "Anfernee Simons",
+      "prop": "player_rebounds",
+      "line": 1.5,
+      "actual": 1,
+      "espnActual": 1,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809802/boxscore-response.json.gz",
+          "sha256": "729d7226784cd006e037a07c303e0ed074a307b453fd38416121bd747e0a90ad",
+          "bytes": 45917
+        }
+      }
+    },
+    {
+      "key": "401810105:2025-11-19T00:30:00Z:3078576:player_assists",
+      "gameId": "0022500250",
+      "name": "Derrick White",
+      "prop": "player_assists",
+      "line": 5.5,
+      "actual": 4,
+      "espnActual": 4,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810105/boxscore-response.json.gz",
+          "sha256": "af8a9f19b4f21b6c913b2be2959eb26e8d1e46a65d9146d1190c6d66a8cc3192",
+          "bytes": 41939
+        }
+      }
+    },
+    {
+      "key": "401810449:2026-01-18T00:30:00Z:3078576:player_points",
+      "gameId": "0022500594",
+      "name": "Derrick White",
+      "prop": "player_points",
+      "line": 20.5,
+      "actual": 7,
+      "espnActual": 7,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810449/boxscore-response.json.gz",
+          "sha256": "093dc45ce9551c9c222e42bf911f07703e6c68b3452be55b4d0423a6b9206ad0",
+          "bytes": 43858
+        }
+      }
+    },
+    {
+      "key": "401810678:2026-02-22T23:30:00Z:4593841:player_rebounds",
+      "gameId": "0022500823",
+      "name": "Baylor Scheierman",
+      "prop": "player_rebounds",
+      "line": 4.5,
+      "actual": 2,
+      "espnActual": 2,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810678/boxscore-response.json.gz",
+          "sha256": "e9f3c5c93f4174215de6f87cdb6d0faf47a13ea95906872b0e92bd3ea3376a01",
+          "bytes": 45324
+        }
+      }
+    },
+    {
+      "key": "401836747:2025-12-12T01:00:00Z:3917376:player_assists",
+      "gameId": "0022501206",
+      "name": "Jaylen Brown",
+      "prop": "player_assists",
+      "line": 5.5,
+      "actual": 3,
+      "espnActual": 3,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401836747/boxscore-response.json.gz",
+          "sha256": "026ec8bd40bc099f5487f407ff40e0446b387d3364c22a5224f2ad94fcf541c0",
+          "bytes": 43474
+        }
+      }
+    },
+    {
+      "key": "401810826:2026-03-14T22:00:00Z:4593841:player_rebounds",
+      "gameId": "0022500971",
+      "name": "Baylor Scheierman",
+      "prop": "player_rebounds",
+      "line": 4.5,
+      "actual": 9,
+      "espnActual": 9,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810826/boxscore-response.json.gz",
+          "sha256": "c33a982484d91b096ad9d339f8800bc3d0ba5690f2d95ab6a3ddecfeb3519a39",
+          "bytes": 42753
+        }
+      }
+    },
+    {
+      "key": "401809945:2025-10-24T23:30:00Z:4066354:player_rebounds",
+      "gameId": "0022500018",
+      "name": "Payton Pritchard",
+      "prop": "player_rebounds",
+      "line": 4.5,
+      "actual": 5,
+      "espnActual": 5,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809945/boxscore-response.json.gz",
+          "sha256": "5d387fd112a7c9fcd5f9651b310206dc9d80c73f6fabffc508922c677b110946",
+          "bytes": 42520
+        }
+      }
+    },
+    {
+      "key": "401810358:2026-01-06T00:30:00Z:4397424:player_rebounds",
+      "gameId": "0022500503",
+      "name": "Neemias Queta",
+      "prop": "player_rebounds",
+      "line": 8.5,
+      "actual": 13,
+      "espnActual": 13,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810358/boxscore-response.json.gz",
+          "sha256": "75f8cb68c78a3b83bdcc36bef9898cadd03108ff810464dce247e92967b3c9c6",
+          "bytes": 42923
+        }
+      }
+    },
+    {
+      "key": "401809983:2025-10-29T23:00:00Z:4065804:player_points",
+      "gameId": "0022500128",
+      "name": "Sam Hauser",
+      "prop": "player_points",
+      "line": 8.5,
+      "actual": 21,
+      "espnActual": 21,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809983/boxscore-response.json.gz",
+          "sha256": "99d1d2f7a90951740f3a0abbe9fed0425936af50a6e2c697bf0b6877d194872a",
+          "bytes": 42600
+        }
+      }
+    },
+    {
+      "key": "401810236:2025-12-20T00:00:00Z:4066354:player_rebounds",
+      "gameId": "0022500381",
+      "name": "Payton Pritchard",
+      "prop": "player_rebounds",
+      "line": 4.5,
+      "actual": 4,
+      "espnActual": 4,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810236/boxscore-response.json.gz",
+          "sha256": "d0aeb520610fa3fab79761af43d4be2be7a8db92a3bf36bd6bb5dd4fb5004a63",
+          "bytes": 44387
+        }
+      }
+    },
+    {
+      "key": "401810633:2026-02-12T00:30:00Z:4277951:player_rebounds",
+      "gameId": "0022500778",
+      "name": "Luka Garza",
+      "prop": "player_rebounds",
+      "line": 2.5,
+      "actual": 0,
+      "espnActual": 0,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810633/boxscore-response.json.gz",
+          "sha256": "519e815b3077051c1e945672a1a93ce864ecb7f548db97a553132a4135aeaa98",
+          "bytes": 41764
+        }
+      }
+    },
+    {
+      "key": "401836747:2025-12-12T01:00:00Z:4683689:player_rebounds",
+      "gameId": "0022501206",
+      "name": "Jordan Walsh",
+      "prop": "player_rebounds",
+      "line": 5.5,
+      "actual": 8,
+      "espnActual": 8,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401836747/boxscore-response.json.gz",
+          "sha256": "026ec8bd40bc099f5487f407ff40e0446b387d3364c22a5224f2ad94fcf541c0",
+          "bytes": 43474
+        }
+      }
+    },
+    {
+      "key": "401809972:2025-10-28T00:00:00Z:4351851:player_assists",
+      "gameId": "0022500117",
+      "name": "Anfernee Simons",
+      "prop": "player_assists",
+      "line": 3.5,
+      "actual": 1,
+      "espnActual": 1,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809972/boxscore-response.json.gz",
+          "sha256": "ac6dff736bd9a3bd126cd478fc6f688d55066e8c75a06f5ff313e5bd2ea01d54",
+          "bytes": 43208
+        }
+      }
+    },
+    {
+      "key": "401809510:2025-11-08T00:00:00Z:4065804:player_rebounds",
+      "gameId": "0022500028",
+      "name": "Sam Hauser",
+      "prop": "player_rebounds",
+      "line": 3.5,
+      "actual": 3,
+      "espnActual": 3,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809510/boxscore-response.json.gz",
+          "sha256": "552575c644e29f32939a943f6667cd7f51efa0410a2c21206d6cb398a536a355",
+          "bytes": 43256
+        }
+      }
+    },
+    {
+      "key": "401810358:2026-01-06T00:30:00Z:4277951:player_assists",
+      "gameId": "0022500503",
+      "name": "Luka Garza",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 0,
+      "espnActual": 0,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810358/boxscore-response.json.gz",
+          "sha256": "75f8cb68c78a3b83bdcc36bef9898cadd03108ff810464dce247e92967b3c9c6",
+          "bytes": 42923
+        }
+      }
+    },
+    {
+      "key": "401810213:2025-12-07T20:30:00Z:3078576:player_rebounds",
+      "gameId": "0022500358",
+      "name": "Derrick White",
+      "prop": "player_rebounds",
+      "line": 3.5,
+      "actual": 4,
+      "espnActual": 4,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810213/boxscore-response.json.gz",
+          "sha256": "6f66dd0423bb91761278f7b9be36969040fe0d5bf5577514718f8327596acee1",
+          "bytes": 43182
+        }
+      }
+    },
+    {
+      "key": "401810714:2026-02-28T00:30:00Z:4065804:player_rebounds",
+      "gameId": "0022500859",
+      "name": "Sam Hauser",
+      "prop": "player_rebounds",
+      "line": 3.5,
+      "actual": 3,
+      "espnActual": 3,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810714/boxscore-response.json.gz",
+          "sha256": "b37827f115e4f7adda6036f050bc7877c72515f638aded983503f3b81f3d2fe0",
+          "bytes": 40455
+        }
+      }
+    },
+    {
+      "key": "401810654:2026-02-20T03:00:00Z:3917376:player_rebounds",
+      "gameId": "0022500799",
+      "name": "Jaylen Brown",
+      "prop": "player_rebounds",
+      "line": 6.5,
+      "actual": 15,
+      "espnActual": 15,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810654/boxscore-response.json.gz",
+          "sha256": "1a398de730310e689718e77604db02d359a126bf24080411d76be97325833285",
+          "bytes": 42613
+        }
+      }
+    },
+    {
+      "key": "401810557:2026-02-01T20:30:00Z:4277951:player_assists",
+      "gameId": "0022500702",
+      "name": "Luka Garza",
+      "prop": "player_assists",
+      "line": 0.5,
+      "actual": 0,
+      "espnActual": 0,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810557/boxscore-response.json.gz",
+          "sha256": "6166bbe0ab960d9389930bdde9f5e428db128e1f2554d725cb32b099560403d6",
+          "bytes": 42696
+        }
+      }
+    },
+    {
+      "key": "401810400:2026-01-11T01:00:00Z:3917376:player_assists",
+      "gameId": "0022500545",
+      "name": "Jaylen Brown",
+      "prop": "player_assists",
+      "line": 4.5,
+      "actual": 7,
+      "espnActual": 7,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810400/boxscore-response.json.gz",
+          "sha256": "350bacdf701b4b813f0620949e2424ab0fb070004975d537e01803a90ef394b0",
+          "bytes": 43800
+        }
+      }
+    },
+    {
+      "key": "401810940:2026-03-29T22:00:00Z:4066354:player_points",
+      "gameId": "0022501085",
+      "name": "Payton Pritchard",
+      "prop": "player_points",
+      "line": 19.5,
+      "actual": 28,
+      "espnActual": 28,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810940/boxscore-response.json.gz",
+          "sha256": "afbe40808540a2b53aeed4c5d1528565a1c95ec7d9999a80a50a3a52ea72acab",
+          "bytes": 42698
+        }
+      }
+    },
+    {
+      "key": "401810213:2025-12-07T20:30:00Z:4683689:player_points",
+      "gameId": "0022500358",
+      "name": "Jordan Walsh",
+      "prop": "player_points",
+      "line": 7.5,
+      "actual": 9,
+      "espnActual": 9,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810213/boxscore-response.json.gz",
+          "sha256": "6f66dd0423bb91761278f7b9be36969040fe0d5bf5577514718f8327596acee1",
+          "bytes": 43182
+        }
+      }
+    },
+    {
+      "key": "401810814:2026-03-13T01:30:00Z:4593841:player_points",
+      "gameId": "0022500959",
+      "name": "Baylor Scheierman",
+      "prop": "player_points",
+      "line": 8.5,
+      "actual": 11,
+      "espnActual": 11,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810814/boxscore-response.json.gz",
+          "sha256": "7204212e6f6bb27df477c06a627d83fd7ee80f25d06d6423a0d4e211a42314d0",
+          "bytes": 42235
+        }
+      }
+    },
+    {
+      "key": "401810544:2026-01-31T00:30:00Z:4593841:player_points",
+      "gameId": "0022500689",
+      "name": "Baylor Scheierman",
+      "prop": "player_points",
+      "line": 5.5,
+      "actual": 16,
+      "espnActual": 16,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810544/boxscore-response.json.gz",
+          "sha256": "a1bf3651f1dfecfb076c5eb76d1a5258f9c442e6a25e67841431ec56732c2d5a",
+          "bytes": 43706
+        }
+      }
+    },
+    {
+      "key": "401810029:2025-11-06T00:30:00Z:4066354:player_assists",
+      "gameId": "0022500174",
+      "name": "Payton Pritchard",
+      "prop": "player_assists",
+      "line": 5.5,
+      "actual": 5,
+      "espnActual": 5,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810029/boxscore-response.json.gz",
+          "sha256": "008d3fcdb0399c1fc7dc3b197c25f044f0e5304784a69741c1aeafea5a354fc7",
+          "bytes": 41922
+        }
+      }
+    },
+    {
+      "key": "401810013:2025-11-04T00:30:00Z:4397424:player_assists",
+      "gameId": "0022500158",
+      "name": "Neemias Queta",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 1,
+      "espnActual": 1,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810013/boxscore-response.json.gz",
+          "sha256": "7aceeaa44db47b92be38d2cdb9fa42bcebeec0f3fba6bb00175c5bbbf34fb36f",
+          "bytes": 44631
+        }
+      }
+    },
+    {
+      "key": "401810348:2026-01-04T03:30:00Z:3078576:player_assists",
+      "gameId": "0022500493",
+      "name": "Derrick White",
+      "prop": "player_assists",
+      "line": 5.5,
+      "actual": 7,
+      "espnActual": 7,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810348/boxscore-response.json.gz",
+          "sha256": "d86ca68db67d15e625362d1672ed2a6be4c1f00153a085cb759ffea21a55e801",
+          "bytes": 41451
+        }
+      }
+    },
+    {
+      "key": "401810694:2026-02-25T02:00:00Z:4065804:player_assists",
+      "gameId": "0022500839",
+      "name": "Sam Hauser",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 4,
+      "espnActual": 4,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810694/boxscore-response.json.gz",
+          "sha256": "0be40fd1ae9433cdce23121f8ca6a4e79c9e55e982ffff285b3d43d42f9e3b0e",
+          "bytes": 41888
+        }
+      }
+    },
+    {
+      "key": "401811004:2026-04-08T00:00:00Z:4065804:player_points",
+      "gameId": "0022501149",
+      "name": "Sam Hauser",
+      "prop": "player_points",
+      "line": 7.5,
+      "actual": 5,
+      "espnActual": 5,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401811004/boxscore-response.json.gz",
+          "sha256": "b1b27e26186c663681ad26026cf5d515131613cb68647f28c4b5efb2f4eaa484",
+          "bytes": 42423
+        }
+      }
+    },
+    {
+      "key": "401809510:2025-11-08T00:00:00Z:4351851:player_assists",
+      "gameId": "0022500028",
+      "name": "Anfernee Simons",
+      "prop": "player_assists",
+      "line": 2.5,
+      "actual": 2,
+      "espnActual": 2,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809510/boxscore-response.json.gz",
+          "sha256": "552575c644e29f32939a943f6667cd7f51efa0410a2c21206d6cb398a536a355",
+          "bytes": 43256
+        }
+      }
+    },
+    {
+      "key": "401810633:2026-02-12T00:30:00Z:4593841:player_points",
+      "gameId": "0022500778",
+      "name": "Baylor Scheierman",
+      "prop": "player_points",
+      "line": 5.5,
+      "actual": 10,
+      "espnActual": 10,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810633/boxscore-response.json.gz",
+          "sha256": "519e815b3077051c1e945672a1a93ce864ecb7f548db97a553132a4135aeaa98",
+          "bytes": 41764
+        }
+      }
+    },
+    {
+      "key": "401810981:2026-04-04T00:00:00Z:4277951:player_points",
+      "gameId": "0022501126",
+      "name": "Luka Garza",
+      "prop": "player_points",
+      "line": 6.5,
+      "actual": 2,
+      "espnActual": 2,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810981/boxscore-response.json.gz",
+          "sha256": "71d666dad076a2123202839eb0b4519c8f44fb800e1536f5df60f4b2836af4c4",
+          "bytes": 41610
+        }
+      }
+    },
+    {
+      "key": "401810596:2026-02-07T00:30:00Z:4065804:player_points",
+      "gameId": "0022500741",
+      "name": "Sam Hauser",
+      "prop": "player_points",
+      "line": 10.5,
+      "actual": 2,
+      "espnActual": 2,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810596/boxscore-response.json.gz",
+          "sha256": "5cd166736e132a33fc5420f82679254eee0a6c8f053d38f45fb1d263ada93ca7",
+          "bytes": 43960
+        }
+      }
+    },
+    {
+      "key": "401810678:2026-02-22T23:30:00Z:4065804:player_assists",
+      "gameId": "0022500823",
+      "name": "Sam Hauser",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 2,
+      "espnActual": 2,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810678/boxscore-response.json.gz",
+          "sha256": "e9f3c5c93f4174215de6f87cdb6d0faf47a13ea95906872b0e92bd3ea3376a01",
+          "bytes": 45324
+        }
+      }
+    },
+    {
+      "key": "401809945:2025-10-24T23:30:00Z:4351851:player_assists",
+      "gameId": "0022500018",
+      "name": "Anfernee Simons",
+      "prop": "player_assists",
+      "line": 3.5,
+      "actual": 4,
+      "espnActual": 4,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401809945/boxscore-response.json.gz",
+          "sha256": "5d387fd112a7c9fcd5f9651b310206dc9d80c73f6fabffc508922c677b110946",
+          "bytes": 42520
+        }
+      }
+    },
+    {
+      "key": "401810492:2026-01-24T00:30:00Z:4593841:player_points",
+      "gameId": "0022500637",
+      "name": "Baylor Scheierman",
+      "prop": "player_points",
+      "line": 5.5,
+      "actual": 6,
+      "espnActual": 6,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810492/boxscore-response.json.gz",
+          "sha256": "9447f9123ec5254ae19627bde3142cece2085f3002b38018c61b740beb4ce051",
+          "bytes": 47421
+        }
+      }
+    },
+    {
+      "key": "401810576:2026-02-04T01:00:00Z:3917376:player_points",
+      "gameId": "0022500721",
+      "name": "Jaylen Brown",
+      "prop": "player_points",
+      "line": 30.5,
+      "actual": 33,
+      "espnActual": 33,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810576/boxscore-response.json.gz",
+          "sha256": "591432e6b94034c6979436b799e5a5235a7b671c14f6c78d7e5558629df241dc",
+          "bytes": 43576
+        }
+      }
+    },
+    {
+      "key": "401810694:2026-02-25T02:00:00Z:4593841:player_assists",
+      "gameId": "0022500839",
+      "name": "Baylor Scheierman",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 2,
+      "espnActual": 2,
+      "officialOutcome": "over",
+      "espnOutcome": "over",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810694/boxscore-response.json.gz",
+          "sha256": "0be40fd1ae9433cdce23121f8ca6a4e79c9e55e982ffff285b3d43d42f9e3b0e",
+          "bytes": 41888
+        }
+      }
+    },
+    {
+      "key": "401836747:2025-12-12T01:00:00Z:4397424:player_assists",
+      "gameId": "0022501206",
+      "name": "Neemias Queta",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 0,
+      "espnActual": 0,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401836747/boxscore-response.json.gz",
+          "sha256": "026ec8bd40bc099f5487f407ff40e0446b387d3364c22a5224f2ad94fcf541c0",
+          "bytes": 43474
+        }
+      }
+    },
+    {
+      "key": "401810654:2026-02-20T03:00:00Z:4593841:player_assists",
+      "gameId": "0022500799",
+      "name": "Baylor Scheierman",
+      "prop": "player_assists",
+      "line": 1.5,
+      "actual": 1,
+      "espnActual": 1,
+      "officialOutcome": "under",
+      "espnOutcome": "under",
+      "agrees": true,
+      "evidence": {
+        "box": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+        },
+        "summary": {
+          "bucket": "sports-nba-data",
+          "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_game_summary/season=2025-26/phase=regular_season/part-00000.parquet",
+          "sha256": "601d14dd17365cb50235c51895d5c62441dd19891ab9fdba94fe352c3562392e"
+        },
+        "espn": {
+          "bucket": "pm-data-platform",
+          "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/reference/game=401810654/boxscore-response.json.gz",
+          "sha256": "1a398de730310e689718e77604db02d359a126bf24080411d76be97325833285",
+          "bytes": 42613
+        }
+      }
+    }
+  ]
+}

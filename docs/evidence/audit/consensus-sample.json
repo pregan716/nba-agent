@@ -1,0 +1,4590 @@
+{
+  "seed": "SPO-777-v1:consensus",
+  "population": 6666,
+  "evidence": [
+    {
+      "bucket": "pm-data-platform",
+      "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/consensus.ndjson.gz",
+      "sha256": "93617cf1546465edb5a82eaca56d96888527b792b506bea348f0e8a3b7cfc837",
+      "bytes": 743735
+    },
+    {
+      "bucket": "pm-data-platform",
+      "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/book-lines.ndjson.gz",
+      "sha256": "0583ec958feef4038e0c1aa2f0915cd368090d3927cc4d40b5033850b548c3b3",
+      "bytes": 1918595
+    }
+  ],
+  "rows": [
+    {
+      "key": "401810961:2026-04-01T15:00:00Z:3078576:player_rebounds",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.4697879307656324,
+      "publishedPOver": 0.4697879307656324,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 4.5,
+          "overPrice": -102,
+          "underPrice": -130,
+          "calculatedP": 0.4718423169750604,
+          "publishedP": 0.4718423169750604,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 4.5,
+          "overPrice": -104,
+          "underPrice": -128,
+          "calculatedP": 0.47591522157996147,
+          "publishedP": 0.47591522157996147,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": 110,
+          "underPrice": -150,
+          "calculatedP": 0.4424778761061947,
+          "publishedP": 0.4424778761061947,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 4.5,
+          "overPrice": -103,
+          "underPrice": -130,
+          "calculatedP": 0.4730431309904154,
+          "publishedP": 0.4730431309904154,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 4.5,
+          "overPrice": -103,
+          "underPrice": -134,
+          "calculatedP": 0.4697879307656324,
+          "publishedP": 0.4697879307656324,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": -210,
+          "underPrice": 155,
+          "calculatedP": 0.6333530455351862,
+          "publishedP": 0.6333530455351862,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": 100,
+          "underPrice": -130,
+          "calculatedP": 0.4693877551020409,
+          "publishedP": 0.4693877551020409,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 190,
+          "underPrice": -260,
+          "calculatedP": 0.32315978456014366,
+          "publishedP": 0.32315978456014366,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 4.5,
+          "overPrice": 102,
+          "underPrice": -132,
+          "calculatedP": 0.46526552222043954,
+          "publishedP": 0.46526552222043954,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810763:2026-03-06T23:00:00Z:4065804:player_points",
+      "line": 9.5,
+      "publishedLine": 9.5,
+      "pOver": 0.4671222310114851,
+      "publishedPOver": 0.4671222310114851,
+      "mainMedian": 9,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 8.5,
+          "overPrice": -144,
+          "underPrice": 113,
+          "calculatedP": 0.5569436374201047,
+          "publishedP": 0.5569436374201047,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "fanduel",
+          "line": 8.5,
+          "overPrice": -130,
+          "underPrice": 102,
+          "calculatedP": 0.5330897279740154,
+          "publishedP": 0.5330897279740154,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "betmgm",
+          "line": 9.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 9.5,
+          "overPrice": 105,
+          "underPrice": -138,
+          "calculatedP": 0.45690151660587436,
+          "publishedP": 0.45690151660587436,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -260,
+          "underPrice": 190,
+          "calculatedP": 0.6768402154398564,
+          "publishedP": 0.6768402154398564,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": -180,
+          "underPrice": 135,
+          "calculatedP": 0.6017069701280228,
+          "publishedP": 0.6017069701280228,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 8.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": false,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 10.5,
+          "overPrice": 150,
+          "underPrice": -200,
+          "calculatedP": 0.375,
+          "publishedP": 0.375,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 11.5,
+          "overPrice": 200,
+          "underPrice": -275,
+          "calculatedP": 0.3125,
+          "publishedP": 0.3125,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 9.5,
+          "overPrice": -103,
+          "underPrice": -125,
+          "calculatedP": 0.4773429454170958,
+          "publishedP": 0.4773429454170958,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810281:2025-12-26T16:00:00Z:4397424:player_rebounds",
+      "line": 7.5,
+      "publishedLine": 7.5,
+      "pOver": 0.5509049196387098,
+      "publishedPOver": 0.5509049196387098,
+      "mainMedian": 7.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 8.5,
+          "overPrice": 111,
+          "underPrice": -146,
+          "calculatedP": 0.4439952351730859,
+          "publishedP": 0.4439952351730859,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "fanduel",
+          "line": 8.5,
+          "overPrice": 104,
+          "underPrice": -138,
+          "calculatedP": 0.4581151832460733,
+          "publishedP": 0.4581151832460733,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "betmgm",
+          "line": 7.5,
+          "overPrice": -135,
+          "underPrice": 100,
+          "calculatedP": 0.5346534653465347,
+          "publishedP": 0.5346534653465347,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 7.5,
+          "overPrice": -150,
+          "underPrice": 113,
+          "calculatedP": 0.5610184372256365,
+          "publishedP": 0.5610184372256365,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 7.5,
+          "overPrice": -152,
+          "underPrice": 114,
+          "calculatedP": 0.563470066518847,
+          "publishedP": 0.563470066518847,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": -135,
+          "underPrice": 105,
+          "calculatedP": 0.5407914020517831,
+          "publishedP": 0.5407914020517831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 8.5,
+          "overPrice": 120,
+          "underPrice": -160,
+          "calculatedP": 0.4248366013071895,
+          "publishedP": 0.4248366013071895,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": 200,
+          "underPrice": -275,
+          "calculatedP": 0.3125,
+          "publishedP": 0.3125,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 8.5,
+          "overPrice": 113,
+          "underPrice": -147,
+          "calculatedP": 0.44098480655585515,
+          "publishedP": 0.44098480655585515,
+          "main": true,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401810375:2026-01-07T16:00:00Z:4351851:player_points",
+      "line": 13.5,
+      "publishedLine": 13.5,
+      "pOver": 0.49652915509718365,
+      "publishedPOver": 0.49652915509718365,
+      "mainMedian": 13.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 13.5,
+          "overPrice": -114,
+          "underPrice": -112,
+          "calculatedP": 0.5020774472328402,
+          "publishedP": 0.5020774472328402,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 13.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 12.5,
+          "overPrice": -118,
+          "underPrice": -110,
+          "calculatedP": 0.5082034454470877,
+          "publishedP": 0.5082034454470877,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "williamhill_us",
+          "line": 13.5,
+          "overPrice": -113,
+          "underPrice": -120,
+          "calculatedP": 0.49305831019436736,
+          "publishedP": 0.49305831019436736,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 13.5,
+          "overPrice": -124,
+          "underPrice": -108,
+          "calculatedP": 0.5160051216389244,
+          "publishedP": 0.5160051216389244,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 10.5,
+          "overPrice": -280,
+          "underPrice": 205,
+          "calculatedP": 0.6920583468395461,
+          "publishedP": 0.6920583468395461,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 11.5,
+          "overPrice": -200,
+          "underPrice": 150,
+          "calculatedP": 0.625,
+          "publishedP": 0.625,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 12.5,
+          "overPrice": -150,
+          "underPrice": 115,
+          "calculatedP": 0.5633187772925764,
+          "publishedP": 0.5633187772925764,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 13.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 14.5,
+          "overPrice": 115,
+          "underPrice": -150,
+          "calculatedP": 0.43668122270742354,
+          "publishedP": 0.43668122270742354,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 15.5,
+          "overPrice": 145,
+          "underPrice": -190,
+          "calculatedP": 0.3838517538054269,
+          "publishedP": 0.3838517538054269,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 16.5,
+          "overPrice": 185,
+          "underPrice": -250,
+          "calculatedP": 0.32941176470588235,
+          "publishedP": 0.32941176470588235,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 13.5,
+          "overPrice": -109,
+          "underPrice": -119,
+          "calculatedP": 0.48974190636412124,
+          "publishedP": 0.48974190636412124,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810243:2025-12-21T00:00:00Z:4066354:player_points",
+      "line": 19.5,
+      "publishedLine": 19.5,
+      "pOver": 0.5041554124246831,
+      "publishedPOver": 0.5041554124246831,
+      "mainMedian": 19.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 19.5,
+          "overPrice": -115,
+          "underPrice": -111,
+          "calculatedP": 0.5041554124246831,
+          "publishedP": 0.5041554124246831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 19.5,
+          "overPrice": -118,
+          "underPrice": -108,
+          "calculatedP": 0.510397604391948,
+          "publishedP": 0.510397604391948,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 19.5,
+          "overPrice": -118,
+          "underPrice": -110,
+          "calculatedP": 0.5082034454470877,
+          "publishedP": 0.5082034454470877,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 19.5,
+          "overPrice": -122,
+          "underPrice": -110,
+          "calculatedP": 0.511990407673861,
+          "publishedP": 0.511990407673861,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 19.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 18.5,
+          "overPrice": -150,
+          "underPrice": 110,
+          "calculatedP": 0.5575221238938053,
+          "publishedP": 0.5575221238938053,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 20.5,
+          "overPrice": 108,
+          "underPrice": -148,
+          "calculatedP": 0.44617156016119747,
+          "publishedP": 0.44617156016119747,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 16.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 17.5,
+          "overPrice": -185,
+          "underPrice": 140,
+          "calculatedP": 0.6090534979423868,
+          "publishedP": 0.6090534979423868,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 18.5,
+          "overPrice": -145,
+          "underPrice": 110,
+          "calculatedP": 0.554140127388535,
+          "publishedP": 0.554140127388535,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 19.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 20.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 21.5,
+          "overPrice": 135,
+          "underPrice": -180,
+          "calculatedP": 0.3982930298719772,
+          "publishedP": 0.3982930298719772,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 22.5,
+          "overPrice": 165,
+          "underPrice": -220,
+          "calculatedP": 0.35437430786268,
+          "publishedP": 0.35437430786268,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 19.5,
+          "overPrice": -115,
+          "underPrice": -112,
+          "calculatedP": 0.5030953363598845,
+          "publishedP": 0.5030953363598845,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810064:2025-11-12T01:00:00Z:4277951:player_points",
+      "line": 6.5,
+      "publishedLine": 6.5,
+      "pOver": 0.49179655455291227,
+      "publishedPOver": 0.49179655455291227,
+      "mainMedian": 6.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 6.5,
+          "overPrice": -105,
+          "underPrice": -121,
+          "calculatedP": 0.4833368048323266,
+          "publishedP": 0.4833368048323266,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 6.5,
+          "overPrice": -113,
+          "underPrice": -113,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 6.5,
+          "overPrice": -113,
+          "underPrice": -118,
+          "calculatedP": 0.4949766918501849,
+          "publishedP": 0.4949766918501849,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 6.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 6.5,
+          "overPrice": -110,
+          "underPrice": -118,
+          "calculatedP": 0.49179655455291227,
+          "publishedP": 0.49179655455291227,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810909:2026-03-25T23:30:00Z:4397424:player_rebounds",
+      "line": 8.5,
+      "publishedLine": 8.5,
+      "pOver": 0.48173997727641615,
+      "publishedPOver": 0.48173997727641615,
+      "mainMedian": 8.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 8.5,
+          "overPrice": -106,
+          "underPrice": -124,
+          "calculatedP": 0.48173997727641615,
+          "publishedP": 0.48173997727641615,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 8.5,
+          "overPrice": 106,
+          "underPrice": -136,
+          "calculatedP": 0.45722256664600125,
+          "publishedP": 0.45722256664600125,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 8.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 8.5,
+          "overPrice": -107,
+          "underPrice": -125,
+          "calculatedP": 0.481981981981982,
+          "publishedP": 0.481981981981982,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 8.5,
+          "overPrice": -112,
+          "underPrice": -122,
+          "calculatedP": 0.4901435104873048,
+          "publishedP": 0.4901435104873048,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": -180,
+          "underPrice": 135,
+          "calculatedP": 0.6017069701280228,
+          "publishedP": 0.6017069701280228,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 8.5,
+          "overPrice": -105,
+          "underPrice": -125,
+          "calculatedP": 0.4796954314720812,
+          "publishedP": 0.4796954314720812,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": 155,
+          "underPrice": -210,
+          "calculatedP": 0.3666469544648137,
+          "publishedP": 0.3666469544648137,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 8.5,
+          "overPrice": -105,
+          "underPrice": -123,
+          "calculatedP": 0.48149290561381863,
+          "publishedP": 0.48149290561381863,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810243:2025-12-20T19:00:00Z:3917376:player_assists",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.5633187772925764,
+      "publishedPOver": 0.5633187772925764,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -150,
+          "underPrice": 115,
+          "calculatedP": 0.5633187772925764,
+          "publishedP": 0.5633187772925764,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401810729:2026-03-01T16:00:00Z:6478:player_points",
+      "line": 11.5,
+      "publishedLine": 11.5,
+      "pOver": 0.49688279301745636,
+      "publishedPOver": 0.49688279301745636,
+      "mainMedian": 11.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 11.5,
+          "overPrice": -110,
+          "underPrice": -116,
+          "calculatedP": 0.4937655860349127,
+          "publishedP": 0.4937655860349127,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 11.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 11.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 11.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 11.5,
+          "overPrice": -118,
+          "underPrice": -115,
+          "calculatedP": 0.5029738302934179,
+          "publishedP": 0.5029738302934179,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 11.5,
+          "overPrice": -110,
+          "underPrice": -118,
+          "calculatedP": 0.49179655455291227,
+          "publishedP": 0.49179655455291227,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810612:2026-02-08T17:30:00Z:3917376:player_points",
+      "line": 29.5,
+      "publishedLine": 29.5,
+      "pOver": 0.487517163899638,
+      "publishedPOver": 0.487517163899638,
+      "mainMedian": 29.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 29.5,
+          "overPrice": -107,
+          "underPrice": -119,
+          "calculatedP": 0.487517163899638,
+          "publishedP": 0.487517163899638,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 28.5,
+          "overPrice": -115,
+          "underPrice": -111,
+          "calculatedP": 0.5041554124246831,
+          "publishedP": 0.5041554124246831,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "betmgm",
+          "line": 29.5,
+          "overPrice": 100,
+          "underPrice": -130,
+          "calculatedP": 0.4693877551020409,
+          "publishedP": 0.4693877551020409,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 29.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 27.5,
+          "overPrice": -162,
+          "underPrice": 117,
+          "calculatedP": 0.5729699775075789,
+          "publishedP": 0.5729699775075789,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 29.5,
+          "overPrice": -105,
+          "underPrice": -130,
+          "calculatedP": 0.4753937007874017,
+          "publishedP": 0.4753937007874017,
+          "main": false,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 28.5,
+          "overPrice": -129,
+          "underPrice": -106,
+          "calculatedP": 0.5226164254247954,
+          "publishedP": 0.5226164254247954,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 30.5,
+          "overPrice": 118,
+          "underPrice": -165,
+          "calculatedP": 0.42420361773651355,
+          "publishedP": 0.42420361773651355,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 25.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 26.5,
+          "overPrice": -190,
+          "underPrice": 145,
+          "calculatedP": 0.6161482461945731,
+          "publishedP": 0.6161482461945731,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 27.5,
+          "overPrice": -160,
+          "underPrice": 120,
+          "calculatedP": 0.5751633986928104,
+          "publishedP": 0.5751633986928104,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 28.5,
+          "overPrice": -130,
+          "underPrice": 100,
+          "calculatedP": 0.5306122448979592,
+          "publishedP": 0.5306122448979592,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 29.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 30.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 31.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 32.5,
+          "overPrice": 155,
+          "underPrice": -210,
+          "calculatedP": 0.3666469544648137,
+          "publishedP": 0.3666469544648137,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 33.5,
+          "overPrice": 185,
+          "underPrice": -250,
+          "calculatedP": 0.32941176470588235,
+          "publishedP": 0.32941176470588235,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 29.5,
+          "overPrice": -105,
+          "underPrice": -125,
+          "calculatedP": 0.4796954314720812,
+          "publishedP": 0.4796954314720812,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 29.5,
+          "overPrice": -108,
+          "underPrice": -120,
+          "calculatedP": 0.4876847290640395,
+          "publishedP": 0.4876847290640395,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810729:2026-03-02T01:00:00Z:6478:player_points",
+      "line": 11.5,
+      "publishedLine": 11.5,
+      "pOver": 0.5083149711054754,
+      "publishedPOver": 0.5083149711054754,
+      "mainMedian": 11.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 11.5,
+          "overPrice": -117,
+          "underPrice": -109,
+          "calculatedP": 0.5083149711054754,
+          "publishedP": 0.5083149711054754,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 11.5,
+          "overPrice": -115,
+          "underPrice": -111,
+          "calculatedP": 0.5041554124246831,
+          "publishedP": 0.5041554124246831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 11.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 11.5,
+          "overPrice": -128,
+          "underPrice": -102,
+          "calculatedP": 0.5264701091382962,
+          "publishedP": 0.5264701091382962,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 10.5,
+          "overPrice": -165,
+          "underPrice": 118,
+          "calculatedP": 0.5757963822634864,
+          "publishedP": 0.5757963822634864,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 11.5,
+          "overPrice": -117,
+          "underPrice": -117,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 12.5,
+          "overPrice": 116,
+          "underPrice": -162,
+          "calculatedP": 0.4281605438619427,
+          "publishedP": 0.4281605438619427,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": -220,
+          "underPrice": 165,
+          "calculatedP": 0.6456256921373201,
+          "publishedP": 0.6456256921373201,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 10.5,
+          "overPrice": -165,
+          "underPrice": 125,
+          "calculatedP": 0.5834970530451867,
+          "publishedP": 0.5834970530451867,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 11.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 12.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 13.5,
+          "overPrice": 145,
+          "underPrice": -190,
+          "calculatedP": 0.3838517538054269,
+          "publishedP": 0.3838517538054269,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 14.5,
+          "overPrice": 185,
+          "underPrice": -250,
+          "calculatedP": 0.32941176470588235,
+          "publishedP": 0.32941176470588235,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 11.5,
+          "overPrice": -118,
+          "underPrice": -110,
+          "calculatedP": 0.5082034454470877,
+          "publishedP": 0.5082034454470877,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810157:2025-11-30T23:00:00Z:4277964:player_assists",
+      "line": 0.5,
+      "publishedLine": 0.5,
+      "pOver": 0.6455696202531646,
+      "publishedPOver": 0.6455696202531646,
+      "mainMedian": 1,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 1.5,
+          "overPrice": 165,
+          "underPrice": -225,
+          "calculatedP": 0.35278154681139756,
+          "publishedP": 0.35278154681139756,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 0.5,
+          "overPrice": -250,
+          "underPrice": 155,
+          "calculatedP": 0.6455696202531646,
+          "publishedP": 0.6455696202531646,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810348:2026-01-04T03:30:00Z:4351851:player_assists",
+      "line": 2.5,
+      "publishedLine": 2.5,
+      "pOver": 0.40904687946471907,
+      "publishedPOver": 0.40904687946471907,
+      "mainMedian": 2.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 2.5,
+          "overPrice": 122,
+          "underPrice": -162,
+          "calculatedP": 0.421465800141561,
+          "publishedP": 0.421465800141561,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 2.5,
+          "overPrice": 130,
+          "underPrice": -175,
+          "calculatedP": 0.4059040590405904,
+          "publishedP": 0.4059040590405904,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 2.5,
+          "overPrice": 140,
+          "underPrice": -190,
+          "calculatedP": 0.38873994638069703,
+          "publishedP": 0.38873994638069703,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 2.5,
+          "overPrice": 128,
+          "underPrice": -167,
+          "calculatedP": 0.4121896998888477,
+          "publishedP": 0.4121896998888477,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401809791:2025-11-21T16:00:00Z:4683689:player_points",
+      "line": 5.5,
+      "publishedLine": 5.5,
+      "pOver": 0.5020225719024312,
+      "publishedPOver": 0.5020225719024312,
+      "mainMedian": 5.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 5.5,
+          "overPrice": -108,
+          "underPrice": -119,
+          "calculatedP": 0.48863730270225597,
+          "publishedP": 0.48863730270225597,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 5.5,
+          "overPrice": -122,
+          "underPrice": -108,
+          "calculatedP": 0.5141838223374939,
+          "publishedP": 0.5141838223374939,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": -145,
+          "underPrice": 110,
+          "calculatedP": 0.554140127388535,
+          "publishedP": 0.554140127388535,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "williamhill_us",
+          "line": 5.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 5.5,
+          "overPrice": -117,
+          "underPrice": -113,
+          "calculatedP": 0.5040451438048622,
+          "publishedP": 0.5040451438048622,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 5.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": -118,
+          "underPrice": -110,
+          "calculatedP": 0.5082034454470877,
+          "publishedP": 0.5082034454470877,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810329:2026-01-01T23:00:00Z:4351851:player_assists",
+      "line": 2.5,
+      "publishedLine": 2.5,
+      "pOver": 0.40134597832918045,
+      "publishedPOver": 0.40134597832918045,
+      "mainMedian": 2.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 2.5,
+          "overPrice": 129,
+          "underPrice": -171,
+          "calculatedP": 0.4090010413679651,
+          "publishedP": 0.4090010413679651,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 2.5,
+          "overPrice": 140,
+          "underPrice": -190,
+          "calculatedP": 0.38873994638069703,
+          "publishedP": 0.38873994638069703,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 2.5,
+          "overPrice": 135,
+          "underPrice": -182,
+          "calculatedP": 0.3973509933774834,
+          "publishedP": 0.3973509933774834,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 2.5,
+          "overPrice": 132,
+          "underPrice": -172,
+          "calculatedP": 0.4053409632808775,
+          "publishedP": 0.4053409632808775,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810400:2026-01-10T16:00:00Z:4277951:player_points",
+      "line": 8.5,
+      "publishedLine": 8.5,
+      "pOver": 0.49892687737721475,
+      "publishedPOver": 0.49892687737721475,
+      "mainMedian": 8.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 8.5,
+          "overPrice": -118,
+          "underPrice": -108,
+          "calculatedP": 0.510397604391948,
+          "publishedP": 0.510397604391948,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 8.5,
+          "overPrice": -112,
+          "underPrice": -118,
+          "calculatedP": 0.4939310568053083,
+          "publishedP": 0.4939310568053083,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 7.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "williamhill_us",
+          "line": 8.5,
+          "overPrice": -117,
+          "underPrice": -114,
+          "calculatedP": 0.5030135004821601,
+          "publishedP": 0.5030135004821601,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 8.5,
+          "overPrice": -111,
+          "underPrice": -116,
+          "calculatedP": 0.4948402542722694,
+          "publishedP": 0.4948402542722694,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810001:2025-11-01T18:00:00Z:4351851:player_points",
+      "line": 14.5,
+      "publishedLine": 14.5,
+      "pOver": 0.4796954314720812,
+      "publishedPOver": 0.4796954314720812,
+      "mainMedian": 14.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 14.5,
+          "overPrice": -106,
+          "underPrice": -120,
+          "calculatedP": 0.48542880932556204,
+          "publishedP": 0.48542880932556204,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 14.5,
+          "overPrice": -102,
+          "underPrice": -130,
+          "calculatedP": 0.4718423169750604,
+          "publishedP": 0.4718423169750604,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 14.5,
+          "overPrice": -105,
+          "underPrice": -125,
+          "calculatedP": 0.4796954314720812,
+          "publishedP": 0.4796954314720812,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 14.5,
+          "overPrice": -109,
+          "underPrice": -124,
+          "calculatedP": 0.48509894301835804,
+          "publishedP": 0.48509894301835804,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 12.5,
+          "overPrice": -167,
+          "underPrice": 120,
+          "calculatedP": 0.5791298865069356,
+          "publishedP": 0.5791298865069356,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 14.5,
+          "overPrice": 100,
+          "underPrice": -132,
+          "calculatedP": 0.4677419354838709,
+          "publishedP": 0.4677419354838709,
+          "main": false,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 13.5,
+          "overPrice": -127,
+          "underPrice": -105,
+          "calculatedP": 0.5220573491076799,
+          "publishedP": 0.5220573491076799,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 11.5,
+          "overPrice": -245,
+          "underPrice": 180,
+          "calculatedP": 0.6653734238603297,
+          "publishedP": 0.6653734238603297,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 12.5,
+          "overPrice": -180,
+          "underPrice": 135,
+          "calculatedP": 0.6017069701280228,
+          "publishedP": 0.6017069701280228,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 13.5,
+          "overPrice": -135,
+          "underPrice": 105,
+          "calculatedP": 0.5407914020517831,
+          "publishedP": 0.5407914020517831,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 14.5,
+          "overPrice": -105,
+          "underPrice": -125,
+          "calculatedP": 0.4796954314720812,
+          "publishedP": 0.4796954314720812,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 15.5,
+          "overPrice": 120,
+          "underPrice": -160,
+          "calculatedP": 0.4248366013071895,
+          "publishedP": 0.4248366013071895,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 16.5,
+          "overPrice": 155,
+          "underPrice": -210,
+          "calculatedP": 0.3666469544648137,
+          "publishedP": 0.3666469544648137,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 17.5,
+          "overPrice": 200,
+          "underPrice": -275,
+          "calculatedP": 0.3125,
+          "publishedP": 0.3125,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 14.5,
+          "overPrice": -105,
+          "underPrice": -125,
+          "calculatedP": 0.4796954314720812,
+          "publishedP": 0.4796954314720812,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 14.5,
+          "overPrice": -102,
+          "underPrice": -127,
+          "calculatedP": 0.47438944435338465,
+          "publishedP": 0.47438944435338465,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810449:2026-01-17T19:00:00Z:4065804:player_rebounds",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.5,
+      "publishedPOver": 0.5,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 4.5,
+          "overPrice": -116,
+          "underPrice": -113,
+          "calculatedP": 0.5030539946249695,
+          "publishedP": 0.5030539946249695,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 4.5,
+          "overPrice": -114,
+          "underPrice": -114,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": -110,
+          "underPrice": -118,
+          "calculatedP": 0.49179655455291227,
+          "publishedP": 0.49179655455291227,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 4.5,
+          "overPrice": -114,
+          "underPrice": -117,
+          "calculatedP": 0.4969864995178399,
+          "publishedP": 0.4969864995178399,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 4.5,
+          "overPrice": -129,
+          "underPrice": -104,
+          "calculatedP": 0.5249341737812177,
+          "publishedP": 0.5249341737812177,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 165,
+          "underPrice": -220,
+          "calculatedP": 0.35437430786268,
+          "publishedP": 0.35437430786268,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 4.5,
+          "overPrice": -112,
+          "underPrice": -115,
+          "calculatedP": 0.4969046636401156,
+          "publishedP": 0.4969046636401156,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810299:2025-12-28T20:00:00Z:3917376:player_rebounds",
+      "line": 6.5,
+      "publishedLine": 6.5,
+      "pOver": 0.4564539116366858,
+      "publishedPOver": 0.4564539116366858,
+      "mainMedian": 6.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 6.5,
+          "overPrice": 107,
+          "underPrice": -141,
+          "calculatedP": 0.4522679077448533,
+          "publishedP": 0.4522679077448533,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 6.5,
+          "overPrice": 110,
+          "underPrice": -140,
+          "calculatedP": 0.449438202247191,
+          "publishedP": 0.449438202247191,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 6.5,
+          "overPrice": -105,
+          "underPrice": -130,
+          "calculatedP": 0.4753937007874017,
+          "publishedP": 0.4753937007874017,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 6.5,
+          "overPrice": 104,
+          "underPrice": -139,
+          "calculatedP": 0.45736374770361293,
+          "publishedP": 0.45736374770361293,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 6.5,
+          "overPrice": 110,
+          "underPrice": -148,
+          "calculatedP": 0.4438081603435934,
+          "publishedP": 0.4438081603435934,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": -180,
+          "underPrice": 135,
+          "calculatedP": 0.6017069701280228,
+          "publishedP": 0.6017069701280228,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": 100,
+          "underPrice": -130,
+          "calculatedP": 0.4693877551020409,
+          "publishedP": 0.4693877551020409,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": 170,
+          "underPrice": -230,
+          "calculatedP": 0.34700315457413244,
+          "publishedP": 0.34700315457413244,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 6.5,
+          "overPrice": 106,
+          "underPrice": -137,
+          "calculatedP": 0.4564539116366858,
+          "publishedP": 0.4564539116366858,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810776:2026-03-08T16:00:00Z:3078576:player_points",
+      "line": 15.5,
+      "publishedLine": 15.5,
+      "pOver": 0.5101214574898786,
+      "publishedPOver": 0.5101214574898786,
+      "mainMedian": 15.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 15.5,
+          "overPrice": -125,
+          "underPrice": -102,
+          "calculatedP": 0.5238589211618258,
+          "publishedP": 0.5238589211618258,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 15.5,
+          "overPrice": -115,
+          "underPrice": -111,
+          "calculatedP": 0.5041554124246831,
+          "publishedP": 0.5041554124246831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 15.5,
+          "overPrice": -130,
+          "underPrice": -105,
+          "calculatedP": 0.5246062992125985,
+          "publishedP": 0.5246062992125985,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 15.5,
+          "overPrice": -120,
+          "underPrice": -112,
+          "calculatedP": 0.5079872204472844,
+          "publishedP": 0.5079872204472844,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 15.5,
+          "overPrice": -112,
+          "underPrice": -122,
+          "calculatedP": 0.4901435104873048,
+          "publishedP": 0.4901435104873048,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 16.5,
+          "overPrice": 118,
+          "underPrice": -162,
+          "calculatedP": 0.42590545549125436,
+          "publishedP": 0.42590545549125436,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 14.5,
+          "overPrice": -143,
+          "underPrice": 106,
+          "calculatedP": 0.5479742549946055,
+          "publishedP": 0.5479742549946055,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 12.5,
+          "overPrice": -275,
+          "underPrice": 200,
+          "calculatedP": 0.6875,
+          "publishedP": 0.6875,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 13.5,
+          "overPrice": -210,
+          "underPrice": 155,
+          "calculatedP": 0.6333530455351862,
+          "publishedP": 0.6333530455351862,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 14.5,
+          "overPrice": -160,
+          "underPrice": 120,
+          "calculatedP": 0.5751633986928104,
+          "publishedP": 0.5751633986928104,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 15.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 16.5,
+          "overPrice": 105,
+          "underPrice": -135,
+          "calculatedP": 0.4592085979482169,
+          "publishedP": 0.4592085979482169,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 17.5,
+          "overPrice": 135,
+          "underPrice": -180,
+          "calculatedP": 0.3982930298719772,
+          "publishedP": 0.3982930298719772,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 18.5,
+          "overPrice": 170,
+          "underPrice": -230,
+          "calculatedP": 0.34700315457413244,
+          "publishedP": 0.34700315457413244,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 19.5,
+          "overPrice": 210,
+          "underPrice": -290,
+          "calculatedP": 0.30256012412723043,
+          "publishedP": 0.30256012412723043,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 15.5,
+          "overPrice": -119,
+          "underPrice": -109,
+          "calculatedP": 0.5102580936358787,
+          "publishedP": 0.5102580936358787,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810236:2025-12-20T00:00:00Z:4683689:player_assists",
+      "line": 1.5,
+      "publishedLine": 1.5,
+      "pOver": 0.38873994638069703,
+      "publishedPOver": 0.38873994638069703,
+      "mainMedian": 1.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 1.5,
+          "overPrice": 140,
+          "underPrice": -190,
+          "calculatedP": 0.38873994638069703,
+          "publishedP": 0.38873994638069703,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810763:2026-03-06T16:00:00Z:4065804:player_assists",
+      "line": 1.5,
+      "publishedLine": 1.5,
+      "pOver": 0.4554079696394686,
+      "publishedPOver": 0.4554079696394686,
+      "mainMedian": 1.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 1.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810612:2026-02-08T11:30:00Z:4397424:player_rebounds",
+      "line": 7.5,
+      "publishedLine": 7.5,
+      "pOver": 0.508095332947186,
+      "publishedPOver": 0.508095332947186,
+      "mainMedian": 7.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 7.5,
+          "overPrice": -123,
+          "underPrice": -107,
+          "calculatedP": 0.5162199424192044,
+          "publishedP": 0.5162199424192044,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 7.5,
+          "overPrice": -114,
+          "underPrice": -114,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 7.5,
+          "overPrice": -120,
+          "underPrice": -112,
+          "calculatedP": 0.5079872204472844,
+          "publishedP": 0.5079872204472844,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 7.5,
+          "overPrice": -115,
+          "underPrice": -118,
+          "calculatedP": 0.4970261697065821,
+          "publishedP": 0.4970261697065821,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -210,
+          "underPrice": 155,
+          "calculatedP": 0.6333530455351862,
+          "publishedP": 0.6333530455351862,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 8.5,
+          "overPrice": 140,
+          "underPrice": -185,
+          "calculatedP": 0.39094650205761317,
+          "publishedP": 0.39094650205761317,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 7.5,
+          "overPrice": -118,
+          "underPrice": -110,
+          "calculatedP": 0.5082034454470877,
+          "publishedP": 0.5082034454470877,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810841:2026-03-16T23:30:00Z:4066354:player_assists",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.5162199424192044,
+      "publishedPOver": 0.5162199424192044,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 4.5,
+          "overPrice": -123,
+          "underPrice": -107,
+          "calculatedP": 0.5162199424192044,
+          "publishedP": 0.5162199424192044,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 4.5,
+          "overPrice": -128,
+          "underPrice": 100,
+          "calculatedP": 0.5289256198347108,
+          "publishedP": 0.5289256198347108,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 4.5,
+          "overPrice": -122,
+          "underPrice": -108,
+          "calculatedP": 0.5141838223374939,
+          "publishedP": 0.5141838223374939,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 4.5,
+          "overPrice": -134,
+          "underPrice": -103,
+          "calculatedP": 0.5302120692343677,
+          "publishedP": 0.5302120692343677,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": -280,
+          "underPrice": 205,
+          "calculatedP": 0.6920583468395461,
+          "publishedP": 0.6920583468395461,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 160,
+          "underPrice": -215,
+          "calculatedP": 0.36041189931350115,
+          "publishedP": 0.36041189931350115,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 4.5,
+          "overPrice": -119,
+          "underPrice": -109,
+          "calculatedP": 0.5102580936358787,
+          "publishedP": 0.5102580936358787,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810814:2026-03-13T01:30:00Z:3917376:player_assists",
+      "line": 5.5,
+      "publishedLine": 5.5,
+      "pOver": 0.5209063395985983,
+      "publishedPOver": 0.5209063395985983,
+      "mainMedian": 5.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 5.5,
+          "overPrice": -124,
+          "underPrice": -106,
+          "calculatedP": 0.5182600227235838,
+          "publishedP": 0.5182600227235838,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 5.5,
+          "overPrice": -125,
+          "underPrice": -102,
+          "calculatedP": 0.5238589211618258,
+          "publishedP": 0.5238589211618258,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 5.5,
+          "overPrice": -150,
+          "underPrice": 110,
+          "calculatedP": 0.5575221238938053,
+          "publishedP": 0.5575221238938053,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 5.5,
+          "overPrice": -127,
+          "underPrice": -106,
+          "calculatedP": 0.5209063395985983,
+          "publishedP": 0.5209063395985983,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 5.5,
+          "overPrice": -136,
+          "underPrice": 100,
+          "calculatedP": 0.5354330708661418,
+          "publishedP": 0.5354330708661418,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -260,
+          "underPrice": 190,
+          "calculatedP": 0.6768402154398564,
+          "publishedP": 0.6768402154398564,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": 150,
+          "underPrice": -200,
+          "calculatedP": 0.375,
+          "publishedP": 0.375,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": -123,
+          "underPrice": -104,
+          "calculatedP": 0.519675254742772,
+          "publishedP": 0.519675254742772,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810694:2026-02-24T19:00:00Z:4066354:player_points",
+      "line": 21.5,
+      "publishedLine": 21.5,
+      "pOver": 0.5,
+      "publishedPOver": 0.5,
+      "mainMedian": 21.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 22.5,
+          "overPrice": -108,
+          "underPrice": -118,
+          "calculatedP": 0.4896023956080519,
+          "publishedP": 0.4896023956080519,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "fanduel",
+          "line": 20.5,
+          "overPrice": -122,
+          "underPrice": -108,
+          "calculatedP": 0.5141838223374939,
+          "publishedP": 0.5141838223374939,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "betmgm",
+          "line": 21.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 21.5,
+          "overPrice": -122,
+          "underPrice": -110,
+          "calculatedP": 0.511990407673861,
+          "publishedP": 0.511990407673861,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 16.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 17.5,
+          "overPrice": -185,
+          "underPrice": 140,
+          "calculatedP": 0.6090534979423868,
+          "publishedP": 0.6090534979423868,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 18.5,
+          "overPrice": -145,
+          "underPrice": 110,
+          "calculatedP": 0.554140127388535,
+          "publishedP": 0.554140127388535,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 19.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 20.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 21.5,
+          "overPrice": 135,
+          "underPrice": -180,
+          "calculatedP": 0.3982930298719772,
+          "publishedP": 0.3982930298719772,
+          "main": false,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 22.5,
+          "overPrice": 165,
+          "underPrice": -220,
+          "calculatedP": 0.35437430786268,
+          "publishedP": 0.35437430786268,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 23.5,
+          "overPrice": 205,
+          "underPrice": -280,
+          "calculatedP": 0.3079416531604538,
+          "publishedP": 0.3079416531604538,
+          "main": false,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401810148:2025-11-29T21:00:00Z:4683689:player_assists",
+      "line": 0.5,
+      "publishedLine": 0.5,
+      "pOver": 0.6666666666666667,
+      "publishedPOver": 0.6666666666666667,
+      "mainMedian": 1,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 0.5,
+          "overPrice": -250,
+          "underPrice": 180,
+          "calculatedP": 0.6666666666666667,
+          "publishedP": 0.6666666666666667,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 1.5,
+          "overPrice": 160,
+          "underPrice": -275,
+          "calculatedP": 0.3440366972477064,
+          "publishedP": 0.3440366972477064,
+          "main": true,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401810299:2025-12-28T20:00:00Z:4065804:player_assists",
+      "line": 0.5,
+      "publishedLine": 0.5,
+      "pOver": 0.6287425149700598,
+      "publishedPOver": 0.6287425149700598,
+      "mainMedian": 0.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 0.5,
+          "overPrice": -210,
+          "underPrice": 150,
+          "calculatedP": 0.6287425149700598,
+          "publishedP": 0.6287425149700598,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810729:2026-03-01T23:00:00Z:4397424:player_assists",
+      "line": 1.5,
+      "publishedLine": 1.5,
+      "pOver": 0.4165029469548134,
+      "publishedPOver": 0.4165029469548134,
+      "mainMedian": 1.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 1.5,
+          "overPrice": 125,
+          "underPrice": -165,
+          "calculatedP": 0.4165029469548134,
+          "publishedP": 0.4165029469548134,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 1.5,
+          "overPrice": 115,
+          "underPrice": -155,
+          "calculatedP": 0.43348916277093075,
+          "publishedP": 0.43348916277093075,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 1.5,
+          "overPrice": 125,
+          "underPrice": -165,
+          "calculatedP": 0.4165029469548134,
+          "publishedP": 0.4165029469548134,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401809961:2025-10-26T18:30:00Z:4397424:player_assists",
+      "line": 1.5,
+      "publishedLine": 1.5,
+      "pOver": 0.36022326113920433,
+      "publishedPOver": 0.36022326113920433,
+      "mainMedian": 1.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 1.5,
+          "overPrice": 160,
+          "underPrice": -220,
+          "calculatedP": 0.3587443946188341,
+          "publishedP": 0.3587443946188341,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 1.5,
+          "overPrice": 150,
+          "underPrice": -240,
+          "calculatedP": 0.3617021276595745,
+          "publishedP": 0.3617021276595745,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810157:2025-11-30T23:00:00Z:4593841:player_assists",
+      "line": 1.5,
+      "publishedLine": 1.5,
+      "pOver": 0.4673671448777531,
+      "publishedPOver": 0.4673671448777531,
+      "mainMedian": 1.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 1.5,
+          "overPrice": 100,
+          "underPrice": -135,
+          "calculatedP": 0.4653465346534653,
+          "publishedP": 0.4653465346534653,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 1.5,
+          "overPrice": 100,
+          "underPrice": -130,
+          "calculatedP": 0.4693877551020409,
+          "publishedP": 0.4693877551020409,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810557:2026-02-01T20:30:00Z:4277951:player_points",
+      "line": 7.5,
+      "publishedLine": 7.5,
+      "pOver": 0.48310139165009935,
+      "publishedPOver": 0.48310139165009935,
+      "mainMedian": 7.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 7.5,
+          "overPrice": -102,
+          "underPrice": -125,
+          "calculatedP": 0.47614107883817425,
+          "publishedP": 0.47614107883817425,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 7.5,
+          "overPrice": -102,
+          "underPrice": -125,
+          "calculatedP": 0.47614107883817425,
+          "publishedP": 0.47614107883817425,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 7.5,
+          "overPrice": -118,
+          "underPrice": -110,
+          "calculatedP": 0.5082034454470877,
+          "publishedP": 0.5082034454470877,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 7.5,
+          "overPrice": -108,
+          "underPrice": -125,
+          "calculatedP": 0.48310139165009935,
+          "publishedP": 0.48310139165009935,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -215,
+          "underPrice": 160,
+          "calculatedP": 0.6395881006864989,
+          "publishedP": 0.6395881006864989,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": -145,
+          "underPrice": 110,
+          "calculatedP": 0.554140127388535,
+          "publishedP": 0.554140127388535,
+          "main": false,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 8.5,
+          "overPrice": -105,
+          "underPrice": -125,
+          "calculatedP": 0.4796954314720812,
+          "publishedP": 0.4796954314720812,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 10.5,
+          "overPrice": 175,
+          "underPrice": -240,
+          "calculatedP": 0.33999999999999997,
+          "publishedP": 0.33999999999999997,
+          "main": false,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401810987:2026-04-05T19:30:00Z:4065804:player_rebounds",
+      "line": 3.5,
+      "publishedLine": 3.5,
+      "pOver": 0.45180722891566266,
+      "publishedPOver": 0.45180722891566266,
+      "mainMedian": 3.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 3.5,
+          "overPrice": 117,
+          "underPrice": -155,
+          "calculatedP": 0.4312167075336096,
+          "publishedP": 0.4312167075336096,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 3.5,
+          "overPrice": 108,
+          "underPrice": -136,
+          "calculatedP": 0.4548257786000616,
+          "publishedP": 0.4548257786000616,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 3.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 3.5,
+          "overPrice": 108,
+          "underPrice": -140,
+          "calculatedP": 0.45180722891566266,
+          "publishedP": 0.45180722891566266,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 3.5,
+          "overPrice": 104,
+          "underPrice": -141,
+          "calculatedP": 0.45588680387409203,
+          "publishedP": 0.45588680387409203,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 2.5,
+          "overPrice": -200,
+          "underPrice": 150,
+          "calculatedP": 0.625,
+          "publishedP": 0.625,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": 115,
+          "underPrice": -150,
+          "calculatedP": 0.43668122270742354,
+          "publishedP": 0.43668122270742354,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 3.5,
+          "overPrice": 112,
+          "underPrice": -145,
+          "calculatedP": 0.44351918899348297,
+          "publishedP": 0.44351918899348297,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810947:2026-03-30T22:00:00Z:3917376:player_points",
+      "line": 28.5,
+      "publishedLine": 28.5,
+      "pOver": 0.49490847306122715,
+      "publishedPOver": 0.49490847306122715,
+      "mainMedian": 28.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 27.5,
+          "overPrice": -125,
+          "underPrice": -102,
+          "calculatedP": 0.5238589211618258,
+          "publishedP": 0.5238589211618258,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "fanduel",
+          "line": 28.5,
+          "overPrice": -106,
+          "underPrice": -120,
+          "calculatedP": 0.48542880932556204,
+          "publishedP": 0.48542880932556204,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 28.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 28.5,
+          "overPrice": -113,
+          "underPrice": -118,
+          "calculatedP": 0.4949766918501849,
+          "publishedP": 0.4949766918501849,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 27.5,
+          "overPrice": -150,
+          "underPrice": 110,
+          "calculatedP": 0.5575221238938053,
+          "publishedP": 0.5575221238938053,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 28.5,
+          "overPrice": -121,
+          "underPrice": -113,
+          "calculatedP": 0.5078823946715012,
+          "publishedP": 0.5078823946715012,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 29.5,
+          "overPrice": 102,
+          "underPrice": -137,
+          "calculatedP": 0.461322848133297,
+          "publishedP": 0.461322848133297,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 24.5,
+          "overPrice": -245,
+          "underPrice": 180,
+          "calculatedP": 0.6653734238603297,
+          "publishedP": 0.6653734238603297,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 25.5,
+          "overPrice": -200,
+          "underPrice": 150,
+          "calculatedP": 0.625,
+          "publishedP": 0.625,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 26.5,
+          "overPrice": -160,
+          "underPrice": 120,
+          "calculatedP": 0.5751633986928104,
+          "publishedP": 0.5751633986928104,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 27.5,
+          "overPrice": -130,
+          "underPrice": 100,
+          "calculatedP": 0.5306122448979592,
+          "publishedP": 0.5306122448979592,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 28.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 29.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 30.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 31.5,
+          "overPrice": 155,
+          "underPrice": -210,
+          "calculatedP": 0.3666469544648137,
+          "publishedP": 0.3666469544648137,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 32.5,
+          "overPrice": 185,
+          "underPrice": -250,
+          "calculatedP": 0.32941176470588235,
+          "publishedP": 0.32941176470588235,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 28.5,
+          "overPrice": -111,
+          "underPrice": -116,
+          "calculatedP": 0.4948402542722694,
+          "publishedP": 0.4948402542722694,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810515:2026-01-27T01:00:00Z:4066354:player_assists",
+      "line": 5.5,
+      "publishedLine": 5.5,
+      "pOver": 0.44098480655585515,
+      "publishedPOver": 0.44098480655585515,
+      "mainMedian": 5.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 5.5,
+          "overPrice": 111,
+          "underPrice": -147,
+          "calculatedP": 0.4433117360949082,
+          "publishedP": 0.4433117360949082,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 5.5,
+          "overPrice": 126,
+          "underPrice": -162,
+          "calculatedP": 0.4171177482009807,
+          "publishedP": 0.4171177482009807,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -150,
+          "calculatedP": 0.4424778761061947,
+          "publishedP": 0.4424778761061947,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -148,
+          "calculatedP": 0.4438081603435934,
+          "publishedP": 0.4438081603435934,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 5.5,
+          "overPrice": 117,
+          "underPrice": -159,
+          "calculatedP": 0.42878664966971836,
+          "publishedP": 0.42878664966971836,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -150,
+          "underPrice": 115,
+          "calculatedP": 0.5633187772925764,
+          "publishedP": 0.5633187772925764,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": 113,
+          "underPrice": -147,
+          "calculatedP": 0.44098480655585515,
+          "publishedP": 0.44098480655585515,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810854:2026-03-18T22:00:00Z:4065804:player_points",
+      "line": 8.5,
+      "publishedLine": 8.5,
+      "pOver": 0.5010457625700661,
+      "publishedPOver": 0.5010457625700661,
+      "mainMedian": 8.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 8.5,
+          "overPrice": -113,
+          "underPrice": -112,
+          "calculatedP": 0.5010457625700661,
+          "publishedP": 0.5010457625700661,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 8.5,
+          "overPrice": -115,
+          "underPrice": -111,
+          "calculatedP": 0.5041554124246831,
+          "publishedP": 0.5041554124246831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 8.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 8.5,
+          "overPrice": -120,
+          "underPrice": -112,
+          "calculatedP": 0.5079872204472844,
+          "publishedP": 0.5079872204472844,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 8.5,
+          "overPrice": -115,
+          "underPrice": -118,
+          "calculatedP": 0.4970261697065821,
+          "publishedP": 0.4970261697065821,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 7.5,
+          "overPrice": -165,
+          "underPrice": 118,
+          "calculatedP": 0.5757963822634864,
+          "publishedP": 0.5757963822634864,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": -165,
+          "underPrice": 125,
+          "calculatedP": 0.5834970530451867,
+          "publishedP": 0.5834970530451867,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 8.5,
+          "overPrice": -115,
+          "underPrice": -115,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": 120,
+          "underPrice": -160,
+          "calculatedP": 0.4248366013071895,
+          "publishedP": 0.4248366013071895,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 10.5,
+          "overPrice": 160,
+          "underPrice": -215,
+          "calculatedP": 0.36041189931350115,
+          "publishedP": 0.36041189931350115,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 8.5,
+          "overPrice": -114,
+          "underPrice": -114,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810492:2026-01-23T16:00:00Z:3917376:player_rebounds",
+      "line": 6.5,
+      "publishedLine": 6.5,
+      "pOver": 0.532258064516129,
+      "publishedPOver": 0.532258064516129,
+      "mainMedian": 6.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 6.5,
+          "overPrice": -136,
+          "underPrice": 103,
+          "calculatedP": 0.5391345102327761,
+          "publishedP": 0.5391345102327761,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 6.5,
+          "overPrice": -132,
+          "underPrice": 100,
+          "calculatedP": 0.532258064516129,
+          "publishedP": 0.532258064516129,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 6.5,
+          "overPrice": -150,
+          "underPrice": 110,
+          "calculatedP": 0.5575221238938053,
+          "publishedP": 0.5575221238938053,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 6.5,
+          "overPrice": -132,
+          "underPrice": 100,
+          "calculatedP": 0.532258064516129,
+          "publishedP": 0.532258064516129,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 6.5,
+          "overPrice": -130,
+          "underPrice": -105,
+          "calculatedP": 0.5246062992125985,
+          "publishedP": 0.5246062992125985,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -130,
+          "underPrice": 100,
+          "calculatedP": 0.5306122448979592,
+          "publishedP": 0.5306122448979592,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 6.5,
+          "overPrice": -135,
+          "underPrice": 105,
+          "calculatedP": 0.5407914020517831,
+          "publishedP": 0.5407914020517831,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810776:2026-03-08T16:00:00Z:4277951:player_points",
+      "line": 6.5,
+      "publishedLine": 6.5,
+      "pOver": 0.49179655455291227,
+      "publishedPOver": 0.49179655455291227,
+      "mainMedian": 6.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betmgm",
+          "line": 6.5,
+          "overPrice": -110,
+          "underPrice": -118,
+          "calculatedP": 0.49179655455291227,
+          "publishedP": 0.49179655455291227,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810528:2026-01-28T23:00:00Z:4066354:player_rebounds",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.5172441954327064,
+      "publishedPOver": 0.5172441954327064,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 4.5,
+          "overPrice": -128,
+          "underPrice": -103,
+          "calculatedP": 0.5252688606776097,
+          "publishedP": 0.5252688606776097,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 4.5,
+          "overPrice": -113,
+          "underPrice": -113,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": -130,
+          "underPrice": -105,
+          "calculatedP": 0.5246062992125985,
+          "publishedP": 0.5246062992125985,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 4.5,
+          "overPrice": -122,
+          "underPrice": -108,
+          "calculatedP": 0.5141838223374939,
+          "publishedP": 0.5141838223374939,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 4.5,
+          "overPrice": -117,
+          "underPrice": -117,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": -260,
+          "underPrice": 190,
+          "calculatedP": 0.6768402154398564,
+          "publishedP": 0.6768402154398564,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 150,
+          "underPrice": -200,
+          "calculatedP": 0.375,
+          "publishedP": 0.375,
+          "main": false,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401810071:2025-11-12T16:00:00Z:4351851:player_assists",
+      "line": 2.5,
+      "publishedLine": 2.5,
+      "pOver": 0.5105917021962667,
+      "publishedPOver": 0.5105917021962667,
+      "mainMedian": 2.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 2.5,
+          "overPrice": -132,
+          "underPrice": 100,
+          "calculatedP": 0.532258064516129,
+          "publishedP": 0.532258064516129,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 2.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 2.5,
+          "overPrice": -115,
+          "underPrice": -118,
+          "calculatedP": 0.4970261697065821,
+          "publishedP": 0.4970261697065821,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 2.5,
+          "overPrice": -121,
+          "underPrice": -110,
+          "calculatedP": 0.5110619469026548,
+          "publishedP": 0.5110619469026548,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 2.5,
+          "overPrice": -117,
+          "underPrice": -114,
+          "calculatedP": 0.5030135004821601,
+          "publishedP": 0.5030135004821601,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 2.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "calculatedP": 0.5101214574898786,
+          "publishedP": 0.5101214574898786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": 205,
+          "underPrice": -280,
+          "calculatedP": 0.3079416531604538,
+          "publishedP": 0.3079416531604538,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 2.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 2.5,
+          "overPrice": -122,
+          "underPrice": -106,
+          "calculatedP": 0.5164392569455861,
+          "publishedP": 0.5164392569455861,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401811029:2026-04-10T22:00:00Z:4397424:player_rebounds",
+      "line": 8.5,
+      "publishedLine": 8.5,
+      "pOver": 0.5,
+      "publishedPOver": 0.5,
+      "mainMedian": 8.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "betonlineag",
+          "line": 8.5,
+          "overPrice": -114,
+          "underPrice": -114,
+          "calculatedP": 0.5,
+          "publishedP": 0.5,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810749:2026-03-04T23:00:00Z:4066354:player_assists",
+      "line": 5.5,
+      "publishedLine": 5.5,
+      "pOver": 0.4484501676671331,
+      "publishedPOver": 0.4484501676671331,
+      "mainMedian": 5.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 5.5,
+          "overPrice": 108,
+          "underPrice": -142,
+          "calculatedP": 0.45034985856781296,
+          "publishedP": 0.45034985856781296,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 5.5,
+          "overPrice": 112,
+          "underPrice": -142,
+          "calculatedP": 0.4456393635827931,
+          "publishedP": 0.4456393635827931,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 5.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 5.5,
+          "overPrice": 108,
+          "underPrice": -143,
+          "calculatedP": 0.4496336318555252,
+          "publishedP": 0.4496336318555252,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -150,
+          "calculatedP": 0.4424778761061947,
+          "publishedP": 0.4424778761061947,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -180,
+          "underPrice": 135,
+          "calculatedP": 0.6017069701280228,
+          "publishedP": 0.6017069701280228,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": 210,
+          "underPrice": -290,
+          "calculatedP": 0.30256012412723043,
+          "publishedP": 0.30256012412723043,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 5.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -143,
+          "calculatedP": 0.44726670347874103,
+          "publishedP": 0.44726670347874103,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810281:2025-12-27T00:00:00Z:4351851:player_points",
+      "line": 11.5,
+      "publishedLine": 11.5,
+      "pOver": 0.5110619469026548,
+      "publishedPOver": 0.5110619469026548,
+      "mainMedian": 11.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 11.5,
+          "overPrice": -122,
+          "underPrice": -104,
+          "calculatedP": 0.5187593796898449,
+          "publishedP": 0.5187593796898449,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 11.5,
+          "overPrice": -115,
+          "underPrice": -111,
+          "calculatedP": 0.5041554124246831,
+          "publishedP": 0.5041554124246831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 11.5,
+          "overPrice": -115,
+          "underPrice": -118,
+          "calculatedP": 0.4970261697065821,
+          "publishedP": 0.4970261697065821,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 11.5,
+          "overPrice": -121,
+          "underPrice": -110,
+          "calculatedP": 0.5110619469026548,
+          "publishedP": 0.5110619469026548,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 10.5,
+          "overPrice": -152,
+          "underPrice": 112,
+          "calculatedP": 0.5611590972415714,
+          "publishedP": 0.5611590972415714,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betrivers",
+          "line": 11.5,
+          "overPrice": -109,
+          "underPrice": -122,
+          "calculatedP": 0.4869204764971024,
+          "publishedP": 0.4869204764971024,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 12.5,
+          "overPrice": 120,
+          "underPrice": -167,
+          "calculatedP": 0.4208701134930643,
+          "publishedP": 0.4208701134930643,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 9.5,
+          "overPrice": -240,
+          "underPrice": 175,
+          "calculatedP": 0.66,
+          "publishedP": 0.66,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 10.5,
+          "overPrice": -170,
+          "underPrice": 130,
+          "calculatedP": 0.5915279878971256,
+          "publishedP": 0.5915279878971256,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 11.5,
+          "overPrice": -125,
+          "underPrice": -105,
+          "calculatedP": 0.5203045685279188,
+          "publishedP": 0.5203045685279188,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 12.5,
+          "overPrice": 105,
+          "underPrice": -135,
+          "calculatedP": 0.4592085979482169,
+          "publishedP": 0.4592085979482169,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 13.5,
+          "overPrice": 135,
+          "underPrice": -180,
+          "calculatedP": 0.3982930298719772,
+          "publishedP": 0.3982930298719772,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 14.5,
+          "overPrice": 175,
+          "underPrice": -240,
+          "calculatedP": 0.33999999999999997,
+          "publishedP": 0.33999999999999997,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 11.5,
+          "overPrice": -122,
+          "underPrice": -106,
+          "calculatedP": 0.5164392569455861,
+          "publishedP": 0.5164392569455861,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810654:2026-02-19T19:00:00Z:3917376:player_rebounds",
+      "line": 6.5,
+      "publishedLine": 6.5,
+      "pOver": 0.48987854251012153,
+      "publishedPOver": 0.48987854251012153,
+      "mainMedian": 6.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 6.5,
+          "overPrice": -112,
+          "underPrice": -117,
+          "calculatedP": 0.494909179767044,
+          "publishedP": 0.494909179767044,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 6.5,
+          "overPrice": -106,
+          "underPrice": -125,
+          "calculatedP": 0.4808467741935484,
+          "publishedP": 0.4808467741935484,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 6.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 6.5,
+          "overPrice": -110,
+          "underPrice": -121,
+          "calculatedP": 0.48893805309734506,
+          "publishedP": 0.48893805309734506,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 6.5,
+          "overPrice": -113,
+          "underPrice": -121,
+          "calculatedP": 0.49211760532849874,
+          "publishedP": 0.49211760532849874,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": -200,
+          "underPrice": 150,
+          "calculatedP": 0.625,
+          "publishedP": 0.625,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": -110,
+          "underPrice": -120,
+          "calculatedP": 0.48987854251012153,
+          "publishedP": 0.48987854251012153,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 7.5,
+          "overPrice": 155,
+          "underPrice": -210,
+          "calculatedP": 0.3666469544648137,
+          "publishedP": 0.3666469544648137,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 6.5,
+          "overPrice": -106,
+          "underPrice": -122,
+          "calculatedP": 0.483560743054414,
+          "publishedP": 0.483560743054414,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810071:2025-11-12T16:00:00Z:3078576:player_assists",
+      "line": 5.5,
+      "publishedLine": 5.5,
+      "pOver": 0.4471531035868297,
+      "publishedPOver": 0.4471531035868297,
+      "mainMedian": 5.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 5.5,
+          "overPrice": 106,
+          "underPrice": -139,
+          "calculatedP": 0.45494346518445195,
+          "publishedP": 0.45494346518445195,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 5.5,
+          "overPrice": 114,
+          "underPrice": -152,
+          "calculatedP": 0.43652993348115304,
+          "publishedP": 0.43652993348115304,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 5.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 5.5,
+          "overPrice": 109,
+          "underPrice": -145,
+          "calculatedP": 0.44703950369491835,
+          "publishedP": 0.44703950369491835,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 5.5,
+          "overPrice": 112,
+          "underPrice": -150,
+          "calculatedP": 0.44014084507042256,
+          "publishedP": 0.44014084507042256,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -180,
+          "underPrice": 135,
+          "calculatedP": 0.6017069701280228,
+          "publishedP": 0.6017069701280228,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 6.5,
+          "overPrice": 210,
+          "underPrice": -290,
+          "calculatedP": 0.30256012412723043,
+          "publishedP": 0.30256012412723043,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 5.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -143,
+          "calculatedP": 0.44726670347874103,
+          "publishedP": 0.44726670347874103,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810502:2026-01-24T16:00:00Z:3917376:player_assists",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.5220436997938347,
+      "publishedPOver": 0.5220436997938347,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 4.5,
+          "overPrice": -135,
+          "underPrice": 102,
+          "calculatedP": 0.5371282253299192,
+          "publishedP": 0.5371282253299192,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 4.5,
+          "overPrice": -125,
+          "underPrice": -106,
+          "calculatedP": 0.5191532258064516,
+          "publishedP": 0.5191532258064516,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": -125,
+          "underPrice": -110,
+          "calculatedP": 0.5147058823529411,
+          "publishedP": 0.5147058823529411,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 4.5,
+          "overPrice": -129,
+          "underPrice": -104,
+          "calculatedP": 0.5249341737812177,
+          "publishedP": 0.5249341737812177,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -135,
+          "underPrice": 105,
+          "calculatedP": 0.5407914020517831,
+          "publishedP": 0.5407914020517831,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 145,
+          "underPrice": -190,
+          "calculatedP": 0.3838517538054269,
+          "publishedP": 0.3838517538054269,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 4.5,
+          "overPrice": -123,
+          "underPrice": -105,
+          "calculatedP": 0.5185070943861814,
+          "publishedP": 0.5185070943861814,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401809791:2025-11-21T16:00:00Z:3078576:player_assists",
+      "line": 5.5,
+      "publishedLine": 5.5,
+      "pOver": 0.4483431939447373,
+      "publishedPOver": 0.4483431939447373,
+      "mainMedian": 5.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 5.5,
+          "overPrice": 113,
+          "underPrice": -149,
+          "calculatedP": 0.4396419301869802,
+          "publishedP": 0.4396419301869802,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 5.5,
+          "overPrice": 100,
+          "underPrice": -132,
+          "calculatedP": 0.4677419354838709,
+          "publishedP": 0.4677419354838709,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 5.5,
+          "overPrice": 105,
+          "underPrice": -140,
+          "calculatedP": 0.4554079696394686,
+          "publishedP": 0.4554079696394686,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 5.5,
+          "overPrice": 107,
+          "underPrice": -143,
+          "calculatedP": 0.45082651527800965,
+          "publishedP": 0.45082651527800965,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 5.5,
+          "overPrice": 100,
+          "underPrice": -132,
+          "calculatedP": 0.4677419354838709,
+          "publishedP": 0.4677419354838709,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -165,
+          "underPrice": 125,
+          "calculatedP": 0.5834970530451867,
+          "publishedP": 0.5834970530451867,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 120,
+          "underPrice": -160,
+          "calculatedP": 0.4248366013071895,
+          "publishedP": 0.4248366013071895,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 5.5,
+          "overPrice": 110,
+          "underPrice": -145,
+          "calculatedP": 0.4458598726114649,
+          "publishedP": 0.4458598726114649,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": 113,
+          "underPrice": -147,
+          "calculatedP": 0.44098480655585515,
+          "publishedP": 0.44098480655585515,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401810001:2025-11-01T15:00:00Z:4065804:player_rebounds",
+      "line": 3.5,
+      "publishedLine": 3.5,
+      "pOver": 0.43304149226137284,
+      "publishedPOver": 0.43304149226137284,
+      "mainMedian": 3.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 3.5,
+          "overPrice": 110,
+          "underPrice": -143,
+          "calculatedP": 0.44726670347874103,
+          "publishedP": 0.44726670347874103,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 3.5,
+          "overPrice": 116,
+          "underPrice": -154,
+          "calculatedP": 0.4329742261011864,
+          "publishedP": 0.4329742261011864,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 3.5,
+          "overPrice": 125,
+          "underPrice": -160,
+          "calculatedP": 0.4193548387096774,
+          "publishedP": 0.4193548387096774,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "williamhill_us",
+          "line": 3.5,
+          "overPrice": 115,
+          "underPrice": -154,
+          "calculatedP": 0.4341138266962912,
+          "publishedP": 0.4341138266962912,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 3.5,
+          "overPrice": 120,
+          "underPrice": -162,
+          "calculatedP": 0.42367399741267786,
+          "publishedP": 0.42367399741267786,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 2.5,
+          "overPrice": -190,
+          "underPrice": 145,
+          "calculatedP": 0.6161482461945731,
+          "publishedP": 0.6161482461945731,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": 120,
+          "underPrice": -160,
+          "calculatedP": 0.4248366013071895,
+          "publishedP": 0.4248366013071895,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanatics",
+          "line": 3.5,
+          "overPrice": 115,
+          "underPrice": -150,
+          "calculatedP": 0.43668122270742354,
+          "publishedP": 0.43668122270742354,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 3.5,
+          "overPrice": 117,
+          "underPrice": -152,
+          "calculatedP": 0.43310875842155927,
+          "publishedP": 0.43310875842155927,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    },
+    {
+      "key": "401809503:2025-10-31T22:00:00Z:4066354:player_assists",
+      "line": 4.5,
+      "publishedLine": 4.5,
+      "pOver": 0.5614029600236967,
+      "publishedPOver": 0.5614029600236967,
+      "mainMedian": 4.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 4.5,
+          "overPrice": -145,
+          "underPrice": 112,
+          "calculatedP": 0.5564808110065169,
+          "publishedP": 0.5564808110065169,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 4.5,
+          "overPrice": -146,
+          "underPrice": 114,
+          "calculatedP": 0.5594871427548169,
+          "publishedP": 0.5594871427548169,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 5.5,
+          "overPrice": 125,
+          "underPrice": -165,
+          "calculatedP": 0.4165029469548134,
+          "publishedP": 0.4165029469548134,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "williamhill_us",
+          "line": 4.5,
+          "overPrice": -152,
+          "underPrice": 110,
+          "calculatedP": 0.5588235294117647,
+          "publishedP": 0.5588235294117647,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 4.5,
+          "overPrice": -157,
+          "underPrice": 117,
+          "calculatedP": 0.5700112098244909,
+          "publishedP": 0.5700112098244909,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": -160,
+          "underPrice": 120,
+          "calculatedP": 0.5751633986928104,
+          "publishedP": 0.5751633986928104,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 5.5,
+          "overPrice": 125,
+          "underPrice": -165,
+          "calculatedP": 0.4165029469548134,
+          "publishedP": 0.4165029469548134,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "fanatics",
+          "line": 4.5,
+          "overPrice": -150,
+          "underPrice": 115,
+          "calculatedP": 0.5633187772925764,
+          "publishedP": 0.5633187772925764,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betonlineag",
+          "line": 5.5,
+          "overPrice": 128,
+          "underPrice": -167,
+          "calculatedP": 0.4121896998888477,
+          "publishedP": 0.4121896998888477,
+          "main": true,
+          "contributes": false
+        }
+      ]
+    },
+    {
+      "key": "401811004:2026-04-07T22:00:00Z:4066354:player_assists",
+      "line": 3.5,
+      "publishedLine": 3.5,
+      "pOver": 0.5726990301713197,
+      "publishedPOver": 0.5726990301713197,
+      "mainMedian": 3.5,
+      "problems": [],
+      "pairs": [
+        {
+          "book": "draftkings",
+          "line": 3.5,
+          "overPrice": -165,
+          "underPrice": 125,
+          "calculatedP": 0.5834970530451867,
+          "publishedP": 0.5834970530451867,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "fanduel",
+          "line": 3.5,
+          "overPrice": -154,
+          "underPrice": 120,
+          "calculatedP": 0.5715249662618084,
+          "publishedP": 0.5715249662618084,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betmgm",
+          "line": 4.5,
+          "overPrice": 120,
+          "underPrice": -160,
+          "calculatedP": 0.4248366013071895,
+          "publishedP": 0.4248366013071895,
+          "main": true,
+          "contributes": false
+        },
+        {
+          "book": "williamhill_us",
+          "line": 3.5,
+          "overPrice": -157,
+          "underPrice": 117,
+          "calculatedP": 0.5700112098244909,
+          "publishedP": 0.5700112098244909,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "betrivers",
+          "line": 3.5,
+          "overPrice": -150,
+          "underPrice": 110,
+          "calculatedP": 0.5575221238938053,
+          "publishedP": 0.5575221238938053,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 3.5,
+          "overPrice": -165,
+          "underPrice": 125,
+          "calculatedP": 0.5834970530451867,
+          "publishedP": 0.5834970530451867,
+          "main": true,
+          "contributes": true
+        },
+        {
+          "book": "bovada",
+          "line": 4.5,
+          "overPrice": 130,
+          "underPrice": -170,
+          "calculatedP": 0.40847201210287437,
+          "publishedP": 0.40847201210287437,
+          "main": false,
+          "contributes": false
+        },
+        {
+          "book": "betonlineag",
+          "line": 3.5,
+          "overPrice": -156,
+          "underPrice": 121,
+          "calculatedP": 0.573873094080831,
+          "publishedP": 0.573873094080831,
+          "main": true,
+          "contributes": true
+        }
+      ]
+    }
+  ]
+}
