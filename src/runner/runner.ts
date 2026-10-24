@@ -1,3 +1,10 @@
+import {
+  WorkspacePolicy,
+  type WorkspaceOperation,
+  type WorkspaceChange,
+  type WorkspacePort,
+} from "../env/workspace.js";
+import { windowSnapshot } from "./workspace.js";
 import type { LifecyclePhase } from "../env/lifecycle.js";
 import type { RecordedGame } from "../env/results.js";
 import {
@@ -79,6 +86,8 @@ export interface Environment {
     },
     signal: AbortSignal,
   ): Promise<CodeResult>;
+  workspace?: WorkspacePort;
+  workspaceChanges?(): WorkspaceChange[];
   close(): Promise<void>;
 }
 export type EnvironmentFactory = (
@@ -257,6 +266,33 @@ export class Runner {
         this.manifest.config.profile.memory.horizon === "stateless"
       )
         restore(this.root, this.workspace, { files: {} });
+      if (
+        phase === "pregame" &&
+        this.manifest.config.profile.memory.horizon === "window"
+      ) {
+        const k = this.manifest.config.profile.memory.windowGames!;
+        const changes: WorkspaceChange[] = [];
+        for (const previous of this.manifest.games.slice(
+          Math.max(0, game.index - k),
+          game.index,
+        )) {
+          for (const p of ["pregame", "postgame"] as const) {
+            const committed =
+              p === "pregame"
+                ? this.record.events("submission", previous.gameId)[0]?.data
+                    .value
+                : undefined;
+            const ended = this.record
+              .events("session_end", `${previous.gameId}:${p}`)
+              .filter((e) => e.data.limit !== "interrupted")
+              .at(-1)?.data;
+            changes.push(
+              ...(committed?.workspaceChanges ?? ended?.workspaceChanges ?? []),
+            );
+          }
+        }
+        restore(this.root, this.workspace, windowSnapshot(this.root, changes));
+      }
       before = snapshot(this.root, this.workspace);
     }
     if (phase === "pregame" && frozen) {
@@ -340,6 +376,11 @@ export class Runner {
           },
         );
         const env = environment;
+        if (
+          this.manifest.config.profile.memory.horizon === "window" &&
+          !env.workspaceChanges
+        )
+          throw Error("Window memory requires a workspace mutation journal");
         if (!active || controller.signal.aborted) {
           await env.close();
           throw new LimitError("wall_clock");
@@ -416,22 +457,11 @@ export class Runner {
               await env.transition("commit", game.scheduledStart);
               return { phase: "commit", budget: remaining() };
             }
-            if (name.startsWith("workspace_")) {
-              const memory = this.manifest.config.profile.memory;
-              if (memory.horizon === "stateless")
-                throw new SessionError(
-                  "memory_mode_refused",
-                  "Stateless workspace tools disabled",
-                );
-              if (
-                memory.revision === "append-only" &&
-                ["workspace_write", "workspace_delete"].includes(name)
-              )
-                throw new SessionError(
-                  "memory_mode_refused",
-                  "Append-only workspace",
-                );
-            }
+            if (name.startsWith("workspace_"))
+              new WorkspacePolicy(
+                this.manifest.config.profile.memory,
+                () => budget.stage,
+              ).authorize(name.slice(10) as WorkspaceOperation);
             // Submission remains possible when the research/tool allowance stops.
             if (name !== "submit") budget.tool(name, args);
             if (name === "submit") {
@@ -495,6 +525,7 @@ export class Runner {
                   submission: validated.value,
                   clips: validated.clips ?? [],
                   workspace,
+                  workspaceChanges: env.workspaceChanges?.() ?? [],
                 },
                 attemptRecord,
               );
@@ -673,6 +704,7 @@ export class Runner {
       before,
       after,
       diff: diff(before, after),
+      workspaceChanges: environment?.workspaceChanges?.() ?? [],
       usage: budget.totals(),
       elapsedMs: Date.now() - started,
     });

@@ -432,6 +432,10 @@ test("SIGKILL after commit resumes from durable receipt and committed workspace,
       assert.equal(r.events("submission").length, 1);
       assert.equal(r.events("submission_attempt").length, 1);
       assert.equal(
+        r.events("submission")[0].data.value.workspaceChanges[0].content,
+        Buffer.from("committed memory").toString("base64"),
+      );
+      assert.equal(
         r.events("session_end", "g1:pregame")[0].data.limit,
         "interrupted",
       );
@@ -974,10 +978,12 @@ test("runner refusals use SessionError codes for memory, disabled capabilities a
               ? session.call("execute_code", { program: "pass" })
               : mode === "budget"
                 ? session.call("list_questions", {})
-                : session.call("workspace_write", {
-                    path: "notes.txt",
-                    content: "x",
-                  }),
+                : mode === "append-only"
+                  ? session.call("workspace_delete", { path: "notes.txt" })
+                  : session.call("workspace_write", {
+                      path: "notes.txt",
+                      content: "x",
+                    }),
           (e) => e instanceof SessionError && e.code === expected,
         );
         await session.call("begin_commit", {});
@@ -1105,5 +1111,125 @@ test("third real validation failure persists every problem and never fabricates 
     );
   } finally {
     await s.close();
+  }
+});
+
+test("real workspace service carries season memory, expires k-window writes and journals checkpoints", async () => {
+  const { Workspace, WorkspacePolicy } =
+    await import("../src/env/workspace.js");
+  for (const horizon of ["season", "window", "stateless"] as const) {
+    const config = fixtureConfig(`workspace-${horizon}`);
+    config.profile.memory.horizon = horizon;
+    if (horizon === "window") config.profile.memory.windowGames = 1;
+    const factory: EnvironmentFactory = async (ctx, trusted) => {
+      const base = await environment(ctx, trusted);
+      let phase: import("../src/env/lifecycle.js").LifecyclePhase | "closed" =
+        ctx.phase;
+      const w = new Workspace(
+        trusted.workspace,
+        new WorkspacePolicy(config.profile.memory, () =>
+          phase === "initialize" || phase === "checkpoint" ? "closed" : phase,
+        ),
+      );
+      return {
+        ...base,
+        workspaceChanges: () => w.changes(),
+        async transition(next, cutoff) {
+          await base.transition(next, cutoff);
+          phase = next;
+        },
+        async close() {
+          phase = "closed";
+          await base.close();
+        },
+        async call(name, args, signal) {
+          const a = args as { path: string; content: string };
+          if (name === "workspace_list") return w.list(a.path);
+          if (name === "workspace_read") return w.read(a.path);
+          if (name.startsWith("workspace_"))
+            return w.mutate(
+              name.slice(10) as "write" | "append" | "delete",
+              a.path,
+              Buffer.from(a.content ?? ""),
+            );
+          return base.call(name, args, signal);
+        },
+      };
+    };
+    const s = await setup(config, provider, factory, [
+      ...games,
+      { gameId: "g3", scheduledStart: "2025-11-05T00:30:00Z" },
+    ]);
+    const seen: string[] = [];
+    try {
+      await s.runner.run(async ({ session }) => {
+        const ctx = await session.call("context", {});
+        if (ctx.phase === "postgame") {
+          await session.call("workspace_append", {
+            path: "notes",
+            content: `post-${ctx.game.game_id};`,
+          });
+          return;
+        }
+        if (horizon === "stateless") {
+          assert.deepEqual(
+            snapshot(s.runner.root, s.runner.workspace).files,
+            {},
+          );
+          await assert.rejects(
+            () =>
+              session.call("workspace_write", {
+                path: "notes",
+                content: "forbidden",
+              }),
+            { code: "memory_mode_refused" },
+          );
+          seen.push("");
+        } else {
+          const files = await session.call("workspace_list", {});
+          seen.push(
+            files.entries.length
+              ? (await session.call("workspace_read", { path: "notes" }))
+                  .content
+              : "",
+          );
+          await session.call("workspace_append", {
+            path: "notes",
+            content: `pre-${ctx.game.game_id};`,
+          });
+        }
+        await session.call("begin_commit", {});
+        await session.call("submit", { answers: [], notes: "valid" });
+      });
+      assert.equal(seen.length, 3);
+      if (horizon === "stateless") assert.deepEqual(seen, ["", "", ""]);
+      else {
+        assert.equal(seen[0], "");
+        assert.equal(seen[1], "pre-g1;post-g1;");
+        assert.equal(
+          seen[2],
+          horizon === "window"
+            ? "pre-g2;post-g2;"
+            : "pre-g1;post-g1;pre-g2;post-g2;",
+        );
+        const ends = s.runner.record.events("session_end");
+        assert.equal(ends.length, 6);
+        assert.ok(ends.every((e) => e.data.workspaceChanges.length === 1));
+        assert.deepEqual(ends[0].data.diff.added, ["notes"]);
+        assert.deepEqual(ends[1].data.diff.changed, ["notes"]);
+        assert.equal(
+          s.runner.record.events("submission")[0].data.value.workspaceChanges
+            .length,
+          1,
+        );
+      }
+      assert.ok(
+        s.runner.record
+          .events("session_end")
+          .every((e) => e.data.status === "completed"),
+      );
+    } finally {
+      await s.close();
+    }
   }
 });

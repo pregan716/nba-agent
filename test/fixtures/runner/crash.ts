@@ -1,3 +1,5 @@
+import { Workspace, WorkspacePolicy } from "../../../src/env/workspace.js";
+import type { LifecyclePhase } from "../../../src/env/lifecycle.js";
 import { validateSubmission } from "../../../src/env/submission.js";
 import { manifest } from "../../../src/runner/config.js";
 import { Runner } from "../../../src/runner/runner.js";
@@ -13,8 +15,31 @@ const runner = new Runner(
   proxy,
   async (context, trusted) => {
     const env = await environment(context, trusted);
+    let phase: LifecyclePhase | "closed" = context.phase;
+    const workspace = new Workspace(
+      trusted.workspace,
+      new WorkspacePolicy(context.memory, () =>
+        phase === "initialize" || phase === "checkpoint" ? "closed" : phase,
+      ),
+    );
     return {
       ...env,
+      workspaceChanges: () => workspace.changes(),
+      async transition(next, cutoff) {
+        await env.transition(next, cutoff);
+        phase = next;
+      },
+      async close() {
+        phase = "closed";
+        await env.close();
+      },
+      async call(name, args, signal) {
+        if (name === "workspace_write") {
+          const a = args as { path: string; content: string };
+          return workspace.mutate("write", a.path, Buffer.from(a.content));
+        }
+        return env.call(name, args, signal);
+      },
       validateSubmission: async (value) =>
         validateSubmission(value, await env.questions()),
     };
