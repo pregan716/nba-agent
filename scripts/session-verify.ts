@@ -21,7 +21,11 @@ try {
     ids,
   );
   const config = fixtureConfig("live-smoke");
-  config.profile.capabilities.enabled = ["game_history", "odds_history"];
+  config.profile.capabilities.enabled = [
+    "game_history",
+    "odds_history",
+    "search_and_fetch",
+  ];
   config.profile.dataSources = source.versions.map((v) => ({
     type: v.source,
     release: v.release,
@@ -68,6 +72,52 @@ try {
     assert.ok(result.total > 0);
     if (previous) assert.deepEqual(result, previous);
     previous = result;
+  }
+  const evidenceSession = new Session(
+    config,
+    m.games[40],
+    "pregame",
+    m.games[40].scheduledStart,
+    source,
+  );
+  for (const [evidenceSource, query] of [
+    ["posts", "Celtics"],
+    ["transcripts", "the"],
+    ["lineups", "first"],
+  ] as const) {
+    const page = await evidenceSession.search_evidence({
+      query,
+      sources: [evidenceSource],
+      limit: 2,
+    });
+    assert.ok(page.total > 0, evidenceSource);
+    for (const hit of page.items) {
+      const record = await evidenceSession.fetch_evidence({
+        evidence_id: hit.evidence_id,
+      });
+      assert.equal(record.source, evidenceSource);
+      assert.ok(record.text.length > 0);
+      assert.ok(
+        record.provenance.objects.every((o) => /^[a-f0-9]{64}$/.test(o.sha256)),
+      );
+      if (evidenceSource === "transcripts") {
+        assert.equal(record.provenance.objects.length, 2);
+        assert.ok(record.segments!.length > 0);
+      }
+      if (evidenceSource === "lineups")
+        assert.equal(record.starters!.length, 5);
+      for (const id of record.references)
+        await evidenceSession.fetch_evidence({ evidence_id: id });
+    }
+    assert.deepEqual(
+      await evidenceSession.search_evidence({
+        query,
+        sources: [evidenceSource],
+        limit: 2,
+      }),
+      page,
+    );
+    console.log("evidence", evidenceSource, page.total);
   }
   for (const id of [m.games[0].gameId, "0022500338"]) {
     const g = m.games.find((g) => g.gameId === id)!;

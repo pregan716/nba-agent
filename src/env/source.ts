@@ -10,6 +10,7 @@ import type {
   HistoryTable,
   PlayerReferenceTable,
   TeamRef,
+  EvidenceSource,
 } from "./contract.js";
 
 export interface HistoryBatch {
@@ -33,6 +34,7 @@ export interface SessionSource {
   columns(table: HistoryTable, season?: string): Promise<ColumnDefinition[]>;
   injuries(kind: "teams" | "players"): AsyncIterable<RecordEnvelope[]>;
   odds(): Promise<RecordEnvelope[]>;
+  evidence(source: EvidenceSource): Promise<RecordEnvelope[]>;
 }
 export const HISTORY_TABLE: Record<GameHistoryTable, string> = {
   games: "games",
@@ -184,5 +186,14 @@ export async function corpusSource(
     },
     injuries: (kind) => corpus.injuries.partitions(kind),
     odds: () => corpus.odds.records(),
+    evidence: (source) =>
+      source === "posts"
+        ? corpus.posts.records()
+        : source === "transcripts"
+          ? corpus.transcripts.records()
+          : Promise.all([
+              corpus.celticsLineups.records(),
+              corpus.opponentLineups.records(),
+            ]).then((groups) => groups.flat()),
   };
 }

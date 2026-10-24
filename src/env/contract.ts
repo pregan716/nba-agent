@@ -197,7 +197,7 @@ export interface EvidenceHit {
   evidence_id: EvidenceId;
   source: EvidenceSource;
   available_at: Instant;
-  /** Post author handle, transcript channel, or lineup account. */
+  /** Post account ID (handle when provided), transcript channel, or lineup account. */
   author: string | null;
   title: string | null;
   snippet: string;
@@ -215,7 +215,13 @@ export interface TranscriptSegment {
   start_seconds: number;
   text: string;
 }
+export interface EvidenceProvenance {
+  manifest_sha256: string;
+  objects: { bucket: string; key: string; sha256: string }[];
+}
 export interface FetchEvidenceResult {
+  /** Immutable published artifacts supporting the text; not storage credentials. */
+  provenance: EvidenceProvenance;
   evidence_id: EvidenceId;
   source: EvidenceSource;
   available_at: Instant;

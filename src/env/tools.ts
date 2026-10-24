@@ -90,7 +90,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "fetch_evidence",
-    description: `Read one evidence record by its evidence_id from search_evidence or from references on another record. Returns the full text as published, availability time, author, title, source URL, transcript segments with speaker-cluster labels (labels are not identities), announced starters for lineup posts, and references to other eligible records. ${CUTOFF} An id that does not resolve returns not_found; this does not tell you whether it exists.`,
+    description: `Read one evidence record by its evidence_id from search_evidence or from references on another record. Returns the full text as published, availability time, author, title, source URL, transcript segments with speaker-cluster labels (labels are not identities), announced starters for lineup posts, references to other eligible records, and provenance with the pinned manifest hash and supporting artifact object keys and hashes. Cite the stable evidence_id in evidence_refs. ${CUTOFF} An id that does not resolve returns not_found; this does not tell you whether it exists.`,
     input_schema: object(
       { evidence_id: id("From search_evidence or a references list.") },
       ["evidence_id"],

@@ -1,3 +1,4 @@
+import { EvidenceIndex } from "./evidence.js";
 import { Temporal } from "@js-temporal/polyfill";
 import type { RecordEnvelope } from "../data/contracts.js";
 import { Identities } from "../data/identity.js";
@@ -58,6 +59,7 @@ export class Session {
   #cutoff: string;
   #source: SessionSource;
   #closed = false;
+  #evidenceIndex?: Promise<EvidenceIndex>;
   constructor(
     config: RunConfig,
     game: Game,
@@ -209,6 +211,57 @@ export class Session {
       cutoff: this.#cutoff,
       questions: set.questions.map(agentQuestion),
     };
+  }
+  async #evidence() {
+    this.#evidenceIndex ??= (async () => {
+      const games = new Map((await this.#games()).map((g) => [g.id, g]));
+      const records: RecordEnvelope[] = [];
+      for (const source of ["posts", "transcripts", "lineups"] as const) {
+        for (const r of this.#eligible(await this.#source.evidence(source))) {
+          if (r.source !== source) throw Error("Evidence source mismatch");
+          if (source === "lineups") {
+            const id = this.#source.identities.resolve(
+              "game",
+              "espn",
+              r.data.gameId,
+            );
+            const game = games.get(id);
+            if (!game || !visible(r, game.data.scheduled_tipoff)) continue;
+          }
+          records.push(r);
+        }
+      }
+      return new EvidenceIndex(records, this.#source.identities);
+    })().catch((error) => {
+      this.#evidenceIndex = undefined;
+      throw error;
+    });
+    return this.#evidenceIndex;
+  }
+  async search_evidence(
+    input: ToolInput<"search_evidence">,
+    _signal?: AbortSignal,
+  ): Promise<ToolResult<"search_evidence">> {
+    this.#check("search_evidence", input);
+    const index = await this.#evidence();
+    return index.search(
+      input,
+      digest([
+        this.#config.runId,
+        this.#config.replicateId,
+        this.#game.gameId,
+        this.#phase,
+        this.#source.versions,
+      ]),
+      this.#cutoff,
+    );
+  }
+  async fetch_evidence(
+    input: ToolInput<"fetch_evidence">,
+    _signal?: AbortSignal,
+  ): Promise<ToolResult<"fetch_evidence">> {
+    this.#check("fetch_evidence", input);
+    return (await this.#evidence()).fetch(input.evidence_id);
   }
   async query_game_history(
     input: QueryGameHistoryInput,
@@ -616,6 +669,8 @@ export class Session {
   ): Promise<ToolResult<N>> {
     this.#check(name, input);
     const methods = {
+      search_evidence: this.search_evidence.bind(this),
+      fetch_evidence: this.fetch_evidence.bind(this),
       query_game_history: this.query_game_history.bind(this),
       read_schedule_and_injuries: this.read_schedule_and_injuries.bind(this),
       query_odds_history: this.query_odds_history.bind(this),
