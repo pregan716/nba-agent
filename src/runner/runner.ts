@@ -1,3 +1,4 @@
+import { sweepOrphanContainers } from "./orphans.js";
 import type { ResolutionInput } from "../env/results.js";
 import {
   WorkspacePolicy,
@@ -181,6 +182,13 @@ export class Runner {
     if (this.#running || this.#closed) throw Error("Runner unavailable");
     this.#running = true;
     try {
+      await sweepOrphanContainers(this.root, (containerId, name) => {
+        this.record.append("infrastructure", "run", {
+          action: "orphan_container_removed",
+          containerId,
+          name,
+        });
+      });
       // Retry publication before advancing after a previous sync failure.
       await checkpoint(this.record, this.sink);
       for (const game of this.manifest.games) {

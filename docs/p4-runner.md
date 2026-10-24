@@ -13,7 +13,7 @@ npm test
 npm run runner:fixture
 ```
 
-The fixture uses the pinned 82-game schedule with synthetic questions and tools. It writes SQLite, manifests, content-addressed workspace blobs and self-contained checkpoints under `.cache/runner-fixture/fixture-v1/r1`. Re-running resumes the same record and does not duplicate submissions. It makes no live model calls, reads no R2 data and approves no budget numbers. All ten development game IDs appear in its output. The first complete fixture run produced 82 submissions and 164 completed sessions.
+The fixture uses the pinned 82-game schedule with synthetic questions and tools. It writes SQLite, manifests, content-addressed workspace blobs and indexed checkpoints under `.cache/runner-fixture/fixture-v1/r1`. Re-running resumes the same record and does not duplicate submissions. It makes no live model calls, reads no R2 data and approves no budget numbers. All ten development game IDs appear in its output. The first complete fixture run produced 82 submissions and 164 completed sessions.
 
 ## Integration
 
@@ -65,8 +65,29 @@ Events contain the manifest, full questions, phase/clock transitions, requests a
 
 Before and after each session, files are captured as content-addressed blobs plus a path map. Session records include added/removed/changed paths; blob pairs allow content diffs. Symlinks, special files and hardlinks are refused. On restart, the workspace is reconstructed from the last durable snapshot. Partial writes from an interrupted attempt roll back; a committed submission restores its exact commit snapshot and skips pregame re-execution. The interrupted attempt remains recorded as an infrastructure failure. Tests exercise a real SIGKILL after submission and verify one receipt, one submission and preserved memory.
 
-Each checkpoint uses SQLite online backup and includes the manifest, blobs and a SHA-256 file index. `R2CheckpointSink` accepts a runner-owned S3 client, explicit bucket and prefix. Upload keys include run, replicate, event sequence and chain hash; the index is uploaded last as the publication marker. Upload failure stops advancement, and the next invocation retries publication before progressing. No bucket or credentials are inferred and no infrastructure is provisioned by this PR.
+Each checkpoint uses SQLite online backup for `checkpoints/<seq>/record.sqlite` and stores its own `manifest.json`. Schema-v2 `index.json` lists these two files and every immutable blob needed by the archived record, including historical workspace snapshots and mutation journals. Blob bytes live only once locally, at `<runRoot>/blobs/<hash>`; checkpoints do not copy them. In R2 the layout under the explicitly configured sink prefix is:
 
-To move hosts, download a completed checkpoint selected by its published index, verify every file's SHA-256 against the index, and place its contents under a fresh `<storageRoot>/<runId>/<replicateId>` directory. Reopen with the identical manifest. No live workspace or lock file is needed: the runner restores memory from blobs. Local tests exercise this restore path and an upload failure before the marker. Live R2 delivery and AWS execution require deployment-specific credentials and are not claimed as tested here.
+```
+<runId>/<replicateId>/blobs/<hash>
+<runId>/<replicateId>/<seq>-<chainHash>/record.sqlite
+<runId>/<replicateId>/<seq>-<chainHash>/manifest.json
+<runId>/<replicateId>/<seq>-<chainHash>/index.json
+```
+
+`R2CheckpointSink` checks shared blobs with HEAD before PUT. Only a 404 means absent; permission and network errors stop publication. Each checkpoint index contains object keys, byte counts and SHA-256 checksums. A blob key is relative to the run/replicate prefix; database and manifest keys are relative to the checkpoint prefix. A local `prepared-index.json` freezes the exact backup bytes before upload, so even a lost publication acknowledgement can be retried without changing bytes beneath an already published marker. The remote index is uploaded last; the local index is atomically published after successful upload (or immediately for local-only checkpoints). Partial uploads are never new published checkpoints, and the next invocation retries before progressing. No bucket or credentials are inferred and no infrastructure is provisioned.
+
+To move hosts, select a published index key and use the trusted host API:
+
+```ts
+await restoreCheckpoint(sink, "runId/r1/123-<chainHash>/index.json",
+  "/new/storageRoot/runId/r1");
+```
+
+The sink implements both `get` and the upload operations. The destination must not exist. Restore downloads only indexed objects, verifies lengths, SHA-256, blob content addresses, the record hash chain and run identity in a temporary directory, then renames it to the fresh run root. It never restores a lock file or live workspace: opening `Runner` with the identical manifest reconstructs memory from blobs. A local `CheckpointSource.get` can map run-level blob keys to `<oldRoot>/blobs/` and checkpoint-level keys to `<oldRoot>/checkpoints/<seq>/`. Copying a schema-v2 checkpoint directory alone is insufficient. Schema-v1 published indexes are still readable (their blobs are under the checkpoint prefix); old local checkpoints are upgraded to v2 when republished. Existing historical v1 copies are not deleted automatically. Local and mocked-object-store tests cover restore and publication failure; live R2 delivery and AWS execution require deployment-specific credentials and are not claimed as tested here.
+
+## Abandoned sandbox cleanup
+
+Before creating a Docker sandbox, the trusted environment writes a durable `sandbox-owner` marker in the run root and labels the container with `nba-agent.run-root=<hash of canonical run-root path>`. On `Runner.run()` startup, after the constructor acquires the exclusive PID lock and before a new session starts, it lists matching `nba-session-<uuid>` containers, verifies their exact ownership label/name, and force-removes them. Under this lock no session from a previous runner for that root can still be live. Every successful removal appends an `infrastructure` event with action `orphan_container_removed`, container ID and name. Other roots and legacy unlabeled containers are left alone because their ownership cannot be established safely. Roots that have never created a managed sandbox need no Docker daemon for this check. Cleanup failures stop startup and are retried on the next invocation. The marker is host-local and is not part of a restored checkpoint.
+
 
 Remaining user decisions: all production budget numbers and pilot effort remain open until the brief's pilot procedure. The fixture values are clearly labelled and are not usable as an approved scored budget.

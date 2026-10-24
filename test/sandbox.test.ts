@@ -108,6 +108,7 @@ dockerTest(
       s.f.config,
       (dir, abort) => s.session.exportTo(dir, abort),
       s.session.workspaceForSandbox(),
+      s.root,
     );
     try {
       writeFileSync(join(s.root, "future-secret"), "FUTURE SECRET");
@@ -128,6 +129,17 @@ print(open('/workspace/notes').read())`,
         limits,
         signal(),
       );
+      const { sandboxOwner, ROOT_LABEL } =
+        await import("../src/runner/orphans.js");
+      const labels = JSON.parse(
+        execFileSync(
+          "docker",
+          ["inspect", sandbox.name, "--format", "{{json .Config.Labels}}"],
+          { encoding: "utf8" },
+        ),
+      );
+      assert.equal(labels[ROOT_LABEL], sandboxOwner(s.root));
+      assert.ok(existsSync(join(s.root, "sandbox-owner")));
       assert.equal(result.exitStatus, 0, result.stderr);
       assert.match(result.stdout, /packages-ok\n1\nFalse\nfirst/);
       result = await sandbox.execute(
@@ -652,6 +664,96 @@ open('/proc/1/oom_score_adj', 'w').write('1000')`,
     } finally {
       await box.close();
       s.clean();
+    }
+  },
+);
+
+test(
+  "runner restart removes only its orphaned sandbox and records removal",
+  { skip: !process.env.NBA_SANDBOX_IMAGE },
+  async () => {
+    const { randomUUID } = await import("node:crypto");
+    const { Runner } = await import("../src/runner/runner.js");
+    const { MeteringProxy } = await import("../src/runner/proxy.js");
+    const { manifest } = await import("../src/runner/config.js");
+    const { registerSandboxRoot, ROOT_LABEL } =
+      await import("../src/runner/orphans.js");
+    const { fixtureConfig, provider, environment, harness } =
+      await import("./fixtures/runner/support.js");
+    const base = mkdtempSync(join(tmpdir(), "nba-orphan-live-")),
+      proxy = new MeteringProxy(provider);
+    await proxy.listen();
+    const m = manifest(fixtureConfig(), [
+      { gameId: "g1", scheduledStart: "2025-11-01T23:00:00Z" },
+    ]);
+    let runner = new Runner(base, m, proxy, environment);
+    const owner = registerSandboxRoot(runner.root);
+    const mine = `nba-session-${randomUUID()}`,
+      other = `nba-session-${randomUUID()}`;
+    const image = process.env.NBA_SANDBOX_IMAGE!.replace(/^local@/, "");
+    try {
+      for (const [name, label] of [
+        [mine, owner],
+        [other, "another-live-run"],
+      ]) {
+        execFileSync("docker", [
+          "create",
+          "--name",
+          name,
+          "--label",
+          `${ROOT_LABEL}=${label}`,
+          "--entrypoint",
+          "/bin/sleep",
+          image,
+          "300",
+        ]);
+        execFileSync("docker", ["start", name]);
+      }
+      assert.throws(
+        () => new Runner(base, m, proxy, environment),
+        /already active/,
+      );
+      assert.equal(
+        execFileSync(
+          "docker",
+          ["inspect", mine, "--format", "{{.State.Running}}"],
+          { encoding: "utf8" },
+        ).trim(),
+        "true",
+      );
+      // A dead runner leaves the same Docker state; release only its host lock.
+      runner.close();
+      runner = new Runner(base, m, proxy, environment);
+      await runner.run(harness);
+      assert.equal(
+        execFileSync(
+          "docker",
+          ["ps", "-a", "--filter", `name=${mine}`, "--format", "{{.Names}}"],
+          { encoding: "utf8" },
+        ).trim(),
+        "",
+      );
+      assert.equal(
+        execFileSync(
+          "docker",
+          ["inspect", other, "--format", "{{.State.Running}}"],
+          { encoding: "utf8" },
+        ).trim(),
+        "true",
+      );
+      const removals = runner.record
+        .events("infrastructure")
+        .filter((e) => e.data.action === "orphan_container_removed");
+      assert.equal(removals.length, 1);
+      assert.equal(removals[0].data.name, mine);
+    } finally {
+      runner.close();
+      await proxy.close();
+      for (const name of [mine, other])
+        try {
+          execFileSync("docker", ["rm", "--force", name], { stdio: "ignore" });
+        } catch {}
+      rmSync(base, { recursive: true, force: true });
     }
   },
 );

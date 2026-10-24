@@ -25,7 +25,7 @@ import {
   type Harness,
   type EnvironmentFactory,
 } from "../src/runner/runner.js";
-import { checkpoint } from "../src/runner/sync.js";
+import { checkpoint, restoreCheckpoint } from "../src/runner/sync.js";
 import {
   fixtureConfig,
   environment,
@@ -478,6 +478,7 @@ test("checkpoints copy SQLite and blobs and publish index last; failed upload ha
     assert.equal(readFileSync(join(s.runner.workspace, "note"), "utf8"), "one");
     const uploaded: { key: string; bytes: Buffer }[] = [];
     const path = await checkpoint(s.runner.record, {
+      has: async () => false,
       put: async (key, bytes) => {
         uploaded.push({ key, bytes });
       },
@@ -491,6 +492,7 @@ test("checkpoints copy SQLite and blobs and publish index last; failed upload ha
     await assert.rejects(
       () =>
         checkpoint(s.runner.record, {
+          has: async () => false,
           put: async (key) => {
             failed.push(key);
             if (key.includes("blobs")) throw Error("R2 unavailable");
@@ -639,9 +641,19 @@ test("published checkpoint restores persistent workspace without copying a live 
     const path = await checkpoint(s.runner.record);
     const base = temp(),
       target = join(base, "fixture", "r1");
-    const { cpSync } = await import("node:fs");
-    mkdirSync(target, { recursive: true });
-    cpSync(path, target, { recursive: true });
+    const index = JSON.parse(readFileSync(join(path, "index.json"), "utf8"));
+    await restoreCheckpoint(
+      {
+        get: async (key) =>
+          readFileSync(
+            key.includes("/blobs/")
+              ? join(s.runner.root, "blobs", key.split("/").at(-1)!)
+              : join(path, key.split("/").at(-1)!),
+          ),
+      },
+      `fixture/r1/${index.seq}-${index.head}/index.json`,
+      target,
+    );
     resumed = new Runner(base, s.m, s.proxy, environment);
     assert.equal(
       readFileSync(join(resumed.workspace, "notes.txt"), "utf8"),
