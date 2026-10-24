@@ -163,6 +163,8 @@ export class DockerSandbox {
         if (message.operation === "list") value = this.#port.list(message.path);
         else if (message.operation === "read")
           value = this.#port.readBytes(message.path).toString("base64");
+        else if (message.operation === "authorize")
+          value = this.#port.authorize(message.operation_kind, message.path);
         else if (message.operation === "mkdir")
           value = this.#port.mkdir(message.path);
         else if (message.operation === "mutate")

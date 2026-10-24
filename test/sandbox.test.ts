@@ -1,3 +1,7 @@
+import { gunzipSync } from "node:zlib";
+import { readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
+import { dirname } from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
@@ -43,7 +47,7 @@ const limits = {
   memoryBytes: 512 * 1024 * 1024,
 };
 const signal = () => new AbortController().signal;
-function dump(file: string) {
+function dumpOne(file: string) {
   const db = new DatabaseSync(file, { readOnly: true });
   try {
     return Object.fromEntries(
@@ -58,6 +62,23 @@ function dump(file: string) {
   } finally {
     db.close();
   }
+}
+function dump(file: string) {
+  const result = dumpOne(file);
+  const games = join(dirname(file), "games");
+  if (existsSync(games))
+    for (const shard of readdirSync(games).sort()) {
+      const temporary = mkdtempSync(join(tmpdir(), "nba-shard-test-"));
+      try {
+        const decoded = join(temporary, "shard.sqlite");
+        writeFileSync(decoded, gunzipSync(readFileSync(join(games, shard))));
+        for (const [table, rows] of Object.entries(dumpOne(decoded)))
+          (result[table] ??= []).push(...rows);
+      } finally {
+        rmSync(temporary, { recursive: true, force: true });
+      }
+    }
+  return result;
 }
 test("session export is invariant to planted future evidence, preserves public projections and gates release", async () => {
   const exports = [];
@@ -91,7 +112,8 @@ dockerTest(
     try {
       writeFileSync(join(s.root, "future-secret"), "FUTURE SECRET");
       let result = await sandbox.execute(
-        `import os, sqlite3, numpy, pandas, scipy, sklearn, pickle
+        `import os, sqlite3, numpy, pandas, scipy, sklearn, pickle, nba_data
+assert len(nba_data.table("games")) > 0
 from sklearn.linear_model import LinearRegression
 os.mkdir('/workspace/models')
 model=LinearRegression().fit([[1],[2]],[2,4])
@@ -424,4 +446,168 @@ test("cancellation during export waits for the exporter before removing its dire
   assert.ok(directory);
   assert.equal(existsSync(directory), false);
   s.clean();
+});
+
+dockerTest(
+  "FUSE coalesces large streams and preserves read/write coherence",
+  async () => {
+    const s = fixture();
+    const sandbox = new DockerSandbox(
+      s.f.config,
+      (dir, abort) => s.session.exportTo(dir, abort),
+      s.session.workspaceForSandbox(),
+    );
+    try {
+      const result = await sandbox.execute(
+        `import time, json
+for size in [8, 50]:
+    path = '/workspace/large-' + str(size)
+    block = b'x' * (1024 * 1024)
+    started = time.monotonic()
+    with open(path, 'wb') as f:
+        for _ in range(size): f.write(block)
+    written = time.monotonic()
+    with open(path, 'rb') as f:
+        for _ in range(size): assert f.read(len(block)) == block
+        assert f.read() == b''
+    print(json.dumps(dict(mib=size, write_seconds=written-started, read_seconds=time.monotonic()-written)))
+with open('/workspace/large-8', 'r+b') as f:
+    assert f.read(3) == b'xxx'
+    f.seek(1)
+    f.write(b'abc')
+    f.seek(0)
+    assert f.read(5) == b'xabcx'
+import os
+os.truncate('/workspace/large-8', 3)
+with open('/workspace/large-8', 'rb') as f: assert f.read() == b'xab'
+`,
+        {
+          ...limits,
+          wallSeconds: 45,
+          computeSeconds: 40,
+          memoryBytes: 2 * 1024 ** 3,
+        },
+        signal(),
+      );
+      assert.equal(result.exitStatus, 0, result.stderr);
+      console.log(result.stdout);
+      const writes = s.session
+        .workspaceChanges()
+        .filter((c) => c.path === "large-50");
+      assert.deepEqual(
+        writes.map((c) => c.operation),
+        ["write"],
+      );
+      assert.equal(
+        s.session.workspaceForSandbox()!.readBytes("large-8").toString(),
+        "xab",
+      );
+      assert.equal(
+        s.session.workspaceForSandbox()!.readBytes("large-50").length,
+        50 * 1024 ** 2,
+      );
+    } finally {
+      await sandbox.close();
+      s.clean();
+    }
+  },
+);
+
+test("warm exports reuse pinned game shards while reapplying the game release gate", async () => {
+  const s = fixture(false);
+  try {
+    s.f.source.exportCacheDirectory = join(s.root, "cache");
+    s.f.config.profile.capabilities.enabled =
+      s.f.config.profile.capabilities.enabled.filter(
+        (c) => c !== "odds_history",
+      );
+    const history = s.f.source.history.bind(s.f.source);
+    let reads = 0;
+    s.f.source.exportHistory = async function* (table, games) {
+      for (const game of games) {
+        reads++;
+        yield { gameId: game.id, ...(await history(table, game)) };
+      }
+    };
+    const session = new Session(
+      s.f.config,
+      s.f.game,
+      "postgame",
+      s.f.game.release,
+      s.f.source,
+    );
+    const first = dump(await session.exportTo(join(s.root, "cold"), signal()));
+    assert.ok(reads > 0);
+    reads = 0;
+    const second = dump(await session.exportTo(join(s.root, "warm"), signal()));
+    assert.equal(reads, 0);
+    assert.deepEqual(second, first);
+    const pre = new Session(
+      s.f.config,
+      s.f.game,
+      "pregame",
+      s.f.game.scheduledStart,
+      s.f.source,
+    );
+    const before = dump(await pre.exportTo(join(s.root, "before"), signal()));
+    assert.equal(reads, 0);
+    assert.ok(
+      !JSON.stringify(before.player_box_scores).includes('"game_id":"current"'),
+    );
+  } finally {
+    s.clean();
+  }
+});
+
+test("bulk session projections match the schedule, injury and odds tools", async () => {
+  const s = fixture(false);
+  try {
+    await s.session.transition("commit", s.f.game.scheduledStart);
+    await s.session.transition("postgame", s.f.game.release);
+    const data = dump(
+      await s.session.exportTo(join(s.root, "export"), signal()),
+    );
+    const expectedInjuries = [],
+      expectedSnapshots = [],
+      expectedOdds = [],
+      expectedSettlements = [];
+    for (const team of s.f.source.teams) {
+      const result = await s.session.read_schedule_and_injuries({
+        team_id: team.team_id,
+      });
+      expectedInjuries.push(...result.injury_reports);
+      expectedSnapshots.push(...result.team_snapshots);
+    }
+    for (const game of await s.f.source.games()) {
+      const result = await s.session.query_odds_history({ game_id: game.id });
+      expectedOdds.push(...result.observations);
+      expectedSettlements.push(...result.settlements);
+    }
+    const normalize = (rows: object[]) =>
+      rows
+        .map((row) =>
+          JSON.stringify(
+            Object.fromEntries(
+              Object.entries(row)
+                .filter(([k]) => k !== "_row")
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([k, v]) => [
+                  k,
+                  v && typeof v === "object" ? JSON.stringify(v) : v,
+                ]),
+            ),
+          ),
+        )
+        .sort();
+    for (const [table, expected] of [
+      ["injuries", expectedInjuries],
+      ["injury_team_snapshots", expectedSnapshots],
+      ["odds_history", expectedOdds],
+      ["odds_settlements", expectedSettlements],
+    ] as const) {
+      assert.deepEqual(normalize(data[table]), normalize(expected), table);
+    }
+  } finally {
+    s.clean();
+  }
 });

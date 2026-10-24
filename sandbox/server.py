@@ -46,96 +46,172 @@ def rpc(operation, **args):
 
 
 class Mount(Operations):
+    def __init__(self):
+        self.handles = {}
+        self.files = {}
+        self.sequence = 0
+
+    def metadata(self, size):
+        return dict(
+            st_mode=stat.S_IFREG | 0o644,
+            st_nlink=1,
+            st_size=size,
+            st_uid=1000,
+            st_gid=1000,
+        )
+
+    def size(self, state):
+        return (state["base_size"] if state["operation"] == "append" else 0) + len(
+            state["pending"]
+        )
+
     def getattr(self, path, fh=None):
         if path == "/":
             return dict(
                 st_mode=stat.S_IFDIR | 0o755, st_nlink=2, st_uid=1000, st_gid=1000
             )
+        if path in self.files:
+            return self.metadata(self.size(self.files[path]))
         parent, _, name = path[1:].rpartition("/")
         for entry in rpc("list", path=parent)["entries"]:
             if entry["path"].split("/")[-1] == name:
-                directory = entry["kind"] == "directory"
-                return dict(
-                    st_mode=(
-                        (stat.S_IFDIR | 0o755) if directory else (stat.S_IFREG | 0o644)
-                    ),
-                    st_nlink=2 if directory else 1,
-                    st_size=entry["bytes"] or 0,
-                    st_uid=1000,
-                    st_gid=1000,
-                )
+                if entry["kind"] == "directory":
+                    return dict(
+                        st_mode=stat.S_IFDIR | 0o755,
+                        st_nlink=2,
+                        st_uid=1000,
+                        st_gid=1000,
+                    )
+                return self.metadata(entry["bytes"] or 0)
         raise FuseOSError(errno.ENOENT)
 
     def readdir(self, path, fh):
-        return [".", ".."] + [
+        names = {
             e["path"].split("/")[-1]
             for e in rpc("list", path=path.lstrip("/"))["entries"]
-        ]
+        }
+        names.update(
+            p.rsplit("/", 1)[1]
+            for p in self.files
+            if p.rsplit("/", 1)[0] == path.rstrip("/")
+        )
+        return [".", ".."] + sorted(names)
 
     def open(self, path, flags):
-        # Kernel writes are separately authorized; open itself must not replace files.
-        return flags
+        if path not in self.files:
+            self.files[path] = dict(
+                base_size=self.getattr(path)["st_size"],
+                pending=bytearray(),
+                operation="append",
+                dirty=False,
+                cache=None,
+            )
+        self.sequence += 1
+        self.handles[self.sequence] = (path, flags)
+        return self.sequence
 
     def create(self, path, mode, fi=None):
-        rpc("mutate", operation_kind="write", path=path[1:], content="")
-        return os.O_WRONLY
+        rpc("authorize", operation_kind="write", path=path[1:])
+        self.files[path] = dict(
+            base_size=0, pending=bytearray(), operation="write", dirty=True, cache=None
+        )
+        return self.open(path, os.O_WRONLY)
+
+    def contents(self, path):
+        state = self.files[path]
+        if state["operation"] == "write":
+            return bytes(state["pending"])
+        if state["cache"] is None:
+            state["cache"] = base64.b64decode(rpc("read", path=path[1:]))
+        return state["cache"] + state["pending"]
 
     def read(self, path, size, offset, fh):
-        return base64.b64decode(rpc("read", path=path[1:]))[offset : offset + size]
+        state = self.files[path]
+        if state["operation"] == "write":
+            return bytes(state["pending"][offset : offset + size])
+        if state["cache"] is None:
+            state["cache"] = base64.b64decode(rpc("read", path=path[1:]))
+        base = state["cache"]
+        return base[offset : offset + size] + bytes(
+            state["pending"][
+                max(0, offset - len(base)) : max(0, offset + size - len(base))
+            ]
+        )
 
     def write(self, path, data, offset, fh):
-        current = base64.b64decode(rpc("read", path=path[1:]))
-        if fh & os.O_APPEND:
-            rpc(
-                "mutate",
-                operation_kind="append",
-                path=path[1:],
-                content=base64.b64encode(data).decode(),
-            )
+        state = self.files[path]
+        flags = self.handles[fh][1]
+        if flags & os.O_APPEND:
+            offset = self.size(state)
+        if offset == self.size(state):
+            # No readback for append or sequential writes. One pending mutation
+            # per stream, checked again by the host at flush/close.
+            state["pending"].extend(data)
         else:
-            # Newly created files may be populated via append; any non-end write
-            # requires replacement permission. O_TRUNC is checked by truncate().
-            if offset == len(current):
-                rpc(
-                    "mutate",
-                    operation_kind="append",
-                    path=path[1:],
-                    content=base64.b64encode(data).decode(),
-                )
-            else:
-                value = (
-                    current[:offset].ljust(offset, b"\0")
-                    + data
-                    + current[offset + len(data) :]
-                )
-                rpc(
-                    "mutate",
-                    operation_kind="write",
-                    path=path[1:],
-                    content=base64.b64encode(value).decode(),
-                )
+            rpc("authorize", operation_kind="write", path=path[1:])
+            current = self.contents(path)
+            state["pending"] = bytearray(
+                current[:offset].ljust(offset, b"\0")
+                + data
+                + current[offset + len(data) :]
+            )
+            state["operation"] = "write"
+            state["cache"] = None
+        state["dirty"] = True
         return len(data)
 
     def truncate(self, path, length, fh=None):
-        current = base64.b64decode(rpc("read", path=path[1:]))
-        rpc(
-            "mutate",
-            operation_kind="write",
-            path=path[1:],
-            content=base64.b64encode(current[:length].ljust(length, b"\0")).decode(),
+        rpc("authorize", operation_kind="write", path=path[1:])
+        temporary = path not in self.files
+        handle = self.open(path, os.O_WRONLY) if temporary else None
+        current = self.contents(path) if length else b""
+        state = self.files[path]
+        state.update(
+            pending=bytearray(current[:length].ljust(length, b"\0")),
+            operation="write",
+            dirty=True,
+            cache=None,
         )
+        # Path-based truncate need not be followed by open. Persist it before
+        # replying; descriptor-based truncation can share the buffered stream.
+        if handle is not None:
+            self.release(path, handle)
 
     def unlink(self, path):
+        rpc("authorize", operation_kind="delete", path=path[1:])
+        if path in self.files:
+            self.flush(path, None)
         rpc("mutate", operation_kind="delete", path=path[1:])
+        self.files.pop(path, None)
 
     def flush(self, path, fh):
+        state = self.files.get(path)
+        if state and state["dirty"]:
+            result = rpc(
+                "mutate",
+                operation_kind=state["operation"],
+                path=path[1:],
+                content=base64.b64encode(state["pending"]).decode(),
+            )
+            state.update(
+                base_size=result["bytes"],
+                pending=bytearray(),
+                operation="append",
+                dirty=False,
+                cache=None,
+            )
         return 0
 
     def fsync(self, path, datasync, fh):
-        return 0
+        return self.flush(path, fh)
 
     def release(self, path, fh):
-        return 0
+        try:
+            return self.flush(path, fh)
+        finally:
+            self.handles.pop(fh, None)
+            if not any(p == path for p, _ in self.handles.values()):
+                self.files.pop(path, None)
 
     def chmod(self, *args):
         raise FuseOSError(errno.EPERM)

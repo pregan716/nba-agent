@@ -588,3 +588,75 @@ test("decoded row cache enforces its byte bound and retries integrity/parse fail
   await assert.rejects(() => badRelease.rows("invalid"), SyntaxError);
   assert.equal(bad.calls.filter((k) => k === "invalid").length, 2);
 });
+
+test("bulk history export reads each partition once and matches individual eligible envelopes", async () => {
+  const gamesKey = "tables/games/phase=regular_season/part.jsonl";
+  const eventsKey = "tables/events/phase=regular_season/part.jsonl";
+  const games = ["one", "two", "partial", "future"].map((game_id) => ({
+    game_id,
+    scheduled_tipoff: "2025-10-22T23:00:00Z",
+    home_team_id: "BOS",
+    away_team_id: "NYK",
+    season: "2025-26",
+  }));
+  const lines = (rows: unknown[]) =>
+    Buffer.from(rows.map((r) => JSON.stringify(r)).join("\n"));
+  const objects = {
+    [gamesKey]: lines(games),
+    [eventsKey]: lines(
+      games.map((g) => ({ game_id: g.game_id, event_id: 1, text: g.game_id })),
+    ),
+    "coverage.jsonl": lines(
+      games.map((g) => ({
+        game_id: g.game_id,
+        product: "normalization",
+        quality_status: g.game_id === "partial" ? "partial" : "valid",
+        missing_reason: "broken chain",
+      })),
+    ),
+    "game_index.json": bytes({
+      tables: {
+        events: { [eventsKey]: games.map((g, i) => [g.game_id, i, 1]) },
+      },
+    }),
+  };
+  const f = fixture({
+    ...Object.fromEntries(
+      Object.entries(objects).map(([key, value]) => ["objects/" + key, value]),
+    ),
+    root: bytes({
+      object_prefix: "objects/",
+      game_index: "game_index.json",
+      tables: { games: [gamesKey], events: [eventsKey] },
+      objects: Object.fromEntries(
+        Object.entries(objects).map(([key, value]) => [key, sha256(value)]),
+      ),
+    }),
+  });
+  const adapter = new PlayByPlayAdapter(
+    await Release.open(f.ref("root"), f.store),
+  );
+  const eligible = (await adapter.games()).filter((g) => g.id !== "future");
+  const batches = [];
+  for await (const batch of adapter.exportRecords("events", eligible))
+    batches.push(batch);
+  assert.equal(
+    f.calls.filter((key) => key === "objects/" + eventsKey).length,
+    1,
+  );
+  assert.deepEqual(batches.map((b) => b.gameId).sort(), [
+    "one",
+    "partial",
+    "two",
+  ]);
+  for (const batch of batches) {
+    assert.deepEqual(
+      batch.records,
+      await adapter.records("events", batch.gameId),
+    );
+    assert.equal(
+      batch.reason,
+      batch.gameId === "partial" ? "broken chain" : null,
+    );
+  }
+});
