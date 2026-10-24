@@ -34,6 +34,7 @@ What stays: the market line as the question, because it controls difficulty and 
 
 - P1 pinned player-reference release `15fef7276244e616b0817be4` after reading its verified coverage report. The dataset table records the manifest hash and links to the coverage summary; historical-fidelity limitations remain explicit.
 - P1a data quality audit complete ([report](p1a-data-quality-audit.md), SPO-777). All 82 schedules agree, 663 of 663 propped game-player rows resolve from official box scores, 50 of 50 consensus rows and 50 of 50 outcomes reproduce. The user accepted all eight proposed dispositions (I1–I3 identities, T1–T3 timestamps, C1–C2 content). None changes a question set, a cutoff, or a resolution. Recorded below in the shared contract requirements, the datasets table, and Resolved decisions. Gate 2's P1a prerequisite is met.
+- P3 replay environment complete as six sub-issues (SPO-786 contract, SPO-787 session core and read tools, SPO-788 evidence search and fetch, SPO-789 phases, submission freeze and released results, SPO-790 workspace and memory modes, SPO-791 export and Docker sandbox). P4 runner, metering proxy and record complete (SPO-780). P5 homemade harness, null baselines, prompts, contamination probe script and launcher complete (SPO-781). P6 evaluators and reporting complete (SPO-782); the per-question score equation's sign and the clip-versus-reject sentence corrected to match the implementation. Gate 1 is met: every project runs on fixtures, and the market baseline scores exactly zero while the random-deviation baseline scores negative over the ten development games against the pinned corpus. Next: the development-games pilot, starting with the contamination probe.
 - P2 question-set builder complete (SPO-778). Acceptance amended (SPO-785): the published consensus `summary.json` is aggregate-only, so the per-game count check is against the P1 coverage diagnostic and the season total is checked against the summary. No behaviour change.
 
 ### Finalization changes (Oct 23, 2026)
@@ -132,7 +133,7 @@ One atomic submission per game, frozen before any postgame information is access
 
 Plus an optional free-text notes field for the whole submission, stored and never scored. The agent may write anything it likes there: theses about usage, flags on unbet players, questions for itself.
 
-A submission that fails validation (missing ids, unknown ids, out-of-range values, malformed structure) is rejected. Agreed: the harness returns a validation error naming every problem and allows up to two resubmissions. Retries draw on the submission reserve, never on fresh budget. If the third attempt still fails, the session is recorded as failed and excluded from scoring; the status records which attempt failed and why. Do not fill missing questions with the market probability silently. Repeated delivery of an identical valid submission must not create a second record.
+A submission that fails validation (missing ids, unknown ids, duplicate ids, missing required rationales, malformed structure) is rejected; a `p_over` outside [0.01, 0.99] is not a rejection but is clipped and the clip logged, as the table says (clarified Oct 24, 2026). Agreed: the harness returns a validation error naming every problem and allows up to two resubmissions. Retries draw on the submission reserve, never on fresh budget. If the third attempt still fails, the session is recorded as failed and excluded from scoring; the status records which attempt failed and why. Do not fill missing questions with the market probability silently. Repeated delivery of an identical valid submission must not create a second record.
 
 ### What the agent is not asked to do
 
@@ -157,10 +158,10 @@ For each question, the actual stat is the official box-score value in the play-b
 ### Per-question score
 
 ```latex
-\mathrm{skill}_i = \big[\,y_i \log q_i + (1-y_i)\log(1-q_i)\,\big] - \big[\,y_i \log p_i + (1-y_i)\log(1-p_i)\,\big]
+\mathrm{skill}_i = \big[\,y_i \log p_i + (1-y_i)\log(1-p_i)\,\big] - \big[\,y_i \log q_i + (1-y_i)\log(1-q_i)\,\big]
 ```
 
-where p\_i is the agent's P(over) and q\_i is the market-implied P(over). Lower log loss is better, so a positive skill means the agent beat the market on that question. An answer equal to the market probability scores exactly zero; it is neither rewarded nor punished. The market probability is shown with every question, so "no view" costs nothing. (Answering 0.50 instead would not be free: in the 2025–26 data the consensus sits a median 0.027 from even and the expected penalty for 0.50 is about 0.005 nats per question, comparable to a plausible real edge.)
+where p\_i is the agent's P(over) and q\_i is the market-implied P(over). The first bracket is the negative of the agent's log loss and the second the negative of the market's, so skill is the market's log loss minus the agent's; lower log loss is better, so a positive skill means the agent beat the market on that question. (Corrected Oct 24, 2026: the equation previously had the brackets reversed, contradicting this sentence; the evaluator follows the prose.) An answer equal to the market probability scores exactly zero; it is neither rewarded nor punished. The market probability is shown with every question, so "no view" costs nothing. (Answering 0.50 instead would not be free: in the 2025–26 data the consensus sits a median 0.027 from even and the expected penalty for 0.50 is about 0.005 nats per question, comparable to a plausible real edge.)
 
 ### Reported alongside the primary score
 
@@ -601,6 +602,7 @@ Seven projects, each with inputs, outputs, dependencies, and acceptance criteria
 - Outputs: scoped session objects; cutoff-filtered tool implementations; workspace tools with memory-mode enforcement (editable or append-only, phase locking, per-game reset for A); per-session dataset export (SQLite plus source files, filtered to the cutoff before mounting); sandbox lifecycle (create the container per session from the pinned image, mount the export read-only and the scratch directory and, for persistent configurations, the workspace writable, enforce limits, destroy at session end) behind the Execute code tool; submission validation and freeze; released-results tool; phase enforcement.
 - Depends on: P1, P2.
 - Acceptance: an adversarial fixture containing future records is unreachable by every tool path including search, counts, and pagination; a submission missing one question is rejected with the ids named; identical resubmission returns the same receipt; a submission after reveal is refused; released results appear only after the runner advances to 9 a.m.; the odds-history tool returns no observation whose `requested_at` is after the cutoff (the scheduled-start observation, requested at the cutoff itself, is eligible) and no settlement before release; the session export contains no record past the cutoff, checked against the same adversarial fixture; a future record planted on the host is invisible from inside the sandbox, and a program that attempts network access or a package install fails; an append-only workspace rejects edits and deletes; a workspace write during commit is refused.
+- Status: complete Oct 24, 2026, as sub-issues SPO-786 through SPO-791 under SPO-779. Contract in `docs/p3-session-contract.md`; implementation notes in `docs/p3-session-core.md`, `docs/p3-evidence.md`, `docs/p3-submission-results.md`, `docs/p3-workspace.md`, `docs/p3-sandbox.md`.
 
 ### P4 Runner and experiment record
 
@@ -608,6 +610,7 @@ Seven projects, each with inputs, outputs, dependencies, and acceptance criteria
 - Outputs: run creation and isolation; chronological scheduling; phase transitions; the metering proxy (scoped model endpoint per session that pins model and effort, counts tokens, and enforces caps); budget enforcement with warn, stop, and reserve, covering tokens and sandbox compute; checkpoint and resume; immutable event log; workspace snapshotting; manifest writing including run profile, budget profile, and harness version.
 - Depends on: P3 interface (can be built against a stub).
 - Acceptance: a run killed mid-game resumes without duplicating a submission; a stateless run and a persistent run share no workspace state; every session ends with one of the defined statuses and the limit that ended it; a model call that bypasses the proxy is impossible because the harness holds no direct key; the proxy's token counts match the SDK's reported usage on a fixture; the manifest reproduces a run's configuration exactly, including all four run-profile axes.
+- Status: complete Oct 24, 2026 (SPO-780); notes in `docs/p4-runner.md`. Follow-up SPO-792 (checkpoint blob deduplication and orphaned-container sweep) before the pilot.
 
 ### P5 Agent harness
 
@@ -615,6 +618,7 @@ Seven projects, each with inputs, outputs, dependencies, and acceptance criteria
 - Outputs: the v1 homemade harness: model loop; prompts; submission formatting and retry on validation error; null-baseline agents (market, naive stats, random); a harness-version identifier derived from harness identity, prompts, tool definitions, loop parameters, and code revision. Workspace enforcement, sandbox lifecycle, and token metering are not here; they are P3 and P4.
 - Depends on: P3, P4.
 - Acceptance: configuration A starts each game from no conversation history and, via P3, an empty workspace; B's workspace diff is captured per session; the harness holds only the three contract handles and nothing that bypasses the environment or the proxy; the three baselines run end to end on the same question sets; the contamination probe script exists and its output is stored in the run manifest; changing any prompt or tool definition changes the harness version.
+- Status: complete Oct 24, 2026 (SPO-781); notes in `docs/p5-harness.md`. Effort level and budget numbers remain for the pilot.
 
 ### P6 Evaluators and reporting
 
@@ -622,6 +626,7 @@ Seven projects, each with inputs, outputs, dependencies, and acceptance criteria
 - Outputs: deterministic resolution; per-question and aggregate scores; calibration tables; matched-question comparison with paired bootstrap over games; influential-game sensitivity; per-stat, per-player, and per-game-index breakdowns; a report generator that prints the run profile, budget profile, and harness version of every run in the report and, for comparisons, the axes on which they differ, flagging any comparison across differing budgets, harness versions, or de-vig methods.
 - Depends on: P1, P4.
 - Acceptance: a push and a did-not-play fixture are excluded, not scored; the market baseline scores exactly zero; hand-computed scores for a five-question fixture match; the comparison drops questions unresolved in either configuration; the same scorer produces the agent's released feedback.
+- Status: complete Oct 24, 2026 (SPO-782); notes in `docs/evaluation.md`. The evaluator scores market log loss minus agent log loss, matching the corrected equation above.
 
 ### Build order
 
