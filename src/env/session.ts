@@ -183,6 +183,7 @@ export class Session {
       phase: this.#phase,
       cutoff: this.#cutoff,
       budget: structuredClone(budget),
+      capabilities: [...this.#config.profile.capabilities.enabled].sort(),
       memory: {
         horizon,
         revision,

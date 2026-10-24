@@ -19,7 +19,9 @@
     "runner:fixture": "tsx scripts/runner-fixture.ts",
     "session:verify": "tsx scripts/session-verify.ts",
     "sandbox:build": "tsx scripts/sandbox-build.ts",
-    "test:sandbox": "tsx scripts/sandbox-test.ts"
+    "test:sandbox": "tsx scripts/sandbox-test.ts",
+    "launch": "tsx scripts/run.ts",
+    "probe": "tsx scripts/contamination-probe.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",
