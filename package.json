@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.16"
   },
   "scripts": {
     "check": "tsc --noEmit",
@@ -15,13 +15,16 @@
     "format": "prettier --write src scripts test/*.ts package.json tsconfig.json",
     "format:check": "prettier --check src scripts test/*.ts package.json tsconfig.json",
     "audit": "tsx scripts/audit.ts",
-    "questions": "tsx scripts/questions.ts"
+    "questions": "tsx scripts/questions.ts",
+    "runner:fixture": "tsx scripts/runner-fixture.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@aws-sdk/client-s3": "^3.1156.0",
     "@js-temporal/polyfill": "^0.5.1",
     "hyparquet": "^1.31.5",
-    "hyparquet-compressors": "^1.1.2"
+    "hyparquet-compressors": "^1.1.2",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
