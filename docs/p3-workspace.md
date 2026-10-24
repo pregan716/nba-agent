@@ -23,9 +23,9 @@ P3f integration: use the bound binary `readBytes`, `mutate` and `list` operation
 from `Environment.workspace` for a mediated mount. Do **not** bind-mount the host
 workspace writable: such a mount would bypass both policy and mutation accounting.
 Rename, link, truncate and mmap must be refused unless translated into supported
-operations with equivalent policy enforcement. The Docker/mount adapter itself
-belongs to SPO-791. This issue supplies and tests the shared service, not a Docker
-filesystem implementation.
+operations with equivalent policy enforcement. The Docker/FUSE adapter in SPO-791 uses these bound operations; see
+[p3-sandbox.md](p3-sandbox.md). Directory creation is also mediated; empty directories
+are not part of file snapshots.
 
 P4 still captures content-addressed snapshots and per-session added/changed/removed
 file diffs. The service also records successful binary mutations as blob hashes in

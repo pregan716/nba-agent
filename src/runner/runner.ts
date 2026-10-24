@@ -53,7 +53,7 @@ export interface CodeResult {
   exitStatus: number | null;
   computeSeconds: number;
   truncated: boolean;
-  limit: "wall_clock" | "compute" | null;
+  limit: "wall_clock" | "compute" | "memory" | null;
 }
 export interface SessionContext {
   game: Game;
@@ -559,10 +559,9 @@ export class Runner {
                   cpu: sandbox.cpu,
                   memoryBytes: sandbox.memoryBytes,
                 },
-                AbortSignal.any([
-                  controller.signal,
-                  AbortSignal.timeout(Math.max(1, Math.ceil(allowance * 1000))),
-                ]),
+                // Export/container setup is session work; the sandbox enforces
+                // the per-program wall limit after setup and returns its meter.
+                controller.signal,
               );
               if (
                 !Number.isFinite(result.computeSeconds) ||
