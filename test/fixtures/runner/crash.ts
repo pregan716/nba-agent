@@ -14,15 +14,22 @@ const runner = new Runner(
 );
 try {
   await runner.run(async ({ session }) => {
-    const ctx = (await session.call("context")) as any;
+    const ctx = (await session.call("context", {})) as any;
     if (ctx.phase !== "postgame") {
       if (process.argv[3] === "resume")
         throw Error("Committed pregame was replayed");
-      await session.call("workspace_write", "committed memory");
-      await session.call("begin_commit");
-      await session.call("submit", "valid");
+      await session.call("workspace_write", {
+        path: "notes.txt",
+        content: "committed memory",
+      });
+      await session.call("begin_commit", {});
+      await session.call("submit", { answers: [], notes: "valid" });
       process.kill(process.pid, "SIGKILL");
-    } else await session.call("workspace_write", "postgame memory");
+    } else
+      await session.call("workspace_write", {
+        path: "notes.txt",
+        content: "postgame memory",
+      });
   });
 } finally {
   runner.close();

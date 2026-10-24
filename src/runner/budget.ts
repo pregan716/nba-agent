@@ -1,9 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { RunConfig, Limit, Phase } from "./config.js";
 import { RecordStore } from "./record.js";
-export class LimitError extends Error {
+import { SessionError } from "../env/contract.js";
+export class LimitError extends SessionError {
   constructor(readonly limit: Exclude<Limit, null>) {
-    super(`Session limit: ${limit}`);
+    super("budget_exhausted", `Session limit: ${limit}`);
   }
 }
 export interface Usage {

@@ -25,6 +25,17 @@ import {
 import { Budget, LimitError } from "./budget.js";
 import { MeteringProxy, type ModelEndpoint } from "./proxy.js";
 import { checkpoint, type CheckpointSink } from "./sync.js";
+import {
+  SessionError,
+  TOOL_CAPABILITY,
+  TOOL_PHASES,
+  type BudgetRemaining,
+  type ContextResult,
+  type SessionTools,
+  type ToolName,
+  type ClipEvent,
+} from "../env/contract.js";
+import { validateInput } from "../env/input.js";
 import type { QuestionSet } from "../questions/builder.js";
 
 export interface CodeResult {
@@ -46,10 +57,11 @@ export interface Validation {
   ok: boolean;
   errors: string[];
   value?: unknown;
-  clips?: unknown[];
+  clips?: ClipEvent[];
 }
 /** Trusted P3 adapter. Paths and persistence hooks are never exposed to the harness. */
 export interface Environment {
+  context(budget: BudgetRemaining): Promise<ContextResult>;
   questions(): Promise<QuestionSet>;
   transition(phase: Phase, cutoff: string): Promise<void>;
   call(name: string, args: unknown, signal: AbortSignal): Promise<unknown>;
@@ -71,9 +83,7 @@ export type EnvironmentFactory = (
   context: SessionContext,
   trusted: { workspace: string; submission: unknown | null },
 ) => Promise<Environment>;
-export interface SessionEndpoint {
-  call(name: string, args?: unknown): Promise<unknown>;
-}
+export type SessionEndpoint = SessionTools;
 export interface HarnessHandles {
   session: SessionEndpoint;
   model: ModelEndpoint;
@@ -340,42 +350,79 @@ export class Runner {
         endpoint = this.proxy.issue(budget, controller.signal);
         const call = async (name: string, args?: unknown): Promise<unknown> => {
           if (!active || controller.signal.aborted)
-            throw Error("Session closed");
-          if (busy) throw Error("Concurrent environment calls refused");
+            throw new SessionError("phase_refused", "Session closed");
+          if (busy)
+            throw new SessionError(
+              "phase_refused",
+              "Concurrent environment calls refused",
+            );
           busy = true;
           const work = async () => {
-            if (name === "context")
+            if (name !== "submit") validateInput(name, args ?? {});
+            if (!Object.hasOwn(TOOL_PHASES, name))
+              throw new SessionError("invalid_input", "Unknown tool");
+            const tool = name as ToolName;
+            if (!TOOL_PHASES[tool].includes(budget.stage))
+              throw new SessionError(
+                "phase_refused",
+                "Tool locked in this phase",
+              );
+            const capability = TOOL_CAPABILITY[tool];
+            if (
+              capability &&
+              !this.manifest.config.profile.capabilities.enabled.includes(
+                capability,
+              )
+            )
+              throw new SessionError(
+                "capability_disabled",
+                "Capability disabled",
+              );
+            const remaining = (): BudgetRemaining => {
+              const r = budget.remaining();
               return {
-                game,
-                phase: budget.stage,
-                cutoff:
-                  phase === "pregame" ? game.scheduledStart : game.release,
-                budget: budget.remaining(),
+                tokens: r.tokens,
+                compute_seconds: r.compute,
+                tool_calls: r.tools,
+                submission_reserve: r.reserve,
+                warning: r.warning,
               };
+            };
+            if (name === "context") return env.context(remaining());
             if (name === "begin_commit") {
               if (endpoint && this.proxy.busy(endpoint))
-                throw Error("Wait for the model call before committing");
+                throw new SessionError(
+                  "phase_refused",
+                  "Wait for the model call before committing",
+                );
               budget.commit();
               await env.transition("commit", game.scheduledStart);
-              return { phase: "commit", budget: budget.remaining() };
+              return { phase: "commit", budget: remaining() };
             }
-            if (
-              budget.stage === "commit" &&
-              !["submit", "list_questions"].includes(name)
-            )
-              throw Error(
-                "Research and workspace tools are locked during commit",
-              );
-            if (
-              this.manifest.config.profile.memory.horizon === "stateless" &&
-              name.startsWith("workspace_")
-            )
-              throw Error("Stateless workspace tools disabled");
+            if (name.startsWith("workspace_")) {
+              const memory = this.manifest.config.profile.memory;
+              if (memory.horizon === "stateless")
+                throw new SessionError(
+                  "memory_mode_refused",
+                  "Stateless workspace tools disabled",
+                );
+              if (
+                memory.revision === "append-only" &&
+                ["workspace_write", "workspace_delete"].includes(name)
+              )
+                throw new SessionError(
+                  "memory_mode_refused",
+                  "Append-only workspace",
+                );
+            }
             // Submission remains possible when the research/tool allowance stops.
             if (name !== "submit") budget.tool(name, args);
             if (name === "submit") {
               if (budget.stage !== "commit")
-                throw Error("Begin commit before submitting");
+                throw new SessionError(
+                  "phase_refused",
+                  "Begin commit before submitting",
+                );
               const existing = this.record.events("submission", game.gameId)[0];
               const attempts = this.record.events(
                 "submission_attempt",
@@ -385,7 +432,7 @@ export class Runner {
                 budget.block("submission_attempts");
               const validated = await env.validateSubmission(args);
               if (!active || controller.signal.aborted)
-                throw Error("Session closed");
+                throw new SessionError("phase_refused", "Session closed");
               const attemptRecord = {
                 attempt: attempts.length + 1,
                 input: args,
@@ -398,32 +445,50 @@ export class Runner {
                     game.gameId,
                     attemptRecord,
                   );
-                return validated;
+                throw new SessionError(
+                  "validation_failed",
+                  "Submission validation failed",
+                  validated.errors,
+                  Math.max(0, 3 - (attempts.length + 1)),
+                );
               }
               if (validated.value === undefined)
                 throw Error("P3 omitted normalized submission");
               const workspace =
                 existing?.data.value.workspace ??
                 snapshot(this.root, this.workspace);
-              return this.record.submission(
+              if (existing) {
+                if (
+                  digest(existing.data.value.submission) !==
+                  digest(validated.value)
+                )
+                  throw new SessionError(
+                    "phase_refused",
+                    "Submission already frozen",
+                  );
+                return {
+                  receipt: existing.data.receipt,
+                  attempt: attempts.length,
+                  clips: existing.data.value.clips,
+                };
+              }
+              const receipt = this.record.submission(
                 game.gameId,
                 {
                   submission: validated.value,
                   clips: validated.clips ?? [],
                   workspace,
                 },
-                existing ? undefined : attemptRecord,
+                attemptRecord,
               );
+              return {
+                ...receipt,
+                attempt: attemptRecord.attempt,
+                clips: validated.clips ?? [],
+              };
             }
             if (name === "execute_code") {
-              if (
-                !this.manifest.config.profile.capabilities.enabled.includes(
-                  name,
-                )
-              )
-                throw Error("Capability disabled");
-              if (typeof args !== "string")
-                throw Error("Program must be a string");
+              const program = (args as { program: string }).program;
               const sandbox = this.manifest.config.budget.sandbox;
               const allowance = Math.min(
                 sandbox.perCallSeconds,
@@ -433,10 +498,10 @@ export class Runner {
               const reservation = budget.reserve(0, allowance, "code");
               this.record.append("code_start", scope, {
                 reservation,
-                program: args,
+                program,
               });
               const result = await env.execute(
-                args,
+                program,
                 {
                   wallSeconds: allowance,
                   computeSeconds: allowance,
@@ -476,13 +541,16 @@ export class Runner {
                 ...recorded,
               });
               budget.settle(reservation, 0, result.computeSeconds, recorded);
-              return recorded;
+              return {
+                stdout: recorded.stdout,
+                stderr: recorded.stderr,
+                exit_status: recorded.exitStatus,
+                compute_seconds: recorded.computeSeconds,
+                truncated: recorded.truncated,
+                limit: recorded.limit,
+              };
             }
-            if (
-              !this.manifest.config.profile.capabilities.enabled.includes(name)
-            )
-              throw Error("Capability disabled");
-            return env.call(name, args, controller.signal);
+            return env.call(name, args ?? {}, controller.signal);
           };
           pending = work();
           try {
@@ -505,7 +573,7 @@ export class Runner {
           }
         };
         const handles = Object.freeze({
-          session: Object.freeze({ call }),
+          session: Object.freeze({ call }) as SessionTools,
           model: endpoint,
           memoryInstructions: this.manifest.config.harness.memoryInstructions,
         });
@@ -543,8 +611,20 @@ export class Runner {
           ? e.limit === "submission_attempts"
             ? "invalid_output"
             : "budget_exhausted"
-          : "infrastructure_failure";
-      limit = e instanceof LimitError ? e.limit : "infrastructure";
+          : e instanceof SessionError && e.code === "validation_failed"
+            ? "invalid_output"
+            : e instanceof SessionError && e.code === "budget_exhausted"
+              ? "budget_exhausted"
+              : "infrastructure_failure";
+      limit =
+        e instanceof LimitError
+          ? e.limit
+          : e instanceof SessionError && e.code === "validation_failed"
+            ? "submission_attempts"
+            : e instanceof SessionError && e.code === "budget_exhausted"
+              ? (this.record.events("limit", scope).at(-1)?.data.limit ??
+                "tool_calls")
+              : "infrastructure";
       this.record.append("session_error", scope, {
         attempt,
         message: e instanceof Error ? e.message : String(e),
