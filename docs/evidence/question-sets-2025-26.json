@@ -1,0 +1,1004 @@
+{
+  "schemaVersion": 1,
+  "layerManifest": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/_MANIFEST.json",
+    "sha256": "33b39590e8fef4b318494448c90f6340322c4c3faf603be1abda94b47debf615",
+    "bytes": 2590
+  },
+  "methodology": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/methodology.json",
+    "sha256": "07b730b29467a063f17763859f8576ad1424998676655cd05fe97ff627a05092",
+    "bytes": 4299
+  },
+  "summary": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=bos/consensus/proportional/v1/summary.json",
+    "sha256": "05425f6dea96c65be5d042dada3708e7ac4e79a0e305277d31c4d744c1b5bc69",
+    "bytes": 997
+  },
+  "comparison": "Published summary has aggregate counts only; per-game status counts match the pinned P1 coverage diagnostic.",
+  "games": 82,
+  "questions": 1779,
+  "exclusions": 210,
+  "perGame": [
+    {
+      "gameId": "0022500083",
+      "espnEventId": "401809936",
+      "cutoff": "2025-10-22T23:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "d06c19dd15bf8e67d355d10344148a38d6b27eba99cbddb9a2602be536e58e70"
+    },
+    {
+      "gameId": "0022500018",
+      "espnEventId": "401809945",
+      "cutoff": "2025-10-24T23:30:00Z",
+      "questions": 23,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 2,
+        "dfs_only": 2
+      },
+      "questionSetSha256": "d4b6b607307af2d055189a0baad59425b71667f30c87050aacfa976cedf74f11"
+    },
+    {
+      "gameId": "0022500106",
+      "espnEventId": "401809961",
+      "cutoff": "2025-10-26T19:30:00Z",
+      "questions": 18,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 18
+      },
+      "questionSetSha256": "a5b2fc7ea07686444ca92e32929987422d75ddab881c0ecbd3db753faecf1e32"
+    },
+    {
+      "gameId": "0022500117",
+      "espnEventId": "401809972",
+      "cutoff": "2025-10-28T00:00:00Z",
+      "questions": 21,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "9b80aa7265605117001ff851ccd03ff5377c405a49e566c5be21f328476f9b1a"
+    },
+    {
+      "gameId": "0022500128",
+      "espnEventId": "401809983",
+      "cutoff": "2025-10-29T23:00:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "848532d513635ef2f6a9f7873d420456d99f250de5cb96fc248e51a1b56e5cd0"
+    },
+    {
+      "gameId": "0022500021",
+      "espnEventId": "401809503",
+      "cutoff": "2025-10-31T23:00:00Z",
+      "questions": 24,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 24
+      },
+      "questionSetSha256": "4b15a8832332076cdbe7fb59083196cc52edc0444535003d16e3cdd9789079e0"
+    },
+    {
+      "gameId": "0022500146",
+      "espnEventId": "401810001",
+      "cutoff": "2025-11-02T00:00:00Z",
+      "questions": 20,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 3,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "ab5daba7d5c6abb339fa5560e1a9dcaaeaf2e52c483fdfe0c30f9c5576efbff7"
+    },
+    {
+      "gameId": "0022500158",
+      "espnEventId": "401810013",
+      "cutoff": "2025-11-04T00:30:00Z",
+      "questions": 21,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 2,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "2967cc52c9dfdee52c0fa91f14521773050e5a609898717b70517f22833b4555"
+    },
+    {
+      "gameId": "0022500174",
+      "espnEventId": "401810029",
+      "cutoff": "2025-11-06T00:30:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "caba1aca2314dfd0a29f92f65b4294ceec180ebcbf7d4bda86f4f005ef36023e"
+    },
+    {
+      "gameId": "0022500028",
+      "espnEventId": "401809510",
+      "cutoff": "2025-11-08T00:00:00Z",
+      "questions": 20,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "7f362a67f89d960ca6deb71faa4841a922324accdfa973244f695b684592e646"
+    },
+    {
+      "gameId": "0022500193",
+      "espnEventId": "401810048",
+      "cutoff": "2025-11-09T23:00:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "e276a8c11ea82f23f5bded6819f9e68d29c9eaca01fa824f7d302becd10a75ea"
+    },
+    {
+      "gameId": "0022500209",
+      "espnEventId": "401810064",
+      "cutoff": "2025-11-12T01:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "d738da1e9d9aa962ddf5080e3c2ce68e034b7bed2ebd6ec9ece502ad27b662ff"
+    },
+    {
+      "gameId": "0022500216",
+      "espnEventId": "401810071",
+      "cutoff": "2025-11-13T00:30:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "9c135a3284681802445156f953e86fd1d1c5f4508c3f6dbfc91eb269a33efc70"
+    },
+    {
+      "gameId": "0022500233",
+      "espnEventId": "401810088",
+      "cutoff": "2025-11-16T20:30:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "fc647bb0fc3a4e64752fd808e2fa8ab3b1b9ab33f851d0673d78131811055d2e"
+    },
+    {
+      "gameId": "0022500250",
+      "espnEventId": "401810105",
+      "cutoff": "2025-11-19T00:30:00Z",
+      "questions": 20,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "7826b5c98618c18011d7c9924079aa04d2f84b1857783942c637f9f27d7208e9"
+    },
+    {
+      "gameId": "0022500049",
+      "espnEventId": "401809791",
+      "cutoff": "2025-11-22T00:30:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "914376e93c17f9dcd7c581bb11a99555e4e512633c440d3849c76e879224bfa3"
+    },
+    {
+      "gameId": "0022500277",
+      "espnEventId": "401810132",
+      "cutoff": "2025-11-23T23:00:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "947d0bcb652db2bcc4e273bd9d3c5f32108634df969162fffa316c31afc30ef0"
+    },
+    {
+      "gameId": "0022500060",
+      "espnEventId": "401809802",
+      "cutoff": "2025-11-26T22:00:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "ebe918b404e9e20b8016c47fffdb8daa80f5a035bf5f30dec6cb1af8af2dd56a"
+    },
+    {
+      "gameId": "0022500293",
+      "espnEventId": "401810148",
+      "cutoff": "2025-11-29T22:00:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "4f8d2a6137f983e9fbaeb71bee0d77dac0674ff54ddf5371aaa4a9fb88a1dc17"
+    },
+    {
+      "gameId": "0022500302",
+      "espnEventId": "401810157",
+      "cutoff": "2025-11-30T23:00:00Z",
+      "questions": 24,
+      "exclusions": 9,
+      "statusCounts": {
+        "ok": 24,
+        "no_quotes": 8,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "795cd56e334a9bbd0c6c3c9a81b830a31e4f813f8991f25acc0fba2ccb78029f"
+    },
+    {
+      "gameId": "0022500320",
+      "espnEventId": "401810175",
+      "cutoff": "2025-12-03T01:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "546a96c1c472e119a72edcb04c2664f794585cc8db694993de21306b2e8206a5"
+    },
+    {
+      "gameId": "0022500334",
+      "espnEventId": "401810189",
+      "cutoff": "2025-12-05T00:00:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "2dc7ecc83fd2da71ca1b0569f9b290032ec6cf1b1bd48b222b0db11e8f7c4b2f"
+    },
+    {
+      "gameId": "0022500338",
+      "espnEventId": "401810193",
+      "cutoff": "2025-12-06T00:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "5b156958ef0fc00aaea2a4c314646a6b531f70b444df04ab00cb3339987d601e"
+    },
+    {
+      "gameId": "0022500358",
+      "espnEventId": "401810213",
+      "cutoff": "2025-12-07T20:30:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "07a12b6c841981fb37c44af9ca40c849b3c23aa36aad2dfa7e767312f383f53e"
+    },
+    {
+      "gameId": "0022501206",
+      "espnEventId": "401836747",
+      "cutoff": "2025-12-12T01:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "b656d15a7c1778e520a4d2101233c317055b1f991d1efaeb100aa3e23e591d56"
+    },
+    {
+      "gameId": "0022501222",
+      "espnEventId": "401836803",
+      "cutoff": "2025-12-16T00:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "6c0deddb30d24bdb1604a183a3990d18c354c27cbc476ee573d7da4129838f93"
+    },
+    {
+      "gameId": "0022500381",
+      "espnEventId": "401810236",
+      "cutoff": "2025-12-20T00:00:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "27bb126f7ab606407ebadde4f4f7970e05262a590ade1dedd3e16b5754f6c1c1"
+    },
+    {
+      "gameId": "0022500388",
+      "espnEventId": "401810243",
+      "cutoff": "2025-12-21T00:00:00Z",
+      "questions": 21,
+      "exclusions": 6,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 6
+      },
+      "questionSetSha256": "2a6fb2bdaf689faca2b7b824f4515710ed3ebae9e201d68f1678cbdc269c3c84"
+    },
+    {
+      "gameId": "0022500403",
+      "espnEventId": "401810258",
+      "cutoff": "2025-12-23T00:30:00Z",
+      "questions": 20,
+      "exclusions": 7,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 5,
+        "dfs_only": 2
+      },
+      "questionSetSha256": "d2f451d05de4d6fa07931167ba6bd1fdc08b37215d501041b78ab4dab15e08e9"
+    },
+    {
+      "gameId": "0022500426",
+      "espnEventId": "401810281",
+      "cutoff": "2025-12-27T00:00:00Z",
+      "questions": 24,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 24
+      },
+      "questionSetSha256": "7cecdb38fdad70f293f547c30bf76e19449164cae2e6560a7f57e69065cfa1c9"
+    },
+    {
+      "gameId": "0022500444",
+      "espnEventId": "401810299",
+      "cutoff": "2025-12-28T23:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "10b2e6cb93dcbfbcb2e1739fd99d8af6ca6686134cc0e8b218e268936e82091d"
+    },
+    {
+      "gameId": "0022500459",
+      "espnEventId": "401810314",
+      "cutoff": "2025-12-31T02:00:00Z",
+      "questions": 26,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 26,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "900b5b5f90e243c35a27e10b7a921e2ee842488ff6682c09281fbd672a6df752"
+    },
+    {
+      "gameId": "0022500474",
+      "espnEventId": "401810329",
+      "cutoff": "2026-01-02T03:00:00Z",
+      "questions": 27,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 27
+      },
+      "questionSetSha256": "667505071dd1674798eb5a43c55613a21b129b06b5c11a8d09ee2f90cb9b083b"
+    },
+    {
+      "gameId": "0022500493",
+      "espnEventId": "401810348",
+      "cutoff": "2026-01-04T03:30:00Z",
+      "questions": 25,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 25,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "ca0d53ae54818a35861e6d155af1094e865ca8ef8755ea99df702dda78217e26"
+    },
+    {
+      "gameId": "0022500503",
+      "espnEventId": "401810358",
+      "cutoff": "2026-01-06T00:30:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "677337f5c8f15d72ad9961172f84b431e4bcdf9a3322bebe992bef770ea8e915"
+    },
+    {
+      "gameId": "0022500520",
+      "espnEventId": "401810375",
+      "cutoff": "2026-01-08T00:00:00Z",
+      "questions": 27,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 27
+      },
+      "questionSetSha256": "30f48f2c8d01e9c2803e7af1e8cb2b96669a954affe30f34507d5a318796a9a1"
+    },
+    {
+      "gameId": "0022500532",
+      "espnEventId": "401810387",
+      "cutoff": "2026-01-10T00:00:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "e910dfdb0a4c25292599ac43b886916acdd265840fcb64815d4e9e7b5d894918"
+    },
+    {
+      "gameId": "0022500545",
+      "espnEventId": "401810400",
+      "cutoff": "2026-01-11T01:00:00Z",
+      "questions": 21,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "a76ebeb2ca8d37cf0e7945d59a9ac641a9735dc854f7e6699674ccbc9068af06"
+    },
+    {
+      "gameId": "0022500559",
+      "espnEventId": "401810414",
+      "cutoff": "2026-01-13T00:30:00Z",
+      "questions": 24,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 24
+      },
+      "questionSetSha256": "d6cd23895d4e5ae189620811bebb0feb2534b3778884939e9bb2c61ac2d07858"
+    },
+    {
+      "gameId": "0022500580",
+      "espnEventId": "401810435",
+      "cutoff": "2026-01-16T00:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "010af5ed627bc5a167456e5d704d108eb39e4439d34dce1ef98b84b77c600fa3"
+    },
+    {
+      "gameId": "0022500594",
+      "espnEventId": "401810449",
+      "cutoff": "2026-01-18T00:30:00Z",
+      "questions": 27,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 27
+      },
+      "questionSetSha256": "88020ad736b28cc593b498f72f6f4ad9adc6b682fe16cff54edafc486a780cab"
+    },
+    {
+      "gameId": "0022500017",
+      "espnEventId": "401809250",
+      "cutoff": "2026-01-20T01:00:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "f920936933e170c94aed709c05da0bd1582be9d969d688301b76810e5b820209"
+    },
+    {
+      "gameId": "0022500621",
+      "espnEventId": "401810476",
+      "cutoff": "2026-01-22T00:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "5d0a6b9605fed121a5d3ca736ceb610cc607bbc63f5aead062d672aa1d32f65c"
+    },
+    {
+      "gameId": "0022500637",
+      "espnEventId": "401810492",
+      "cutoff": "2026-01-24T00:30:00Z",
+      "questions": 24,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 24
+      },
+      "questionSetSha256": "bde29cc3d75f61115d5a08231dec216131818bba7b34f9c3de0e0c22cc36676a"
+    },
+    {
+      "gameId": "0022500647",
+      "espnEventId": "401810502",
+      "cutoff": "2026-01-25T01:00:00Z",
+      "questions": 22,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "02a197692d0ae03f43c58e53d8ff20b71ce142201748891078a2596f97c6081f"
+    },
+    {
+      "gameId": "0022500660",
+      "espnEventId": "401810515",
+      "cutoff": "2026-01-27T01:00:00Z",
+      "questions": 24,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 24
+      },
+      "questionSetSha256": "e81c1d10ea38d80fe7f03bab2d644437ce48444b6c43d1c95a5803e5851ea417"
+    },
+    {
+      "gameId": "0022500673",
+      "espnEventId": "401810528",
+      "cutoff": "2026-01-29T00:30:00Z",
+      "questions": 23,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 4
+      },
+      "questionSetSha256": "e032d428ee91abd87799767d75ab450e93eb37cf1af3946b888e52bd6b7018bb"
+    },
+    {
+      "gameId": "0022500689",
+      "espnEventId": "401810544",
+      "cutoff": "2026-01-31T00:30:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "ad6154f268e70375ee7e59c58aee56c99b2b7b4a829ed5397312dd68287fbbf7"
+    },
+    {
+      "gameId": "0022500702",
+      "espnEventId": "401810557",
+      "cutoff": "2026-02-01T20:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "9128ab4d81af7a6f0fe38c4a6d7ef763ebde14c3ad471b024c059a2ec2ee9cf5"
+    },
+    {
+      "gameId": "0022500721",
+      "espnEventId": "401810576",
+      "cutoff": "2026-02-04T01:00:00Z",
+      "questions": 28,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 28,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "333ca32f005fa5aa071e7025d04fcc4b47964370a76397f8311137082dbb64f7"
+    },
+    {
+      "gameId": "0022500728",
+      "espnEventId": "401810583",
+      "cutoff": "2026-02-05T01:00:00Z",
+      "questions": 21,
+      "exclusions": 6,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 6
+      },
+      "questionSetSha256": "d18040793b1d06d6ae3230cac8a5b441de3348367d5b830900b1c1dea85f1466"
+    },
+    {
+      "gameId": "0022500741",
+      "espnEventId": "401810596",
+      "cutoff": "2026-02-07T00:30:00Z",
+      "questions": 18,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 18,
+        "no_quotes": 2,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "4cf0f8eb013ec68d82eaf79a56b1a121b59d58d0d00db92bf81cb13c5112ebb4"
+    },
+    {
+      "gameId": "0022500757",
+      "espnEventId": "401810612",
+      "cutoff": "2026-02-08T17:30:00Z",
+      "questions": 24,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 24,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "d6bd627cae6086ec5256ddedaad246cca8fa2b936cd6d63a1cf9dafb56eb637b"
+    },
+    {
+      "gameId": "0022500778",
+      "espnEventId": "401810633",
+      "cutoff": "2026-02-12T00:30:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 1
+      },
+      "questionSetSha256": "258492de4b3c5b73d4079cc107124734f11d5bcf1f78960b48dac0d5c7c431b7"
+    },
+    {
+      "gameId": "0022500799",
+      "espnEventId": "401810654",
+      "cutoff": "2026-02-20T03:00:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "cae28883d28b398d371e1eedd95b41f4eee5f61198d6cdbaccbf7b5b7aeac818"
+    },
+    {
+      "gameId": "0022500823",
+      "espnEventId": "401810678",
+      "cutoff": "2026-02-22T23:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "60a2e79da7e6f09a6ecf8968a371ebdfa530e01d35bcd0da6cfce44cba1ccc51"
+    },
+    {
+      "gameId": "0022500839",
+      "espnEventId": "401810694",
+      "cutoff": "2026-02-25T02:00:00Z",
+      "questions": 22,
+      "exclusions": 8,
+      "statusCounts": {
+        "ok": 22,
+        "no_quotes": 7,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "09c318af5cd912da3427b94553b232817e6bedf9e05381d1cd0bd475bdb97081"
+    },
+    {
+      "gameId": "0022500847",
+      "espnEventId": "401810702",
+      "cutoff": "2026-02-26T03:00:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "a474fca95fe9b2e857a608c2425bdde9b21116ae9a72e4a549159b005bd8250f"
+    },
+    {
+      "gameId": "0022500859",
+      "espnEventId": "401810714",
+      "cutoff": "2026-02-28T00:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "e175c0ee464ede30e7a0168315890435a4386e8bbf5a675bc3ade6107a830a5d"
+    },
+    {
+      "gameId": "0022500874",
+      "espnEventId": "401810729",
+      "cutoff": "2026-03-02T01:00:00Z",
+      "questions": 25,
+      "exclusions": 2,
+      "statusCounts": {
+        "ok": 25,
+        "no_quotes": 2
+      },
+      "questionSetSha256": "f6314f97eda7566d6e3551448e7f3a2ccc4b6d38159f07e45a223bec2bd07600"
+    },
+    {
+      "gameId": "0022500880",
+      "espnEventId": "401810735",
+      "cutoff": "2026-03-03T00:30:00Z",
+      "questions": 24,
+      "exclusions": 9,
+      "statusCounts": {
+        "ok": 24,
+        "no_quotes": 8,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "70c2817a4099b8883bbb40bf9060cbea9e7f14a8fb2d90d958dfb0933a563240"
+    },
+    {
+      "gameId": "0022500894",
+      "espnEventId": "401810749",
+      "cutoff": "2026-03-05T00:30:00Z",
+      "questions": 21,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 21
+      },
+      "questionSetSha256": "aec4af77931de9ba696406141900c3f58f5649a432c5d299450806ef0b476204"
+    },
+    {
+      "gameId": "0022500908",
+      "espnEventId": "401810763",
+      "cutoff": "2026-03-07T00:00:00Z",
+      "questions": 24,
+      "exclusions": 0,
+      "statusCounts": {
+        "ok": 24
+      },
+      "questionSetSha256": "f5057a003344ead24e8c0b2f4118173607eeab5c3b29b2744073a0c57d2e08c1"
+    },
+    {
+      "gameId": "0022500921",
+      "espnEventId": "401810776",
+      "cutoff": "2026-03-08T17:00:00Z",
+      "questions": 23,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 23,
+        "dfs_only": 1,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "58dddbad09360b922a2782cc59d88d46184d1e915adcba765a4719b6c5746f9f"
+    },
+    {
+      "gameId": "0022500942",
+      "espnEventId": "401810797",
+      "cutoff": "2026-03-11T00:00:00Z",
+      "questions": 20,
+      "exclusions": 7,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 7
+      },
+      "questionSetSha256": "d5fdce387ed93fe4eb52647a25cddc83b26a4aa61e88896b39b6af99b06a8dbc"
+    },
+    {
+      "gameId": "0022500959",
+      "espnEventId": "401810814",
+      "cutoff": "2026-03-13T01:30:00Z",
+      "questions": 21,
+      "exclusions": 9,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 9
+      },
+      "questionSetSha256": "3d4fd0516e507bfecc632b7bbd663191d2ab53526d37c79c28506497ae611d22"
+    },
+    {
+      "gameId": "0022500971",
+      "espnEventId": "401810826",
+      "cutoff": "2026-03-14T22:00:00Z",
+      "questions": 20,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 3,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "b180397364c38c14f4129cb5471bd17511e66fb9b0e4d0ed3922a01a14c63f31"
+    },
+    {
+      "gameId": "0022500986",
+      "espnEventId": "401810841",
+      "cutoff": "2026-03-16T23:30:00Z",
+      "questions": 23,
+      "exclusions": 1,
+      "statusCounts": {
+        "ok": 23,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "c95f6e0c27fafad828d054dd0879e7ff71df9dc859b98d41c4ce0cd7f60b0216"
+    },
+    {
+      "gameId": "0022500999",
+      "espnEventId": "401810854",
+      "cutoff": "2026-03-18T23:00:00Z",
+      "questions": 21,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 2,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "d08ddafc865a5bdd9e9434af1d692389309276dff67666abfede6dc7bd920562"
+    },
+    {
+      "gameId": "0022501019",
+      "espnEventId": "401810874",
+      "cutoff": "2026-03-21T00:00:00Z",
+      "questions": 18,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 18,
+        "no_quotes": 2,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "24c9dffe95dc1c4b1f6ae707740566808156f56d6fe74d15a019eaf1dabed691"
+    },
+    {
+      "gameId": "0022501035",
+      "espnEventId": "401810890",
+      "cutoff": "2026-03-23T00:00:00Z",
+      "questions": 20,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 4
+      },
+      "questionSetSha256": "476c11c04493978c684d7be180a7611ed6b9f0853c8b4f665a84c97f05782c3c"
+    },
+    {
+      "gameId": "0022501054",
+      "espnEventId": "401810909",
+      "cutoff": "2026-03-25T23:30:00Z",
+      "questions": 21,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "9102bbb0c145feafa3f949b4274a2a7860bb3dd1aa5bed3d66f4b77209cfe3cd"
+    },
+    {
+      "gameId": "0022501067",
+      "espnEventId": "401810922",
+      "cutoff": "2026-03-27T23:30:00Z",
+      "questions": 21,
+      "exclusions": 6,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 6
+      },
+      "questionSetSha256": "2d6f74313eb79e9d9d77f320de9261aa67a67e7836b7bfb72181e7f73b9d70ad"
+    },
+    {
+      "gameId": "0022501085",
+      "espnEventId": "401810940",
+      "cutoff": "2026-03-29T22:00:00Z",
+      "questions": 20,
+      "exclusions": 10,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 10
+      },
+      "questionSetSha256": "289829b6d8dc7cc924072495cd15ee27705ab8fb2107f41f55eafa97b569d846"
+    },
+    {
+      "gameId": "0022501092",
+      "espnEventId": "401810947",
+      "cutoff": "2026-03-30T23:30:00Z",
+      "questions": 21,
+      "exclusions": 6,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 6
+      },
+      "questionSetSha256": "340f4fe41a05e5c9320dd4b12471180ded7860ab9cedfd759c76edb957284a22"
+    },
+    {
+      "gameId": "0022501106",
+      "espnEventId": "401810961",
+      "cutoff": "2026-04-01T23:30:00Z",
+      "questions": 21,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 21,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "0ac06da36d9fe412dc0e26c26b8cea4ec595d15c7c3a6220dec93410fd1f09b1"
+    },
+    {
+      "gameId": "0022501126",
+      "espnEventId": "401810981",
+      "cutoff": "2026-04-04T00:00:00Z",
+      "questions": 20,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 20,
+        "no_quotes": 4
+      },
+      "questionSetSha256": "f591a9bf6359ae20cada35b61985988a8661f83b51dcef29df86366f3194c130"
+    },
+    {
+      "gameId": "0022501132",
+      "espnEventId": "401810987",
+      "cutoff": "2026-04-05T19:30:00Z",
+      "questions": 18,
+      "exclusions": 3,
+      "statusCounts": {
+        "ok": 18,
+        "no_quotes": 3
+      },
+      "questionSetSha256": "0df225e9e380ae5a6c01139966a94460e4fcb9dc13bf047cf4c9589ef58ed94f"
+    },
+    {
+      "gameId": "0022501149",
+      "espnEventId": "401811004",
+      "cutoff": "2026-04-08T00:00:00Z",
+      "questions": 19,
+      "exclusions": 5,
+      "statusCounts": {
+        "ok": 19,
+        "no_quotes": 4,
+        "dfs_only": 1
+      },
+      "questionSetSha256": "fd593c456ba41d9971fdda621d191b754a760030653e9e7ac1945aa7901661c6"
+    },
+    {
+      "gameId": "0022501168",
+      "espnEventId": "401811023",
+      "cutoff": "2026-04-09T23:30:00Z",
+      "questions": 23,
+      "exclusions": 4,
+      "statusCounts": {
+        "ok": 23,
+        "no_quotes": 4
+      },
+      "questionSetSha256": "0a01a86accbde40c3935401897233548acf2bad7a9da24358ca5b285cdf68ba3"
+    },
+    {
+      "gameId": "0022501174",
+      "espnEventId": "401811029",
+      "cutoff": "2026-04-10T23:30:00Z",
+      "questions": 12,
+      "exclusions": 9,
+      "statusCounts": {
+        "ok": 12,
+        "no_quotes": 6,
+        "dfs_only": 3
+      },
+      "questionSetSha256": "2685770099d7a21963b21445dfdc078e1537c6f24561c44f5ad85f87824692e9"
+    },
+    {
+      "gameId": "0022501186",
+      "espnEventId": "401811041",
+      "cutoff": "2026-04-12T22:00:00Z",
+      "questions": 1,
+      "exclusions": 11,
+      "statusCounts": {
+        "ok": 1,
+        "no_quotes": 7,
+        "dfs_only": 4
+      },
+      "questionSetSha256": "1fd1a399ee1600924fed8c8af95d71c14cf93ac817735942b10126cfd12893d7"
+    }
+  ]
+}
