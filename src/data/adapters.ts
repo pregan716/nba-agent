@@ -171,9 +171,13 @@ export class PlayByPlayAdapter {
   async records(table: string, gameId: string): Promise<RecordEnvelope[]> {
     const product = PRODUCTS[table];
     if (!product) throw Error(`Table is not replay evidence: ${table}`);
-    const game = (await this.games()).find((r) => r.id === gameId);
+    // Public accessors return defensive copies; internal lookups can reuse the
+    // trusted snapshots instead of cloning the full season for every game.
+    if (!this.cachedGames) await this.games();
+    const game = this.cachedGames!.find((r) => r.id === gameId);
     if (!game) throw Error(`Not a regular-season game: ${gameId}`);
-    const coverage = (await this.coverage()).find(
+    if (!this.cachedCoverage) await this.coverage();
+    const coverage = this.cachedCoverage!.find(
       (r) => r.game_id === gameId && r.product === product,
     );
     if (coverage?.quality_status !== "valid") {

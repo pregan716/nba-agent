@@ -502,3 +502,89 @@ test("published guest identity exceptions cannot re-enter NBA name joins", () =>
   ids.addName("player", "Noa Essengue", "guest");
   assert.equal(ids.byName("player", "Noa Essengue"), "nba");
 });
+
+test("decoded row cache is immutable, content-addressed, bounded LRU and coalesces loads", async () => {
+  const objects: Record<string, Buffer> = {
+    a: bytes({ id: "a", nested: { values: [1] } }),
+    alias: bytes({ id: "a", nested: { values: [1] } }),
+    b: bytes({ id: "b" }),
+    c: bytes({ id: "c" }),
+    large: bytes({ id: "large", text: "x".repeat(500) }),
+  };
+  objects.root = bytes({
+    objects: Object.entries(objects).map(([key, body]) => ({
+      key,
+      sha256: sha256(body),
+    })),
+  });
+  const f = fixture(objects);
+  const release = await Release.open(f.ref("root"), f.store, {
+    maxEntries: 2,
+    maxBytes: 100,
+  });
+  const [a, alsoA] = await Promise.all([release.rows("a"), release.rows("a")]);
+  assert.strictEqual(a, alsoA);
+  assert.strictEqual(await release.rows("alias"), a);
+  assert.deepEqual(f.calls, ["root", "a"]);
+  assert.throws(() => a.push({}), TypeError);
+  assert.throws(() => {
+    a[0].nested.values[0] = 2;
+  }, TypeError);
+  await release.rows("b");
+  await release.rows("a"); // Promote A; B must be evicted next.
+  await release.rows("c");
+  await release.rows("b");
+  assert.equal(f.calls.filter((k) => k === "b").length, 2);
+  await release.rows("large");
+  await release.rows("large");
+  assert.equal(f.calls.filter((k) => k === "large").length, 2);
+  await assert.rejects(() => release.rows("unlisted"), /not in manifest/);
+
+  // The same object key with a different pinned hash cannot reuse older rows.
+  const nextObjects: Record<string, Buffer> = {
+    ...objects,
+    a: bytes({ id: "new revision" }),
+  };
+  nextObjects.root = bytes({
+    objects: [{ key: "a", sha256: sha256(nextObjects.a) }],
+  });
+  const next = fixture(nextObjects);
+  const other = await Release.open(next.ref("root"), next.store);
+  assert.equal((await other.rows("a"))[0].id, "new revision");
+});
+
+test("decoded row cache enforces its byte bound and retries integrity/parse failures", async () => {
+  const objects: Record<string, Buffer> = {
+    a: bytes({ id: "a" }),
+    b: bytes({ id: "b" }),
+  };
+  objects.root = bytes({
+    objects: Object.entries(objects).map(([key, body]) => ({
+      key,
+      sha256: sha256(body),
+    })),
+  });
+  const f = fixture(objects);
+  const release = await Release.open(f.ref("root"), f.store, {
+    maxEntries: 8,
+    maxBytes: Buffer.byteLength(JSON.stringify([{ id: "a" }])),
+  });
+  await release.rows("a");
+  await release.rows("b");
+  await release.rows("a");
+  assert.equal(f.calls.filter((k) => k === "a").length, 2);
+  const good = objects.b;
+  objects.b = Buffer.from("tampered");
+  await assert.rejects(() => release.rows("b"), /Integrity mismatch/);
+  objects.b = good;
+  assert.deepEqual(await release.rows("b"), [{ id: "b" }]);
+  objects.invalid = Buffer.from("not json");
+  objects.root = bytes({
+    objects: [{ key: "invalid", sha256: sha256(objects.invalid) }],
+  });
+  const bad = fixture(objects),
+    badRelease = await Release.open(bad.ref("root"), bad.store);
+  await assert.rejects(() => badRelease.rows("invalid"), SyntaxError);
+  await assert.rejects(() => badRelease.rows("invalid"), SyntaxError);
+  assert.equal(bad.calls.filter((k) => k === "invalid").length, 2);
+});

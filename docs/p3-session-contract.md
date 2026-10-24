@@ -113,9 +113,9 @@ The contract is one `call(name, input)` with object inputs, JSON results and a f
 
 ## P4 translation (tracked in SPO-787)
 
-The P4 runner shipped before this contract and routes `context`, `begin_commit`, `submit` and `execute_code` itself. Its current shapes differ from the contract in ways SPO-787 must close, with a test at the runner-backed `SessionTools` boundary:
+The P4 runner routes `context`, `begin_commit`, `submit` and `execute_code` itself. SPO-787 implements the following translations, verified at the runner-backed `SessionTools` boundary:
 
-| Runner today | Contract | Change |
+| Previous runner shape | Contract | Implemented translation |
 | --- | --- | --- |
 | `execute_code` args is a bare string | `{ program }` | read `args.program` |
 | `context` returns `{ game, phase, cutoff, budget }` with the manifest `Game` and camelCase budget (`tokens, compute, tools, reserve, warning`) | `ContextResult`: team, game with opponent/home/index/venue, phase, cutoff, `BudgetRemaining` in snake_case, memory, dataset versions | build `ContextResult`; map `compute → compute_seconds`, `tools → tool_calls`, `reserve → submission_reserve` |

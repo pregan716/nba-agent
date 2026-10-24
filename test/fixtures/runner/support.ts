@@ -34,12 +34,7 @@ export function fixtureConfig(
       ],
       capabilities: {
         version: "fixture-v1",
-        enabled: [
-          "list_questions",
-          "workspace_read",
-          "workspace_write",
-          "execute_code",
-        ],
+        enabled: ["workspace", "code_execution"],
       },
       modelRoles: { version: "v1", analyst: "claude-opus-4-6" },
     },
@@ -146,6 +141,41 @@ export const environment: EnvironmentFactory = async (
     p_over: 0.5,
   };
   return {
+    async context(budget) {
+      return {
+        team: {
+          team_id: "1610612738",
+          abbreviation: "BOS",
+          name: "Boston Celtics",
+        },
+        season: "2025-26",
+        game: {
+          game_id: context.game.gameId,
+          game_index: context.game.index + 1,
+          opponent: {
+            team_id: "opponent",
+            abbreviation: "OPP",
+            name: "Fixture opponent",
+          },
+          home: true,
+          scheduled_start: context.game.scheduledStart,
+          venue: null,
+        },
+        phase,
+        cutoff: context.cutoff,
+        budget,
+        memory: {
+          horizon: context.memory.horizon,
+          revision: context.memory.revision,
+          process: context.memory.process,
+        },
+        dataset_versions: context.dataSources.map((d) => ({
+          source: d.type,
+          release: d.release,
+          manifest_sha256: d.manifestSha256,
+        })),
+      };
+    },
     async questions() {
       const ref = (key: string): ObjectRef => ({
         bucket: "pm-data-platform",
@@ -201,20 +231,32 @@ export const environment: EnvironmentFactory = async (
       phase = next;
     },
     async call(name, args) {
-      if (name === "list_questions") return [question];
-      if (name === "workspace_read")
-        return existsSync(join(workspace, "notes.txt"))
+      if (name === "list_questions")
+        return {
+          game_id: context.game.gameId,
+          cutoff: context.cutoff,
+          questions: [question],
+        };
+      if (name === "workspace_read") {
+        const content = existsSync(join(workspace, "notes.txt"))
           ? readFileSync(join(workspace, "notes.txt"), "utf8")
           : "";
+        return {
+          path: "notes.txt",
+          content,
+          bytes: Buffer.byteLength(content),
+        };
+      }
       if (name === "workspace_write") {
         if (phase === "commit") throw Error("Locked");
-        writeFileSync(join(workspace, "notes.txt"), String(args));
-        return true;
+        const content = (args as { content: string }).content;
+        writeFileSync(join(workspace, "notes.txt"), content);
+        return { path: "notes.txt", bytes: Buffer.byteLength(content) };
       }
       throw Error("Unknown fixture tool");
     },
     async validateSubmission(value) {
-      return value === "valid"
+      return (value as { notes?: string })?.notes === "valid"
         ? {
             ok: true,
             errors: [],
@@ -244,9 +286,13 @@ export const environment: EnvironmentFactory = async (
   };
 };
 export const harness: Harness = async ({ session }) => {
-  const ctx = (await session.call("context")) as any;
+  const ctx = (await session.call("context", {})) as any;
   if (ctx.phase !== "postgame") {
-    await session.call("begin_commit");
-    await session.call("submit", "valid");
-  } else await session.call("workspace_write", `reflected ${ctx.game.gameId}`);
+    await session.call("begin_commit", {});
+    await session.call("submit", { answers: [], notes: "valid" });
+  } else
+    await session.call("workspace_write", {
+      path: "notes.txt",
+      content: `reflected ${ctx.game.game_id}`,
+    });
 };

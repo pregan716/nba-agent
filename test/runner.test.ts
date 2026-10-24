@@ -280,30 +280,44 @@ test("runner preserves B workspace, resets A, locks commit and hands harness onl
           "session",
         ]);
         assert.deepEqual(Object.keys(handles.session), ["call"]);
-        const ctx = (await handles.session.call("context")) as any;
+        const ctx = (await handles.session.call("context", {})) as any;
         if (ctx.phase === "postgame") {
-          await handles.session.call(
-            "workspace_write",
-            `after ${ctx.game.gameId}`,
-          );
+          await handles.session.call("workspace_write", {
+            path: "notes.txt",
+            content: `after ${ctx.game.game_id}`,
+          });
           return;
         }
         if (horizon === "season")
           observed.push(
-            (await handles.session.call("workspace_read")) as string,
+            (
+              await handles.session.call("workspace_read", {
+                path: "notes.txt",
+              })
+            ).content,
           );
         else
           await assert.rejects(
-            () => handles.session.call("workspace_read"),
+            () => handles.session.call("workspace_read", { path: "notes.txt" }),
             /disabled/,
           );
-        await handles.session.call("begin_commit");
+        await handles.session.call("begin_commit", {});
         await assert.rejects(
-          () => handles.session.call("workspace_write", "bad"),
+          () =>
+            handles.session.call("workspace_write", {
+              path: "notes.txt",
+              content: "bad",
+            }),
           /locked/,
         );
-        const r = await handles.session.call("submit", "valid");
-        assert.deepEqual(await handles.session.call("submit", "valid"), r);
+        const r = await handles.session.call("submit", {
+          answers: [],
+          notes: "valid",
+        });
+        assert.deepEqual(
+          await handles.session.call("submit", { answers: [], notes: "valid" }),
+          r,
+        );
       });
       assert.equal(s.runner.record.events("submission").length, 2);
       assert.deepEqual(observed, horizon === "season" ? ["", "after g1"] : []);
@@ -332,8 +346,9 @@ test("invalid output, exhaustion and infrastructure failure remain distinct; cod
   const cases: { run: Harness; status: string; limit: string | null }[] = [
     {
       run: async ({ session }) => {
-        await session.call("begin_commit");
-        for (let i = 0; i < 4; i++) await session.call("submit", "invalid");
+        await session.call("begin_commit", {});
+        for (let i = 0; i < 4; i++)
+          await session.call("submit", { answers: [], notes: "invalid" });
       },
       status: "invalid_output",
       limit: "submission_attempts",
@@ -369,16 +384,15 @@ test("invalid output, exhaustion and infrastructure failure remain distinct; cod
   const s = await setup();
   try {
     await s.runner.run(async ({ session }) => {
-      const ctx = (await session.call("context")) as any;
+      const ctx = (await session.call("context", {})) as any;
       if (ctx.phase === "postgame") return;
-      const result = (await session.call(
-        "execute_code",
-        "a".repeat(500),
-      )) as any;
+      const result = (await session.call("execute_code", {
+        program: "a".repeat(500),
+      })) as any;
       assert.equal(Buffer.byteLength(result.stdout), 128);
       assert.equal(result.truncated, true);
-      await session.call("begin_commit");
-      await session.call("submit", "valid");
+      await session.call("begin_commit", {});
+      await session.call("submit", { answers: [], notes: "valid" });
     });
     const codes = s.runner.record.events("code_start");
     assert.equal(codes.length, 2);
@@ -518,7 +532,7 @@ test("research exhaustion allows reserve submission while compute/tool limits ar
   });
   try {
     await s.runner.run(async ({ session, model }) => {
-      const ctx = (await session.call("context")) as any;
+      const ctx = (await session.call("context", {})) as any;
       if (ctx.phase === "postgame") return;
       const client = new Anthropic({ ...model, maxRetries: 0 });
       await client.messages.create({
@@ -535,13 +549,13 @@ test("research exhaustion allows reserve submission while compute/tool limits ar
           }),
         /research_tokens/,
       );
-      await session.call("begin_commit");
+      await session.call("begin_commit", {});
       await client.messages.create({
         model: "ignored",
         messages: [],
         max_tokens: 10,
       });
-      await session.call("submit", "valid");
+      await session.call("submit", { answers: [], notes: "valid" });
     });
     assert.equal(s.runner.record.events("submission").length, 2);
     assert.equal(
@@ -576,7 +590,7 @@ test("proxy refuses concurrent calls and does not allow phase change to spend re
   const s = await setup(fixtureConfig(), model, environment, [games[0]]);
   try {
     await s.runner.run(async ({ session, model }) => {
-      const ctx = (await session.call("context")) as any;
+      const ctx = (await session.call("context", {})) as any;
       if (ctx.phase === "postgame") return;
       const client = new Anthropic({ ...model, maxRetries: 0 });
       const response = client.messages
@@ -584,7 +598,7 @@ test("proxy refuses concurrent calls and does not allow phase change to spend re
         .then((r) => r);
       while (!release) await new Promise((r) => setTimeout(r, 1));
       await assert.rejects(
-        () => session.call("begin_commit"),
+        () => session.call("begin_commit", {}),
         /Wait for the model/,
       );
       await assert.rejects(
@@ -594,8 +608,8 @@ test("proxy refuses concurrent calls and does not allow phase change to spend re
       );
       release();
       await response;
-      await session.call("begin_commit");
-      await session.call("submit", "valid");
+      await session.call("begin_commit", {});
+      await session.call("submit", { answers: [], notes: "valid" });
     });
     assert.equal(s.runner.record.events("model_response").length, 1);
   } finally {
@@ -647,7 +661,7 @@ test("a crash between session end and phase checkpoint neither reruns the phase 
       after: before,
     });
     await s.runner.run(async ({ session }) => {
-      const ctx = (await session.call("context")) as any;
+      const ctx = (await session.call("context", {})) as any;
       assert.equal(ctx.phase, "postgame");
     });
     assert.equal(
@@ -671,7 +685,7 @@ test("postgame budget stops are recorded even when a harness handles the model e
   );
   try {
     await s.runner.run(async (handles) => {
-      const ctx = (await handles.session.call("context")) as any;
+      const ctx = (await handles.session.call("context", {})) as any;
       if (ctx.phase !== "postgame") {
         await harness(handles);
         return;
@@ -753,5 +767,236 @@ test("resume charges observed attempt time but excludes a long outage and other 
   } finally {
     t.mock.timers.reset();
     await s.close();
+  }
+});
+
+test("runner implements typed SessionTools results and capability groups at every routed boundary", async () => {
+  const { SessionError } = await import("../src/env/contract.js");
+  const { sessionEnvironment } = await import("../src/env/session.js");
+  const { fixtureCorpus } = await import("./fixtures/session/corpus.js");
+  const f = fixtureCorpus();
+  const clips = [{ question_id: "fixture-q", submitted: 1, clipped_to: 0.99 }];
+  const factory = sessionEnvironment(f.config, f.source, {
+    async validateSubmission(value) {
+      const v = value as { notes?: string };
+      return v.notes === "invalid"
+        ? {
+            ok: false,
+            errors: [
+              "fixture-q: missing probability",
+              "fixture-q: missing rationale",
+            ],
+          }
+        : { ok: true, errors: [], value: { answers: [] }, clips };
+    },
+    async execute(program) {
+      return {
+        stdout: program,
+        stderr: "",
+        exitStatus: 0,
+        computeSeconds: 0.1,
+        truncated: false,
+        limit: null,
+      };
+    },
+  });
+  // Later P3c–f methods are trusted fixture implementations; verify delegation
+  // still uses the exact public types without making their features part of P3b.
+  const routed: Partial<{
+    [
+      N in import("../src/env/contract.js").ToolName
+    ]: import("../src/env/contract.js").ToolResult<N>;
+  }> = {
+    search_evidence: { items: [], total: 0, next_cursor: null },
+    fetch_evidence: {
+      evidence_id: "e",
+      source: "posts",
+      available_at: f.game.scheduledStart,
+      author: null,
+      title: null,
+      url: null,
+      text: "fixture",
+      segments: null,
+      starters: null,
+      references: [],
+    },
+    workspace_list: { entries: [] },
+    workspace_read: { path: "notes", content: "", bytes: 0 },
+    workspace_write: { path: "notes", bytes: 1 },
+    workspace_append: { path: "notes", bytes: 1 },
+    workspace_delete: { path: "notes", bytes: 0 },
+    read_released_results: { games: [] },
+  };
+  const env: EnvironmentFactory = async (ctx, trusted) => {
+    const base = await factory(ctx, trusted);
+    return {
+      ...base,
+      async call(name, args, signal) {
+        return name in routed
+          ? routed[name as keyof typeof routed]
+          : base.call(name, args, signal);
+      },
+    };
+  };
+  const s = await setup(f.config, provider, env, [
+    { gameId: f.game.gameId, scheduledStart: f.game.scheduledStart },
+  ]);
+  let checked = false;
+  try {
+    await s.runner.run(async ({ session }) => {
+      const typed: import("../src/env/contract.js").SessionTools = session;
+      const context: import("../src/env/contract.js").ToolResult<"context"> =
+        await typed.call("context", {});
+      assert.equal(context.game.game_id, "current");
+      assert.equal(context.game.game_index, 1);
+      assert.deepEqual(
+        Object.keys(context.budget).sort(),
+        [
+          "tokens",
+          "compute_seconds",
+          "tool_calls",
+          "submission_reserve",
+          "warning",
+        ].sort(),
+      );
+      assert.equal(context.memory.horizon, "season");
+      assert.equal(context.dataset_versions[0].source, "fixture");
+      const questions: import("../src/env/contract.js").ToolResult<"list_questions"> =
+        await typed.call("list_questions", {});
+      assert.equal(questions.questions.length, 1);
+      const released: import("../src/env/contract.js").ToolResult<"read_released_results"> =
+        await typed.call("read_released_results", {});
+      assert.deepEqual(released, { games: [] });
+      if (context.phase === "postgame") return;
+      const history: import("../src/env/contract.js").ToolResult<"query_game_history"> =
+        await typed.call("query_game_history", {
+          table: "events",
+          game_id: "prior",
+        });
+      assert.equal(history.total, 2);
+      const schedule: import("../src/env/contract.js").ToolResult<"read_schedule_and_injuries"> =
+        await typed.call("read_schedule_and_injuries", { game_id: "current" });
+      assert.equal(schedule.schedule.length, 1);
+      const odds: import("../src/env/contract.js").ToolResult<"query_odds_history"> =
+        await typed.call("query_odds_history", {});
+      assert.equal(odds.observations.length, 2);
+      const search: import("../src/env/contract.js").ToolResult<"search_evidence"> =
+        await typed.call("search_evidence", { query: "x" });
+      assert.equal(search.total, 0);
+      const fetch: import("../src/env/contract.js").ToolResult<"fetch_evidence"> =
+        await typed.call("fetch_evidence", { evidence_id: "e" });
+      assert.equal(fetch.text, "fixture");
+      const list: import("../src/env/contract.js").ToolResult<"workspace_list"> =
+        await typed.call("workspace_list", {});
+      assert.deepEqual(list.entries, []);
+      const read: import("../src/env/contract.js").ToolResult<"workspace_read"> =
+        await typed.call("workspace_read", { path: "notes" });
+      assert.equal(read.content, "");
+      const write: import("../src/env/contract.js").ToolResult<"workspace_write"> =
+        await typed.call("workspace_write", { path: "notes", content: "x" });
+      assert.equal(write.bytes, 1);
+      const append: import("../src/env/contract.js").ToolResult<"workspace_append"> =
+        await typed.call("workspace_append", { path: "notes", content: "x" });
+      assert.equal(append.bytes, 1);
+      const del: import("../src/env/contract.js").ToolResult<"workspace_delete"> =
+        await typed.call("workspace_delete", { path: "notes" });
+      assert.equal(del.bytes, 0);
+      const code: import("../src/env/contract.js").ToolResult<"execute_code"> =
+        await typed.call("execute_code", { program: "print(1)" });
+      assert.deepEqual(code, {
+        stdout: "print(1)",
+        stderr: "",
+        exit_status: 0,
+        compute_seconds: 0.1,
+        truncated: false,
+        limit: null,
+      });
+      await assert.rejects(
+        () => typed.call("execute_code", "bad" as never),
+        (e) => e instanceof SessionError && e.code === "invalid_input",
+      );
+      const commit: import("../src/env/contract.js").ToolResult<"begin_commit"> =
+        await typed.call("begin_commit", {});
+      assert.equal(commit.budget.submission_reserve, 0);
+      assert.equal((await typed.call("context", {})).phase, "commit");
+      await assert.rejects(
+        () => typed.call("query_odds_history", {}),
+        (e) => e instanceof SessionError && e.code === "phase_refused",
+      );
+      await assert.rejects(
+        () => typed.call("submit", { answers: [], notes: "invalid" }),
+        (e) =>
+          e instanceof SessionError &&
+          e.code === "validation_failed" &&
+          e.attemptsRemaining === 2 &&
+          e.problems.length === 2,
+      );
+      const submission: import("../src/env/contract.js").ToolResult<"submit"> =
+        await typed.call("submit", { answers: [] });
+      assert.equal(submission.attempt, 2);
+      assert.deepEqual(submission.clips, clips);
+      assert.equal(typeof submission.receipt, "string");
+      assert.deepEqual(await typed.call("submit", { answers: [] }), submission);
+      checked = true;
+    });
+    assert.equal(checked, true);
+    assert.ok(
+      s.runner.record
+        .events("session_end")
+        .every((e) => e.data.status === "completed"),
+    );
+  } finally {
+    await s.close();
+  }
+});
+
+test("runner refusals use SessionError codes for memory, disabled capabilities and tool budget", async () => {
+  const { SessionError } = await import("../src/env/contract.js");
+  for (const mode of [
+    "stateless",
+    "append-only",
+    "disabled",
+    "budget",
+  ] as const) {
+    const c = fixtureConfig(
+      "refusal",
+      mode === "stateless" ? "stateless" : "season",
+    );
+    if (mode === "append-only") c.profile.memory.revision = "append-only";
+    if (mode === "disabled") c.profile.capabilities.enabled = ["execute_code"]; // Literal tool names no longer enable capabilities.
+    if (mode === "budget") c.budget.pregame.toolCalls = 1;
+    const s = await setup(c);
+    let checked = 0;
+    try {
+      await s.runner.run(async ({ session }) => {
+        const ctx = await session.call("context", {});
+        if (ctx.phase === "postgame") return;
+        if (mode === "budget") await session.call("list_questions", {});
+        const expected =
+          mode === "disabled"
+            ? "capability_disabled"
+            : mode === "budget"
+              ? "budget_exhausted"
+              : "memory_mode_refused";
+        await assert.rejects(
+          () =>
+            mode === "disabled"
+              ? session.call("execute_code", { program: "pass" })
+              : mode === "budget"
+                ? session.call("list_questions", {})
+                : session.call("workspace_write", {
+                    path: "notes.txt",
+                    content: "x",
+                  }),
+          (e) => e instanceof SessionError && e.code === expected,
+        );
+        await session.call("begin_commit", {});
+        await session.call("submit", { answers: [], notes: "valid" });
+        checked++;
+      });
+      assert.equal(checked, 2);
+    } finally {
+      await s.close();
+    }
   }
 });
