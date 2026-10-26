@@ -67,13 +67,14 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "list_evidence",
-    description: `Browse eligible evidence newest first, with snippets and paging. With no from, pregame starts at the previous Celtics game’s scheduled-start cutoff (all eligible history for the first game); postgame starts at this game’s scheduled start. The next pregame browse includes records from the previous postgame window because they were unavailable at the previous pregame cutoff. from is inclusive, to exclusive and clamped to the session cutoff. Use fetch_evidence to read a full record. ${AUTHORS} ${CUTOFF}`,
+    description: `Browse eligible text evidence (beat reporters' posts, transcripts of the head coach's media sessions, and both teams' starting-lineup announcements) newest first, with snippets and paging. With no from, pregame starts at the previous Celtics game’s scheduled-start cutoff (all eligible history for the first game); postgame starts at this game’s scheduled start. The next pregame browse includes records from the previous postgame window because they were unavailable at the previous pregame cutoff. from is inclusive, to exclusive and clamped to the session cutoff. Use fetch_evidence to read a full record. ${AUTHORS} ${CUTOFF}`,
     input_schema: object(
       {
         sources: {
           type: "array",
           items: { type: "string", enum: ["posts", "transcripts", "lineups"] },
-          description: "Restrict to these sources (default all).",
+          description:
+            "Restrict to these sources (default all): posts are beat reporters, transcripts are the head coach's media sessions, lineups are starting-five announcements.",
         },
         from: {
           ...instant,
@@ -92,7 +93,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "search_evidence",
-    description: `Search eligible text evidence: beat reporters' posts, coach media transcripts and starting-lineup announcements. Ranked BM25 matching of any meaningful query words with English stemming and accent folding; common English function words are ignored. Player surnames boost matching players without filtering other matches; full names resolve through pinned identities and restrict results to those players. Use one or two terms (e.g. 'Pritchard injury'); player_id filters directly. Lineup starters are searchable. Ambiguous surnames match any resolved player. Returns matches with source, availability time, author, title and a snippet, plus the total eligible match count and a cursor for more. ${AUTHORS} ${CUTOFF} Use fetch_evidence to read a full record.`,
+    description: `Search eligible text evidence: posts from two pinned Celtics beat reporters, transcripts of the head coach's practice, pregame and postgame media sessions (about one per game day), and both teams' starting-lineup announcements. Ranked BM25 matching of any meaningful query words with English stemming and accent folding; common English function words are ignored. Player surnames boost matching players without filtering other matches; full names resolve through pinned identities and restrict results to those players. Use one or two terms (e.g. 'Pritchard injury'); player_id filters directly. Lineup starters are searchable. Ambiguous surnames match any resolved player. Returns matches with source, availability time, author, title and a snippet, plus the total eligible match count and a cursor for more. ${AUTHORS} ${CUTOFF} Use fetch_evidence to read a full record.`,
     input_schema: object(
       {
         query: { type: "string", minLength: 1, description: "Words to match." },
@@ -100,7 +101,8 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
         sources: {
           type: "array",
           items: { type: "string", enum: ["posts", "transcripts", "lineups"] },
-          description: "Restrict to these sources (default all).",
+          description:
+            "Restrict to these sources (default all): posts are beat reporters, transcripts are the head coach's media sessions, lineups are starting-five announcements.",
         },
         from: {
           ...instant,
