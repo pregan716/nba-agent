@@ -29,8 +29,14 @@ export function resolveFrozen(
   stat: Stat,
   line: number,
 ): Resolution {
-  if (/postponed|cancelled|canceled/i.test(input.status))
+  const status = input.status.trim().toLowerCase();
+  if (["postponed", "cancelled", "canceled"].includes(status))
     return { actual: null, outcome: "void" };
+  // P1's normalized vocabulary is pinned in config/dictionaries/pbp-0.1.0.md.
+  // Never score partial stats for an explicit non-final or unrecognized state.
+  // Empty status preserves replay compatibility with records captured before SPO-821.
+  if (status && !["completed", "final"].includes(status))
+    return { actual: null, outcome: "unresolved" };
   return resolveOutcome(
     input.gameId,
     player,

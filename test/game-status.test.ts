@@ -29,6 +29,10 @@ for (const [status, emptyBoxes, expected] of [
   ["final", false, "over"],
   ["completed", false, "over"],
   [undefined, false, "over"],
+  ["scheduled", false, "unresolved"],
+  ["in_progress", false, "unresolved"],
+  ["unknown", false, "unresolved"],
+  ["suspended", false, "unresolved"],
 ] as const) {
   test(`P1 ${status ?? "missing"} status reaches runner capture, feedback and offline report`, async () => {
     const f = fixtureCorpus(false);
@@ -72,7 +76,10 @@ for (const [status, emptyBoxes, expected] of [
         }),
       ),
     );
-    f.source.games = () => adapter.games();
+    // Exercise a source that shares rows: stripping pregame status must not
+    // erase it for subsequent postgame sessions.
+    const sharedGames = await adapter.games();
+    f.source.games = async () => sharedGames;
     const current = (await adapter.games()).find(
       (g) => g.id === f.game.gameId,
     )!;
@@ -140,7 +147,11 @@ for (const [status, emptyBoxes, expected] of [
         db.close();
       }
       const shards = join(root, "pre-export", "games");
-      assert.equal(readdirSync(shards).length, 1); // only the prior released game
+      assert.equal(
+        readdirSync(shards).length,
+        1,
+        "Only the prior released game should have a history shard",
+      );
       for (const shard of readdirSync(shards)) {
         const decoded = join(root, "decoded.sqlite");
         writeFileSync(decoded, gunzipSync(readFileSync(join(shards, shard))));
@@ -188,6 +199,11 @@ for (const [status, emptyBoxes, expected] of [
       assert.equal(report.rows[0].actual, feedback!.actual);
       if (expected === "void") {
         assert.equal(report.rows[0].reason, "void");
+        assert.equal(report.rows[0].actual, null);
+        assert.equal(report.rows[0].skill, null);
+        assert.equal(report.totals.scored, 0);
+      } else if (expected === "unresolved") {
+        assert.match(report.rows[0].reason!, /^unresolved:/);
         assert.equal(report.rows[0].actual, null);
         assert.equal(report.rows[0].skill, null);
         assert.equal(report.totals.scored, 0);

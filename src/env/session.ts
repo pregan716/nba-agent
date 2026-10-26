@@ -151,7 +151,14 @@ export class Session {
     return structuredClone(team);
   }
   async #games() {
-    return this.#eligible(await this.#source.games());
+    return this.#eligible(await this.#source.games()).map((game) => {
+      if (visible(releasedGame(game), this.#cutoff)) return game;
+      // Status is outcome-time metadata, not part of the static schedule.
+      // Copy before stripping: SessionSource may share cached rows across sessions.
+      const data = { ...game.data };
+      delete data.status;
+      return { ...game, data };
+    });
   }
   async #current() {
     const game = (await this.#games()).find((g) => g.id === this.#game.gameId);

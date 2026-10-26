@@ -47,7 +47,7 @@ P2 reads `snapshot_kind` and `season_inferred_identity_in_inputs` from trusted o
 | --- | --- |
 | Odds | `requested_at`, never provider snapshot or backfill time |
 | PBP products | 9 a.m. Eastern on the next calendar morning; only regular-season games and products with `valid` coverage |
-| Schedule | Static schedule fields at the opening reference cutoff; scores omitted. Trusted envelopes retain published status for resolution; P3 omits status from public schedule/context and gates game history and resolution at game release |
+| Schedule | Static schedule fields at the opening reference cutoff; outcome status is release-gated in P3 (see below) |
 | Injuries | Printed UTC report time; ambiguous Eastern timestamps use the later fold. Only matched regular-season rows and observed PDF fields are returned |
 | Player reference | Static at `2025-10-21T23:29:59Z` |
 | Posts | Version publication time. An original version can use publication time; unknown edited/hash-only version times are excluded and reported |
@@ -181,10 +181,19 @@ PBP adapters reuse verified schedule, coverage, and game-index metadata for thei
 pinned release; public metadata reads return copies. `openCorpus` opens the odds
 release once. Per-record/lazy transcript access remains a P3 integration follow-up.
 
-
 SPO-821: the games pick list retains the published `status` (including completed/final,
 postponed and cancelled). The runner captures it unchanged in `resolution_input`
 after the next-morning release gate. `resolveFrozen` voids postponed/cancelled games
 before considering any box scores; offline reports and released feedback therefore
 exclude them from scoring. Legacy records with an empty status retain their original
 fallback behavior; this change does not rewrite past immutable records.
+
+
+The pinned [PBP games dictionary](../config/dictionaries/pbp-0.1.0.md#games)
+defines `status` as `scheduled`, `in_progress`, `completed`, `postponed`,
+`canceled`, or `unknown`. This is the normalized field, not raw `source_status`.
+`Session.#games()` strips status from unreleased games on a copy, so all session
+consumers see only static schedule fields until release. Released resolution voids
+`postponed`/`canceled` (also accepts `cancelled`); only `completed`/`final` are
+scored. Explicit non-final or unrecognized states remain unresolved even if box
+scores exist. Empty legacy status retains the existing stats-based fallback.
