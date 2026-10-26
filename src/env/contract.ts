@@ -30,6 +30,7 @@ export type Phase = "pregame" | "commit" | "postgame";
 export const TOOL_NAMES = [
   "context",
   "search_evidence",
+  "list_evidence",
   "fetch_evidence",
   "query_game_history",
   "read_schedule_and_injuries",
@@ -72,6 +73,7 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
   submit: null,
   read_released_results: null,
   search_evidence: "search_and_fetch",
+  list_evidence: "search_and_fetch",
   fetch_evidence: "search_and_fetch",
   query_game_history: "game_history",
   read_schedule_and_injuries: "game_history",
@@ -93,6 +95,7 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
 export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
   context: ["pregame", "commit", "postgame"],
   search_evidence: ["pregame", "postgame"],
+  list_evidence: ["pregame", "postgame"],
   fetch_evidence: ["pregame", "postgame"],
   query_game_history: ["pregame", "postgame"],
   read_schedule_and_injuries: ["pregame", "postgame"],
@@ -185,9 +188,7 @@ export interface ContextResult {
 }
 
 export type EvidenceSource = "posts" | "transcripts" | "lineups";
-export interface SearchEvidenceInput {
-  /** Plain words. Lexical match over eligible text; no semantic search in v1. */
-  query: string;
+export interface ListEvidenceInput {
   sources?: EvidenceSource[];
   /** Inclusive lower bound on availability time. */
   from?: Instant;
@@ -195,6 +196,11 @@ export interface SearchEvidenceInput {
   to?: Instant;
   limit?: number;
   cursor?: string;
+}
+export interface SearchEvidenceInput extends ListEvidenceInput {
+  /** Ranked, stemmed OR search; player names resolve through pinned identities. */
+  query: string;
+  player_id?: string;
 }
 export interface EvidenceHit {
   evidence_id: EvidenceId;
@@ -502,6 +508,7 @@ export interface ReadReleasedResultsResult {
 export interface ToolContract {
   context: { input: ContextInput; result: ContextResult };
   search_evidence: { input: SearchEvidenceInput; result: SearchEvidenceResult };
+  list_evidence: { input: ListEvidenceInput; result: SearchEvidenceResult };
   fetch_evidence: { input: FetchEvidenceInput; result: FetchEvidenceResult };
   query_game_history: {
     input: QueryGameHistoryInput;

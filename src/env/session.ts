@@ -261,12 +261,47 @@ export class Session {
           records.push(r);
         }
       }
-      return new EvidenceIndex(records, this.#source.identities);
+      return new EvidenceIndex(
+        records,
+        this.#source.identities,
+        this.#eligible(await this.#source.reference("player_profiles")),
+      );
     })().catch((error) => {
       this.#evidenceIndex = undefined;
       throw error;
     });
     return this.#evidenceIndex;
+  }
+  async list_evidence(
+    input: ToolInput<"list_evidence">,
+    _signal?: AbortSignal,
+  ): Promise<ToolResult<"list_evidence">> {
+    this.#check("list_evidence", input);
+    let from = input.from;
+    if (!from) {
+      if (this.#phase === "postgame") from = this.#game.scheduledStart;
+      else
+        from = (await this.#games())
+          .filter(
+            (g) =>
+              [g.data.home_team_id, g.data.away_team_id].includes(BOS) &&
+              compare(g.data.scheduled_tipoff, this.#game.scheduledStart) < 0,
+          )
+          .map((g) => g.data.scheduled_tipoff as string)
+          .sort(compare)
+          .at(-1);
+    }
+    return (await this.#evidence()).list(
+      { ...input, from },
+      digest([
+        this.#config.runId,
+        this.#config.replicateId,
+        this.#game.gameId,
+        this.#phase,
+        this.#source.versions,
+      ]),
+      this.#cutoff,
+    );
   }
   async search_evidence(
     input: ToolInput<"search_evidence">,
@@ -799,6 +834,7 @@ export class Session {
     const methods = {
       read_released_results: this.read_released_results.bind(this),
       search_evidence: this.search_evidence.bind(this),
+      list_evidence: this.list_evidence.bind(this),
       fetch_evidence: this.fetch_evidence.bind(this),
       query_game_history: this.query_game_history.bind(this),
       read_schedule_and_injuries: this.read_schedule_and_injuries.bind(this),
