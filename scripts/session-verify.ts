@@ -85,7 +85,7 @@ try {
   );
   for (const [evidenceSource, query] of [
     ["posts", "Celtics"],
-    ["transcripts", "the"],
+    ["transcripts", "game"],
     ["lineups", "first"],
   ] as const) {
     const page = await evidenceSession.search_evidence({
