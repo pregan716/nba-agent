@@ -28,17 +28,21 @@ try {
   const ids = new Identities();
   for (const m of JSON.parse(await readFile("config/identities.json", "utf8")))
     ids.add(m);
+  const requestedCache =
+    process.argv[2] ?? process.env.NBA_HISTORY_EXPORT_CACHE;
+  const shardCache = historyExportCacheDirectory(
+    process.argv[2] ??
+      (process.env.NBA_HISTORY_EXPORT_CACHE === undefined
+        ? join(root, "shards")
+        : undefined),
+  );
   const source = await corpusSource(
     c,
     await loadQuestionLayer(c.odds, ids),
     ids,
+    { exportCacheDirectory: shardCache },
   );
-  const requestedCache =
-    process.argv[2] ?? process.env.NBA_HISTORY_EXPORT_CACHE;
-  source.exportCacheDirectory = historyExportCacheDirectory(
-    requestedCache ?? join(root, "shards"),
-  );
-  console.log(JSON.stringify({ shardCache: source.exportCacheDirectory }));
+  console.log(JSON.stringify({ shardCache }));
   const config = fixtureConfig("live-smoke");
   config.profile.capabilities.enabled = [
     "code_execution",
@@ -73,7 +77,9 @@ try {
     throw Error("Game number must be in the season schedule");
   const benchmarkGame = m.games[gameNumber - 1];
   for (const pass of [
-    requestedCache !== undefined ? "existing shard cache" : "cold shard cache",
+    requestedCache !== undefined
+      ? "configured shard cache"
+      : "cold shard cache",
     "warm shard cache",
   ]) {
     const benchmarkSession = new Session(

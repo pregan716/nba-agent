@@ -113,7 +113,11 @@ export async function corpusSource(
   corpus: Corpus,
   layer: QuestionLayer,
   identities: Identities,
+  options: { exportCacheDirectory?: string } = {},
 ): Promise<SessionSource> {
+  const exportCacheDirectory = historyExportCacheDirectory(
+    options.exportCacheDirectory,
+  );
   const pbpDictionary = await readFile(
     new URL("../../config/dictionaries/pbp-0.1.0.md", import.meta.url),
     "utf8",
@@ -139,7 +143,7 @@ export async function corpusSource(
       );
   }
   return {
-    exportCacheDirectory: historyExportCacheDirectory(),
+    exportCacheDirectory,
     layer,
     identities,
     teams,

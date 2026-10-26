@@ -44,9 +44,39 @@ export function buildSandboxImage(
       (m) => m[1],
     ),
   );
-  if (digests.size !== 1)
-    throw Error("Push did not report one registry manifest digest");
-  const image = `${repository}@${[...digests][0]}`;
+  if (digests.size > 1)
+    throw Error("Push reported ambiguous registry manifest digests");
+  let digest = [...digests][0];
+  if (!digest) {
+    // New image stores need not emit the classic human-readable digest line.
+    // Resolve the remote tag, then verify the pulled artifact against our build
+    // below; a concurrent tag replacement must not silently change the pin.
+    const output = docker(
+      [
+        "buildx",
+        "imagetools",
+        "inspect",
+        tag,
+        "--format",
+        "{{json .Manifest}}",
+      ],
+      true,
+    );
+    let manifest: unknown;
+    try {
+      manifest = JSON.parse(output);
+    } catch {
+      throw Error("Invalid registry manifest response");
+    }
+    const candidate = (manifest as { digest?: unknown } | null)?.digest;
+    if (
+      typeof candidate !== "string" ||
+      !/^sha256:[a-f0-9]{64}$/.test(candidate)
+    )
+      throw Error("Registry manifest response has no valid digest");
+    digest = candidate;
+  }
+  const image = `${repository}@${digest}`;
   docker(["pull", ...platform, image]);
   const pulled = docker(
     ["image", "inspect", image, "--format", "{{.Id}}"],

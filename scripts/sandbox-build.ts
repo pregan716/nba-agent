@@ -22,7 +22,10 @@ const image = buildSandboxImage(options, (args, capture = false) => {
     stdio: capture ? ["inherit", "pipe", "inherit"] : "inherit",
   });
   if (result.error || result.status !== 0)
-    throw Error(`Docker ${args[0]} failed`, { cause: result.error });
+    throw Error(
+      `Docker ${args.slice(0, args[0] === "image" ? 2 : args[0] === "buildx" ? 3 : 1).join(" ")} failed`,
+      { cause: result.error },
+    );
   if (capture && args[0] === "push") process.stderr.write(result.stdout);
   return result.stdout ?? "";
 });

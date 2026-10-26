@@ -63,7 +63,7 @@ test("publish refuses failed pushes, missing/ambiguous digests and mismatched im
     const f = dockerFixture(output);
     assert.throws(
       () => buildSandboxImage({ push: tag }, f.docker),
-      /one registry manifest digest/,
+      /registry manifest (response|digests)/,
     );
     assert.ok(!f.calls.some((c) => c[0] === "pull"));
   }
@@ -137,9 +137,78 @@ test("persistent cache placement honors explicit path, deployment environment, a
     assert.equal(historyExportCacheDirectory(), "/mnt/nba/history-shards");
     assert.equal(historyExportCacheDirectory("custom"), resolve("custom"));
     process.env.NBA_HISTORY_EXPORT_CACHE = "";
-    assert.throws(() => historyExportCacheDirectory(), /must not be empty/);
+    assert.throws(
+      () => historyExportCacheDirectory(),
+      /must be an absolute path/,
+    );
+    process.env.NBA_HISTORY_EXPORT_CACHE = "history-export-v2";
+    assert.throws(
+      () => historyExportCacheDirectory(),
+      /must be an absolute path/,
+    );
+    assert.equal(historyExportCacheDirectory("explicit"), resolve("explicit"));
+    assert.throws(() => historyExportCacheDirectory(""), /must not be empty/);
   } finally {
     if (saved === undefined) delete process.env.NBA_HISTORY_EXPORT_CACHE;
     else process.env.NBA_HISTORY_EXPORT_CACHE = saved;
   }
+});
+
+test("non-classic push output resolves the structured remote manifest and verifies it", () => {
+  const f = dockerFixture("pushed successfully");
+  const calls: string[][] = [];
+  assert.equal(
+    buildSandboxImage({ push: tag }, (args) => {
+      calls.push(args);
+      return args[0] === "buildx"
+        ? JSON.stringify({
+            digest,
+            mediaType: "application/vnd.oci.image.index.v1+json",
+            manifests: [{ digest: id }],
+          })
+        : f.docker(args);
+    }),
+    pin,
+  );
+  assert.deepEqual(calls[3], [
+    "buildx",
+    "imagetools",
+    "inspect",
+    tag,
+    "--format",
+    "{{json .Manifest}}",
+  ]);
+  assert.deepEqual(calls[4], ["pull", pin]);
+  const wrong = dockerFixture("pushed successfully", digest);
+  assert.throws(
+    () =>
+      buildSandboxImage({ push: tag }, (args) =>
+        args[0] === "buildx" ? JSON.stringify({ digest }) : wrong.docker(args),
+      ),
+    /does not identify/,
+  );
+  for (const output of [
+    "not JSON",
+    "null",
+    "{}",
+    JSON.stringify({ digest: "sha256:bad" }),
+  ]) {
+    const bad = dockerFixture("");
+    assert.throws(
+      () =>
+        buildSandboxImage({ push: tag }, (args) =>
+          args[0] === "buildx" ? output : bad.docker(args),
+        ),
+      /registry manifest/i,
+    );
+    assert.ok(!bad.calls.some((c) => c[0] === "pull"));
+  }
+  assert.throws(
+    () =>
+      buildSandboxImage({ push: tag }, (args) => {
+        if (args[0] === "buildx") throw Error("buildx unavailable");
+        return dockerFixture("").docker(args);
+      }),
+    /buildx unavailable/,
+  );
 });
