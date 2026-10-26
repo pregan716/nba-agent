@@ -42,8 +42,22 @@ export function normalizeUsage(raw: any): Usage {
       raw.reasoning_tokens == null ? null : count(raw.reasoning_tokens),
   };
 }
-export const tokenTotal = (u: Usage) =>
-  u.input + u.output + u.cacheRead + u.cacheWrite;
+/** Tokens charged against the caps. Cache reads count at `cacheReadWeight`
+ * (SPO-814): re-reading cached history is not new research, so the cap tracks
+ * what the agent spends rather than what the API re-reads. */
+export const tokenTotal = (u: Usage, cacheReadWeight = 1) =>
+  u.input + u.output + u.cacheWrite + Math.round(u.cacheRead * cacheReadWeight);
+/** Preflight estimate of the charged input for a request of `count` tokens when the
+ * previous request in the same scope counted `previous`: the prefix up to the
+ * previous request is assumed cached, the growth is new. */
+export const chargedInputEstimate = (
+  count: number,
+  previous: number,
+  cacheReadWeight: number,
+) => {
+  const cached = Math.min(count, previous);
+  return count - cached + Math.round(cached * cacheReadWeight);
+};
 export function cost(u: Usage, price: RunConfig["budget"]["price"]): number {
   return (
     (u.input * price.inputPerMillion +
