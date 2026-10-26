@@ -75,6 +75,20 @@ export const configSchema = z.strictObject({
       cacheWrite1hPerMillion: nonnegative,
     }),
   }),
+  // Defaults are applied at use, never inserted into legacy manifests.
+  recovery: z
+    .strictObject({
+      maxSessionAttempts: z.number().int().min(1).max(10).optional(),
+      model: z
+        .strictObject({
+          retries: z.number().int().min(0).max(10).optional(),
+          baseMs: positive.optional(),
+          capMs: positive.optional(),
+          totalMs: positive.optional(),
+        })
+        .optional(),
+    })
+    .optional(),
   harness: z.strictObject({
     identity: name,
     prompts: z.record(name, name),

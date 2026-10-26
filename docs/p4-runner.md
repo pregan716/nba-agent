@@ -126,3 +126,44 @@ causes startup to fail safely; retry the launch after that sweep completes.
 Remaining user decisions: all production budget numbers and pilot effort remain open until the brief's pilot procedure. The fixture values are clearly labelled and are not usable as an approved scored budget.
 
 AWS image publishing and persistent shard-cache setup are documented in the [deployment prerequisites](aws-deployment-prerequisites.md). Complete exact-digest pulls and game-82 prewarming before starting budgeted runs.
+
+
+## Transient model and session recovery (SPO-827)
+
+The optional `recovery` run-config field controls recovery without changing the
+harness version. Missing fields use runtime defaults; parsing never inserts them,
+so existing manifests retain their identity. `recovery.model` accepts `retries`
+(default 3), `baseMs` (2000), `capMs` (30000), and `totalMs` (60000).
+Token-count and generation calls retry HTTP 500, 502, 503, 529, 408, and recognized
+connection/socket failures. Provider 429s and other client errors are not retried.
+Backoff doubles per retry with 50–100% jitter, capped at `capMs`. `totalMs`
+limits when another retry can start, including time spent on calls and backoff;
+it never aborts an in-flight generation. A healthy response may take longer
+than this retry window. In-flight calls remain bounded by the SDK timeout and
+session wall clock, and session cancellation interrupts calls and backoff.
+
+Generation retries share one reservation. A successful response settles that
+reservation once with actual usage and records its retry count. Failed requests,
+including exhausted retry windows, retain the full unsettled reservation. Each upstream
+failure records `model_error` with HTTP status, error type, request ID, sanitized
+message, attempt number, and whether it is terminal. Credential-like values and
+known credential environment values are redacted; headers and request bodies are
+not copied into diagnostics. The harness continues to receive a generic error.
+Nonterminal errors recovered by the proxy do not fail an otherwise successful
+session.
+
+`recovery.maxSessionAttempts` defaults to 2. An infrastructure-failed session with
+no frozen pregame submission retries from its `before` workspace snapshot. The
+new `session_start` increments the attempt number. An `attempt_budget_reset`
+event gives it fresh token, compute, tool, wall-time and research/commit budgets;
+old reservations, settlements and per-attempt usage remain in the phase record
+and cost reports. No prior spend is erased. Budget exhaustion and invalid output
+are not retried. An already-frozen submission is never submitted again. When the
+attempt bound is reached, the phase ends with infrastructure failure.
+
+Interrupted-process resume keeps its existing conservative accounting and
+rollback behavior. Interrupted attempts count toward `maxSessionAttempts`: if
+attempt 1 is interrupted, resumed attempt 2 has no further automatic session
+retry under the default limit. A durable infrastructure-failed attempt without a `phase_end`
+is eligible for the same bounded retry after restart; completed historical phase
+ends remain final.

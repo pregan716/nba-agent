@@ -287,7 +287,14 @@ export class Runner {
       this.record
         .events("session_end", scope)
         .find((e) => e.data.attempt === prior.data.attempt);
-    if (durableEnd && durableEnd.data.limit !== "interrupted") {
+    const retry =
+      prior &&
+      durableEnd?.data.limit !== "interrupted" &&
+      durableEnd?.data.status === "infrastructure_failure" &&
+      prior.data.attempt <
+        (this.manifest.config.recovery?.maxSessionAttempts ?? 2) &&
+      !(phase === "pregame" && frozen);
+    if (durableEnd && durableEnd.data.limit !== "interrupted" && !retry) {
       this.record.append("phase_end", scope, {
         status: durableEnd.data.status,
         limit: durableEnd.data.limit,
@@ -295,7 +302,13 @@ export class Runner {
       return;
     }
     let before: Snapshot;
-    if (
+    if (retry) {
+      before = prior.data.before;
+      restore(this.root, this.workspace, before);
+      this.record.append("attempt_budget_reset", scope, {
+        attempt: prior.data.attempt + 1,
+      });
+    } else if (
       prior &&
       !this.record
         .events("session_end", scope)
@@ -401,8 +414,8 @@ export class Runner {
     let pending: Promise<unknown> | undefined;
     let status: Status = "completed",
       limit: Limit = null;
-    const previousElapsed = this.record
-      .events("session_end", scope)
+    const previousElapsed = budget
+      .events("session_end")
       .reduce((n, e) => n + (e.data.elapsedMs ?? 0), 0);
     const remainingMs = Math.max(
       0,
@@ -712,10 +725,10 @@ export class Runner {
         phase === "postgame" ||
         !this.record.events("submission", game.gameId).length
       ) {
-        const last = this.record.events("limit", scope).at(-1);
-        const modelFailure = this.record
-          .events("model_error", scope)
-          .some((e) => !e.data.limit);
+        const last = budget.events("limit").at(-1);
+        const modelFailure = budget
+          .events("model_error")
+          .some((e) => !e.data.limit && e.data.terminal !== false);
         status = last
           ? last.data.limit === "submission_attempts"
             ? "invalid_output"
@@ -750,8 +763,7 @@ export class Runner {
           : e instanceof SessionError && e.code === "validation_failed"
             ? "submission_attempts"
             : e instanceof SessionError && e.code === "budget_exhausted"
-              ? (this.record.events("limit", scope).at(-1)?.data.limit ??
-                "tool_calls")
+              ? (budget.events("limit").at(-1)?.data.limit ?? "tool_calls")
               : "infrastructure";
       this.record.append("session_error", scope, {
         attempt,
@@ -788,6 +800,17 @@ export class Runner {
       usage: budget.totals(),
       elapsedMs: Date.now() - started,
     });
+    if (
+      status === "infrastructure_failure" &&
+      attempt < (this.manifest.config.recovery?.maxSessionAttempts ?? 2) &&
+      !(
+        phase === "pregame" &&
+        this.record.events("submission", game.gameId).length
+      )
+    ) {
+      await this.session(game, phase, harness);
+      return;
+    }
     this.record.append("phase_end", scope, { status, limit });
   }
   close(): void {

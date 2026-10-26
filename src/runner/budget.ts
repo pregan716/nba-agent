@@ -78,10 +78,15 @@ export class Budget {
   ) {
     this.caps = config.budget[phase];
   }
+  events(kind?: string) {
+    const since =
+      this.record.events("attempt_budget_reset", this.scope).at(-1)?.seq ?? 0;
+    return this.record.events(kind, this.scope).filter((e) => e.seq > since);
+  }
   get stage(): Phase {
     return this.phase === "postgame"
       ? "postgame"
-      : this.record.events("commit", this.scope).length
+      : this.events("commit").length
         ? "commit"
         : "pregame";
   }
@@ -90,7 +95,7 @@ export class Budget {
     if (this.stage !== "commit") this.record.append("commit", this.scope, {});
   }
   totals() {
-    const events = this.record.events(undefined, this.scope);
+    const events = this.events();
     let tokens = 0,
       compute = 0,
       tools = 0;

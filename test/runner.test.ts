@@ -1,3 +1,4 @@
+import { retryModel, modelError } from "../src/runner/retry.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -259,10 +260,9 @@ test("failed model transport is charged conservatively and cannot spend again co
     );
     assert.equal(budget.totals().tokens, 81);
     assert.equal(s.runner.record.events("settlement").length, 0);
-    assert.ok(
-      !JSON.stringify(s.runner.record.events()).includes(
-        "private provider details",
-      ),
+    assert.equal(
+      s.runner.record.events("model_error")[0].data.message,
+      "private provider details",
     );
   } finally {
     await s.proxy.revoke(endpoint);
@@ -1434,4 +1434,330 @@ test("cache reads count at the budget profile's weight: charge, preflight estima
   } finally {
     await s.close();
   }
+});
+
+test("proxy retries transient failures in one reservation, records diagnostics and preserves legacy hashes", async () => {
+  const config = fixtureConfig();
+  const legacy = manifest(config, games);
+  assert.deepEqual(manifest(legacy.config, games), legacy);
+  config.recovery = { model: { baseMs: 1, capMs: 2, totalMs: 1000 } };
+  assert.equal(manifest(config, games).harnessVersion, legacy.harnessVersion);
+  let calls = 0;
+  const s = await setup(config, {
+    count: provider.count,
+    create: async () => {
+      if (++calls <= 2)
+        throw Object.assign(new Error("overloaded api_key=secret-value"), {
+          status: 529,
+          error: { type: "overloaded_error" },
+          headers: new Headers({ "request-id": "req-123" }),
+        });
+      return structuredClone(sdkMessage);
+    },
+  });
+  const b = new Budget(s.runner.record, "g1:pregame", s.m.config, "pregame");
+  const endpoint = s.proxy.issue(b, new AbortController().signal);
+  try {
+    const client = new Anthropic({ ...endpoint, maxRetries: 0 });
+    await client.messages.create({ model: "x", messages: [], max_tokens: 60 });
+    assert.equal(calls, 3);
+    assert.equal(s.runner.record.events("reservation").length, 1);
+    assert.equal(s.runner.record.events("settlement").length, 1);
+    const errors = s.runner.record.events("model_error");
+    assert.equal(errors.length, 2);
+    assert.ok(
+      errors.every(
+        (e) =>
+          e.data.status === 529 &&
+          e.data.type === "overloaded_error" &&
+          e.data.requestId === "req-123" &&
+          e.data.terminal === false,
+      ),
+    );
+    assert.ok(!JSON.stringify(errors).includes("secret-value"));
+    assert.equal(s.runner.record.events("model_response")[0].data.retries, 2);
+    assert.equal(b.totals().tokens, 48);
+  } finally {
+    await s.proxy.revoke(endpoint);
+    await s.close();
+  }
+});
+
+test("proxy does not retry provider limits or client errors", async () => {
+  for (const status of [400, 401, 403, 404, 413, 422, 429]) {
+    const c = fixtureConfig();
+    c.recovery = { model: { baseMs: 1, capMs: 2, totalMs: 30 } };
+    let calls = 0;
+    const s = await setup(c, {
+      count: provider.count,
+      create: async () => {
+        calls++;
+        throw Object.assign(new Error("provider rejected"), { status });
+      },
+    });
+    const b = new Budget(s.runner.record, "g1:pregame", s.m.config, "pregame");
+    const endpoint = s.proxy.issue(b, new AbortController().signal);
+    try {
+      const client = new Anthropic({ ...endpoint, maxRetries: 0 });
+      await assert.rejects(
+        client.messages.create({ model: "x", messages: [], max_tokens: 40 }),
+        /Model request failed/,
+      );
+      assert.equal(calls, 1);
+      assert.equal(b.totals().tokens, 81);
+      assert.equal(s.runner.record.events("model_error").length, 1);
+    } finally {
+      await s.proxy.revoke(endpoint);
+      await s.close();
+    }
+  }
+});
+
+test("infrastructure retry rolls back workspace and starts fresh caps while retaining failed charges", async () => {
+  const c = fixtureConfig();
+  c.budget.pregame.tokens = 110;
+  c.budget.submissionReserve = 20;
+  let calls = 0;
+  const s = await setup(
+    c,
+    {
+      count: provider.count,
+      create: async () => {
+        if (++calls === 1)
+          throw Object.assign(new Error("upstream failed"), { status: 400 });
+        return structuredClone(sdkMessage);
+      },
+    },
+    environment,
+    [games[0]],
+  );
+  let attempts = 0;
+  try {
+    await s.runner.run(async (handles) => {
+      const ctx = (await handles.session.call("context", {})) as any;
+      if (ctx.phase !== "postgame") {
+        attempts++;
+        if (attempts === 1)
+          writeFileSync(join(s.runner.workspace, "partial"), "discard me");
+        else
+          assert.throws(() =>
+            readFileSync(join(s.runner.workspace, "partial")),
+          );
+        const b = new Budget(
+          s.runner.record,
+          "g1:pregame",
+          s.m.config,
+          "pregame",
+        );
+        assert.equal(b.remaining().tokens, 90);
+        assert.equal(b.stage, "pregame");
+        const client = new Anthropic({ ...handles.model, maxRetries: 0 });
+        await client.messages.create({
+          model: "x",
+          messages: [],
+          max_tokens: 40,
+        });
+      }
+      await harness(handles);
+    });
+    const ends = s.runner.record.events("session_end", "g1:pregame");
+    assert.deepEqual(
+      ends.map((e) => e.data.status),
+      ["infrastructure_failure", "completed"],
+    );
+    assert.deepEqual(
+      ends.map((e) => e.data.usage.tokens),
+      [81, 48],
+    );
+    assert.equal(s.runner.record.events("submission", "g1").length, 1);
+    assert.equal(
+      s.runner.record.events("phase_end", "g1:pregame")[0].data.status,
+      "completed",
+    );
+  } finally {
+    await s.close();
+  }
+});
+
+test("infrastructure session attempts stop at default bound", async () => {
+  const s = await setup(fixtureConfig(), provider, environment, [games[0]]);
+  try {
+    await s.runner.run(async () => {
+      throw Error("infrastructure down");
+    });
+    assert.equal(
+      s.runner.record.events("session_start", "g1:pregame").length,
+      2,
+    );
+    assert.equal(
+      s.runner.record.events("phase_end", "g1:pregame")[0].data.status,
+      "infrastructure_failure",
+    );
+  } finally {
+    await s.close();
+  }
+});
+
+test("retry window refuses another attempt after a slow failure; cancellation starts no call", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { retries: 10, baseMs: 1, capMs: 1, totalMs: 30 } };
+  let calls = 0;
+  const errors: any[] = [];
+  await assert.rejects(
+    retryModel(
+      async () => {
+        calls++;
+        if (calls === 1)
+          throw Object.assign(new Error("socket closed"), {
+            code: "ECONNRESET",
+          });
+        await new Promise((resolve) => setTimeout(resolve, 60));
+        throw Object.assign(new Error("upstream unavailable"), { status: 503 });
+      },
+      new AbortController().signal,
+      c,
+      (e, a, t) => errors.push({ e, a, t }),
+    ),
+    /upstream unavailable/,
+  );
+  assert.equal(calls, 2);
+  assert.equal(errors.length, 2);
+  assert.equal(errors[1].t, true);
+  const aborted = new AbortController();
+  aborted.abort(new Error("cancelled"));
+  await assert.rejects(
+    retryModel(
+      async () => {
+        assert.fail("no provider call after abort");
+      },
+      aborted.signal,
+      c,
+      () => {},
+    ),
+    /cancelled/,
+  );
+});
+
+test("SDK connection errors without a socket code are retryable", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { baseMs: 1, totalMs: 1000 } };
+  let calls = 0;
+  const result = await retryModel(
+    async () => {
+      if (++calls === 1) throw new Anthropic.APIConnectionError({});
+      return "ok";
+    },
+    new AbortController().signal,
+    c,
+    () => {},
+  );
+  assert.deepEqual(result, { value: "ok", retries: 1 });
+});
+
+test("recovered postgame model errors do not trigger a session re-attempt", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { baseMs: 1, totalMs: 1000 } };
+  let calls = 0;
+  const s = await setup(
+    c,
+    {
+      count: provider.count,
+      create: async () => {
+        if (++calls === 1)
+          throw Object.assign(new Error("overloaded"), { status: 529 });
+        return structuredClone(sdkMessage);
+      },
+    },
+    environment,
+    [games[0]],
+  );
+  try {
+    await s.runner.run(async (handles) => {
+      const ctx = (await handles.session.call("context", {})) as any;
+      if (ctx.phase === "postgame") {
+        const client = new Anthropic({ ...handles.model, maxRetries: 0 });
+        await client.messages.create({
+          model: "x",
+          messages: [],
+          max_tokens: 40,
+        });
+      }
+      await harness(handles);
+    });
+    assert.equal(
+      s.runner.record.events("session_start", "g1:postgame").length,
+      1,
+    );
+    assert.equal(
+      s.runner.record.events("phase_end", "g1:postgame")[0].data.status,
+      "completed",
+    );
+  } finally {
+    await s.close();
+  }
+});
+
+test("upstream diagnostics redact quoted credential fields and SDK keys", () => {
+  const error = modelError(
+    new Error(
+      'failed {"api_key":"sensitive-value"} Authorization: Bearer opaque-token sk-ant-private-key',
+    ),
+  );
+  assert.ok(!JSON.stringify(error).includes("sensitive-value"));
+  assert.ok(!JSON.stringify(error).includes("opaque-token"));
+  assert.ok(!JSON.stringify(error).includes("sk-ant-private-key"));
+});
+
+test("healthy generation outlives the retry window and settles once", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { totalMs: 10, baseMs: 1 } };
+  let calls = 0;
+  const s = await setup(c, {
+    count: provider.count,
+    create: async () => {
+      calls++;
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      return structuredClone(sdkMessage);
+    },
+  });
+  const b = new Budget(s.runner.record, "g1:pregame", s.m.config, "pregame");
+  const endpoint = s.proxy.issue(b, new AbortController().signal);
+  try {
+    await new Anthropic({ ...endpoint, maxRetries: 0 }).messages.create({
+      model: "x",
+      messages: [],
+      max_tokens: 60,
+    });
+    assert.equal(calls, 1);
+    assert.equal(s.runner.record.events("model_error").length, 0);
+    assert.equal(s.runner.record.events("model_response")[0].data.retries, 0);
+    assert.equal(s.runner.record.events("reservation").length, 1);
+    assert.equal(s.runner.record.events("settlement").length, 1);
+    assert.equal(b.totals().tokens, 48);
+  } finally {
+    await s.proxy.revoke(endpoint);
+    await s.close();
+  }
+});
+
+test("session cancellation still interrupts an in-flight model call", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { totalMs: 1 } };
+  const controller = new AbortController();
+  let started!: () => void;
+  const ready = new Promise<void>((resolve) => {
+    started = resolve;
+  });
+  const pending = retryModel(
+    async () => {
+      started();
+      return new Promise(() => {});
+    },
+    controller.signal,
+    c,
+    () => {},
+  );
+  await ready;
+  controller.abort(new Error("session wall clock"));
+  await assert.rejects(pending, /session wall clock/);
 });
