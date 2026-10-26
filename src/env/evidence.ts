@@ -14,7 +14,16 @@ import {
 
 export const evidenceId = (r: RecordEnvelope) =>
   `evidence:${digest([r.source, r.id, r.provenance.manifestSha256])}`;
-const words = (s: string) => s.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+const exactWords = (s: string) =>
+  s.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+const words = (s: string) =>
+  exactWords(s.normalize("NFD").replace(/\p{M}/gu, ""));
+// Function words add noise to OR retrieval; preserve basketball terms like "out".
+const stopwords = new Set(
+  "a an the is are was were be been being am to of for in on at by with and or but as it its this that these those".split(
+    " ",
+  ),
+);
 const nullable = (value: unknown) => (typeof value === "string" ? value : null);
 const cmp = (a: RecordEnvelope, b: RecordEnvelope) =>
   Temporal.Instant.compare(a.availableAt, b.availableAt) ||
@@ -28,7 +37,12 @@ export class EvidenceIndex {
   #players = new Map<string, Set<string>>();
   #strongPlayers = new Map<string, Set<string>>();
   #chunks = new Map<string, string[]>();
-  #tokens = new Map<string, string[]>();
+  #documents = new Map<
+    string,
+    { counts: Map<string, number>; length: number }
+  >();
+  #df = new Map<string, number>();
+  #averageLength = 1;
   constructor(
     records: RecordEnvelope[],
     ids: Identities,
@@ -161,7 +175,19 @@ export class EvidenceIndex {
         ...(result.segments ?? []).map((s) => s.text),
       ];
       this.#chunks.set(result.evidence_id, chunks);
-      this.#tokens.set(result.evidence_id, chunks.flatMap(words).map(stemmer));
+      const tokens = chunks
+        .flatMap(words)
+        .filter((t) => !stopwords.has(t))
+        .map(stemmer);
+      const counts = new Map<string, number>();
+      for (const token of tokens)
+        counts.set(token, (counts.get(token) ?? 0) + 1);
+      for (const token of counts.keys())
+        this.#df.set(token, (this.#df.get(token) ?? 0) + 1);
+      this.#documents.set(result.evidence_id, {
+        counts,
+        length: tokens.length,
+      });
       const tagged = new Set<string>([
         ...(typeof d.player_id === "string" ? [d.player_id] : []),
         ...(Array.isArray(d.player_ids)
@@ -175,10 +201,12 @@ export class EvidenceIndex {
       );
       // These releases generally provide text rather than canonical mention tags.
       // Use exact name tokens as the fallback, never stems (e.g. Brown/browning).
-      if (!tagged.size)
-        for (const id of this.#resolveNames(chunks.join(" "))) tagged.add(id);
+      for (const id of this.#resolveNames(chunks.join(" "))) tagged.add(id);
       this.#players.set(result.evidence_id, tagged);
     }
+    this.#averageLength =
+      [...this.#documents.values()].reduce((n, d) => n + d.length, 0) /
+        (this.#documents.size || 1) || 1;
   }
   all(): FetchEvidenceResult[] {
     return structuredClone([...this.#records.values()]);
@@ -212,7 +240,8 @@ export class EvidenceIndex {
     // Prefer the starters for lineups; keep exact-token snippet anchors otherwise.
     const chunk = r.starters
       ? chunks[0]
-      : chunks.find((c) => words(c).some((w) => terms.includes(w))) || r.text;
+      : chunks.find((c) => exactWords(c).some((w) => terms.includes(w))) ||
+        r.text;
     const first =
       [...chunk.matchAll(/[\p{L}\p{N}]+/gu)].find((m) =>
         terms.includes(m[0].toLowerCase()),
@@ -251,7 +280,13 @@ export class EvidenceIndex {
     search?: SearchEvidenceInput,
   ): SearchEvidenceResult {
     const terms = [...new Set(words(search?.query ?? ""))].sort();
-    const stems = [...new Set(terms.map(stemmer))];
+    const stems = [
+      ...new Set(terms.filter((t) => !stopwords.has(t)).map(stemmer)),
+    ];
+    const snippetTerms = [...new Set(exactWords(search?.query ?? ""))].sort();
+    const fullEntities = search
+      ? this.#resolveNames(search.query, true)
+      : new Set<string>();
     const entities = search
       ? this.#resolveNames(search.query)
       : new Set<string>();
@@ -263,16 +298,7 @@ export class EvidenceIndex {
         ? input.to
         : cutoff;
     const all = [...this.#records.values()];
-    // BM25 statistics come from the complete eligible index, never the future corpus.
-    const average =
-      [...this.#tokens.values()].reduce((n, ts) => n + ts.length, 0) /
-        (all.length || 1) || 1;
-    const df = new Map(
-      stems.map((t) => [
-        t,
-        [...this.#tokens.values()].filter((ts) => ts.includes(t)).length,
-      ]),
-    );
+    // BM25 statistics were computed once from the complete eligible index.
     const ranked = all
       .flatMap((r) => {
         if (
@@ -285,19 +311,24 @@ export class EvidenceIndex {
         const players = this.#players.get(r.evidence_id)!;
         if (search?.player_id && !players.has(search.player_id)) return [];
         const entityMatch = [...entities].some((id) => players.has(id));
-        if (entities.size && !entityMatch) return [];
-        const tokens = this.#tokens.get(r.evidence_id)!;
+        if (
+          fullEntities.size &&
+          ![...fullEntities].some((id) => players.has(id))
+        )
+          return [];
+        const document = this.#documents.get(r.evidence_id)!;
         let score = 0;
         for (const term of stems) {
-          const tf = tokens.filter((t) => t === term).length;
+          const tf = document.counts.get(term) ?? 0;
           if (!tf) continue;
-          const frequency = df.get(term)!;
+          const frequency = this.#df.get(term)!;
           const idf = Math.log(
             1 + (all.length - frequency + 0.5) / (frequency + 0.5),
           );
           score +=
             (idf * tf * 2.2) /
-            (tf + 1.2 * (0.25 + (0.75 * tokens.length) / average));
+            (tf +
+              1.2 * (0.25 + (0.75 * document.length) / this.#averageLength));
         }
         if (search && !score && !entityMatch) return [];
         return [
@@ -309,7 +340,7 @@ export class EvidenceIndex {
             )
               ? 1
               : 0,
-            snippet: this.#snippet(r, terms),
+            snippet: this.#snippet(r, snippetTerms),
           },
         ];
       })
@@ -330,6 +361,8 @@ export class EvidenceIndex {
       terms,
       search?.player_id ?? null,
       [...entities].sort(),
+      [...fullEntities].sort(),
+      snippetTerms,
       sources,
       input.from ?? null,
       to,

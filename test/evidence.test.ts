@@ -249,7 +249,7 @@ test("opening player profiles supply names absent from aliases; future profiles 
     post("tag", "Ankle improving", before, { player_id: "payton" }),
     post("noise", "Other ankle news"),
   ];
-  const query = { query: "Pritchard ankle" };
+  const query = { query: "Payton Pritchard ankle" };
   const result = await session(f).search_evidence(query);
   assert.equal(result.total, 1);
   assert.equal(result.items[0].snippet, "Ankle improving");
@@ -274,4 +274,107 @@ test("persisted scoped injury-name identities remain searchable", async () => {
     (await session(f).search_evidence({ query: "Jaylin Williams" })).total,
     1,
   );
+});
+
+test("common-word surnames boost players without hiding ordinary lexical matches", async () => {
+  const f = corpus();
+  for (const [name, id] of [
+    ["Quinten Post", "post"],
+    ["LaMelo Ball", "ball"],
+    ["Jrue Holiday", "holiday"],
+  ])
+    player(f, name, id);
+  f.records.posts = [
+    post(
+      "rotation",
+      "Mazzulla tightened the rotation, more minutes for Hauser",
+    ),
+    post("tagged", "Ready tonight", before, { player_id: "post" }),
+  ];
+  const s = session(f);
+  for (const query of [
+    "rotation",
+    "post rotation",
+    "holiday rotation",
+    "ball rotation",
+  ])
+    assert.ok(
+      (await s.search_evidence({ query })).items.some((h) =>
+        h.snippet.includes("Mazzulla"),
+      ),
+      query,
+    );
+  const boosted = await s.search_evidence({ query: "post rotation" });
+  assert.equal(boosted.items[0].snippet, "Ready tonight");
+  assert.deepEqual(
+    (await s.search_evidence({ query: "Quinten Post rotation" })).items.map(
+      (h) => h.snippet,
+    ),
+    ["Ready tonight"],
+  );
+  assert.deepEqual(
+    (await s.search_evidence({ query: "rotation", player_id: "holiday" }))
+      .items,
+    [],
+  );
+});
+
+test("tagged records also resolve other players named in their text", async () => {
+  const f = corpus();
+  player(f, "Derrick White", "dw");
+  player(f, "Jaylen Brown", "jb");
+  f.records.posts = [
+    post("both", "Derrick White and Jaylen Brown both out tonight", before, {
+      player_ids: ["dw"],
+    }),
+  ];
+  const s = session(f);
+  for (const query of ["Jaylen Brown", "Derrick White"])
+    assert.equal((await s.search_evidence({ query })).total, 1);
+  assert.equal(
+    (await s.search_evidence({ query: "out", player_id: "jb" })).total,
+    1,
+  );
+});
+
+test("accented and ASCII names retrieve the same entities without rewriting evidence", async () => {
+  const f = corpus();
+  player(f, "Hugo González", "hugo");
+  f.records.posts = [
+    post("ascii", "Hugo Gonzalez available"),
+    post("accent", "Hugo González available"),
+  ];
+  const s = session(f);
+  for (const query of [
+    "González",
+    "Gonzalez",
+    "Hugo González",
+    "Hugo Gonzalez",
+    "Hugo Gonza\u0301lez",
+  ]) {
+    const result = await s.search_evidence({ query });
+    assert.equal(result.total, 2, query);
+    assert.deepEqual(
+      new Set(result.items.map((h) => h.snippet)),
+      new Set(["Hugo Gonzalez available", "Hugo González available"]),
+    );
+    for (const hit of result.items)
+      assert.equal(
+        (await s.fetch_evidence({ evidence_id: hit.evidence_id })).text,
+        hit.snippet,
+      );
+  }
+});
+
+test("OR search ignores function words and preserves exact snippet anchors", async () => {
+  const f = corpus();
+  f.records.posts = [
+    post("noise", "the team is fine"),
+    post("match", "Padding ".repeat(40) + "Tatum questionable"),
+  ];
+  const s = session(f);
+  const result = await s.search_evidence({ query: "is tatum questionable" });
+  assert.equal(result.total, 1);
+  assert.match(result.items[0].snippet, /^….*Tatum questionable$/);
+  assert.equal((await s.search_evidence({ query: "is the and" })).total, 0);
 });
