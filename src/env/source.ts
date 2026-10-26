@@ -1,3 +1,4 @@
+import { historyExportCacheDirectory } from "./cache.js";
 import { readFile } from "node:fs/promises";
 import type { Corpus } from "../data/corpus.js";
 import type { RecordEnvelope } from "../data/contracts.js";
@@ -138,7 +139,7 @@ export async function corpusSource(
       );
   }
   return {
-    exportCacheDirectory: ".cache/history-export-v2",
+    exportCacheDirectory: historyExportCacheDirectory(),
     layer,
     identities,
     teams,
