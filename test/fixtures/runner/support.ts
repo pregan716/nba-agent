@@ -1,3 +1,4 @@
+import { emptyGameLines } from "../../../src/questions/game-lines.js";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Message } from "@anthropic-ai/sdk/resources/messages";
@@ -143,6 +144,13 @@ export const environment: EnvironmentFactory = async (
   return {
     async context(budget) {
       return {
+        game_lines: {
+          ...emptyGameLines(),
+          game_id: context.game.gameId,
+          available_at: context.game.scheduledStart,
+          snapshot_kind: "scheduled_start",
+          provenance: null,
+        },
         team: {
           team_id: "1610612738",
           abbreviation: "BOS",

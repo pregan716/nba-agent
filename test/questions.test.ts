@@ -287,8 +287,20 @@ test("loader verifies all source bytes and published summary totals", async () =
       ),
       [l.summaryRef.key]: Buffer.from(JSON.stringify(l.summary)),
     };
+  const quoteKey = "derived/v3/quotes.ndjson.gz";
+  objects[quoteKey] = gzipSync(Buffer.from(""));
+  const sourceKey = "derived/v3/_MANIFEST.json";
+  objects[sourceKey] = Buffer.from(
+    JSON.stringify({
+      objects: [{ key: quoteKey, sha256: sha256(objects[quoteKey]) }],
+    }),
+  );
   const manifest = Buffer.from(
     JSON.stringify({
+      sourceManifest: {
+        manifest: sourceKey,
+        sha256: sha256(objects[sourceKey]),
+      },
       objects: Object.entries(objects).map(([key, b]) => ({
         key,
         sha256: sha256(b),
@@ -314,6 +326,8 @@ test("loader verifies all source bytes and published summary totals", async () =
   const loaded = await loadQuestionLayer(adapter, ids);
   assert.equal(buildQuestionSet(game, loaded).questions.length, 1);
   for (const key of [
+    quoteKey,
+    sourceKey,
     l.summaryRef.key,
     l.bookLines.key,
     l.methodology.key,

@@ -357,6 +357,7 @@ test("postgame exports release history at the shared boundary and disabled capab
       await limited.exportTo(join(s.root, "limited"), signal()),
     );
     assert.deepEqual(Object.keys(data).sort(), [
+      "game_lines",
       "questions",
       "released_results",
       "session",

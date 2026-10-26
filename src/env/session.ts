@@ -1,3 +1,5 @@
+import { emptyGameLines } from "../questions/game-lines.js";
+import type { GameLines } from "./contract.js";
 import { logSkill } from "../evaluation/scoring.js";
 import { DockerSandbox } from "./sandbox.js";
 import {
@@ -171,6 +173,48 @@ export class Session {
       throw Error("Session game differs from pinned schedule");
     return game;
   }
+  #gameLines(gameId: string): GameLines[] {
+    const layer = this.#source.layer.gameLines;
+    if (!layer) return [];
+    return layer.rows
+      .filter(
+        (r) =>
+          compare(r.available_at, this.#cutoff) <= 0 &&
+          this.#source.identities.resolve("game", "espn", r.espn_event_id) ===
+            gameId,
+      )
+      .map((r) =>
+        structuredClone({
+          game_id: gameId,
+          available_at: r.available_at,
+          snapshot_kind: r.snapshot_kind,
+          celtics_spread: r.celtics_spread,
+          spread_book_count: r.spread_book_count,
+          p_celtics_cover: r.p_celtics_cover,
+          game_total: r.game_total,
+          total_book_count: r.total_book_count,
+          celtics_implied_total: r.celtics_implied_total,
+          opponent_implied_total: r.opponent_implied_total,
+          implied_total_book_count: r.implied_total_book_count,
+          provenance: layer.provenance,
+        }),
+      );
+  }
+  #openingGameLines(): GameLines {
+    return (
+      this.#gameLines(this.#game.gameId).find(
+        (r) =>
+          r.snapshot_kind === "scheduled_start" &&
+          compare(r.available_at, this.#game.scheduledStart) === 0,
+      ) ?? {
+        ...emptyGameLines(),
+        game_id: this.#game.gameId,
+        available_at: this.#game.scheduledStart,
+        snapshot_kind: "scheduled_start",
+        provenance: null,
+      }
+    );
+  }
   async context(budget: BudgetRemaining): Promise<ContextResult> {
     this.#check("context", {});
     const game = await this.#current(),
@@ -178,6 +222,7 @@ export class Session {
     const { horizon, revision, process, windowGames } =
       this.#config.profile.memory;
     return {
+      game_lines: this.#openingGameLines(),
       team: this.#team(BOS),
       season: "2025-26",
       game: {
@@ -636,7 +681,7 @@ export class Session {
         g.id === id &&
         compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
     );
-    if (!game) return { observations: [], settlements: [] };
+    if (!game) return { observations: [], settlements: [], game_lines: [] };
     const profiles =
       known?.profiles ??
       this.#eligible(await this.#source.reference("player_profiles"));
@@ -708,7 +753,7 @@ export class Session {
         });
       }
     }
-    return { observations, settlements };
+    return { observations, settlements, game_lines: this.#gameLines(id) };
   }
   async validateSubmission(value: unknown) {
     if (this.#closed || this.#phase !== "commit")
@@ -909,7 +954,14 @@ export class Session {
       yield { table: "injury_team_snapshots", rows: result.team_snapshots };
       yield { table: "schedule", rows: result.schedule };
     }
+    if (!enabled.includes("odds_history"))
+      yield { table: "game_lines", rows: [this.#openingGameLines()] };
     if (enabled.includes("odds_history")) {
+      yield { table: "game_lines", rows: [] };
+      for (const game of games.filter(
+        (g) => compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
+      ))
+        yield { table: "game_lines", rows: this.#gameLines(game.id) };
       yield { table: "odds_history", rows: [] };
       yield { table: "odds_settlements", rows: [] };
       const oddsByGame = new Map<string, RecordEnvelope[]>();

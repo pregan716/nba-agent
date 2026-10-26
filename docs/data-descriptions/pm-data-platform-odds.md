@@ -159,3 +159,30 @@ Calculation logic and tests are in `src/backfill/odds-api-celtics-consensus.ts` 
 `src/backfill/odds-api-celtics-consensus.test.ts`. The publication script verifies source and output hashes.
 Manifests trace consensus → combined v3 quotes → the enriched original archive and scheduled-start supplement.
 Use them to pin a reproducible input version; `README.md` is a separate navigation guide.
+
+## Agent game-line adaptation (`game-lines-v1`)
+
+The published consensus remains player-prop-only. The agent follows its pinned
+`sourceManifest` reference to `derived/v3/_MANIFEST.json` and verifies the quote
+object through that manifest before building game-line context. No source objects
+are modified and no live odds calls are made.
+
+For spreads and each team's total, pairing, proportional de-vig, DFS exclusion,
+main-line selection and tie rules follow the pinned prop methodology above.
+Spread pairs use opposing teams at opposite handicaps; team totals use Over/Under
+at the same line. Duplicate conflicts, incomplete pairs and mismatched actual
+snapshot/update timestamps are excluded. Each book gets one main-line vote.
+
+There is no `totals` market in this release. A book's derived game total is the
+sum of its independently selected main team-total lines for both teams. Select
+an offered sum nearest the median of those book sums, breaking ties by most
+votes then lower sum; count books at that exact sum. No total probability is
+inferred from marginal team probabilities. Spread cover probabilities from
+integer handicaps are conditional on no push, as with integer prop thresholds.
+Implied Celtics points are
+`(game_total - celtics_spread) / 2`; opponent points use the plus sign. Their book
+count is the intersection of spread and total contributors. Every value needs
+at least one contributing book; missing spread or total gives null implied
+team totals. These are market context estimates, not expected-score guarantees.
+The adaptation definition/hash is in `src/questions/game-lines.ts`; source,
+methodology and manifest hashes accompany each public observation.

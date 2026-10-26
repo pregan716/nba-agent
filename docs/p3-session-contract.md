@@ -61,12 +61,12 @@ Result types in `contract.ts`, briefly:
 
 | Tool | Result carries | Result never carries |
 | --- | --- | --- |
-| `context` | team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, enabled capability groups, memory mode, dataset versions | run id, paths, anything about other replicates |
+| `context` | scheduled-start `game_lines` (spread, derived total, implied team totals, counts, provenance), team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, enabled capability groups, memory mode, dataset versions | run id, paths, anything about other replicates |
 | `search_evidence` | hits with `evidence_id`, source, availability time, author, title, snippet; `total`, `next_cursor` | relevance scores, record provenance |
 | `fetch_evidence` | full text as published, segments with speaker-cluster labels, announced starters, references, explicit artifact provenance (SPO-788) | audio, speaker identities, alternates, box-score corrections |
 | `query_game_history` | published rows plus a `ColumnDefinition` per column, and `unavailable` games with reason; the six player-reference tables (`PLAYER_REFERENCE_TABLES`) by `player_id` or `team_id` | any 2025–26 game before its release; invalid-coverage products as data; the player-reference `archive/` |
 | `read_schedule_and_injuries` | schedule entries; injury rows with printed time, status, reason, resolved `player_id` or null; team snapshots as `listed` / `not_yet_submitted` / `unknown` | evidence register, corroborations, assessment times, a healthy reading of an absent team |
-| `query_odds_history` | observations (`available_at`, player, stat, line, `p_over`) and settlements for released games | per-book quotes, contributing books, dispersion, DFS lines, `snapshot_at`, `p_under` |
+| `query_odds_history` | `game_lines` observations for the selected game, observations (`available_at`, player, stat, line, `p_over`) and settlements for released games | per-book quotes, contributing books, dispersion, DFS lines, `snapshot_at`, `p_under` |
 | `list_questions` | exactly the P2 `agentQuestion` projection | `p_under`, provenance, exclusions |
 | `execute_code` | stdout, stderr, exit status, compute seconds, truncation flag, limit | host paths, container ids |
 | `workspace_*` | entries, content, byte counts | anything outside the workspace |
@@ -134,3 +134,25 @@ The P4 runner routes `context`, `begin_commit`, `submit` and `execute_code` itse
 - P3f implements `execute_code` and the `/data`, `/scratch`, `/workspace` mounts the tool description promises.
 
 SPO-788 adds `FetchEvidenceResult.provenance`: `manifest_sha256` and an `objects` list containing only `bucket`, `key` and `sha256`. This supplies the issue's citation provenance without exposing raw envelopes, retrieval metadata, relevance judgments or credentials. Transcript provenance includes both the normalized segments artifact and the readable-text artifact. Future and nonexistent IDs both use P3a's `not_found` error; this supersedes SPO-788's earlier `cutoff_refused` wording to avoid an existence oracle.
+
+### Game-line context (SPO-829)
+
+Every opening context includes `game_lines` for the current game's scheduled-start
+snapshot, in both pregame and postgame and all memory modes. Fields are
+`celtics_spread` (negative means favoured), `p_celtics_cover`, `spread_book_count`,
+`game_total`, `total_book_count`, `celtics_implied_total`,
+`opponent_implied_total`, and `implied_total_book_count`, plus `game_id`,
+`available_at`, `snapshot_kind`, and provenance. Missing or insufficient markets
+produce null values and zero counts, never zeros masquerading as market lines.
+The total is derived from two team-total quotes, not a directly quoted total.
+
+`query_odds_history.game_lines` includes the selected game's eligible snapshots;
+player/stat filters apply only to player props. The sandbox `game_lines` table
+mirrors those projections across current and prior games when odds history is
+enabled; without that capability it includes only the opening-context row.
+Observations use `requested_at <= cutoff`; future observations and
+future games are excluded. These context markets never create scored questions.
+Provenance contains the parent layer manifest, chained source manifest, quotes
+object, pinned proportional methodology, and game-line adaptation hash. The
+`gameLines` data-source version pins that adaptation. The updated tool descriptions
+change the harness version, so existing manifests must not be reused.

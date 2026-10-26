@@ -91,6 +91,16 @@ export class Release {
       add(manifest.rows.objectKey, manifest.rows.sha256);
     return new Release(root, manifest, store, objects, { ...rowCacheLimits });
   }
+  /** Follow the source-manifest hash pinned by this release, never a live latest pointer. */
+  async sourceRelease(): Promise<Release> {
+    const source = this.manifest.sourceManifest;
+    if (!source?.manifest || !source.sha256)
+      throw Error("Missing pinned source manifest");
+    return Release.open(
+      { bucket: this.root.bucket, key: source.manifest, sha256: source.sha256 },
+      this.store,
+    );
+  }
   ref(key: string): ObjectRef {
     const ref = this.objects.get(key);
     if (!ref) throw new Error(`Object not in manifest: ${key}`);
