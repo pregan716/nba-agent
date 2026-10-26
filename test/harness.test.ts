@@ -49,7 +49,28 @@ const thinking = (s: string) => ({
 });
 const textOf = (request: Request, index = 0) => {
   const c = request.messages[index].content;
-  return typeof c === "string" ? c : JSON.stringify(c);
+  return typeof c === "string"
+    ? c
+    : (c as any[])
+        .map((b) =>
+          typeof b.text === "string"
+            ? b.text
+            : typeof b.content === "string"
+              ? b.content
+              : JSON.stringify(b),
+        )
+        .join("\n");
+};
+/** Every `cache_control` marker in a request, as a path from the request root. */
+const cacheMarkers = (value: unknown, path = "$"): string[] => {
+  if (!value || typeof value !== "object") return [];
+  if (Array.isArray(value))
+    return value.flatMap((v, i) => cacheMarkers(v, `${path}[${i}]`));
+  const o = value as Record<string, unknown>;
+  return [
+    ...("cache_control" in o ? [path] : []),
+    ...Object.entries(o).flatMap(([k, v]) => cacheMarkers(v, `${path}.${k}`)),
+  ];
 };
 const questionIds = (request: Request) => [
   ...new Set(
@@ -58,7 +79,11 @@ const questionIds = (request: Request) => [
 ];
 
 /** A scripted model: each pregame/postgame conversation is driven by `steps`. */
-function scripted(steps: Step[], seen: Request[] = []): ModelProvider {
+function scripted(
+  steps: Step[],
+  seen: Request[] = [],
+  usageOverride: Partial<typeof usage> = {},
+): ModelProvider {
   let calls = 0;
   return {
     count: async () => 5,
@@ -89,7 +114,7 @@ function scripted(steps: Step[], seen: Request[] = []): ModelProvider {
             ? "tool_use"
             : "end_turn",
         stop_sequence: null,
-        usage,
+        usage: { ...usage, ...usageOverride },
       } as Message;
     },
   };
@@ -352,6 +377,101 @@ test("max_tokens cut and end_turn without submission are nudged; silence ends as
   assert.equal(result.ends[0].limit, "submission_attempts");
   assert.equal(result.submission, undefined);
   assert.equal(seen.length, 4);
+});
+
+test("prompt caching: exactly two breakpoints per request, on the last tool and the last block of the latest message; cache reads reach the record; part of the harness version", async () => {
+  const f = configFor({ horizon: "season", revision: "editable" });
+  assert.equal(f.config.harness.loop.parameters.promptCache, "ephemeral-5m");
+  const seen: Request[] = [];
+  const provider = scripted(
+    [
+      () => [thinking("t"), use("search_evidence", { query: "visible" })],
+      () => [use("workspace_write", { path: "n.md", content: "x" })],
+      () => [{ type: "text", text: "pausing", citations: null } as any], // end_turn: nudged with a string message
+      () => [use("begin_commit", {})],
+      (r) => [
+        use("submit", {
+          answers: questionIds(r).map((id) => ({
+            question_id: id,
+            p_over: 0.5,
+          })),
+        }),
+      ],
+      () => [{ type: "text", text: "done", citations: null } as any], // postgame
+    ],
+    seen,
+    { cache_read_input_tokens: 15, input_tokens: 5 },
+  );
+  const result = await run(
+    f.config,
+    provider,
+    analystHarness({ model: "claude-opus-4-6" }),
+    f,
+  );
+  assert.deepEqual(
+    result.ends.map((e) => e.status),
+    ["completed", "completed"],
+  );
+  assert.equal(seen.length, 6);
+  for (const r of seen) {
+    const lastMessage = r.messages.length - 1;
+    const lastBlock = (r.messages[lastMessage].content as any[]).length - 1;
+    assert.deepEqual(cacheMarkers(r), [
+      `$.messages[${lastMessage}].content[${lastBlock}]`,
+      `$.tools[${(r.tools as any[]).length - 1}]`,
+    ]);
+    assert.deepEqual((r.tools as any[]).at(-1).cache_control, {
+      type: "ephemeral",
+    });
+  }
+  // The nudge after end_turn was a string message; it was wrapped as a text block.
+  const nudged = seen[3].messages.at(-1)!.content as any[];
+  assert.equal(nudged[0].type, "text");
+  assert.match(nudged[0].text, /not submitted/);
+  // The history itself never holds a marker: earlier messages re-sent later carry none.
+  assert.ok(!cacheMarkers(seen[4].messages.slice(0, -1)).length);
+  // Cache reads are recorded per call and priced, and count against the budget like input.
+  const responses = result.events.filter((e) => e.kind === "model_response");
+  assert.equal(responses.length, 6);
+  assert.equal(responses[0].data.usage.cacheRead, 15);
+  assert.equal(responses[0].data.usage.input, 5);
+  const settled = result.events.find(
+    (e) => e.kind === "settlement" && e.data.details?.usage,
+  )!;
+  assert.equal(settled.data.details.usage.cacheRead, 15);
+  assert.equal(settled.data.tokens, 5 + 10 + 15); // input + output + cache read, all charged
+
+  // Off: no markers anywhere, and a different harness version.
+  const off = configFor(
+    { horizon: "stateless" },
+    { loop: { promptCache: "none" } },
+  );
+  assert.notEqual(
+    digest(off.config.harness),
+    digest(configFor({ horizon: "stateless" }).config.harness),
+  );
+  const seenOff: Request[] = [];
+  await run(
+    off.config,
+    scripted(
+      [
+        () => [use("begin_commit", {})],
+        (r) => [
+          use("submit", {
+            answers: questionIds(r).map((id) => ({
+              question_id: id,
+              p_over: 0.5,
+            })),
+          }),
+        ],
+      ],
+      seenOff,
+    ),
+    analystHarness({ model: "claude-opus-4-6", loop: { promptCache: "none" } }),
+    off,
+  );
+  assert.equal(seenOff.length, 2);
+  for (const r of seenOff) assert.deepEqual(cacheMarkers(r), []);
 });
 
 test("offeredTools follows phase, capability groups and memory horizon", () => {
