@@ -171,10 +171,14 @@ For spreads and each team's total, pairing, proportional de-vig, DFS exclusion,
 main-line selection and tie rules follow the pinned prop methodology above.
 Spread pairs use opposing teams at opposite handicaps; team totals use Over/Under
 at the same line. Duplicate conflicts, incomplete pairs and mismatched actual
-snapshot/update timestamps are excluded. Each book gets one main-line vote.
+snapshot/update timestamps within a two-sided pair are excluded. Each book gets
+one main-line vote.
 
 There is no `totals` market in this release. A book's derived game total is the
-sum of its independently selected main team-total lines for both teams. Select
+sum of its independently selected main team-total lines for both teams, from the
+same requested snapshot. The two teams’ pairs need not share actual `snapshot_at`
+or `last_update` timestamps; timing equality is enforced only within each team’s
+Over/Under pair. Select
 an offered sum nearest the median of those book sums, breaking ties by most
 votes then lower sum; count books at that exact sum. No total probability is
 inferred from marginal team probabilities. Spread cover probabilities from
@@ -183,6 +187,9 @@ Implied Celtics points are
 `(game_total - celtics_spread) / 2`; opponent points use the plus sign. Their book
 count is the intersection of spread and total contributors. Every value needs
 at least one contributing book; missing spread or total gives null implied
-team totals. These are market context estimates, not expected-score guarantees.
+team totals. Disjoint spread and total contributor sets also give null implied
+totals with a zero intersection count, even when both consensus inputs exist.
+This occurs in 6 of the pinned release’s 82 scheduled-start snapshots.
+These are market context estimates, not expected-score guarantees.
 The adaptation definition/hash is in `src/questions/game-lines.ts`; source,
 methodology and manifest hashes accompany each public observation.

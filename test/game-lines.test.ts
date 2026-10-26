@@ -71,6 +71,22 @@ test("game lines preserve spread sign, proportional pairs, derived totals, count
   assert.equal(buildGameLines(mismatched)[0].game_total, null);
 });
 
+test("implied totals require overlapping spread and total contributors", () => {
+  const rows = quotes().filter((r) =>
+    r.market === "spreads"
+      ? r.bookmaker === "book-a"
+      : r.bookmaker === "book-b",
+  );
+  const [r] = buildGameLines(rows);
+  assert.equal(r.celtics_spread, -4);
+  assert.equal(r.spread_book_count, 1);
+  assert.equal(r.game_total, 220);
+  assert.equal(r.total_book_count, 1);
+  assert.equal(r.celtics_implied_total, null);
+  assert.equal(r.opponent_implied_total, null);
+  assert.equal(r.implied_total_book_count, 0);
+});
+
 test("context, history and sandbox share cutoff-gated lines across memory modes and phases", async () => {
   const budget = {
     tokens: 100,
