@@ -1,4 +1,8 @@
-import { sweepOrphanContainers } from "./orphans.js";
+import {
+  sweepOrphanContainers,
+  sweepOwnOrphanContainers,
+  sweepClaimHeld,
+} from "./orphans.js";
 import type { ResolutionInput } from "../env/results.js";
 import {
   WorkspacePolicy,
@@ -139,6 +143,8 @@ export class Runner {
     this.#lock = join(this.root, "runner.lock");
     // OS PID is only meaningful on this host. Remote migration requires restoring
     // a published checkpoint into a new root (which contains no lock file).
+    if (sweepClaimHeld(this.root))
+      throw Error("Sandbox cleanup holds run root");
     if (existsSync(this.#lock)) {
       const pid = Number(readFileSync(this.#lock, "utf8"));
       if (!Number.isInteger(pid) || pid < 1) throw Error("Invalid runner lock");
@@ -152,6 +158,8 @@ export class Runner {
     }
     writeFileSync(this.#lock, String(process.pid), { flag: "wx", mode: 0o600 });
     try {
+      if (sweepClaimHeld(this.root))
+        throw Error("Sandbox cleanup holds run root");
       this.record = new RecordStore(this.root, manifest);
       mkdirSync(this.workspace, { recursive: true, mode: 0o700 });
       mkdirSync(join(this.root, "blobs"), { recursive: true });
@@ -182,13 +190,29 @@ export class Runner {
     if (this.#running || this.#closed) throw Error("Runner unavailable");
     this.#running = true;
     try {
-      await sweepOrphanContainers(this.root, (containerId, name) => {
-        this.record.append("infrastructure", "run", {
-          action: "orphan_container_removed",
-          containerId,
-          name,
-        });
-      });
+      const removed = (containerId: string, name: string, runRoot: string) => {
+        console.error(
+          JSON.stringify({
+            action: "orphan_container_removed",
+            containerId,
+            name,
+            runRoot,
+          }),
+        );
+      };
+      // Own-root cleanup is mandatory before resuming workspace/session use.
+      await sweepOwnOrphanContainers(this.root, removed);
+      try {
+        await sweepOrphanContainers(this.root, removed);
+      } catch (error) {
+        // Cross-root cleanup is best-effort, including on hosts without Docker.
+        console.error(
+          JSON.stringify({
+            action: "orphan_sweep_unavailable",
+            error: String(error),
+          }),
+        );
+      }
       // Retry publication before advancing after a previous sync failure.
       await checkpoint(this.record, this.sink);
       for (const game of this.manifest.games) {
