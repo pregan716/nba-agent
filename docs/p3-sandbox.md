@@ -17,6 +17,9 @@ fallback to a mutable tag and no runtime pull or package installation. The exist
 manifest harness hash includes this image pin. Build/pin on the target architecture.
 Local image IDs may differ across builders. AWS runs must push and pin a registry
 manifest digest and pull that exact digest on each host for portable harness identity.
+`npm run sandbox:build -- --push=registry.example.com/nba/sandbox:release-1 --platform=linux/amd64`
+now writes the verified registry digest pin. See the [AWS prerequisites](aws-deployment-prerequisites.md)
+for publishing, exact-image pulls and persistent-volume prewarming.
 
 The Dockerfile pins its Python 3.12 base by digest and installs pandas 2.2.3, NumPy
 2.2.6, SciPy 1.15.3 and scikit-learn 1.6.1, plus the FUSE adapter. Pip/setuptools/wheel
@@ -38,7 +41,7 @@ resolved environment, including transitive packages and OS libraries.
 
 History lives in `/data/games/*.sqlite.gz`: one immutable, compressed SQLite shard
 per game, keyed by pinned dataset manifests, the game envelope and export schema
-version. The host cache is `.cache/history-export-v2`; only games passing the
+version. The host cache defaults to `.cache/history-export-v2` (override with the absolute persistent-volume path in `NBA_HISTORY_EXPORT_CACHE`); only games passing the
 release gate are copied into `/data`. The cache itself is never mounted. Cold
 builds decode each relevant verified PBP partition once, apply the same published
 column projector as the query tool, and insert rows with one prepared statement
