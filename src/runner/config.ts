@@ -54,6 +54,11 @@ export const configSchema = z.strictObject({
     postgame: phaseBudget,
     submissionReserve: integer,
     warnRemainingTokens: integer,
+    /** Weight of a cache-read token against the token caps (uncached input, cache
+     * writes and output count in full). Part of the budget profile. Optional, not
+     * defaulted: a manifest written before SPO-814 has no field and must keep its
+     * digest, so a missing weight means 1 at run time and resumes unchanged. */
+    cacheReadWeight: z.number().min(0).max(1).optional(),
     rollover: z.literal(false),
     sandbox: z.strictObject({
       perCallSeconds: positive.default(60),

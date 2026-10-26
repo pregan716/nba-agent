@@ -11,6 +11,7 @@ import {
   LimitError,
   normalizeUsage,
   tokenTotal,
+  chargedInputEstimate,
   cost,
 } from "./budget.js";
 export const SDK_VERSION: string = VERSION;
@@ -50,6 +51,8 @@ export class MeteringProxy {
       busy: boolean;
       closed: boolean;
       pending: Promise<void> | null;
+      /** Preflight count of the previous request in this scope, for the cache estimate. */
+      previousCount: number;
     }
   >();
   #url = "";
@@ -95,15 +98,22 @@ export class MeteringProxy {
           throw Error("Invalid input token count");
         if (scope.closed || scope.signal.aborted) throw Error("Session closed");
         const remaining = scope.budget.remaining().tokens;
-        // The provider's preflight count is an estimate. Preserve actual SDK usage
-        // and stop on any overrun; never silently erase it to fit the budget.
-        request.max_tokens = Math.min(request.max_tokens, remaining - count);
+        const weight = scope.budget.config.budget.cacheReadWeight ?? 1;
+        const charged = chargedInputEstimate(
+          count,
+          scope.previousCount,
+          weight,
+        );
+        // The provider's preflight count is an estimate, and the cached share is
+        // estimated from the previous request in this scope. Preserve actual SDK
+        // usage and stop on any overrun; never silently erase it to fit the budget.
+        request.max_tokens = Math.min(request.max_tokens, remaining - charged);
         if (request.max_tokens < 1)
           scope.budget.block(
             scope.budget.stage === "pregame" ? "research_tokens" : "tokens",
           );
         const reservation = scope.budget.reserve(
-          count + request.max_tokens,
+          charged + request.max_tokens,
           0,
           "model",
         );
@@ -111,7 +121,10 @@ export class MeteringProxy {
           reservation,
           request,
           inputEstimate: count,
+          chargedEstimate: charged,
+          cacheReadWeight: weight,
         });
+        scope.previousCount = count;
         // On transport failure/crash the reservation remains charged, since the
         // provider may have generated a response we never received. No SDK retries.
         const response = await this.provider.create(request, scope.signal);
@@ -121,7 +134,7 @@ export class MeteringProxy {
           response,
           usage,
         });
-        scope.budget.settle(reservation, tokenTotal(usage), 0, {
+        scope.budget.settle(reservation, tokenTotal(usage, weight), 0, {
           usage,
           usd: cost(usage, scope.budget.config.budget.price),
           priceId: scope.budget.config.budget.price.id,
@@ -222,6 +235,7 @@ export class MeteringProxy {
       busy: false,
       closed: false,
       pending: null,
+      previousCount: 0,
     });
     return Object.freeze({ baseURL: this.#url, apiKey });
   }

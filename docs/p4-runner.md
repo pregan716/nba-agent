@@ -46,7 +46,7 @@ The in-process harness is trusted application code, not an isolation boundary fo
 
 Each game has independent pregame and postgame ledgers, with no rollover. Commit shares the pregame ledger. During research, the submission reserve is unavailable; `begin_commit` unlocks the remaining reserve while locking research tools. A pending model call prevents this transition. Context reports remaining tokens, compute, tools and the low-budget warning; a low model budget also emits a warning event. Model calls are serialized per scoped key and keys are revoked at session end.
 
-The proxy pins `claude-opus-4-6`, the configured effort and thinking mode, and checks the installed SDK version against the manifest. Automatic SDK retries are disabled. It calls the SDK token-count endpoint, clamps `max_tokens` to the available allowance, and persists a reservation before sending the generation request. Settlement records the full SDK response, uncached input, output, cache reads, cache writes by TTL, and spend at the manifest's price schedule. Cache tokens count toward the cap. Reasoning is a subset of output and is never double-counted.
+The proxy pins `claude-opus-4-6`, the configured effort and thinking mode, and checks the installed SDK version against the manifest. Automatic SDK retries are disabled. It calls the SDK token-count endpoint, clamps `max_tokens` to the available allowance, and persists a reservation before sending the generation request. Settlement records the full SDK response, uncached input, output, cache reads, cache writes by TTL, and spend at the manifest's price schedule. Uncached input, cache writes and output count toward the cap in full; cache reads count at the budget profile's `cacheReadWeight` (SPO-814; 0.1 in the pilot profile, the cache-read price ratio), since re-reading cached history is not new research. The preflight reservation estimates the cached share from the previous request in the same session: the prefix up to that request's size at the cache weight, the growth in full, and the first request of a session (or after a resume) entirely in full. Reasoning is a subset of output and is never double-counted.
 
 Two provider limitations are explicit:
 
@@ -79,8 +79,11 @@ Each checkpoint uses SQLite online backup for `checkpoints/<seq>/record.sqlite` 
 To move hosts, select a published index key and use the trusted host API:
 
 ```ts
-await restoreCheckpoint(sink, "runId/r1/123-<chainHash>/index.json",
-  "/new/storageRoot/runId/r1");
+await restoreCheckpoint(
+  sink,
+  "runId/r1/123-<chainHash>/index.json",
+  "/new/storageRoot/runId/r1",
+);
 ```
 
 The sink implements both `get` and the upload operations. The destination must not exist. Restore downloads only indexed objects, verifies lengths, SHA-256, blob content addresses, the record hash chain and run identity in a temporary directory, then renames it to the fresh run root. It never restores a lock file or live workspace: opening `Runner` with the identical manifest reconstructs memory from blobs. A local `CheckpointSource.get` can map run-level blob keys to `<oldRoot>/blobs/` and checkpoint-level keys to `<oldRoot>/checkpoints/<seq>/`. Copying a schema-v2 checkpoint directory alone is insufficient. Schema-v1 published indexes are still readable (their blobs are under the checkpoint prefix); old local checkpoints are upgraded to v2 when republished. Existing historical v1 copies are not deleted automatically. Local and mocked-object-store tests cover restore and publication failure; live R2 delivery and AWS execution require deployment-specific credentials and are not claimed as tested here.
@@ -88,6 +91,5 @@ The sink implements both `get` and the upload operations. The destination must n
 ## Abandoned sandbox cleanup
 
 Before creating a Docker sandbox, the trusted environment writes a durable `sandbox-owner` marker in the run root and labels the container with `nba-agent.run-root=<hash of canonical run-root path>`. On `Runner.run()` startup, after the constructor acquires the exclusive PID lock and before a new session starts, it lists matching `nba-session-<uuid>` containers, verifies their exact ownership label/name, and force-removes them. Under this lock no session from a previous runner for that root can still be live. Every successful removal appends an `infrastructure` event with action `orphan_container_removed`, container ID and name. Other roots and legacy unlabeled containers are left alone because their ownership cannot be established safely. Roots that have never created a managed sandbox need no Docker daemon for this check. Cleanup failures stop startup and are retried on the next invocation. The marker is host-local and is not part of a restored checkpoint.
-
 
 Remaining user decisions: all production budget numbers and pilot effort remain open until the brief's pilot procedure. The fixture values are clearly labelled and are not usable as an approved scored budget.

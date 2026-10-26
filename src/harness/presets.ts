@@ -9,7 +9,7 @@ import type { DatasetVersion } from "../env/contract.js";
 import { harnessConfig, type BaselineName } from "./version.js";
 
 export const PILOT_BUDGET: RunConfig["budget"] = {
-  id: "pilot-generous-v0-not-approved",
+  id: "pilot-generous-v1-not-approved",
   pilotApproved: false,
   pregame: {
     tokens: 3_000_000,
@@ -25,6 +25,8 @@ export const PILOT_BUDGET: RunConfig["budget"] = {
   },
   submissionReserve: 200_000,
   warnRemainingTokens: 400_000,
+  // Cache reads at their price ratio to uncached input (0.5 / 5); see SPO-814.
+  cacheReadWeight: 0.1,
   rollover: false,
   sandbox: {
     perCallSeconds: 120,

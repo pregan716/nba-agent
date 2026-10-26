@@ -11,13 +11,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 import Anthropic from "@anthropic-ai/sdk";
-import { manifest, digest } from "../src/runner/config.js";
+import { manifest, digest, type Manifest } from "../src/runner/config.js";
 import { RecordStore, snapshot, restore } from "../src/runner/record.js";
 import {
   Budget,
   LimitError,
   normalizeUsage,
   tokenTotal,
+  chargedInputEstimate,
 } from "../src/runner/budget.js";
 import { MeteringProxy, type ModelProvider } from "../src/runner/proxy.js";
 import {
@@ -1275,5 +1276,162 @@ test("real workspace service carries season memory, expires k-window writes and 
     } finally {
       await s.close();
     }
+  }
+});
+
+test("a manifest without cacheReadWeight keeps its digest, resumes at weight 1, and a weight change is a new run", async () => {
+  const legacy = fixtureConfig();
+  delete (legacy.budget as any).cacheReadWeight; // as persisted before SPO-814
+  const m = manifest(legacy, games);
+  assert.ok(!("cacheReadWeight" in m.config.budget)); // parsing inserts nothing
+  assert.equal(
+    digest(m),
+    digest(manifest(JSON.parse(JSON.stringify(legacy)), games)),
+  );
+  const root = temp();
+  try {
+    const first = new Runner(root, m, new MeteringProxy(provider), environment);
+    const runRoot = first.root;
+    first.close();
+    // Reopen the persisted run on this code with the saved manifest.
+    const store = new RecordStore(runRoot);
+    const saved = store.events("manifest")[0].data as Manifest;
+    store.close();
+    assert.ok(!("cacheReadWeight" in saved.config.budget));
+    const proxy = new MeteringProxy({
+      count: async () => 100,
+      create: async () => {
+        const r = structuredClone(sdkMessage);
+        r.usage = {
+          ...r.usage,
+          input_tokens: 0,
+          output_tokens: 10,
+          cache_read_input_tokens: 100,
+          cache_creation_input_tokens: 0,
+          cache_creation: {
+            ephemeral_5m_input_tokens: 0,
+            ephemeral_1h_input_tokens: 0,
+          },
+        } as any;
+        return r;
+      },
+    });
+    await proxy.listen();
+    const resumed = new Runner(root, saved, proxy, environment);
+    try {
+      const b = new Budget(
+        resumed.record,
+        "g1:pregame",
+        resumed.manifest.config,
+        "pregame",
+      );
+      const client = new Anthropic({
+        ...proxy.issue(b, new AbortController().signal),
+        maxRetries: 0,
+      });
+      await client.messages.create({
+        model: "x",
+        max_tokens: 50,
+        messages: [],
+      });
+      assert.equal(b.totals().tokens, 110); // cache reads at full weight, as before
+      assert.equal(
+        resumed.record.events("model_request")[0].data.cacheReadWeight,
+        1,
+      );
+    } finally {
+      resumed.close();
+      await proxy.close();
+    }
+    // An actual policy change is a different manifest and is refused.
+    const changed = fixtureConfig();
+    changed.budget.cacheReadWeight = 0.1;
+    assert.throws(
+      () => new RecordStore(runRoot, manifest(changed, games)),
+      /Run manifest mismatch/,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("cache reads count at the budget profile's weight: charge, preflight estimate, clamp and settlement (SPO-814)", async () => {
+  // Game one of pilot-b-1, pregame: 22 calls, nearly all input re-read from cache.
+  const gameOne = {
+    input: 24,
+    output: 18763,
+    cacheRead: 2130716,
+    cacheWrite: 184153,
+    cacheWrite5m: 184153,
+    cacheWrite1h: 0,
+    reasoning: null,
+  };
+  assert.equal(tokenTotal(gameOne), 2333656); // full weight: most of a 3M cap
+  assert.equal(tokenTotal(gameOne, 0.1), 416012); // price-ratio weight
+  assert.equal(chargedInputEstimate(100000, 0, 0.1), 100000); // first call: all new
+  assert.equal(chargedInputEstimate(100000, 90000, 0.1), 19000); // growth 10k + 90k cached
+  assert.equal(chargedInputEstimate(50000, 90000, 0.1), 5000); // shrunk history: all cached
+
+  const c = fixtureConfig();
+  c.budget.cacheReadWeight = 0.1;
+  c.budget.pregame.tokens = 1000;
+  c.budget.submissionReserve = 100;
+  c.budget.warnRemainingTokens = 1;
+  const counts = [400, 500];
+  const seen: any[] = [];
+  let calls = 0;
+  const s = await setup(c, {
+    count: async () => counts[calls++],
+    create: async (r) => {
+      seen.push(r);
+      const m = structuredClone(sdkMessage);
+      m.usage = {
+        ...m.usage,
+        input_tokens: 0,
+        output_tokens: 10,
+        cache_read_input_tokens: 500,
+        cache_creation_input_tokens: 0,
+        cache_creation: {
+          ephemeral_5m_input_tokens: 0,
+          ephemeral_1h_input_tokens: 0,
+        },
+      } as any;
+      return m;
+    },
+  });
+  const b = new Budget(s.runner.record, "g1:pregame", s.m.config, "pregame");
+  const endpoint = s.proxy.issue(b, new AbortController().signal);
+  const client = new Anthropic({ ...endpoint, maxRetries: 0 });
+  try {
+    await client.messages.create({
+      model: "x",
+      max_tokens: 2000,
+      messages: [],
+    });
+    // First call: no previous request, 400 charged in full; clamp to 900 - 400.
+    assert.equal(seen[0].max_tokens, 500);
+    let requests = s.runner.record.events("model_request");
+    assert.equal(requests[0].data.chargedEstimate, 400);
+    assert.equal(requests[0].data.cacheReadWeight, 0.1);
+    // Settled on actual usage: 10 output + 500 cache reads at 0.1.
+    assert.equal(b.totals().tokens, 60);
+    await client.messages.create({
+      model: "x",
+      max_tokens: 2000,
+      messages: [],
+    });
+    // Second call: 500 counted, 400 assumed cached (40) plus 100 new; clamp to 840 - 140.
+    assert.equal(seen[1].max_tokens, 700);
+    requests = s.runner.record.events("model_request");
+    assert.equal(requests[1].data.chargedEstimate, 140);
+    assert.equal(b.totals().tokens, 120);
+    const settlements = s.runner.record.events("settlement");
+    assert.deepEqual(
+      settlements.map((e) => e.data.tokens),
+      [60, 60],
+    );
+    assert.equal(settlements[1].data.details.usage.cacheRead, 500); // raw counts kept
+  } finally {
+    await s.close();
   }
 });

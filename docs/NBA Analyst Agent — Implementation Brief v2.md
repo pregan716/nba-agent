@@ -30,6 +30,11 @@ v1 framed the task as allocating $100 of simulated prop bets per game and scorin
 
 What stays: the market line as the question, because it controls difficulty and supplies a baseline for free. What is removed: money, stakes, bet counts, book selection, the LLM evidence judge (deferred, not rejected), and dollar-based research budgets (replaced with token caps for v1). The temporal access rules, source contracts, run isolation, and experiment record carry over unchanged in intent.
 
+### Finalization changes (Oct 25, 2026)
+
+- Contamination probe executed against the pinned model with no tools: every regular-season item and every 2025 offseason item reported unknown; the model self-reported an early-April 2025 cutoff, earlier than the documented Aug 2025 training cutoff. Self-reported cutoffs are not authoritative; the probe record is attached to pilot manifests.
+- Prompt caching added to the harness (SPO-813), two breakpoints per request, as part of the harness version. The first pilot B session then showed full-weight counting of cache reads consuming most of the pregame cap on re-read history. Cache-read tokens now count against the caps at their price ratio (0.1), recorded in the budget profile (SPO-814); the pilot budget profile is re-issued as a new id.
+
 ### Finalization changes (Oct 24, 2026)
 
 - P1 pinned player-reference release `15fef7276244e616b0817be4` after reading its verified coverage report. The dataset table records the manifest hash and links to the coverage summary; historical-fidelity limitations remain explicit.
@@ -381,7 +386,7 @@ Three further fields are declared on every run and printed with the profile. The
 
 | Descriptor | What it declares |
 | --- | --- |
-| Research budget | The pregame and postgame token caps, the submission reserve, the rollover rule, the tool-call and wall-clock ceilings, and the pinned price schedule used to report spend. Recorded as a named, versioned budget profile so a run can be described as "budget v3" rather than by its numbers. |
+| Research budget | The pregame and postgame token caps, the cache-read weight, the submission reserve, the rollover rule, the tool-call and wall-clock ceilings, and the pinned price schedule used to report spend. Recorded as a named, versioned budget profile so a run can be described as "budget v3" rather than by its numbers. |
 | Harness version | One identifier that resolves to the exact set of: harness identity (v1: homemade; later possibly a named third-party harness and its version), system and phase prompts, memory-mode instructions, tool definitions and their schemas, submission formatting and retry logic, loop parameters including the model's effort level and thinking mode, model access method and SDK version, the sandbox image digest, and the harness code revision. Changing any component yields a new harness version. |
 | De-vig method | The published consensus layer the questions come from, identified by its path and the hashes of its manifest and `methodology.json`. Initial value: `consensus/proportional/v1` (proportional normalization, median across contributing books). Changing the layer changes the baseline every question is scored against, so it must match across compared runs. |
 
@@ -475,6 +480,7 @@ Structure, status Agreed. Numbers, status Open until the development pilot, chos
 - Unused postgame allowance does not roll into the next pregame.
 - Sandbox compute is budgeted separately from tokens: a wall-clock limit per code call, a cumulative compute cap per phase, and a stdout cap per call so a careless print cannot consume the token budget. The compute cap is matched between configurations in the same way as the token cap: pregame matched, B's postgame additional.
 - Generous tool-call and wall-clock ceilings exist as loop safeguards only. Log which limit ended each session. Tool-call count and wall-clock are never the comparison budget.
+- Cache-read tokens count against the token caps at a reduced weight equal to their price ratio to uncached input (0.1 for the pinned model), recorded in the budget profile as the cache-read weight. Uncached input, cache writes, and output count in full. The harness re-sends the whole conversation every turn, so at full weight a long session is charged for re-reading its own history rather than for new research; the first pilot session consumed 2.3M of a 3M pregame cap in 22 turns that way. Raw counts of every token class are still reported separately.
 
 What is matched between configurations is the pregame cap. A has nothing to do in postgame because it retains nothing, so matching total tokens would hand A extra research budget equal to B's postgame allowance and change what A is. B's postgame spend is therefore additional, reported as the measured cost of memory, and the cost-adjusted comparison shows whether it paid for itself.
 
@@ -538,7 +544,7 @@ Decisions the user has made since the brief was drafted. They are Agreed and ref
 | No view and deviation | No view means submitting the market probability. Deviation is abs(p − q) against the market; 0.05 is the definition for rationale and deviation statistics, 0.10 a second reporting level. |
 | Resubmission allowance | Two resubmissions on validation error, drawn from the submission reserve. Third failure is a failed session with the attempt and reason recorded. |
 | B write opportunities | Throughout pregame research and postgame; never during commit. |
-| Budget structure | Per-phase caps, no rollover, submission reserve, ceilings as safeguards only. Pregame cap matched between A and B; B's postgame spend is reported as the cost of memory. Numbers set by the agreed pilot procedure. |
+| Budget structure | Per-phase caps, no rollover, submission reserve, ceilings as safeguards only. Pregame cap matched between A and B; B's postgame spend is reported as the cost of memory. Cache-read tokens count at their price ratio (0.1), other token classes in full. Numbers set by the agreed pilot procedure. |
 | Implementation | TypeScript on Node; direct Anthropic SDK (recorded in harness version); SQLite plus files; adapters over R2; local for Gates 1–3, AWS for scored runs with checkpoints synced to R2; in-process transport behind an MCP-wrappable interface. |
 | Research budget and harness version | Both recorded on every run as named, versioned identifiers, printed with the profile, and required to match across compared runs. |
 | De-vig method | The published layer `consensus/proportional/v1` (proportional normalization per book, median across contributing books), identified by manifest and methodology hashes. Recorded as a per-run descriptor and on every question record; must match across compared runs. A power or Shin layer would be a new published layer. |
