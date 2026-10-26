@@ -64,7 +64,7 @@ function transient(error: any): boolean {
   );
 }
 
-/** One deadline covers attempts and backoff; the caller owns the reservation. */
+/** The deadline bounds retry starts, never an in-flight generation. */
 export async function retryModel<T>(
   call: (signal: AbortSignal) => Promise<T>,
   parent: AbortSignal,
@@ -78,13 +78,8 @@ export async function retryModel<T>(
     totalMs: 60000,
     ...config.recovery?.model,
   };
-  const controller = new AbortController();
-  const signal = AbortSignal.any([parent, controller.signal]);
+  const signal = parent;
   const end = Date.now() + policy.totalMs;
-  const timer = setTimeout(
-    () => controller.abort(new Error("Model retry deadline exceeded")),
-    policy.totalMs,
-  );
   let rejectAbort!: (reason: unknown) => void;
   const aborted = new Promise<never>((_, reject) => {
     rejectAbort = reject;
@@ -109,19 +104,24 @@ export async function retryModel<T>(
           !transient(error) ||
           attempt >= policy.retries ||
           Date.now() + wait >= end;
-        failed(error, attempt + 1, terminal);
-        if (terminal) throw error;
-        // If cancellation occurs during backoff, the request is still terminal.
-        try {
-          await delay(wait, undefined, { signal });
-        } catch (error) {
+        if (terminal) {
           failed(error, attempt + 1, true);
           throw error;
         }
+        try {
+          await delay(wait, undefined, { signal });
+        } catch (cancelled) {
+          failed(error, attempt + 1, true);
+          throw cancelled;
+        }
+        // A delayed timer/event loop must not start another request past the
+        // retry window. Record this failed attempt once with its final outcome.
+        const expired = Date.now() >= end;
+        failed(error, attempt + 1, expired);
+        if (expired) throw error;
       }
     }
   } finally {
-    clearTimeout(timer);
     signal.removeEventListener("abort", onAbort);
   }
 }

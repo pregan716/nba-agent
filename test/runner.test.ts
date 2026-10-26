@@ -1483,8 +1483,8 @@ test("proxy retries transient failures in one reservation, records diagnostics a
   }
 });
 
-test("proxy does not retry provider limits or client errors and bounds hanging requests", async () => {
-  for (const status of [400, 401, 403, 404, 413, 422, 429, null]) {
+test("proxy does not retry provider limits or client errors", async () => {
+  for (const status of [400, 401, 403, 404, 413, 422, 429]) {
     const c = fixtureConfig();
     c.recovery = { model: { baseMs: 1, capMs: 2, totalMs: 30 } };
     let calls = 0;
@@ -1492,7 +1492,6 @@ test("proxy does not retry provider limits or client errors and bounds hanging r
       count: provider.count,
       create: async () => {
         calls++;
-        if (status === null) return new Promise(() => {});
         throw Object.assign(new Error("provider rejected"), { status });
       },
     });
@@ -1599,7 +1598,7 @@ test("infrastructure session attempts stop at default bound", async () => {
   }
 });
 
-test("retry deadline covers backoff and subsequent hanging attempts; cancellation starts no call", async () => {
+test("retry window refuses another attempt after a slow failure; cancellation starts no call", async () => {
   const c = fixtureConfig();
   c.recovery = { model: { retries: 10, baseMs: 1, capMs: 1, totalMs: 30 } };
   let calls = 0;
@@ -1612,13 +1611,14 @@ test("retry deadline covers backoff and subsequent hanging attempts; cancellatio
           throw Object.assign(new Error("socket closed"), {
             code: "ECONNRESET",
           });
-        return new Promise(() => {});
+        await new Promise((resolve) => setTimeout(resolve, 60));
+        throw Object.assign(new Error("upstream unavailable"), { status: 503 });
       },
       new AbortController().signal,
       c,
       (e, a, t) => errors.push({ e, a, t }),
     ),
-    /deadline/,
+    /upstream unavailable/,
   );
   assert.equal(calls, 2);
   assert.equal(errors.length, 2);
@@ -1706,4 +1706,58 @@ test("upstream diagnostics redact quoted credential fields and SDK keys", () => 
   assert.ok(!JSON.stringify(error).includes("sensitive-value"));
   assert.ok(!JSON.stringify(error).includes("opaque-token"));
   assert.ok(!JSON.stringify(error).includes("sk-ant-private-key"));
+});
+
+test("healthy generation outlives the retry window and settles once", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { totalMs: 10, baseMs: 1 } };
+  let calls = 0;
+  const s = await setup(c, {
+    count: provider.count,
+    create: async () => {
+      calls++;
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      return structuredClone(sdkMessage);
+    },
+  });
+  const b = new Budget(s.runner.record, "g1:pregame", s.m.config, "pregame");
+  const endpoint = s.proxy.issue(b, new AbortController().signal);
+  try {
+    await new Anthropic({ ...endpoint, maxRetries: 0 }).messages.create({
+      model: "x",
+      messages: [],
+      max_tokens: 60,
+    });
+    assert.equal(calls, 1);
+    assert.equal(s.runner.record.events("model_error").length, 0);
+    assert.equal(s.runner.record.events("model_response")[0].data.retries, 0);
+    assert.equal(s.runner.record.events("reservation").length, 1);
+    assert.equal(s.runner.record.events("settlement").length, 1);
+    assert.equal(b.totals().tokens, 48);
+  } finally {
+    await s.proxy.revoke(endpoint);
+    await s.close();
+  }
+});
+
+test("session cancellation still interrupts an in-flight model call", async () => {
+  const c = fixtureConfig();
+  c.recovery = { model: { totalMs: 1 } };
+  const controller = new AbortController();
+  let started!: () => void;
+  const ready = new Promise<void>((resolve) => {
+    started = resolve;
+  });
+  const pending = retryModel(
+    async () => {
+      started();
+      return new Promise(() => {});
+    },
+    controller.signal,
+    c,
+    () => {},
+  );
+  await ready;
+  controller.abort(new Error("session wall clock"));
+  await assert.rejects(pending, /session wall clock/);
 });
