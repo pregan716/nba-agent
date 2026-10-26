@@ -1,3 +1,8 @@
+import {
+  buildGameLines,
+  gameLineMethodHash,
+  type GameLineLayer,
+} from "./game-lines.js";
 import { createHash } from "node:crypto";
 import type { OddsAdapter } from "../data/adapters.js";
 import type { Row } from "../data/contracts.js";
@@ -100,6 +105,7 @@ export interface AgentQuestion {
   p_over: number;
 }
 export interface QuestionLayer {
+  gameLines?: GameLineLayer;
   manifest: ObjectRef;
   methodology: ObjectRef;
   consensus: ObjectRef;
@@ -144,7 +150,23 @@ export async function loadQuestionLayer(
         "espn",
         row.espn_player_id,
       );
+  const source = await odds.release.sourceRelease();
+  const quoteRefs = [...source.objects.values()].filter((r) =>
+    r.key.endsWith("/quotes.ndjson.gz"),
+  );
+  requireValue(quoteRefs.length === 1, "Expected one pinned quotes object");
+  const gameLines: GameLineLayer = {
+    rows: buildGameLines(await source.rows(quoteRefs[0].key)),
+    provenance: {
+      layer_manifest: odds.release.root,
+      source_manifest: source.root,
+      quotes: quoteRefs[0],
+      methodology,
+      adaptation_sha256: gameLineMethodHash,
+    },
+  };
   const layer = {
+    gameLines,
     manifest: odds.release.root,
     methodology,
     consensus,

@@ -1,3 +1,4 @@
+import { gameLineMethodHash } from "../questions/game-lines.js";
 import { historyExportCacheDirectory } from "./cache.js";
 import { readFile } from "node:fs/promises";
 import type { Corpus } from "../data/corpus.js";
@@ -149,6 +150,11 @@ export async function corpusSource(
     teams,
     versions: [
       corpus.postAuthors.version,
+      {
+        source: "gameLines",
+        release: "game-lines-v1",
+        manifest_sha256: gameLineMethodHash,
+      },
       ...Object.entries(corpus.pins.sources).map(([source, ref]) => ({
         source,
         release: ref.key,

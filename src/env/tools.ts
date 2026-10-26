@@ -61,7 +61,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "context",
     description:
-      "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, the reserve held for the final submission, and a low-budget warning), the memory mode of this run, and the pinned dataset versions. Call it first in every session and again whenever you need the budget.",
+      "Return game_lines at scheduled start: Celtics spread (negative when favoured), game total derived from paired team-total quotes, implied team totals, contributing-book counts and provenance; null values mean unavailable markets. Also return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, the reserve held for the final submission, and a low-budget warning), the memory mode of this run, and the pinned dataset versions. Call it first in every session and again whenever you need the budget.",
     input_schema: object({}),
     phases: ["pregame", "commit", "postgame"],
   },
@@ -176,7 +176,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "query_odds_history",
-    description: `Return the consensus market history for this game or a prior one: for each observation, its availability time, player, stat, consensus line and market-implied P(over). Observations are taken at fixed times before tip and at the scheduled start; the scheduled-start observation defines the questions. For prior games whose results have been released, settled outcomes (over, under, push, did_not_play, unresolved) are included. Never includes per-book prices, contributing books or dispersion. ${CUTOFF} Do not interpolate between observations.`,
+    description: `Return the consensus market history for this game or a prior one: for each observation, its availability time, player, stat, consensus line and market-implied P(over). Observations are taken at fixed times before tip and at the scheduled start; the scheduled-start observation defines the questions. For prior games whose results have been released, settled outcomes (over, under, push, did_not_play, unresolved) are included. Never includes per-book prices, contributing books or dispersion. ${CUTOFF} Do not interpolate between observations. Also returns game_lines observations for line movement, with the same cutoff and game selection.`,
     input_schema: object({
       game_id: id("Defaults to the current game."),
       player_id: id("Restrict to one player."),

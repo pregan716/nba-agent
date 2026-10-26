@@ -1,3 +1,4 @@
+import type { GameLineValues, GameLineLayer } from "../questions/game-lines.js";
 // P3a session contract (SPO-786).
 //
 // This module fixes the typed in-process interface between the P4 runner, the
@@ -160,7 +161,14 @@ export interface DatasetVersion {
   release: string;
   manifest_sha256: string;
 }
+export interface GameLines extends GameLineValues {
+  game_id: GameId;
+  available_at: Instant;
+  snapshot_kind: string;
+  provenance: GameLineLayer["provenance"] | null;
+}
 export interface ContextResult {
+  game_lines: GameLines;
   team: TeamRef;
   season: "2025-26";
   game: {
@@ -384,6 +392,7 @@ export interface OddsSettlement {
   outcome: Outcome;
 }
 export interface QueryOddsHistoryResult {
+  game_lines: GameLines[];
   /** Consensus observations with availability time at or before the cutoff. No per-book or dispersion fields. */
   observations: OddsObservation[];
   /** Only for games whose release time is at or before the cutoff. */
