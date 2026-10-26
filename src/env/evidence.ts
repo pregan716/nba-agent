@@ -154,12 +154,11 @@ export class EvidenceIndex {
               ].sort()
             : [],
         provenance: {
-          ...(source === "posts"
-            ? {
-                account_id: nullable(d.accountId) ?? undefined,
-                author_mapping_sha256:
-                  nullable(d.authorMappingSha256) ?? undefined,
-              }
+          ...(source === "posts" && nullable(d.accountId)
+            ? { account_id: d.accountId }
+            : {}),
+          ...(source === "posts" && nullable(d.authorMappingSha256)
+            ? { author_mapping_sha256: d.authorMappingSha256 }
             : {}),
           manifest_sha256: r.provenance.manifestSha256,
           objects: refs.map((ref) => ({

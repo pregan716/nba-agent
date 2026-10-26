@@ -12,6 +12,9 @@ import { readFile } from "node:fs/promises";
 const store = new DopplerStore();
 try {
   const c = await openCorpus(store, process.cwd(), ".cache/objects");
+  c.postAuthors.assertCoverage(
+    (await c.posts.auditRows()).map((row) => row.post.accountId),
+  );
   const ids = new Identities();
   for (const m of JSON.parse(await readFile("config/identities.json", "utf8")))
     ids.add(m);

@@ -44,6 +44,16 @@ export class PostAuthors {
       manifest_sha256: sha256(bytes),
     });
   }
+  /** Offline verification: require mapping coverage before accepting a new release. */
+  assertCoverage(accountIds: Iterable<string>): void {
+    const missing = [...new Set(accountIds)]
+      .filter((id) => !this.#handles.has(id))
+      .sort();
+    if (missing.length)
+      throw Error(
+        `Unmapped post account IDs: ${missing.join(", ")}. Update config/post-authors.json before accepting this posts release.`,
+      );
+  }
   handle(accountId: string): string | undefined {
     return this.#handles.get(accountId);
   }

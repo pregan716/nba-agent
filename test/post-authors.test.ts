@@ -143,3 +143,18 @@ test("author mapping rejects malformed or duplicate identities", async () => {
   value.accounts[0].handle = "@not a handle";
   assert.throws(() => new PostAuthors(Buffer.from(JSON.stringify(value))));
 });
+
+test("release verification reports all unmapped accounts, including excluded posts", async () => {
+  const authors = await loadPostAuthors(process.cwd());
+  authors.assertCoverage(["38032945", "79806078", "38032945"]);
+  const posts = await adapter(authors);
+  const rows = [...(await posts.auditRows())];
+  rows.push({
+    post: { accountId: "123" },
+    relevance: { relevant: false },
+  });
+  assert.throws(
+    () => authors.assertCoverage(rows.map((row) => row.post.accountId)),
+    /Unmapped post account IDs: 123, 999999/,
+  );
+});

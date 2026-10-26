@@ -35,3 +35,8 @@ SHA-256 as the `postAuthors` data-source version. Changing the mapping changes r
 identity even if its human-readable release label is unchanged. Existing run pins
 must not be reused with a changed mapping. Browse/search/fetch descriptions also
 change the harness version. No live account lookup is performed.
+
+`npm run session:verify` checks every account ID in the pinned posts release,
+including excluded rows, against the mapping and fails with the unmapped IDs.
+Update `config/post-authors.json` when accepting a release with new accounts.
+Runtime evidence still falls back to numeric IDs for unmapped accounts.
