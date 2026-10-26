@@ -167,6 +167,27 @@ for (const [status, emptyBoxes, expected] of [
           history.close();
         }
       }
+      const postgame = new Session(
+        f.config,
+        f.game,
+        "postgame",
+        f.game.release,
+        f.source,
+      );
+      const postExport = await postgame.exportTo(
+        join(root, "post-export"),
+        new AbortController().signal,
+      );
+      const postDb = new DatabaseSync(postExport, { readOnly: true });
+      try {
+        const settlements = postDb
+          .prepare("SELECT outcome FROM odds_settlements WHERE game_id = ?")
+          .all(f.game.gameId);
+        assert.ok(settlements.length > 0);
+        assert.ok(settlements.every((row) => row.outcome === expected));
+      } finally {
+        postDb.close();
+      }
       let feedback:
         | { outcome: string; actual: number | null; score: number | null }
         | undefined;
@@ -175,6 +196,14 @@ for (const [status, emptyBoxes, expected] of [
         if (ctx.phase === "postgame") {
           feedback = (await session.call("read_released_results", {})).games[0]
             .questions[0];
+          const odds = await session.call("query_odds_history", {
+            game_id: f.game.gameId,
+          });
+          assert.ok(odds.settlements.length > 0);
+          for (const settlement of odds.settlements) {
+            assert.equal(settlement.outcome, expected);
+            assert.equal(settlement.actual, feedback.actual);
+          }
           return;
         }
         assert.ok(!("status" in ctx.game));
@@ -203,7 +232,10 @@ for (const [status, emptyBoxes, expected] of [
         assert.equal(report.rows[0].skill, null);
         assert.equal(report.totals.scored, 0);
       } else if (expected === "unresolved") {
-        assert.match(report.rows[0].reason!, /^unresolved:/);
+        assert.equal(
+          report.rows[0].reason,
+          `unresolved: game status ${status}`,
+        );
         assert.equal(report.rows[0].actual, null);
         assert.equal(report.rows[0].skill, null);
         assert.equal(report.totals.scored, 0);

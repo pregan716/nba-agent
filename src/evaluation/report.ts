@@ -6,7 +6,11 @@ import { readBlob } from "../runner/blobs.js";
 import { cost, type Usage } from "../runner/budget.js";
 import type { QuestionSet } from "../questions/builder.js";
 import type { SubmitInput } from "../env/contract.js";
-import { resolveFrozen, type ResolutionInput } from "../env/results.js";
+import {
+  resolveFrozen,
+  resolveGameStatus,
+  type ResolutionInput,
+} from "../env/results.js";
 import { logSkill, brierSkill } from "./scoring.js";
 
 export interface ScoredQuestion {
@@ -199,7 +203,9 @@ export function evaluate(events: Event[]) {
           ?.p_over ?? null;
       const reason = !["over", "under"].includes(resolved.outcome)
         ? resolved.outcome === "unresolved"
-          ? `unresolved: ${input?.boxReason ?? input?.summaryReason ?? (input ? "missing or conflicting official stat or participation" : "outcome data not captured")}`
+          ? input && resolveGameStatus(input.status)?.outcome === "unresolved"
+            ? `unresolved: game status ${input.status.trim().toLowerCase()}`
+            : `unresolved: ${input?.boxReason ?? input?.summaryReason ?? (input ? "missing or conflicting official stat or participation" : "outcome data not captured")}`
           : resolved.outcome
         : phase?.data.status !== "completed"
           ? `pregame ${phase?.data.status ?? "unfinished"}`

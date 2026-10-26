@@ -197,3 +197,7 @@ consumers see only static schedule fields until release. Released resolution voi
 `postponed`/`canceled` (also accepts `cancelled`); only `completed`/`final` are
 scored. Explicit non-final or unrecognized states remain unresolved even if box
 scores exist. Empty legacy status retains the existing stats-based fallback.
+
+Historical odds settlements (including sandbox exports) use the same status gate
+as scoring. Offline reports identify non-final statuses explicitly, for example
+`unresolved: game status in_progress`, instead of attributing them to missing stats.

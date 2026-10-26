@@ -23,13 +23,9 @@ export interface ResolutionInput {
   boxReason: string | null;
   summaryReason: string | null;
 }
-export function resolveFrozen(
-  input: ResolutionInput,
-  player: string,
-  stat: Stat,
-  line: number,
-): Resolution {
-  const status = input.status.trim().toLowerCase();
+/** Shared status gate for scoring, historical settlements, and report reasons. */
+export function resolveGameStatus(value: string): Resolution | null {
+  const status = value.trim().toLowerCase();
   if (["postponed", "cancelled", "canceled"].includes(status))
     return { actual: null, outcome: "void" };
   // P1's normalized vocabulary is pinned in config/dictionaries/pbp-0.1.0.md.
@@ -37,6 +33,17 @@ export function resolveFrozen(
   // Empty status preserves replay compatibility with records captured before SPO-821.
   if (status && !["completed", "final"].includes(status))
     return { actual: null, outcome: "unresolved" };
+  return null;
+}
+
+export function resolveFrozen(
+  input: ResolutionInput,
+  player: string,
+  stat: Stat,
+  line: number,
+): Resolution {
+  const status = resolveGameStatus(input.status);
+  if (status) return status;
   return resolveOutcome(
     input.gameId,
     player,

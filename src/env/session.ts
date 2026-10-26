@@ -10,6 +10,7 @@ import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
 import {
   resolveOutcome,
+  resolveGameStatus,
   resolveFrozen,
   type ResolutionInput,
   type QuestionScorer,
@@ -694,14 +695,9 @@ export class Session {
         observations.map((o) => [`${o.player.id}:${o.stat}:${o.line}`, o]),
       );
       for (const o of lines.values()) {
-        const { actual, outcome } = resolveOutcome(
-          id,
-          o.player.id,
-          o.stat,
-          o.line,
-          boxes,
-          summaries,
-        );
+        const { actual, outcome } =
+          resolveGameStatus(String(game.data.status ?? "")) ??
+          resolveOutcome(id, o.player.id, o.stat, o.line, boxes, summaries);
         settlements.push({
           game_id: id,
           player: o.player,
