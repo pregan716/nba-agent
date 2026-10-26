@@ -93,29 +93,35 @@ The sink implements both `get` and the upload operations. The destination must n
 Before creating a Docker sandbox, the trusted environment writes a durable
 `sandbox-owner` identity marker and adds the `nba-agent.run-root` hash,
 `nba-agent.run-root-path` canonical path, and `nba-agent.host` labels. On runner
-startup, cleanup lists exited project containers across run roots. It verifies
-the exact name, labels, local host, and marker before considering removal. Older
+startup, own-root cleanup first verifies the original hash/name labels and
+force-removes all previous containers from that root, including running or
+created containers left by a crash. The runner owns the exclusive root lock and
+has not started a new session, so these containers are provably abandoned. A
+failure here prevents resume. Cross-root cleanup then lists exited project
+containers from other roots. It verifies the exact name, labels, local host, and
+marker before considering removal. Older
 hash-only containers are resolved through sibling `<run>/<replicate>` roots under
 the same runs directory; unknown owners and missing roots are left alone.
 
-A live or malformed `runner.lock` protects the entire root, including the current
-runner's root. Running, created, paused, or restarting containers are never
+For cross-root cleanup, a live or malformed `runner.lock` protects the entire
+root. Running, created, paused, or restarting containers in other roots are never
 removed. Cleanup claims `sandbox-sweep.lock` before probing the runner PID; runner
 startup checks this claim before and after acquiring its own lock. Dead runner
-PIDs are eligible without deleting their stale lock. Docker removal is never
+PIDs are eligible without deleting their stale lock. Cross-root removal is never
 forced, so a container that starts after inspection is also protected.
 
 Successful removals emit an `orphan_container_removed` JSON message to stderr
 (the launcher run log), including container ID, name, and owning root. They do
-not enter the experiment record or checkpoints. Cleanup is best-effort: Docker
-unavailability or a failed removal logs `orphan_sweep_unavailable` and does not
-prevent startup. A subsequent launch retries eligible containers.
+not enter the experiment record or checkpoints. Cross-root cleanup is best-effort:
+Docker unavailability or a failed removal logs `orphan_sweep_unavailable` with
+the error cause and does not prevent startup. A subsequent launch retries
+eligible containers.
 
 All ownership/lock files are host-local and excluded from checkpoint restore.
-If cleanup is killed while holding `sandbox-sweep.lock`, it remains conservative:
-the root is protected and startup refuses it. Confirm that the PID in that file
-is no longer running before manually removing the abandoned cleanup claim.
-
+If cleanup is killed while holding `sandbox-sweep.lock`, both runner startup and
+subsequent sweeps reclaim the claim when its PID is confirmed dead (`ESRCH`).
+Live, malformed, or unreadable claims remain protected. A live cleanup claim
+causes startup to fail safely; retry the launch after that sweep completes.
 
 Remaining user decisions: all production budget numbers and pilot effort remain open until the brief's pilot procedure. The fixture values are clearly labelled and are not usable as an approved scored budget.
 

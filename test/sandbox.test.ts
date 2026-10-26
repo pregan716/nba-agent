@@ -671,7 +671,7 @@ open('/proc/1/oom_score_adj', 'w').write('1000')`,
 );
 
 test(
-  "runner startup removes an exited idle-root sandbox, protects a running sandbox, and logs outside the record",
+  "runner restart removes own running/created orphans and an idle-root exited sandbox, protecting other live roots",
   { skip: !process.env.NBA_SANDBOX_IMAGE },
   async (t) => {
     const logs: string[] = [];
@@ -694,13 +694,20 @@ test(
     const idleRoot = join(base, "old-run", "one");
     mkdirSync(idleRoot, { recursive: true });
     const owner = registerSandboxRoot(idleRoot);
+    const liveRoot = join(base, "live-run", "one");
+    mkdirSync(liveRoot, { recursive: true });
+    writeFileSync(join(liveRoot, "runner.lock"), String(process.pid));
+    const ownRunning = `nba-session-${randomUUID()}`,
+      ownCreated = `nba-session-${randomUUID()}`;
     const mine = `nba-session-${randomUUID()}`,
       other = `nba-session-${randomUUID()}`;
     const image = process.env.NBA_SANDBOX_IMAGE!.replace(/^local@/, "");
     try {
       for (const [name, label] of [
         [mine, owner],
-        [other, registerSandboxRoot(runner.root)],
+        [other, registerSandboxRoot(liveRoot)],
+        [ownRunning, registerSandboxRoot(runner.root)],
+        [ownCreated, registerSandboxRoot(runner.root)],
       ]) {
         execFileSync("docker", [
           "create",
@@ -713,7 +720,7 @@ test(
           image,
           "300",
         ]);
-        execFileSync("docker", ["start", name]);
+        if (name !== ownCreated) execFileSync("docker", ["start", name]);
       }
       assert.throws(
         () => new Runner(base, m, proxy, environment),
@@ -756,13 +763,28 @@ test(
         .filter((line) => line.startsWith("{"))
         .map((line) => JSON.parse(line))
         .filter((e) => e.action === "orphan_container_removed");
-      assert.equal(removalLogs.length, 1);
-      assert.equal(removalLogs[0].name, mine);
-      assert.equal(removalLogs[0].runRoot, realpathSync(idleRoot));
+      assert.equal(removalLogs.length, 3);
+      assert.deepEqual(
+        new Set(removalLogs.map((e) => e.name)),
+        new Set([mine, ownRunning, ownCreated]),
+      );
+      assert.equal(
+        removalLogs.find((e) => e.name === mine).runRoot,
+        realpathSync(idleRoot),
+      );
+      for (const name of [ownRunning, ownCreated])
+        assert.equal(
+          execFileSync(
+            "docker",
+            ["ps", "-a", "--filter", `name=${name}`, "--format", "{{.Names}}"],
+            { encoding: "utf8" },
+          ).trim(),
+          "",
+        );
     } finally {
       runner.close();
       await proxy.close();
-      for (const name of [mine, other])
+      for (const name of [mine, other, ownRunning, ownCreated])
         try {
           execFileSync("docker", ["rm", "--force", name], { stdio: "ignore" });
         } catch {}

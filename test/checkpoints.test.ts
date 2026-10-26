@@ -26,6 +26,8 @@ import { fixtureConfig } from "./fixtures/runner/support.js";
 import {
   registerSandboxRoot,
   sweepOrphanContainers,
+  sweepOwnOrphanContainers,
+  sweepClaimHeld,
   ROOT_LABEL,
   sandboxLabels,
   SWEEP_LOCK,
@@ -301,6 +303,7 @@ test("host sweep removes only exited containers in verified idle roots and holds
       { encoding: "utf8" },
     ).stdout.trim();
     writeFileSync(join(idle, "runner.lock"), dead);
+    writeFileSync(join(idle, SWEEP_LOCK), dead);
     await assert.rejects(
       sweepOrphanContainers(root, () => assert.fail(), command),
       /restarted/,
@@ -347,7 +350,72 @@ test("runner refuses a root claimed for sandbox cleanup", () => {
       /cleanup holds/,
     );
     assert.equal(existsSync(join(root, "runner.lock")), false);
+    writeFileSync(join(root, SWEEP_LOCK), "invalid");
+    assert.equal(sweepClaimHeld(root), true);
+    const dead = spawnSync(
+      process.execPath,
+      ["-e", "console.log(process.pid)"],
+      { encoding: "utf8" },
+    ).stdout.trim();
+    writeFileSync(join(root, SWEEP_LOCK), dead);
+    const runner = new Runner(
+      base,
+      m,
+      new MeteringProxy(provider),
+      environment,
+    );
+    runner.close();
+    assert.equal(existsSync(join(root, SWEEP_LOCK)), false);
   } finally {
     rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("own-root restart removes running, created and exited orphans under its runner lock", async () => {
+  const root = mkdtempSync(join(tmpdir(), "nba-own-orphans-"));
+  try {
+    const owner = registerSandboxRoot(root);
+    writeFileSync(join(root, "runner.lock"), String(process.pid));
+    const states = ["running", "created", "exited"];
+    const name = "nba-session-12345678-1234-1234-1234-123456789abc";
+    const removed: string[] = [];
+    await sweepOwnOrphanContainers(
+      root,
+      (id) => removed.push(id),
+      async (args) => {
+        if (args[0] === "ps") {
+          assert.ok(args.includes(`label=${ROOT_LABEL}=${owner}`));
+          assert.ok(!args.some((v) => v.startsWith("status=")));
+          return states
+            .map((_, i) =>
+              JSON.stringify({ ID: String(i).repeat(12), Names: name }),
+            )
+            .join("\n");
+        }
+        if (args[0] === "inspect")
+          return JSON.stringify([
+            {
+              Name: `/${name}`,
+              Config: { Labels: { [ROOT_LABEL]: owner } },
+              State: { Status: states[Number(args[1][0])] },
+            },
+          ]);
+        assert.deepEqual(args, ["rm", "--force", args[2]]);
+        return "";
+      },
+    );
+    assert.deepEqual(removed, ["0".repeat(12), "1".repeat(12), "2".repeat(12)]);
+    await assert.rejects(
+      sweepOwnOrphanContainers(
+        root,
+        () => assert.fail(),
+        async () => {
+          throw Error("Docker failed");
+        },
+      ),
+      /Docker failed/,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });

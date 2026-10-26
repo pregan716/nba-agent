@@ -34,8 +34,48 @@ export type DockerCommand = (args: string[]) => Promise<string>;
 const docker: DockerCommand = async (args) =>
   (await exec("docker", args, { timeout: 30000 })).stdout;
 
+/** The caller owns runner.lock and has not started a session. Any container
+ * belonging to this root predates this runner, even if it is still running. */
+export async function sweepOwnOrphanContainers(
+  root: string,
+  removed: (id: string, name: string, runRoot: string) => void,
+  command: DockerCommand = docker,
+): Promise<void> {
+  if (!existsSync(join(root, marker))) return;
+  if (readFileSync(join(root, "runner.lock"), "utf8") !== String(process.pid))
+    throw Error("Own-root cleanup requires the runner lock");
+  const owner = sandboxOwner(root);
+  const listing = await command([
+    "ps",
+    "--all",
+    "--filter",
+    `label=${ROOT_LABEL}=${owner}`,
+    "--filter",
+    "name=nba-session-",
+    "--format",
+    "{{json .}}",
+  ]);
+  for (const line of listing.split("\n").filter(Boolean)) {
+    const row = JSON.parse(line);
+    if (
+      !/^[a-f0-9]{12,64}$/.test(row.ID) ||
+      !/^nba-session-[a-f0-9-]{36}$/.test(row.Names)
+    )
+      continue;
+    const [container] = JSON.parse(await command(["inspect", row.ID]));
+    if (
+      container?.Config?.Labels?.[ROOT_LABEL] !== owner ||
+      container.Name !== `/${row.Names}`
+    )
+      continue;
+    await command(["rm", "--force", row.ID]);
+    removed(row.ID, row.Names, realpathSync(root));
+  }
+}
+
 // Older containers have only the hash label. Resolve those through sibling
 // run/replicate roots, without traversing workspaces or following directory links.
+// This relies on Runner.root being <base>/<runId>/<replicateId>.
 function legacyRoots(root: string): Map<string, string> {
   const roots = new Map<string, string>();
   const add = (path: string) => {
@@ -64,11 +104,34 @@ function legacyRoots(root: string): Map<string, string> {
 }
 
 export const SWEEP_LOCK = "sandbox-sweep.lock";
+/** A live, unreadable or malformed cleanup claim blocks startup. Recover only
+ * claims whose PID is positively known to be dead, as for runner.lock. */
+export function sweepClaimHeld(root: string): boolean {
+  const path = join(root, SWEEP_LOCK);
+  try {
+    const value = readFileSync(path, "utf8");
+    const pid = Number(value);
+    if (!Number.isSafeInteger(pid) || pid < 1) return true;
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch (e: any) {
+      if (e.code !== "ESRCH") return true;
+    }
+    if (readFileSync(path, "utf8") !== value) return true;
+    rmSync(path);
+    return false;
+  } catch (e: any) {
+    return e.code !== "ENOENT";
+  }
+}
+
 /** Claim cleanup before probing runner.lock. Runner checks this claim both before
  * and after acquiring its lock, so even concurrent startup cannot race removal.
- * Unknown or abandoned cleanup claims are left for operator inspection. */
+ * Dead claims are reclaimed; unknown claims remain protected. */
 function claimIdleRoot(root: string): (() => void) | undefined {
   const guard = join(root, SWEEP_LOCK);
+  if (sweepClaimHeld(root)) return;
   try {
     writeFileSync(guard, String(process.pid), { flag: "wx", mode: 0o600 });
   } catch {
@@ -102,7 +165,7 @@ function claimIdleRoot(root: string): (() => void) | undefined {
 }
 
 /** Only exited, verified project containers in idle local roots are eligible.
- * A live lock (including the calling runner's lock) protects the entire root. */
+ * The caller's root is handled separately under its exclusive runner lock. */
 export async function sweepOrphanContainers(
   root: string,
   removed: (id: string, name: string, runRoot: string) => void,
@@ -149,6 +212,7 @@ export async function sweepOrphanContainers(
     if (!runRoot) continue;
     try {
       runRoot = realpathSync(runRoot);
+      if (runRoot === realpathSync(root)) continue;
       if (
         sandboxOwner(runRoot) !== labels[ROOT_LABEL] ||
         readFileSync(join(runRoot, marker), "utf8") !== labels[ROOT_LABEL]
