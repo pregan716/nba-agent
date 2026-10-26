@@ -33,6 +33,7 @@ What stays: the market line as the question, because it controls difficulty and 
 ### Finalization changes (Oct 26, 2026)
 
 - Development-games pilot, step 1 of the budget procedure, complete: `pilot-b-2`, configuration B on the ten development games at effort `high`, all 20 phases completed, ten valid submissions, no limit reached, $39 at the verified prices. Observed spend, token mix, tool calls, sandbox compute, elapsed time and the step-2 proposal for budget profile v1 are recorded in [the pilot observation](pilot-b-2-observation.md). Skill over the market on those games was positive, reported as a pilot observation only. Step 3 (re-runs at a smaller and a larger pregame cap) is pending.
+- Pilot record review: 36 of 111 sandbox programs re-discovered the data schema and 38 of 52 evidence searches returned nothing. Evidence browsing and ranked search added to the environment (SPO-819). The persistent memory-mode instructions now say that durable working aids (a schema sheet, reusable scripts, a scoring helper) belong in the workspace, without supplying any, so the stateless arm is unchanged (SPO-820). Both change the harness version; no run spans them.
 
 ### Finalization changes (Oct 25, 2026)
 
