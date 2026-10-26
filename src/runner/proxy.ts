@@ -1,3 +1,4 @@
+import { retryModel, modelError } from "./retry.js";
 import { VERSION } from "@anthropic-ai/sdk/version";
 import Anthropic from "@anthropic-ai/sdk";
 import type {
@@ -84,7 +85,17 @@ export class MeteringProxy {
       scope.pending = new Promise<void>((resolve) => {
         done = resolve;
       });
+      let upstreamErrorRecorded = false;
       try {
+        const failed = (error: unknown, attempt: number, terminal: boolean) => {
+          upstreamErrorRecorded = true;
+          scope.budget.record.append("model_error", scope.budget.scope, {
+            ...modelError(error),
+            attempt,
+            terminal,
+            limit: null,
+          });
+        };
         let body = "";
         for await (const chunk of req) {
           body += chunk;
@@ -93,7 +104,13 @@ export class MeteringProxy {
         }
         if (scope.closed || scope.signal.aborted) throw Error("Session closed");
         const request = this.request(JSON.parse(body), scope.budget);
-        const count = await this.provider.count(request, scope.signal);
+        const { value: count } = await retryModel(
+          (signal) => this.provider.count(request, signal),
+          scope.signal,
+          scope.budget.config,
+          failed,
+        );
+        upstreamErrorRecorded = false;
         if (!Number.isSafeInteger(count) || count < 0)
           throw Error("Invalid input token count");
         if (scope.closed || scope.signal.aborted) throw Error("Session closed");
@@ -126,12 +143,19 @@ export class MeteringProxy {
         });
         scope.previousCount = count;
         // On transport failure/crash the reservation remains charged, since the
-        // provider may have generated a response we never received. No SDK retries.
-        const response = await this.provider.create(request, scope.signal);
+        // provider may have generated a response we never received. Retries share it.
+        const { value: response, retries } = await retryModel(
+          (signal) => this.provider.create(request, signal),
+          scope.signal,
+          scope.budget.config,
+          failed,
+        );
+        upstreamErrorRecorded = false;
         const usage = normalizeUsage(response.usage);
         scope.budget.record.append("model_response", scope.budget.scope, {
           reservation,
           response,
+          retries,
           usage,
         });
         scope.budget.settle(reservation, tokenTotal(usage, weight), 0, {
@@ -147,10 +171,12 @@ export class MeteringProxy {
           );
         respond(200, response);
       } catch (e) {
-        scope.budget.record.append("model_error", scope.budget.scope, {
-          message: e instanceof LimitError ? e.message : "Model request failed",
-          limit: e instanceof LimitError ? e.limit : null,
-        });
+        if (!upstreamErrorRecorded)
+          scope.budget.record.append("model_error", scope.budget.scope, {
+            ...modelError(e),
+            terminal: true,
+            limit: e instanceof LimitError ? e.limit : null,
+          });
         respond(e instanceof LimitError ? 429 : 502, {
           type: "error",
           error: {
