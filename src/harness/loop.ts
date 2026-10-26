@@ -62,6 +62,42 @@ const text = (value: unknown) => JSON.stringify(value, null, 1);
 const toParams = (content: ContentBlock[]): ContentBlockParam[] =>
   content as unknown as ContentBlockParam[];
 
+const EPHEMERAL = { type: "ephemeral" as const };
+/** The request's prompt-cache breakpoints, built per call and never stored in history:
+ * one on the last tool definition (system prompt and tools cached once per session) and
+ * one on the final block of the latest message, so the cached prefix grows with the
+ * conversation. The last message is always a user message here. A string message is
+ * wrapped as a text block so it can carry the marker. */
+export function withCacheBreakpoints(
+  tools: Tool[],
+  messages: MessageParam[],
+  mode: LoopParameters["promptCache"],
+): { tools: Tool[]; messages: MessageParam[] } {
+  if (mode === "none" || messages.length === 0) return { tools, messages };
+  const markedTools = tools.length
+    ? [...tools.slice(0, -1), { ...tools.at(-1)!, cache_control: EPHEMERAL }]
+    : tools;
+  const last = messages.at(-1)!;
+  const blocks: ContentBlockParam[] =
+    typeof last.content === "string"
+      ? [{ type: "text", text: last.content }]
+      : [...last.content];
+  const final = {
+    ...blocks.at(-1)!,
+    cache_control: EPHEMERAL,
+  } as ContentBlockParam;
+  return {
+    tools: markedTools,
+    messages: [
+      ...messages.slice(0, -1),
+      {
+        role: last.role,
+        content: [...blocks.slice(0, -1), final],
+      } as MessageParam,
+    ],
+  };
+}
+
 function budgetError(error: unknown): "research" | "hard" | null {
   if (!(error instanceof Anthropic.APIError) || error.status !== 429)
     return null;
@@ -113,12 +149,13 @@ export function analystHarness(options: AnalystOptions): Harness {
     for (let turn = 1; turn <= loop.maxTurns; turn++) {
       let response: Message;
       try {
+        const cached = withCacheBreakpoints(tools, messages, loop.promptCache);
         response = await client.messages.create({
           model: options.model,
           max_tokens: maxTokens,
           system,
-          messages,
-          tools,
+          messages: cached.messages,
+          tools: cached.tools,
         });
       } catch (error) {
         const kind = budgetError(error);

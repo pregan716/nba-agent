@@ -1,7 +1,7 @@
 // Builds the `harness` block of a run config so that P4's manifest hash covers
 // every component the brief lists under "Harness version": identity, prompts,
 // memory-mode instructions, tool definitions and schemas, submission format and
-// retry policy, loop parameters (effort, thinking), access method and SDK
+// retry policy, loop parameters (effort, thinking, prompt caching), access method and SDK
 // version, sandbox image digest, and code revision.
 
 import { execFileSync } from "node:child_process";
@@ -30,6 +30,10 @@ export interface LoopParameters {
   truncationRetries: number;
   /** Upper bound on the per-call max_tokens the retries may grow to (the proxy still clamps to budget). */
   maxTokensCeiling: number;
+  /** Prompt-cache breakpoints per request: the 5-minute ephemeral cache on the last tool
+   * definition and on the last block of the latest message, or none. Changes the request
+   * shape, so it is part of the harness version. */
+  promptCache: "ephemeral-5m" | "none";
 }
 export const DEFAULT_LOOP: LoopParameters = {
   maxTokens: 16000,
@@ -39,6 +43,7 @@ export const DEFAULT_LOOP: LoopParameters = {
   contextEvery: 5,
   truncationRetries: 2,
   maxTokensCeiling: 64000,
+  promptCache: "ephemeral-5m",
 };
 export type BaselineName = "market" | "naive-stats" | "random-deviation";
 
