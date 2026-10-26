@@ -30,6 +30,10 @@ v1 framed the task as allocating $100 of simulated prop bets per game and scorin
 
 What stays: the market line as the question, because it controls difficulty and supplies a baseline for free. What is removed: money, stakes, bet counts, book selection, the LLM evidence judge (deferred, not rejected), and dollar-based research budgets (replaced with token caps for v1). The temporal access rules, source contracts, run isolation, and experiment record carry over unchanged in intent.
 
+### Finalization changes (Oct 26, 2026)
+
+- Development-games pilot, step 1 of the budget procedure, complete: `pilot-b-2`, configuration B on the ten development games at effort `high`, all 20 phases completed, ten valid submissions, no limit reached, $39 at the verified prices. Observed spend, token mix, tool calls, sandbox compute, elapsed time and the step-2 proposal for budget profile v1 are recorded in [the pilot observation](pilot-b-2-observation.md). Skill over the market on those games was positive, reported as a pilot observation only. Step 3 (re-runs at a smaller and a larger pregame cap) is pending.
+
 ### Finalization changes (Oct 25, 2026)
 
 - Contamination probe executed against the pinned model with no tools: every regular-season item and every 2025 offseason item reported unknown; the model self-reported an early-April 2025 cutoff, earlier than the documented Aug 2025 training cutoff. Self-reported cutoffs are not authoritative; the probe record is attached to pilot manifests.
