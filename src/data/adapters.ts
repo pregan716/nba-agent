@@ -1,3 +1,4 @@
+import type { PostAuthors } from "./post-authors.js";
 import { ExclusionLog } from "./exclusions.js";
 import { Temporal } from "@js-temporal/polyfill";
 import type {
@@ -437,7 +438,10 @@ export class BeatPostsAdapter {
   get exclusions(): Exclusion[] {
     return this.exclusionLog.values();
   }
-  constructor(readonly release: Release) {}
+  constructor(
+    readonly release: Release,
+    private authors?: PostAuthors,
+  ) {}
   async auditRows(): Promise<Row[]> {
     return this.release.rows(this.release.manifest.rows.objectKey);
   }
@@ -468,16 +472,24 @@ export class BeatPostsAdapter {
         envelope(
           "posts",
           id,
-          pick(post, [
-            "accountId",
-            "postId",
-            "versionId",
-            "text",
-            "publishedAt",
-            "versionPublishedAt",
-            "references",
-            "editHistoryIds",
-          ]),
+          {
+            ...pick(post, [
+              "accountId",
+              "postId",
+              "versionId",
+              "text",
+              "publishedAt",
+              "versionPublishedAt",
+              "references",
+              "editHistoryIds",
+            ]),
+            ...(this.authors
+              ? {
+                  authorHandle: this.authors.handle(post.accountId),
+                  authorMappingSha256: this.authors.version.manifest_sha256,
+                }
+              : {}),
+          },
           ref,
           this.release.root.sha256,
           at,

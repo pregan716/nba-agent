@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "release": "post-authors-v1",
+  "provenance": {
+    "repository": "https://github.com/pregan716/sports-text",
+    "commit": "bafd296e998eb75eadc893a1e9c900309cc3781e",
+    "path": "data/reporters.json",
+    "sha256": "3b2eba71909fc5feb2380d31a45641a563055316106cf7423de936c3756971d3"
+  },
+  "accounts": [
+    {
+      "accountId": "38032945",
+      "handle": "ByJayKing",
+      "name": "Jay King"
+    },
+    {
+      "accountId": "79806078",
+      "handle": "ChrisForsberg_",
+      "name": "Chris Forsberg"
+    }
+  ]
+}

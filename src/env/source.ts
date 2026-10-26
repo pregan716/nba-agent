@@ -148,6 +148,7 @@ export async function corpusSource(
     identities,
     teams,
     versions: [
+      corpus.postAuthors.version,
       ...Object.entries(corpus.pins.sources).map(([source, ref]) => ({
         source,
         release: ref.key,

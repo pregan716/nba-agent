@@ -51,6 +51,9 @@ const object = (
   additionalProperties: false,
 });
 
+const AUTHORS =
+  "Post authors are @handles from the pinned account mapping when known, otherwise account IDs; fetch provenance retains the original account ID and mapping hash.";
+
 const CUTOFF =
   "The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them.";
 
@@ -64,7 +67,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "list_evidence",
-    description: `Browse eligible evidence newest first, with snippets and paging. With no from, pregame starts at the previous Celtics game’s scheduled-start cutoff (all eligible history for the first game); postgame starts at this game’s scheduled start. The next pregame browse includes records from the previous postgame window because they were unavailable at the previous pregame cutoff. from is inclusive, to exclusive and clamped to the session cutoff. Use fetch_evidence to read a full record. ${CUTOFF}`,
+    description: `Browse eligible evidence newest first, with snippets and paging. With no from, pregame starts at the previous Celtics game’s scheduled-start cutoff (all eligible history for the first game); postgame starts at this game’s scheduled start. The next pregame browse includes records from the previous postgame window because they were unavailable at the previous pregame cutoff. from is inclusive, to exclusive and clamped to the session cutoff. Use fetch_evidence to read a full record. ${AUTHORS} ${CUTOFF}`,
     input_schema: object(
       {
         sources: {
@@ -89,7 +92,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "search_evidence",
-    description: `Search eligible text evidence: beat reporters' posts, coach media transcripts and starting-lineup announcements. Ranked BM25 matching of any meaningful query words with English stemming and accent folding; common English function words are ignored. Player surnames boost matching players without filtering other matches; full names resolve through pinned identities and restrict results to those players. Use one or two terms (e.g. 'Pritchard injury'); player_id filters directly. Lineup starters are searchable. Ambiguous surnames match any resolved player. Returns matches with source, availability time, author, title and a snippet, plus the total eligible match count and a cursor for more. ${CUTOFF} Use fetch_evidence to read a full record.`,
+    description: `Search eligible text evidence: beat reporters' posts, coach media transcripts and starting-lineup announcements. Ranked BM25 matching of any meaningful query words with English stemming and accent folding; common English function words are ignored. Player surnames boost matching players without filtering other matches; full names resolve through pinned identities and restrict results to those players. Use one or two terms (e.g. 'Pritchard injury'); player_id filters directly. Lineup starters are searchable. Ambiguous surnames match any resolved player. Returns matches with source, availability time, author, title and a snippet, plus the total eligible match count and a cursor for more. ${AUTHORS} ${CUTOFF} Use fetch_evidence to read a full record.`,
     input_schema: object(
       {
         query: { type: "string", minLength: 1, description: "Words to match." },
@@ -116,7 +119,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "fetch_evidence",
-    description: `Read one evidence record by its evidence_id from list_evidence, search_evidence or from references on another record. Returns the full text as published, availability time, author, title, source URL, transcript segments with speaker-cluster labels (labels are not identities), announced starters for lineup posts, references to other eligible records, and provenance with the pinned manifest hash and supporting artifact object keys and hashes. Cite the stable evidence_id in evidence_refs. ${CUTOFF} An id that does not resolve returns not_found; this does not tell you whether it exists.`,
+    description: `Read one evidence record by its evidence_id from list_evidence, search_evidence or from references on another record. Returns the full text as published, availability time, author, title, source URL, transcript segments with speaker-cluster labels (labels are not identities), announced starters for lineup posts, references to other eligible records, and provenance with the pinned manifest hash and supporting artifact object keys and hashes. Cite the stable evidence_id in evidence_refs. ${AUTHORS} ${CUTOFF} An id that does not resolve returns not_found; this does not tell you whether it exists.`,
     input_schema: object(
       { evidence_id: id("From search_evidence or a references list.") },
       ["evidence_id"],

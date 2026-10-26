@@ -201,3 +201,11 @@ scores exist. Empty legacy status retains the existing stats-based fallback.
 Historical odds settlements (including sandbox exports) use the same status gate
 as scoring. Offline reports identify non-final statuses explicitly, for example
 `unresolved: game status in_progress`, instead of attributing them to missing stats.
+
+SPO-823: the posts release contains only numeric `accountId` author identities.
+The adapter enriches eligible post projections with the handle from
+[`config/post-authors.json`](../config/post-authors.json). The checked-in mapping
+covers Jay King (`38032945`, `ByJayKing`) and Chris Forsberg (`79806078`,
+`ChrisForsberg_`), with a pinned source-inventory reference. Its byte hash is carried
+in the corpus and session data-source versions. Unknown accounts retain their ID;
+the original post ID, account ID, text and artifact hashes remain unchanged.

@@ -1,3 +1,4 @@
+import { loadPostAuthors } from "./post-authors.js";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { sha256, VerifiedStore, type ObjectStore } from "./store.js";
@@ -33,6 +34,7 @@ export async function openCorpus(
   for (const entry of index)
     if (sha256(metadata) !== entry.livestream_provenance.sha256)
       throw Error("Transcript publication evidence hash mismatch");
+  const postAuthors = await loadPostAuthors(root);
   const odds = new OddsAdapter(await release("odds"));
   return {
     pins,
@@ -43,7 +45,8 @@ export async function openCorpus(
     priorPbp: new PlayByPlayAdapter(await release("pbp-2024-25")),
     injuries: new InjuryAdapter(await release("injuries")),
     players: new PlayerReferenceAdapter(await release("players")),
-    posts: new BeatPostsAdapter(await release("posts")),
+    postAuthors,
+    posts: new BeatPostsAdapter(await release("posts"), postAuthors),
     celticsLineups: new LineupsAdapter(
       pins.sources.celticsLineups,
       verified,
@@ -60,6 +63,7 @@ export async function openCorpus(
       verified,
     ),
     versions: {
+      postAuthors: postAuthors.version,
       sources: pins.sources,
       odds: odds.version(),
       transcriptIndex: pins.transcriptIndex,
