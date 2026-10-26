@@ -150,6 +150,9 @@ export class PlayByPlayAdapter {
           "scheduled_tipoff",
           "venue",
           "neutral_site",
+          // Trusted resolution metadata. P3's public schedule projection omits
+          // status; history and resolution expose it only after game release.
+          "status",
         ]),
         ref,
         this.release.root.sha256,

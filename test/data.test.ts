@@ -377,7 +377,7 @@ test("Parquet decoding returns JSON-safe published values; reference tables forb
   await assert.rejects(adapter.records("archive"), /Only published/);
 });
 
-test("PBP suppresses partial products before reading their files; static schedule omits results", async () => {
+test("PBP suppresses partial products before reading their files; trusted schedule retains status but omits scores", async () => {
   const games = await readFile(
     new URL("./fixtures/games.parquet", import.meta.url),
   );
@@ -414,7 +414,7 @@ test("PBP suppresses partial products before reading their files; static schedul
   assert.equal(adapter.exclusions[0].reason, "broken chain");
   const schedule = await adapter.games();
   assert.equal("home_score" in schedule[0].data, false);
-  assert.equal("status" in schedule[0].data, false);
+  assert.equal(schedule[0].data.status, first.status);
   schedule[0].data.home_score = 999;
   assert.equal("home_score" in (await adapter.games())[0].data, false);
   assert.equal(
