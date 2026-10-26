@@ -54,7 +54,6 @@ export function fixtureConfig(
         wallSeconds: 5,
       },
       submissionReserve: 200,
-      cacheReadWeight: 1,
       warnRemainingTokens: 100,
       rollover: false,
       sandbox: {

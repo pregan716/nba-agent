@@ -11,7 +11,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 import Anthropic from "@anthropic-ai/sdk";
-import { manifest, digest } from "../src/runner/config.js";
+import { manifest, digest, type Manifest } from "../src/runner/config.js";
 import { RecordStore, snapshot, restore } from "../src/runner/record.js";
 import {
   Budget,
@@ -1276,6 +1276,82 @@ test("real workspace service carries season memory, expires k-window writes and 
     } finally {
       await s.close();
     }
+  }
+});
+
+test("a manifest without cacheReadWeight keeps its digest, resumes at weight 1, and a weight change is a new run", async () => {
+  const legacy = fixtureConfig();
+  delete (legacy.budget as any).cacheReadWeight; // as persisted before SPO-814
+  const m = manifest(legacy, games);
+  assert.ok(!("cacheReadWeight" in m.config.budget)); // parsing inserts nothing
+  assert.equal(
+    digest(m),
+    digest(manifest(JSON.parse(JSON.stringify(legacy)), games)),
+  );
+  const root = temp();
+  try {
+    const first = new Runner(root, m, new MeteringProxy(provider), environment);
+    const runRoot = first.root;
+    first.close();
+    // Reopen the persisted run on this code with the saved manifest.
+    const store = new RecordStore(runRoot);
+    const saved = store.events("manifest")[0].data as Manifest;
+    store.close();
+    assert.ok(!("cacheReadWeight" in saved.config.budget));
+    const proxy = new MeteringProxy({
+      count: async () => 100,
+      create: async () => {
+        const r = structuredClone(sdkMessage);
+        r.usage = {
+          ...r.usage,
+          input_tokens: 0,
+          output_tokens: 10,
+          cache_read_input_tokens: 100,
+          cache_creation_input_tokens: 0,
+          cache_creation: {
+            ephemeral_5m_input_tokens: 0,
+            ephemeral_1h_input_tokens: 0,
+          },
+        } as any;
+        return r;
+      },
+    });
+    await proxy.listen();
+    const resumed = new Runner(root, saved, proxy, environment);
+    try {
+      const b = new Budget(
+        resumed.record,
+        "g1:pregame",
+        resumed.manifest.config,
+        "pregame",
+      );
+      const client = new Anthropic({
+        ...proxy.issue(b, new AbortController().signal),
+        maxRetries: 0,
+      });
+      await client.messages.create({
+        model: "x",
+        max_tokens: 50,
+        messages: [],
+      });
+      assert.equal(b.totals().tokens, 110); // cache reads at full weight, as before
+      assert.equal(
+        resumed.record.events("model_request")[0].data.cacheReadWeight,
+        1,
+      );
+    } finally {
+      resumed.close();
+      await proxy.close();
+    }
+    // An actual policy change is a different manifest and is refused.
+    const changed = fixtureConfig();
+    changed.budget.cacheReadWeight = 0.1;
+    assert.throws(
+      () => new RecordStore(runRoot, manifest(changed, games)),
+      /Run manifest mismatch/,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });
 

@@ -98,7 +98,7 @@ export class MeteringProxy {
           throw Error("Invalid input token count");
         if (scope.closed || scope.signal.aborted) throw Error("Session closed");
         const remaining = scope.budget.remaining().tokens;
-        const weight = scope.budget.config.budget.cacheReadWeight;
+        const weight = scope.budget.config.budget.cacheReadWeight ?? 1;
         const charged = chargedInputEstimate(
           count,
           scope.previousCount,
