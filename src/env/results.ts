@@ -23,14 +23,27 @@ export interface ResolutionInput {
   boxReason: string | null;
   summaryReason: string | null;
 }
+/** Shared status gate for scoring, historical settlements, and report reasons. */
+export function resolveGameStatus(value: string): Resolution | null {
+  const status = value.trim().toLowerCase();
+  if (["postponed", "cancelled", "canceled"].includes(status))
+    return { actual: null, outcome: "void" };
+  // P1's normalized vocabulary is pinned in config/dictionaries/pbp-0.1.0.md.
+  // Never score partial stats for an explicit non-final or unrecognized state.
+  // Empty status preserves replay compatibility with records captured before SPO-821.
+  if (status && !["completed", "final"].includes(status))
+    return { actual: null, outcome: "unresolved" };
+  return null;
+}
+
 export function resolveFrozen(
   input: ResolutionInput,
   player: string,
   stat: Stat,
   line: number,
 ): Resolution {
-  if (/postponed|cancelled|canceled/i.test(input.status))
-    return { actual: null, outcome: "void" };
+  const status = resolveGameStatus(input.status);
+  if (status) return status;
   return resolveOutcome(
     input.gameId,
     player,
