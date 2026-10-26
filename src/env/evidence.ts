@@ -123,7 +123,9 @@ export class EvidenceIndex {
         available_at: r.availableAt,
         author:
           source === "posts"
-            ? nullable(d.accountId)
+            ? nullable(d.authorHandle)
+              ? `@${d.authorHandle}`
+              : nullable(d.accountId)
             : source === "lineups"
               ? nullable(d.source)
               : null,
@@ -152,6 +154,13 @@ export class EvidenceIndex {
               ].sort()
             : [],
         provenance: {
+          ...(source === "posts"
+            ? {
+                account_id: nullable(d.accountId) ?? undefined,
+                author_mapping_sha256:
+                  nullable(d.authorMappingSha256) ?? undefined,
+              }
+            : {}),
           manifest_sha256: r.provenance.manifestSha256,
           objects: refs.map((ref) => ({
             bucket: ref.bucket,

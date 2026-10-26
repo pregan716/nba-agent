@@ -206,7 +206,7 @@ export interface EvidenceHit {
   evidence_id: EvidenceId;
   source: EvidenceSource;
   available_at: Instant;
-  /** Post account ID (handle when provided), transcript channel, or lineup account. */
+  /** Post @handle when mapped, otherwise account ID; transcript channel or lineup account. */
   author: string | null;
   title: string | null;
   snippet: string;
@@ -225,6 +225,10 @@ export interface TranscriptSegment {
   text: string;
 }
 export interface EvidenceProvenance {
+  /** Posts: stable numeric account identity, even when author is a handle. */
+  account_id?: string;
+  /** Hash of the checked-in account-to-handle mapping used for posts. */
+  author_mapping_sha256?: string;
   manifest_sha256: string;
   objects: { bucket: string; key: string; sha256: string }[];
 }

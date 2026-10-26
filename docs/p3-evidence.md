@@ -17,10 +17,21 @@ Adding the browse definition and changing the search description changes the ser
 
 Evidence IDs hash source, P1 stable record ID and the pinned manifest hash. They are stable across queries and sessions on the same pins and can be put directly in submission `evidence_refs`. Posts use the latest eligible version per account/post ID. Superseded versions are absent from this session's index. Reply/quote references include only indexed eligible posts; missing, future and excluded targets do not appear.
 
-Fetch returns explicit public fields, never a raw envelope. Text is returned verbatim, including the accepted C2 transcript defects. Transcript segments preserve utterance text, start seconds and speaker-cluster labels; speaker names, confidence, word metadata and audio are excluded. Lineup starters resolve through the persisted P1 name mappings, preserving the announced names and order. Post authors use the P1 account ID; unavailable transcript channel metadata is null. Fetch results are defensive copies.
+Fetch returns explicit public fields, never a raw envelope. Text is returned verbatim, including the accepted C2 transcript defects. Transcript segments preserve utterance text, start seconds and speaker-cluster labels; speaker names, confidence, word metadata and audio are excluded. Lineup starters resolve through the persisted P1 name mappings, preserving the announced names and order. Post authors use `@handle` from the pinned `config/post-authors.json` mapping, falling back to the original account ID when unmapped. Fetch provenance includes `account_id` and `author_mapping_sha256`; unavailable transcript channel metadata is null. Fetch results are defensive copies.
 
 SPO-788 requires citation provenance, so the public contract adds `provenance.manifest_sha256` and an `objects` list of bucket/key/SHA-256 triples. Transcripts include the normalized artifact supporting segments and the readable artifact supporting full text, both verified by P1. Search results omit provenance. Object locations are citation identifiers, not access credentials or additional tools.
 
 The later P3a contract specifies identical `not_found` errors for unknown and future evidence IDs, replacing the issue's original `cutoff_refused` wording. IDs are looked up only in the eligible index; fetch cannot distinguish absent, superseded, equality-boundary or future records.
 
 Verification: `npm test` exercises the shared adversarial corpus with and without future records; equality boundaries; latest eligible post versions; reference pruning; verbatim transcript defects; segment-only search; provenance; immutable fetch results; deterministic pagination; and the real runner-backed tools. `npm run session:verify` additionally searches and fetches each media source against the pinned corpus, resolves returned references, checks transcript artifact hashes and five announced lineup starters, and repeats queries for determinism.
+
+SPO-823 adds readable post authors. The pinned relevance release has `accountId`
+but no handle or display-name field. The two-account mapping is derived from the
+[sports-text reporter inventory](https://github.com/pregan716/sports-text/blob/bafd296e998eb75eadc893a1e9c900309cc3781e/data/reporters.json);
+its upstream commit and file hash are recorded in the mapping. These are identity
+labels, not claims about reporter reliability or historical handle-change dates.
+`openCorpus` loads and validates the mapping, and `corpusSource` adds its exact-byte
+SHA-256 as the `postAuthors` data-source version. Changing the mapping changes run
+identity even if its human-readable release label is unchanged. Existing run pins
+must not be reused with a changed mapping. Browse/search/fetch descriptions also
+change the harness version. No live account lookup is performed.
