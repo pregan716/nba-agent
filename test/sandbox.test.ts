@@ -1,5 +1,5 @@
 import { gunzipSync } from "node:zlib";
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { existsSync, readdirSync } from "node:fs";
 import { dirname } from "node:path";
 import test from "node:test";
@@ -129,7 +129,7 @@ print(open('/workspace/notes').read())`,
         limits,
         signal(),
       );
-      const { sandboxOwner, ROOT_LABEL } =
+      const { sandboxOwner, ROOT_LABEL, ROOT_PATH_LABEL, HOST_LABEL } =
         await import("../src/runner/orphans.js");
       const labels = JSON.parse(
         execFileSync(
@@ -139,6 +139,8 @@ print(open('/workspace/notes').read())`,
         ),
       );
       assert.equal(labels[ROOT_LABEL], sandboxOwner(s.root));
+      assert.equal(labels[ROOT_PATH_LABEL], realpathSync(s.root));
+      assert.equal(labels[HOST_LABEL], (await import("node:os")).hostname());
       assert.ok(existsSync(join(s.root, "sandbox-owner")));
       assert.equal(result.exitStatus, 0, result.stderr);
       assert.match(result.stdout, /packages-ok\n1\nFalse\nfirst/);
@@ -669,9 +671,11 @@ open('/proc/1/oom_score_adj', 'w').write('1000')`,
 );
 
 test(
-  "runner restart removes only its orphaned sandbox and records removal",
+  "runner startup removes an exited idle-root sandbox, protects a running sandbox, and logs outside the record",
   { skip: !process.env.NBA_SANDBOX_IMAGE },
-  async () => {
+  async (t) => {
+    const logs: string[] = [];
+    t.mock.method(console, "error", (message: string) => logs.push(message));
     const { randomUUID } = await import("node:crypto");
     const { Runner } = await import("../src/runner/runner.js");
     const { MeteringProxy } = await import("../src/runner/proxy.js");
@@ -687,14 +691,16 @@ test(
       { gameId: "g1", scheduledStart: "2025-11-01T23:00:00Z" },
     ]);
     let runner = new Runner(base, m, proxy, environment);
-    const owner = registerSandboxRoot(runner.root);
+    const idleRoot = join(base, "old-run", "one");
+    mkdirSync(idleRoot, { recursive: true });
+    const owner = registerSandboxRoot(idleRoot);
     const mine = `nba-session-${randomUUID()}`,
       other = `nba-session-${randomUUID()}`;
     const image = process.env.NBA_SANDBOX_IMAGE!.replace(/^local@/, "");
     try {
       for (const [name, label] of [
         [mine, owner],
-        [other, "another-live-run"],
+        [other, registerSandboxRoot(runner.root)],
       ]) {
         execFileSync("docker", [
           "create",
@@ -722,6 +728,7 @@ test(
         "true",
       );
       // A dead runner leaves the same Docker state; release only its host lock.
+      execFileSync("docker", ["stop", "--time", "0", mine]);
       runner.close();
       runner = new Runner(base, m, proxy, environment);
       await runner.run(harness);
@@ -744,8 +751,14 @@ test(
       const removals = runner.record
         .events("infrastructure")
         .filter((e) => e.data.action === "orphan_container_removed");
-      assert.equal(removals.length, 1);
-      assert.equal(removals[0].data.name, mine);
+      assert.equal(removals.length, 0);
+      const removalLogs = logs
+        .filter((line) => line.startsWith("{"))
+        .map((line) => JSON.parse(line))
+        .filter((e) => e.action === "orphan_container_removed");
+      assert.equal(removalLogs.length, 1);
+      assert.equal(removalLogs[0].name, mine);
+      assert.equal(removalLogs[0].runRoot, realpathSync(idleRoot));
     } finally {
       runner.close();
       await proxy.close();

@@ -1,4 +1,4 @@
-import { registerSandboxRoot, ROOT_LABEL } from "../runner/orphans.js";
+import { sandboxLabels } from "../runner/orphans.js";
 import { spawn, execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { randomUUID } from "node:crypto";
@@ -116,10 +116,8 @@ export class DockerSandbox {
         `/workspace:rw,nosuid,nodev,size=${limits.memoryBytes},uid=1000,gid=1000,mode=755`,
       );
     if (this.runRoot)
-      args.push(
-        "--label",
-        `${ROOT_LABEL}=${registerSandboxRoot(this.runRoot)}`,
-      );
+      for (const label of sandboxLabels(this.runRoot))
+        args.push("--label", label);
     args.push(image);
     this.#creation = command("docker", args, { timeout: 30000 });
     await this.#creation;

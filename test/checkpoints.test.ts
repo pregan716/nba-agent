@@ -1,4 +1,8 @@
 import test from "node:test";
+import { spawnSync } from "node:child_process";
+import { Runner } from "../src/runner/runner.js";
+import { MeteringProxy } from "../src/runner/proxy.js";
+import { provider, environment } from "./fixtures/runner/support.js";
 import assert from "node:assert/strict";
 import {
   mkdtempSync,
@@ -23,6 +27,8 @@ import {
   registerSandboxRoot,
   sweepOrphanContainers,
   ROOT_LABEL,
+  sandboxLabels,
+  SWEEP_LOCK,
 } from "../src/runner/orphans.js";
 
 function setup() {
@@ -204,60 +210,104 @@ test("R2 blob existence distinguishes missing objects from permission/network fa
   status = 500;
   await assert.rejects(sink.has("blob"));
 });
-test("orphan sweep is scoped to registered root, verifies labels/names, logs only successful removals", async () => {
-  const root = mkdtempSync(join(tmpdir(), "nba-orphans-"));
-  try {
-    const calls: string[][] = [],
-      removed: string[] = [];
-    await sweepOrphanContainers(
-      root,
-      () => assert.fail(),
-      async () => {
-        assert.fail("no Docker needed before any sandbox use");
-      },
+test("host sweep removes only exited containers in verified idle roots and holds a cleanup claim", async () => {
+  const base = mkdtempSync(join(tmpdir(), "nba-orphans-"));
+  const root = join(base, "current", "one"),
+    idle = join(base, "old", "one"),
+    locked = join(base, "live", "one");
+  for (const path of [root, idle, locked]) mkdirSync(path, { recursive: true });
+  const labels = (path: string) =>
+    Object.fromEntries(
+      sandboxLabels(path).map((v) => {
+        const i = v.indexOf("=");
+        return [v.slice(0, i), v.slice(i + 1)];
+      }),
     );
-    const owner = registerSandboxRoot(root),
-      name = "nba-session-12345678-1234-1234-1234-123456789abc";
-    const ids = ["a".repeat(12), "b".repeat(12), "c".repeat(12)];
+  try {
+    const idleLabels = labels(idle),
+      liveLabels = labels(locked);
+    writeFileSync(join(locked, "runner.lock"), String(process.pid));
+    const name = "nba-session-12345678-1234-1234-1234-123456789abc";
+    const containers = [
+      { labels: idleLabels, state: "exited" },
+      { labels: liveLabels, state: "exited" },
+      { labels: idleLabels, state: "running" },
+      { labels: { [ROOT_LABEL]: registerSandboxRoot(idle) }, state: "exited" },
+      { labels: { ...idleLabels, [ROOT_LABEL]: "unknown" }, state: "exited" },
+      { labels: {}, state: "exited" },
+      { labels: idleLabels, state: "created" },
+      {
+        labels: { ...idleLabels, "nba-agent.host": "another-host" },
+        state: "exited",
+      },
+    ];
+    const removed: string[] = [];
     await sweepOrphanContainers(
       root,
       (id) => removed.push(id),
       async (args) => {
-        calls.push(args);
         if (args[0] === "ps") {
-          assert.ok(args.includes(`label=${ROOT_LABEL}=${owner}`));
-          return ids
-            .map((ID) => JSON.stringify({ ID, Names: name }))
+          assert.ok(args.includes("status=exited"));
+          assert.ok(args.includes(`label=${ROOT_LABEL}`));
+          return containers
+            .map((_, i) =>
+              JSON.stringify({ ID: String(i).repeat(12), Names: name }),
+            )
             .join("\n");
         }
+        const c = containers[Number(args[1][0])];
         if (args[0] === "inspect")
           return JSON.stringify([
             {
               Name: `/${name}`,
-              Config: {
-                Labels: {
-                  [ROOT_LABEL]: args[1] === ids[1] ? "other-root" : owner,
-                },
-              },
+              Config: { Labels: c.labels },
+              State: { Status: c.state, Running: c.state === "running" },
             },
           ]);
+        assert.deepEqual(args, ["rm", args[1]]);
+        assert.equal(
+          readFileSync(join(idle, SWEEP_LOCK), "utf8"),
+          String(process.pid),
+        );
+        assert.equal(existsSync(join(idle, "runner.lock")), false);
         return "";
       },
     );
-    assert.deepEqual(removed, [ids[0], ids[2]]);
-    assert.equal(calls.filter((c) => c[0] === "rm").length, 2);
-    await assert.rejects(
-      sweepOrphanContainers(
-        root,
-        () => assert.fail(),
-        async () => {
-          throw Error("Docker unavailable");
-        },
-      ),
-      /unavailable/,
+    assert.deepEqual(removed, ["0".repeat(12), "3".repeat(12)]);
+    assert.equal(existsSync(join(idle, SWEEP_LOCK)), false);
+    assert.equal(
+      readFileSync(join(locked, "runner.lock"), "utf8"),
+      String(process.pid),
     );
+    // Invalid locks fail closed, and failed removals release the cleanup claim.
+    const listing = JSON.stringify({ ID: "a".repeat(12), Names: name });
+    const command = async (args: string[]) => {
+      if (args[0] === "ps") return listing;
+      if (args[0] === "inspect")
+        return JSON.stringify([
+          {
+            Name: `/${name}`,
+            Config: { Labels: idleLabels },
+            State: { Status: "exited", Running: false },
+          },
+        ]);
+      throw Error("container restarted");
+    };
+    writeFileSync(join(idle, "runner.lock"), "invalid");
+    await sweepOrphanContainers(root, () => assert.fail(), command);
+    const dead = spawnSync(
+      process.execPath,
+      ["-e", "console.log(process.pid)"],
+      { encoding: "utf8" },
+    ).stdout.trim();
+    writeFileSync(join(idle, "runner.lock"), dead);
+    await assert.rejects(
+      sweepOrphanContainers(root, () => assert.fail(), command),
+      /restarted/,
+    );
+    assert.equal(existsSync(join(idle, SWEEP_LOCK)), false);
   } finally {
-    rmSync(root, { recursive: true, force: true });
+    rmSync(base, { recursive: true, force: true });
   }
 });
 
@@ -280,5 +330,24 @@ test("lost publication acknowledgement retries identical checkpoint bytes", asyn
       assert.deepEqual(f.objects.get(key), bytes, key);
   } finally {
     f.close();
+  }
+});
+
+test("runner refuses a root claimed for sandbox cleanup", () => {
+  const base = mkdtempSync(join(tmpdir(), "nba-cleanup-lock-"));
+  const m = manifest(fixtureConfig(), [
+    { gameId: "g", scheduledStart: "2025-11-01T23:00:00Z" },
+  ]);
+  const root = join(base, m.config.runId, m.config.replicateId);
+  mkdirSync(root, { recursive: true });
+  try {
+    writeFileSync(join(root, SWEEP_LOCK), String(process.pid));
+    assert.throws(
+      () => new Runner(base, m, new MeteringProxy(provider), environment),
+      /cleanup holds/,
+    );
+    assert.equal(existsSync(join(root, "runner.lock")), false);
+  } finally {
+    rmSync(base, { recursive: true, force: true });
   }
 });
