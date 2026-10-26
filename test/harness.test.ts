@@ -604,6 +604,20 @@ test("harness version changes with any prompt, tool definition, loop parameter o
   assert.equal(base().sdkVersion, f.config.harness.sdkVersion);
 });
 
+test("persistent memory instructions name durable working aids; stateless does not", () => {
+  const aids = /schema you have learned/;
+  for (const name of [
+    "season-editable",
+    "season-append-only",
+    "window",
+  ] as const)
+    assert.match(MEMORY_INSTRUCTIONS[name], aids, name);
+  assert.doesNotMatch(MEMORY_INSTRUCTIONS.stateless, aids);
+  // The instruction describes what to keep, never what the schema is.
+  for (const m of Object.values(MEMORY_INSTRUCTIONS))
+    assert.doesNotMatch(m, /player_box_scores|player_id|nba_data/);
+});
+
 /** Reject a conversation in which an assistant tool_use is not answered by a tool_result. */
 function assertPaired(request: Request) {
   for (let i = 0; i < request.messages.length; i++) {
