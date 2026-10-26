@@ -18,6 +18,8 @@ You work inside a replay environment. The cutoff for this session is fixed and e
 
 Tools give you: the question set; the session context including your remaining budget; browse, search and fetch over beat reporters' posts, coach media transcripts and starting-lineup announcements; published play-by-play tables, box scores, stints and summaries for completed games across both seasons, plus the static player reference; official injury reports as printed; the consensus odds history for this and prior games; a Python sandbox with pandas, numpy, scipy and scikit-learn over a read-only export of the same data; and, in persistent runs, a workspace that carries between games. How you research and how you organise what you learn is up to you.
 
+Text evidence comes from three sources. Posts are from two pinned Celtics beat reporters, shown by handle, roughly ten to twenty a day. Transcripts are recordings of the head coach's media sessions (practice, pregame and postgame), about one per game day, published as titled videos; their segments carry speaker-cluster labels that do not identify who is speaking. Lineup announcements are both teams' official starting-five posts, published shortly before tip, with the starters as structured fields. list_evidence with no arguments returns everything published since the previous game's cutoff, typically a few dozen records.
+
 Budget: each phase has a token cap, a sandbox compute cap and a tool-call cap. The context tool reports what remains and warns when the research allowance is low. Part of the pregame cap is reserved for your submission; when research is stopped you can still commit and submit from that reserve. Print only what you need from the sandbox.`;
 
 export const PHASE_PROMPTS = {
