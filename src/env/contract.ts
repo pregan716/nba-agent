@@ -192,7 +192,6 @@ export interface ContextResult {
     revision: "editable" | "append-only";
     process: "voluntary" | "mandated-reflection";
   };
-  dataset_versions: DatasetVersion[];
 }
 
 export type EvidenceSource = "posts" | "transcripts" | "lineups";

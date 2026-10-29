@@ -88,6 +88,7 @@ function scripted(
   return {
     count: async () => 5,
     create: async (request) => {
+      assert.doesNotMatch(textOf(request), /dataset_versions/);
       seen.push(structuredClone(request));
       const step = steps[Math.min(calls, steps.length - 1)];
       const produced = step(request, calls++);
@@ -228,6 +229,7 @@ test("analyst loop: fresh conversation, thinking passthrough, tool errors as res
         assert.equal(r.messages.length, 1);
         assert.match(textOf(r), /Released results for this game/);
         assert.match(textOf(r), /"phase": "postgame"/);
+        assert.doesNotMatch(textOf(r), /dataset_versions/);
         return [
           use("workspace_append", { path: "notes.md", content: "\npost" }),
         ];

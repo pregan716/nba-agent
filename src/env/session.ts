@@ -245,9 +245,6 @@ export class Session {
         process,
         ...(windowGames === undefined ? {} : { window_games: windowGames }),
       },
-      dataset_versions: [...this.#source.versions]
-        .sort((a, b) => a.source.localeCompare(b.source))
-        .map((d) => ({ ...d })),
     };
   }
   async questions() {
@@ -926,7 +923,6 @@ export class Session {
           game_id: this.#game.gameId,
           phase: this.#phase,
           cutoff: this.#cutoff,
-          dataset_versions: this.#source.versions,
         },
       ],
     };

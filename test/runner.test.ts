@@ -106,6 +106,11 @@ test("record is append-only, hash-verified, manifest-bound and submissions are a
     m = manifest(fixtureConfig(), games),
     r = new RecordStore(root, m);
   try {
+    assert.deepEqual(
+      r.events("manifest")[0].data.config.profile.dataSources,
+      m.config.profile.dataSources,
+    );
+    assert.ok(m.config.profile.dataSources.length > 0);
     const receipt = r.submission("g1", { answers: [1] });
     assert.deepEqual(r.submission("g1", { answers: [1] }), receipt);
     assert.equal(r.events("submission").length, 1);
@@ -873,7 +878,7 @@ test("runner implements typed SessionTools results and capability groups at ever
         ].sort(),
       );
       assert.equal(context.memory.horizon, "season");
-      assert.equal(context.dataset_versions[0].source, "fixture");
+      assert.equal("dataset_versions" in context, false);
       const questions: import("../src/env/contract.js").ToolResult<"list_questions"> =
         await typed.call("list_questions", {});
       assert.equal(questions.questions.length, 1);

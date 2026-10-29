@@ -61,7 +61,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "context",
     description:
-      "Return game_lines at scheduled start: Celtics spread (negative when favoured), game total derived from paired team-total quotes, implied team totals, contributing-book counts and provenance; null values mean unavailable markets. Also return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, the reserve held for the final submission, and a low-budget warning), the memory mode of this run, and the pinned dataset versions. Call it first in every session and again whenever you need the budget.",
+      "Return game_lines at scheduled start: Celtics spread (negative when favoured), game total derived from paired team-total quotes, implied team totals, contributing-book counts and provenance; null values mean unavailable markets. Also return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, the reserve held for the final submission, and a low-budget warning), and the memory mode of this run. Call it first in every session and again whenever you need the budget.",
     input_schema: object({}),
     phases: ["pregame", "commit", "postgame"],
   },

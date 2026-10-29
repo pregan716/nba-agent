@@ -178,11 +178,6 @@ export const environment: EnvironmentFactory = async (
           revision: context.memory.revision,
           process: context.memory.process,
         },
-        dataset_versions: context.dataSources.map((d) => ({
-          source: d.type,
-          release: d.release,
-          manifest_sha256: d.manifestSha256,
-        })),
       };
     },
     async questions() {
