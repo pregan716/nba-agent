@@ -61,7 +61,7 @@ Result types in `contract.ts`, briefly:
 
 | Tool | Result carries | Result never carries |
 | --- | --- | --- |
-| `context` | scheduled-start `game_lines` (spread, derived total, implied team totals, counts, provenance), team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, enabled capability groups, memory mode, dataset versions | run id, paths, anything about other replicates |
+| `context` | scheduled-start `game_lines` (spread, derived total, implied team totals, counts, provenance), team, game (opponent, home, scheduled start, index), phase, cutoff, budget remaining, enabled capability groups, memory mode | run id, paths, anything about other replicates |
 | `search_evidence` | hits with `evidence_id`, source, availability time, author, title, snippet; `total`, `next_cursor` | relevance scores, record provenance |
 | `fetch_evidence` | full text as published, segments with speaker-cluster labels, announced starters, references, explicit artifact provenance (SPO-788) | audio, speaker identities, alternates, box-score corrections |
 | `query_game_history` | published rows plus a `ColumnDefinition` per column, and `unavailable` games with reason; the six player-reference tables (`PLAYER_REFERENCE_TABLES`) by `player_id` or `team_id` | any 2025–26 game before its release; invalid-coverage products as data; the player-reference `archive/` |
@@ -118,7 +118,7 @@ The P4 runner routes `context`, `begin_commit`, `submit` and `execute_code` itse
 | Previous runner shape | Contract | Implemented translation |
 | --- | --- | --- |
 | `execute_code` args is a bare string | `{ program }` | read `args.program` |
-| `context` returns `{ game, phase, cutoff, budget }` with the manifest `Game` and camelCase budget (`tokens, compute, tools, reserve, warning`) | `ContextResult`: team, game with opponent/home/index/venue, phase, cutoff, `BudgetRemaining` in snake_case, memory, dataset versions | build `ContextResult`; map `compute → compute_seconds`, `tools → tool_calls`, `reserve → submission_reserve` |
+| `context` returns `{ game, phase, cutoff, budget }` with the manifest `Game` and camelCase budget (`tokens, compute, tools, reserve, warning`) | `ContextResult`: team, game with opponent/home/index/venue, phase, cutoff, `BudgetRemaining` in snake_case, memory | build `ContextResult`; map `compute → compute_seconds`, `tools → tool_calls`, `reserve → submission_reserve` |
 | `submit` returns `{ receipt }` | `{ receipt, attempt, clips }` | add attempt and clips (P3 `Validation.clips`) |
 | `submit` validation failure returns the `Validation` object | throws `SessionError("validation_failed", …, problems, attemptsRemaining)` | wrap |
 | code result `exitStatus`, `computeSeconds` | `exit_status`, `compute_seconds` | rename at the boundary |
@@ -156,3 +156,9 @@ Provenance contains the parent layer manifest, chained source manifest, quotes
 object, pinned proportional methodology, and game-line adaptation hash. The
 `gameLines` data-source version pins that adaptation. The updated tool descriptions
 change the harness version, so existing manifests must not be reused.
+
+SPO-832 omits the per-dataset version list entirely from `ContextResult` and the
+sandbox `session` row; there is no replacement identifier. Opening prompts and
+subsequent context calls therefore omit that list. Full versions remain pinned in
+run manifests and records, and internal validation and cache identities are unchanged.
+Game-line observation provenance remains part of its separate public contract.

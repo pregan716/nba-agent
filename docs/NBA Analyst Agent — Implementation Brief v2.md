@@ -325,7 +325,7 @@ These are capability contracts, not final API names.
 
 | Capability | Expected behavior |
 | --- | --- |
-| Session context | Return team, game, opponent, phase, cutoff, budget remaining, and dataset versions |
+| Session context | Return team, game, opponent, phase, cutoff, and budget remaining |
 | Search and fetch evidence | Search eligible media; retrieve stable source records with provenance and citations |
 | Query game history | Retrieve eligible events, stints, lineup context, and box-score aggregates with explicit definitions |
 | Read injuries and schedule | Return eligible status reports and schedule information with timestamps |

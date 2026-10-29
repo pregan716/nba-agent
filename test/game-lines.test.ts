@@ -141,6 +141,12 @@ test("context, history and sandbox share cutoff-gated lines across memory modes 
         await s.exportTo(directory, new AbortController().signal);
         const db = new DatabaseSync(join(directory, "session.sqlite"));
         try {
+          assert.ok(
+            !db
+              .prepare("PRAGMA table_info(session)")
+              .all()
+              .some((r) => r.name === "dataset_versions"),
+          );
           const rows = db
             .prepare(
               "SELECT game_total,available_at FROM game_lines WHERE game_id = ? ORDER BY available_at",
