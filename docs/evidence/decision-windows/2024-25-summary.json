@@ -1,0 +1,153 @@
+{
+  "all_sub_clock_buckets": 48,
+  "all_team_group_sizes": {
+    "1": 21,
+    "2": 11,
+    "3+": 16
+  },
+  "boundaries": 7,
+  "boundary_entry_sizes": {
+    "0": 1,
+    "1": 1,
+    "2": 2,
+    "3": 3
+  },
+  "celtics_contiguous_block_sizes": {
+    "1": 18,
+    "2": 8,
+    "3+": 5
+  },
+  "celtics_entries": 50,
+  "celtics_group_sizes": {
+    "1": 18,
+    "2": 8,
+    "3+": 5
+  },
+  "celtics_groups_reentry": 0,
+  "celtics_groups_with_intervening_non_sub": 0,
+  "celtics_groups_without_marker": 2,
+  "celtics_sub_clock_buckets": 31,
+  "changed_boundaries": 6,
+  "contiguous_sub_blocks": 48,
+  "events": 1016,
+  "foul_box_rows": 34,
+  "free_throw_number_null": 0,
+  "free_throw_total_null": 0,
+  "free_throw_types": {
+    "2ndchance": 4,
+    "None": 49,
+    "fastbreak": 4,
+    "fromturnover": 5,
+    "fromturnover,2ndchance": 2
+  },
+  "games": 2,
+  "marker_buckets_without_celtics_sub": 96,
+  "marker_clock_buckets": 125,
+  "marker_events": {
+    "dead_ball_turnover": 20,
+    "foul": 67,
+    "free_throw": 64,
+    "period_end": 9,
+    "period_start": 9,
+    "timeout": 21,
+    "violation": 6
+  },
+  "mixed_team_groups": 17,
+  "mixed_team_timeout_groups": 7,
+  "null_fouls_entry": 0,
+  "null_fouls_exit": 0,
+  "null_scores": 0,
+  "opponent_complete_changes_before_celtics": [
+    {
+      "entries": [
+        "1642359"
+      ],
+      "exits": [
+        "1628969"
+      ],
+      "game_id": "0022400061",
+      "sequence": 374
+    }
+  ],
+  "opponent_rows_after": 56,
+  "opponent_rows_before": 2,
+  "personal_foul_mismatches": [],
+  "raw_fouler_mismatches": 1,
+  "raw_inperiod_entries": 36,
+  "repaired_events": 0,
+  "repaired_substitutions": 0,
+  "stint_action_count_differences": [
+    {
+      "game_id": "0022400061",
+      "raw_inperiod_entries": 19,
+      "stint_substitution_starts": 0
+    },
+    {
+      "game_id": "0022400230",
+      "raw_inperiod_entries": 17,
+      "stint_substitution_starts": 0
+    }
+  ],
+  "stint_end_reasons": {},
+  "stint_foul_disagreements": [],
+  "stint_start_reasons": {},
+  "stints": 0,
+  "sub_groups_without_marker": 5,
+  "timeouts_after": 0,
+  "timeouts_before": 11,
+  "type_subtypes": {
+    "block/None": 14,
+    "field_goal/DUNK": 13,
+    "field_goal/Hook": 13,
+    "field_goal/Jump Shot": 248,
+    "field_goal/Layup": 96,
+    "foul/offensive": 4,
+    "foul/personal": 62,
+    "foul/technical": 1,
+    "free_throw/1 of 1": 10,
+    "free_throw/1 of 2": 27,
+    "free_throw/2 of 2": 27,
+    "game/end": 2,
+    "jump_ball/recovered": 4,
+    "period_end/end": 9,
+    "period_start/start": 9,
+    "rebound/defensive": 132,
+    "rebound/offensive": 67,
+    "steal/None": 13,
+    "substitution/in": 102,
+    "substitution/out": 102,
+    "timeout/full": 21,
+    "turnover/8-second-violation": 1,
+    "turnover/backcourt": 1,
+    "turnover/bad pass": 9,
+    "turnover/lost ball": 5,
+    "turnover/offensive foul": 4,
+    "turnover/out-of-bounds": 12,
+    "turnover/shot clock": 1,
+    "turnover/traveling": 1,
+    "violation/defensive goaltending": 3,
+    "violation/delay-of-game": 1,
+    "violation/kicked ball": 2
+  },
+  "types": {
+    "block": 14,
+    "field_goal": 370,
+    "foul": 67,
+    "free_throw": 64,
+    "game": 2,
+    "jump_ball": 4,
+    "period_end": 9,
+    "period_start": 9,
+    "rebound": 199,
+    "steal": 13,
+    "substitution": 204,
+    "timeout": 21,
+    "turnover": 34,
+    "violation": 6
+  },
+  "unbalanced_celtics_groups": 0,
+  "unknown_boundaries": 0,
+  "validity": {
+    "effective": 1016
+  }
+}

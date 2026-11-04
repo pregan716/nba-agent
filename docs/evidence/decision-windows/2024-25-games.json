@@ -1,0 +1,34 @@
+[
+  {
+    "away_null": 0,
+    "away_null_rate": 0.0,
+    "celtics_sub_clock_buckets": 13,
+    "celtics_sub_rows": 50,
+    "duplicate_sequences": 0,
+    "events": 453,
+    "game_id": "0022400061",
+    "home_null": 77,
+    "home_null_rate": 0.16997792494481237,
+    "marker_buckets_without_celtics_sub": 41,
+    "marker_clock_buckets": 53,
+    "null_clocks": 0,
+    "unknown_either_marker_buckets": 10,
+    "unknown_own_marker_buckets": 10
+  },
+  {
+    "away_null": 51,
+    "away_null_rate": 0.0905861456483126,
+    "celtics_sub_clock_buckets": 18,
+    "celtics_sub_rows": 50,
+    "duplicate_sequences": 0,
+    "events": 563,
+    "game_id": "0022400230",
+    "home_null": 0,
+    "home_null_rate": 0.0,
+    "marker_buckets_without_celtics_sub": 55,
+    "marker_clock_buckets": 72,
+    "null_clocks": 0,
+    "unknown_either_marker_buckets": 7,
+    "unknown_own_marker_buckets": 0
+  }
+]

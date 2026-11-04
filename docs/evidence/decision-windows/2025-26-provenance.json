@@ -1,0 +1,5715 @@
+{
+  "coverage": [
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 74
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 578
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1166
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500017\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 581
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 615
+    },
+    {
+      "game_id": "0022500017",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500017\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 588
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1181
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 615
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 624
+    },
+    {
+      "game_id": "0022500018",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 567
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1180
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 595
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 603
+    },
+    {
+      "game_id": "0022500021",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 586
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1214
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 605
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 622
+    },
+    {
+      "game_id": "0022500028",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 540
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1150
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500049\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 548
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 576
+    },
+    {
+      "game_id": "0022500049",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500049\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 96
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 663
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1289
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 773
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 700
+    },
+    {
+      "game_id": "0022500060",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 586
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1217
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 598
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 622
+    },
+    {
+      "game_id": "0022500083",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 645
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1271
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 622
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 681
+    },
+    {
+      "game_id": "0022500106",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 599
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1198
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 621
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 636
+    },
+    {
+      "game_id": "0022500117",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 600
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1204
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 607
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 635
+    },
+    {
+      "game_id": "0022500128",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 589
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1205
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 595
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 625
+    },
+    {
+      "game_id": "0022500146",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 96
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 627
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1247
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 768
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 664
+    },
+    {
+      "game_id": "0022500158",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 58
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 542
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1158
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500174\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 456
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 579
+    },
+    {
+      "game_id": "0022500174",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500174\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 591
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1191
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 542
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 627
+    },
+    {
+      "game_id": "0022500193",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 80
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 553
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1150
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 623
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 589
+    },
+    {
+      "game_id": "0022500209",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 66
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 591
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1193
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 523
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 628
+    },
+    {
+      "game_id": "0022500216",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [
+        "a0b8abd7fe9c8bd5dc24bd8804e6cc270527469dccbd78f51d8ac452ef0fe928"
+      ],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 572
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1168
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 617
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 608
+    },
+    {
+      "game_id": "0022500233",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 569
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1174
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500250\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 609
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 605
+    },
+    {
+      "game_id": "0022500250",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500250\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 531
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1139
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 515
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 567
+    },
+    {
+      "game_id": "0022500277",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 552
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1163
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 607
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 588
+    },
+    {
+      "game_id": "0022500293",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 72
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 580
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1194
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 580
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 616
+    },
+    {
+      "game_id": "0022500302",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 56
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 512
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1075
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 449
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 548
+    },
+    {
+      "game_id": "0022500320",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 54
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 552
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1160
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 433
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 589
+    },
+    {
+      "game_id": "0022500334",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 66
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 533
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1135
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 526
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [
+        "8aa82be1b89566fdc08dccbec21a018d13f1bdc71fca8c8d473a0089471cb051",
+        "d8e646898215711520e73def4255f9944797c71199bb96e48a72996087f994a4"
+      ],
+      "missing_reason": "See field statuses and summary findings",
+      "product": "summaries",
+      "quality_status": "partial",
+      "record_count": 569
+    },
+    {
+      "game_id": "0022500338",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; summaries: See field statuses and summary findings; requirement 3: Missing official scores or field-level summary differences; inspect statistical_differences; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 80
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 559
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1168
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500358\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 624
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 595
+    },
+    {
+      "game_id": "0022500358",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500358\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 562
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1202
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 501
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 598
+    },
+    {
+      "game_id": "0022500381",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 536
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1115
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 551
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 572
+    },
+    {
+      "game_id": "0022500388",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 555
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1161
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500403\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 585
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 593
+    },
+    {
+      "game_id": "0022500403",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500403\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 583
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1230
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 611
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 620
+    },
+    {
+      "game_id": "0022500426",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 591
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1247
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500444\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 614
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 628
+    },
+    {
+      "game_id": "0022500444",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500444\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 535
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1168
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 531
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 572
+    },
+    {
+      "game_id": "0022500459",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 491
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1084
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 510
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 528
+    },
+    {
+      "game_id": "0022500474",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 500
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1080
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 499
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 536
+    },
+    {
+      "game_id": "0022500493",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 546
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1144
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 559
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 583
+    },
+    {
+      "game_id": "0022500503",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 562
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1144
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 538
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 598
+    },
+    {
+      "game_id": "0022500520",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 519
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1102
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500532\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 554
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 555
+    },
+    {
+      "game_id": "0022500532",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500532\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 557
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1167
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500545\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 561
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 594
+    },
+    {
+      "game_id": "0022500545",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500545\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 490
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1071
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 526
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 527
+    },
+    {
+      "game_id": "0022500559",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 62
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 567
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1170
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 496
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 603
+    },
+    {
+      "game_id": "0022500580",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 48
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 565
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1212
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 387
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 602
+    },
+    {
+      "game_id": "0022500594",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 612
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1249
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500621\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 615
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 649
+    },
+    {
+      "game_id": "0022500621",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500621\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 100
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 677
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1376
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 773
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 714
+    },
+    {
+      "game_id": "0022500637",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 521
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1100
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 546
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 558
+    },
+    {
+      "game_id": "0022500647",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 82
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 603
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1228
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 639
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 640
+    },
+    {
+      "game_id": "0022500660",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 541
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1147
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 509
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 578
+    },
+    {
+      "game_id": "0022500673",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 60
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 528
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1097
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500689\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 469
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 565
+    },
+    {
+      "game_id": "0022500689",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500689\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 60
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 508
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1050
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 475
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 544
+    },
+    {
+      "game_id": "0022500702",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 60
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 545
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1141
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 487
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 582
+    },
+    {
+      "game_id": "0022500721",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 562
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1132
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500728\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 536
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 598
+    },
+    {
+      "game_id": "0022500728",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500728\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 86
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 551
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1145
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 661
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 585
+    },
+    {
+      "game_id": "0022500741",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 80
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 548
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1136
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 621
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 582
+    },
+    {
+      "game_id": "0022500757",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 66
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 541
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1149
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 522
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 576
+    },
+    {
+      "game_id": "0022500778",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 54
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 530
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1144
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 431
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 565
+    },
+    {
+      "game_id": "0022500799",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 80
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 558
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1170
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 628
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 594
+    },
+    {
+      "game_id": "0022500823",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 62
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 518
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1044
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 515
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 554
+    },
+    {
+      "game_id": "0022500839",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 66
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 550
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1145
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 520
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 585
+    },
+    {
+      "game_id": "0022500847",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 52
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 493
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1070
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500859\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 411
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 529
+    },
+    {
+      "game_id": "0022500859",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500859\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 538
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1114
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500874\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 491
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 573
+    },
+    {
+      "game_id": "0022500874",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500874\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 66
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 530
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1099
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500880\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 524
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 565
+    },
+    {
+      "game_id": "0022500880",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500880\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 72
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 536
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1111
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 565
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 571
+    },
+    {
+      "game_id": "0022500894",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 552
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1188
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 511
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 587
+    },
+    {
+      "game_id": "0022500908",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 72
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 540
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1127
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 567
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 575
+    },
+    {
+      "game_id": "0022500921",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 72
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 548
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1176
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500942\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 561
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 583
+    },
+    {
+      "game_id": "0022500942",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500942\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 543
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1117
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 554
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 578
+    },
+    {
+      "game_id": "0022500959",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 54
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 533
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1144
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500971\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 430
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 568
+    },
+    {
+      "game_id": "0022500971",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022500971\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 76
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 571
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1175
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 601
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 607
+    },
+    {
+      "game_id": "0022500986",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 583
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1198
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 540
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 619
+    },
+    {
+      "game_id": "0022500999",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 555
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1164
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 527
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 593
+    },
+    {
+      "game_id": "0022501019",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 62
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 555
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1182
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 495
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 591
+    },
+    {
+      "game_id": "0022501035",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 78
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 567
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1178
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 621
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 603
+    },
+    {
+      "game_id": "0022501054",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 534
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1108
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 552
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 570
+    },
+    {
+      "game_id": "0022501067",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 74
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 542
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1118
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 585
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 578
+    },
+    {
+      "game_id": "0022501085",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 567
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1186
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 504
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 603
+    },
+    {
+      "game_id": "0022501092",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 56
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 518
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1130
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501106\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 440
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 554
+    },
+    {
+      "game_id": "0022501106",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501106\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 52
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 477
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1055
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 421
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 512
+    },
+    {
+      "game_id": "0022501126",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 70
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 546
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1159
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 556
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 580
+    },
+    {
+      "game_id": "0022501132",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 507
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1083
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501149\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 528
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 542
+    },
+    {
+      "game_id": "0022501149",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501149\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 64
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 469
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1022
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501168\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 499
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 504
+    },
+    {
+      "game_id": "0022501168",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501168\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 52
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 555
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1204
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501174\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 404
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 590
+    },
+    {
+      "game_id": "0022501174",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501174\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 74
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 574
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1234
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "raw",
+      "quality_status": "valid",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 570
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 609
+    },
+    {
+      "game_id": "0022501186",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 68
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 526
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1123
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501206\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 528
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 563
+    },
+    {
+      "game_id": "0022501206",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501206\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": "Inventory acceptance remains incomplete; inspect pinned discovery report",
+      "product": "inventory",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "lineups",
+      "quality_status": "valid",
+      "record_count": 82
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "normalization",
+      "quality_status": "valid",
+      "record_count": 570
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "possessions",
+      "quality_status": "valid",
+      "record_count": 1168
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": "Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501222\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]",
+      "product": "raw",
+      "quality_status": "partial",
+      "record_count": 1
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "stints",
+      "quality_status": "valid",
+      "record_count": 635
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": null,
+      "product": "summaries",
+      "quality_status": "valid",
+      "record_count": 607
+    },
+    {
+      "game_id": "0022501222",
+      "issue_ids": [],
+      "missing_reason": "requirement 1: inventory: Inventory acceptance remains incomplete; inspect pinned discovery report; raw: Raw source qualification incomplete: [{\"adapter\": \"gamerotation\", \"game_id\": \"0022501222\", \"reason\": \"source acquisition failed or cache unavailable; retry this job\", \"status\": \"failed\"}]; requirement 8: Per-game difficult-event qualification not established; code-level fixture evidence is at validation.json#/regressions; requirement 11: Season-data cutoff rolling queries have not been validated; code-level fixture evidence is at validation.json#/regressions",
+      "product": "validation",
+      "quality_status": "partial",
+      "record_count": 11
+    }
+  ],
+  "issue_groups": [
+    {
+      "code": "non_player_participant",
+      "count": 1,
+      "example_issue_id": "09fa774efcafd6ddbe76a34b642e3c3790cb65880ea17c2bda9e7e3f986d6427",
+      "game_id": "0022500017",
+      "message": "Participant 2794 role fouler is not in the box score (coach or staff technical/ejection); retained in raw only",
+      "product": "normalization"
+    },
+    {
+      "code": "non_player_participant",
+      "count": 1,
+      "example_issue_id": "bccb0c024f664f2414bf87a888c8059298e7a8bd879ad52565e4ea5da623c65a",
+      "game_id": "0022500146",
+      "message": "Participant 1628210 role fouler is not in the box score (coach or staff technical/ejection); retained in raw only",
+      "product": "normalization"
+    },
+    {
+      "code": "rotation_rejected",
+      "count": 1,
+      "example_issue_id": "a0b8abd7fe9c8bd5dc24bd8804e6cc270527469dccbd78f51d8ac452ef0fe928",
+      "game_id": "0022500233",
+      "message": "Rotation cannot establish complete membership, intervals and official minutes; event inference remains available",
+      "product": "lineups"
+    },
+    {
+      "code": "summary_field_limitations",
+      "count": 1,
+      "example_issue_id": "8aa82be1b89566fdc08dccbec21a018d13f1bdc71fca8c8d473a0089471cb051",
+      "game_id": "0022500338",
+      "message": "v_player_game_summary: field_goals_attempted:mismatch, offensive_rebounds:mismatch, rebounds:mismatch",
+      "product": "summaries"
+    },
+    {
+      "code": "summary_field_limitations",
+      "count": 1,
+      "example_issue_id": "d8e646898215711520e73def4255f9944797c71199bb96e48a72996087f994a4",
+      "game_id": "0022500338",
+      "message": "v_team_game_summary: field_goals_attempted:mismatch, offensive_rebounds:mismatch, rebounds:mismatch",
+      "product": "summaries"
+    },
+    {
+      "code": "tipoff_revised",
+      "count": 3,
+      "example_issue_id": "0f2b8bb154629e2bcfb9c9c6b7776d54bf8e779282cc47213106a2a491c7ee01",
+      "game_id": "0022500426",
+      "message": "source snapshots contain different scheduled tipoffs; possible reschedule evidence, chronology unverified",
+      "product": "inventory"
+    },
+    {
+      "code": "tipoff_revised",
+      "count": 3,
+      "example_issue_id": "3854fdfb0ae2abf254a09d6e896f04311eed07f2d943a974c0a30ecc3f3e71b2",
+      "game_id": "0022500520",
+      "message": "source snapshots contain different scheduled tipoffs; possible reschedule evidence, chronology unverified",
+      "product": "inventory"
+    },
+    {
+      "code": "non_player_participant",
+      "count": 1,
+      "example_issue_id": "385a37e9956ef4350b577755ae418eeeeadeb0dd24a690692ad7541632009c4d",
+      "game_id": "0022500673",
+      "message": "Participant 1628210 role fouler is not in the box score (coach or staff technical/ejection); retained in raw only",
+      "product": "normalization"
+    },
+    {
+      "code": "non_player_participant",
+      "count": 2,
+      "example_issue_id": "a187bc9344a965be5c2f9f7b792ce96bee0eb6f28e965e56e85b1ea440fafb72",
+      "game_id": "0022500728",
+      "message": "Participant 203152 role fouler is not in the box score (coach or staff technical/ejection); retained in raw only",
+      "product": "normalization"
+    },
+    {
+      "code": "non_player_participant",
+      "count": 1,
+      "example_issue_id": "bedc13e3a9d96ebc76a955dae3bd3a570deba5aabb5aae3d523491e8fda5d04a",
+      "game_id": "0022500728",
+      "message": "Participant 203152 role ejected_player is not in the box score (coach or staff technical/ejection); retained in raw only",
+      "product": "normalization"
+    },
+    {
+      "code": "non_player_participant",
+      "count": 1,
+      "example_issue_id": "bcae34b031fa94745315d3558075ce91a0b11befef4d9f0d599144781ed62d5e",
+      "game_id": "0022500823",
+      "message": "Participant 200755 role fouler is not in the box score (coach or staff technical/ejection); retained in raw only",
+      "product": "normalization"
+    },
+    {
+      "code": "tipoff_revised",
+      "count": 3,
+      "example_issue_id": "2c88a53402f53a68adfd8d4b15c28c0111dda6f79f303ab84f2210cd75fdd4ed",
+      "game_id": "0022500874",
+      "message": "source snapshots contain different scheduled tipoffs; possible reschedule evidence, chronology unverified",
+      "product": "inventory"
+    },
+    {
+      "code": "tipoff_revised",
+      "count": 3,
+      "example_issue_id": "9d2c3b06ea15cb37f059fc46efe723353ecfed685acd8f51cdcb1f215a3b8a2d",
+      "game_id": "0022500986",
+      "message": "source snapshots contain different scheduled tipoffs; possible reschedule evidence, chronology unverified",
+      "product": "inventory"
+    },
+    {
+      "code": "tipoff_revised",
+      "count": 3,
+      "example_issue_id": "3fcc91c8704097e15c4595510628f4ef3c15eca11d28be476f1936a0a9d1c3c8",
+      "game_id": "0022501149",
+      "message": "source snapshots contain different scheduled tipoffs; possible reschedule evidence, chronology unverified",
+      "product": "inventory"
+    },
+    {
+      "code": "missing_from_team",
+      "count": 2,
+      "example_issue_id": "d8ef75580b7cd57152d964a047ded5802ebd246802251415b816bbf108ee8bca",
+      "game_id": "0022501206",
+      "message": "union game absent from team schedule",
+      "product": "inventory"
+    },
+    {
+      "code": "missing_from_team",
+      "count": 2,
+      "example_issue_id": "860423f46d6998f5615982f1caaec2e93a6823ae76b469e63c7338cb8fe90f65",
+      "game_id": "0022501222",
+      "message": "union game absent from team schedule",
+      "product": "inventory"
+    }
+  ],
+  "objects": [
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "214a957a4287f66d5176ec03a6f1b2641a7b9d4c630b6ece725305246f6006a8"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00001.parquet",
+      "sha256": "ccd5e174baa7e5cc58263359d8f3fdcc3f2fdbb574ff884fa1458635980eeac7"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00002.parquet",
+      "sha256": "a525475776ecc883997076b919cad3fc627cc34a6d798d75421efbc9bcbd9a50"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00003.parquet",
+      "sha256": "4ea72904ca7bb4e63055f9a67715156336e4aeb5b3f7fe452bc64642abb3c9bf"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00004.parquet",
+      "sha256": "26ed63ea5fde575c990f983d5d13749108a4b1f67df2e9a12b825619a652532c"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00005.parquet",
+      "sha256": "38f5c8e574d69b7c9ac369a5ac7ea73643596f86a133c0d111e83380f41b12ee"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00006.parquet",
+      "sha256": "80a49346ad1b2147a37739be9b093bc495e4bf4a204f9176044ab6927b62ea0a"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00007.parquet",
+      "sha256": "b7fc897a34d85365a4b1783a86e66dac054a310bcf206b420fad417d25259c68"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00008.parquet",
+      "sha256": "39e0545d5c6405652732f264017dd86d43929edd99001cc4bf77f30b29139eec"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00009.parquet",
+      "sha256": "aa8b663851b5e5e4f1d9836a8ca3f04051ca6c9400ba18f00ad8e0f2ef658ec9"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00010.parquet",
+      "sha256": "45b73429b23a8ec5ba325597f83ed7469e1547b88e7e53deab98f9441850413b"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00011.parquet",
+      "sha256": "883b8de18197e1c273025821f9b69332893b7804d7609ab66d71584b1feb3300"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00012.parquet",
+      "sha256": "08537e2f8180d22700882459936646e467ed1ef2950fdd5ca8e30acadccee683"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00013.parquet",
+      "sha256": "540b0feea367150fcac7b2981687641b75b953d65fd920261eca7c3eb79779a8"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/events/season=2025-26/phase=regular_season/part-00014.parquet",
+      "sha256": "f5837cc29b6dd2d8922510f164bc44e0fc0710a17396cbd803ff2eade0b2584d"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "c833f64f53888b54e919d005c6b9afa079a96e03dccef039b1a28ac6c84e6709"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00001.parquet",
+      "sha256": "c85d870c7528733a8a74657976e6f08fa2701ea04d1c70127dd1285d885c884d"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00002.parquet",
+      "sha256": "93d7ef0f46f0261c7f1930001c6a5efe9e2058860168b399502509848b05c2a1"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00003.parquet",
+      "sha256": "891f04c9aadec344838a0b62bb245ef8970f898121760225117bf6c1f293eaca"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00004.parquet",
+      "sha256": "8f8ba3720590bf2380df8b71d1ee5f0b033acf90efa00c08ff162074d3841b53"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00005.parquet",
+      "sha256": "0f6eb44e74a9e5b16717b4d1e8b32559da5cfb6faa5f0c4dd554f72ef46db119"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00006.parquet",
+      "sha256": "2c24cfef292b71f3dd4bd4714b7e096cce4bd32092ce9043b59759d66cde372b"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00007.parquet",
+      "sha256": "20df89d58aa8177670a8b53668927e51a33e67eb396c9191322b5ebd4049f648"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00008.parquet",
+      "sha256": "945db03ff38703b1789a8da1ad56f9f1a9b319fb3afdac043fdc6f4647df62df"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00009.parquet",
+      "sha256": "d3f924765bc751706c0234f2bc792dbfb8262afc9dcf2085f741c8caa7238689"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00010.parquet",
+      "sha256": "a0794eab59b61cb69526dbed69042de9653c9b49e9a89ae762cdd650908f2bb6"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00011.parquet",
+      "sha256": "979eff7ee17d9c4662147fe33d3c6bc92585819210f00655ac82915493d5a1e3"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00012.parquet",
+      "sha256": "7f9ae445607f3d42d9c3807805a2f289bff1f6e340cb8f97c7216c33daf38678"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00013.parquet",
+      "sha256": "8d144f41d5dee03e98ac2f07a83a84888b82674d27b31d408bd78c8a55dcb836"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00014.parquet",
+      "sha256": "c525175b7cb7791a8522861e25916b95052c577ee4e7d3e56c91a57edce8985f"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00015.parquet",
+      "sha256": "c2eedd735de621ad5adc8f8a4a1e676ffae8d1ef3a2c5d35b01e6f9848af87dc"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/event_participants/season=2025-26/phase=regular_season/part-00016.parquet",
+      "sha256": "def7e6fa25e3cdb4b3dfcbc59db7a3c0da8da1394aee03772d74b661c8f03439"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_stints/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "25fea91b7a17d87dd6a48455577aa142ec0107cd01d0e7eccf4bd3de64d96659"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_stints/season=2025-26/phase=regular_season/part-00001.parquet",
+      "sha256": "94f292e152d1f95a265e7f91aa6eb4774d943d37145cb6d7a689cdf91fdddcfe"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/v_player_stints/season=2025-26/phase=regular_season/part-00002.parquet",
+      "sha256": "1d6950c1d346c3558c5cdf9c69596fa00744715dee6d27338fae0190faa7051c"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/player_box_scores/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "f839f099c5926f3ff71dee9aa2ecb0ec63005041096b8186ea67ddfaaf2dab71"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/lineup_states/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "6c6796a42321902eae3f7043da833a2074205015470bf4c127a97f2bbc2da23e"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/lineup_states/season=2025-26/phase=regular_season/part-00001.parquet",
+      "sha256": "31804ae839e54e67d1f6961aff575286992d8450dc410aaf5bd991e03a319be0"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/raw_objects/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "fe7f86fe0df5322980b8b05a7141c8c303fd9c0a5ae30e27d16d89f6a41298db"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/raw_objects/shared/part-00000.parquet",
+      "sha256": "6f2cbbdd5610e3cc35d49269612e46a54af699644588433b3d00f3279154e54c"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/data_quality_issues/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "370baebccc46e07dfe18faf34a166ddfe89963c0ff3123c862e69d6e339f2219"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-771-full-v1-2025-26/objects/9f4389a0398f149fb1d913f70ba2153bece80ec5a2ecdd3bbef6f5dd2575bcf9/tables/data_quality_issues/shared/part-00000.parquet",
+      "sha256": "415fe850394c7c383390fef6774bd9591515ba5abde15adc2b9e94bc0d718fa0"
+    }
+  ],
+  "official_sources": [
+    {
+      "availability_basis": "unknown",
+      "availability_evidence": null,
+      "available_at": null,
+      "content_hash": "8d24206237828ac0193e533b3e8c4572d968908da96ebd90e39b0c5f91ddfd63",
+      "dataset": "pbp",
+      "endpoint": "https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_0022500083.json",
+      "event_time": null,
+      "game_id": "0022500083",
+      "object_location": "r2://sports-nba-data/nba/raw/sha256/8d/8d24206237828ac0193e533b3e8c4572d968908da96ebd90e39b0c5f91ddfd63.json",
+      "raw_object_id": "8d24206237828ac0193e533b3e8c4572d968908da96ebd90e39b0c5f91ddfd63",
+      "request_parameters": {},
+      "response_status": 200,
+      "retrieved_at": "2026-10-19T19:11:39.528Z",
+      "source": "cdn_pbp",
+      "source_published_at": null,
+      "source_updated_at": "2025-10-23T04:13:23.000Z"
+    },
+    {
+      "availability_basis": "unknown",
+      "availability_evidence": null,
+      "available_at": null,
+      "content_hash": "e6b86a16103b7c267b8aaa925287834e23d3e3f937f0e289e41191279dcf4f90",
+      "dataset": "box",
+      "endpoint": "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022500083.json",
+      "event_time": null,
+      "game_id": "0022500083",
+      "object_location": "r2://sports-nba-data/nba/raw/sha256/e6/e6b86a16103b7c267b8aaa925287834e23d3e3f937f0e289e41191279dcf4f90.json",
+      "raw_object_id": "e6b86a16103b7c267b8aaa925287834e23d3e3f937f0e289e41191279dcf4f90",
+      "request_parameters": {},
+      "response_status": 200,
+      "retrieved_at": "2026-10-19T19:11:40.439Z",
+      "source": "cdn_box",
+      "source_published_at": null,
+      "source_updated_at": "2025-10-23T04:23:20.000Z"
+    },
+    {
+      "availability_basis": "unknown",
+      "availability_evidence": null,
+      "available_at": null,
+      "content_hash": "627516a844188ba9225cb09eac41a905ee5e4429543b08905bb13edb76f80d3c",
+      "dataset": "box",
+      "endpoint": "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022500338.json",
+      "event_time": null,
+      "game_id": "0022500338",
+      "object_location": "r2://sports-nba-data/nba/raw/sha256/62/627516a844188ba9225cb09eac41a905ee5e4429543b08905bb13edb76f80d3c.json",
+      "raw_object_id": "627516a844188ba9225cb09eac41a905ee5e4429543b08905bb13edb76f80d3c",
+      "request_parameters": {},
+      "response_status": 200,
+      "retrieved_at": "2026-10-19T22:39:36.575Z",
+      "source": "cdn_box",
+      "source_published_at": null,
+      "source_updated_at": "2025-12-06T04:34:28.000Z"
+    },
+    {
+      "availability_basis": "unknown",
+      "availability_evidence": null,
+      "available_at": null,
+      "content_hash": "db0815c4f5ccb4904b49a05fe540592f64af21e380b35b973139a36a5558e0d7",
+      "dataset": "pbp",
+      "endpoint": "https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_0022500338.json",
+      "event_time": null,
+      "game_id": "0022500338",
+      "object_location": "r2://sports-nba-data/nba/raw/sha256/db/db0815c4f5ccb4904b49a05fe540592f64af21e380b35b973139a36a5558e0d7.json",
+      "raw_object_id": "db0815c4f5ccb4904b49a05fe540592f64af21e380b35b973139a36a5558e0d7",
+      "request_parameters": {},
+      "response_status": 200,
+      "retrieved_at": "2026-10-19T22:39:35.758Z",
+      "source": "cdn_pbp",
+      "source_published_at": null,
+      "source_updated_at": "2025-12-06T04:26:57.000Z"
+    },
+    {
+      "availability_basis": "unknown",
+      "availability_evidence": null,
+      "available_at": null,
+      "content_hash": "5b0d7dc3a0195b701839eebdd713aeb003996024e53accb7144ee9cd394ced4c",
+      "dataset": "box",
+      "endpoint": "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022500637.json",
+      "event_time": null,
+      "game_id": "0022500637",
+      "object_location": "r2://sports-nba-data/nba/raw/sha256/5b/5b0d7dc3a0195b701839eebdd713aeb003996024e53accb7144ee9cd394ced4c.json",
+      "raw_object_id": "5b0d7dc3a0195b701839eebdd713aeb003996024e53accb7144ee9cd394ced4c",
+      "request_parameters": {},
+      "response_status": 200,
+      "retrieved_at": "2026-10-20T00:46:47.184Z",
+      "source": "cdn_box",
+      "source_published_at": null,
+      "source_updated_at": "2026-01-24T05:34:29.000Z"
+    },
+    {
+      "availability_basis": "unknown",
+      "availability_evidence": null,
+      "available_at": null,
+      "content_hash": "d489c2aa4a41ee301015472d043f8452bb7dd293d162995aebfc865dcf446373",
+      "dataset": "pbp",
+      "endpoint": "https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_0022500637.json",
+      "event_time": null,
+      "game_id": "0022500637",
+      "object_location": "r2://sports-nba-data/nba/raw/sha256/d4/d489c2aa4a41ee301015472d043f8452bb7dd293d162995aebfc865dcf446373.json",
+      "raw_object_id": "d489c2aa4a41ee301015472d043f8452bb7dd293d162995aebfc865dcf446373",
+      "request_parameters": {},
+      "response_status": 200,
+      "retrieved_at": "2026-10-20T00:46:46.260Z",
+      "source": "cdn_pbp",
+      "source_published_at": null,
+      "source_updated_at": "2026-01-24T05:32:00.000Z"
+    }
+  ],
+  "pin": {
+    "bucket": "sports-nba-data",
+    "bytes": 2386079,
+    "key": "nba/releases/spo-771-full-v1-2025-26/manifest.json",
+    "sha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474"
+  }
+}

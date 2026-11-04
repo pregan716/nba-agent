@@ -1,0 +1,3060 @@
+[
+  {
+    "celtics_contiguous_sub_blocks": 29,
+    "checks": [
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630202",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser"
+        ],
+        "clock": "PT09M02.00S",
+        "entries": [
+          "X. Tillman"
+        ],
+        "exits": [
+          "N. Queta"
+        ],
+        "first_action": 36,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 1,
+        "sequence": 26
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1630214",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "clock": "PT06M53.00S",
+        "entries": [
+          "J. Minott",
+          "A. Simons"
+        ],
+        "exits": [
+          "S. Hauser",
+          "D. White"
+        ],
+        "first_action": 66,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 1,
+        "sequence": 49
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630214",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "X. Tillman",
+          "J. Minott"
+        ],
+        "clock": "PT03M14.00S",
+        "entries": [
+          "D. White",
+          "C. Boucher"
+        ],
+        "exits": [
+          "J. Brown",
+          "P. Pritchard"
+        ],
+        "first_action": 101,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629656",
+          "1630178",
+          "1631230",
+          "1641737",
+          "1642845"
+        ],
+        "period": 1,
+        "sequence": 77
+      },
+      {
+        "before": [
+          "1628401",
+          "1628449",
+          "1629014",
+          "1630214",
+          "1631169"
+        ],
+        "before_names": [
+          "D. White",
+          "C. Boucher",
+          "A. Simons",
+          "X. Tillman",
+          "J. Minott"
+        ],
+        "clock": "PT02M36.00S",
+        "entries": [
+          "L. Garza",
+          "J. Brown"
+        ],
+        "exits": [
+          "J. Minott",
+          "X. Tillman"
+        ],
+        "first_action": 124,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1631133",
+          "1641737",
+          "1642845"
+        ],
+        "period": 1,
+        "sequence": 96
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1628449",
+          "1629014",
+          "1630568"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "C. Boucher",
+          "A. Simons",
+          "L. Garza"
+        ],
+        "clock": "PT00M43.60S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "L. Garza"
+        ],
+        "first_action": 148,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1631133",
+          "1641737",
+          "1642845"
+        ],
+        "period": 1,
+        "sequence": 117
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1628449",
+          "1629014",
+          "1629674"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "C. Boucher",
+          "A. Simons",
+          "N. Queta"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "J. Brown"
+        ],
+        "first_action": 165,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631133",
+          "1642348"
+        ],
+        "period": 2,
+        "sequence": 132
+      },
+      {
+        "before": [
+          "1628401",
+          "1628449",
+          "1629014",
+          "1629674",
+          "1630573"
+        ],
+        "before_names": [
+          "D. White",
+          "C. Boucher",
+          "A. Simons",
+          "N. Queta",
+          "S. Hauser"
+        ],
+        "clock": "PT08M56.00S",
+        "entries": [
+          "P. Pritchard",
+          "J. Brown",
+          "X. Tillman"
+        ],
+        "exits": [
+          "D. White",
+          "N. Queta",
+          "C. Boucher"
+        ],
+        "first_action": 205,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631133",
+          "1642845",
+          "203954"
+        ],
+        "period": 2,
+        "sequence": 165
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630214",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "clock": "PT06M55.00S",
+        "entries": [
+          "J. Minott",
+          "L. Garza"
+        ],
+        "exits": [
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "first_action": 234,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 2,
+        "sequence": 191
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630568",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "L. Garza",
+          "J. Minott"
+        ],
+        "clock": "PT06M31.00S",
+        "entries": [
+          "C. Boucher"
+        ],
+        "exits": [
+          "J. Brown"
+        ],
+        "first_action": 247,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1641737",
+          "1642845"
+        ],
+        "period": 2,
+        "sequence": 203
+      },
+      {
+        "before": [
+          "1628449",
+          "1629014",
+          "1630202",
+          "1630568",
+          "1631169"
+        ],
+        "before_names": [
+          "C. Boucher",
+          "A. Simons",
+          "P. Pritchard",
+          "L. Garza",
+          "J. Minott"
+        ],
+        "clock": "PT04M02.00S",
+        "entries": [
+          "D. White"
+        ],
+        "exits": [
+          "A. Simons"
+        ],
+        "first_action": 274,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1641737",
+          "1642845"
+        ],
+        "period": 2,
+        "sequence": 227
+      },
+      {
+        "before": [
+          "1628401",
+          "1628449",
+          "1630202",
+          "1630568",
+          "1631169"
+        ],
+        "before_names": [
+          "D. White",
+          "C. Boucher",
+          "P. Pritchard",
+          "L. Garza",
+          "J. Minott"
+        ],
+        "clock": "PT03M03.00S",
+        "entries": [
+          "J. Brown"
+        ],
+        "exits": [
+          "L. Garza"
+        ],
+        "first_action": 286,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629656",
+          "1630178",
+          "1631230",
+          "1641737",
+          "1642845"
+        ],
+        "period": 2,
+        "sequence": 240
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1628449",
+          "1630202",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "C. Boucher",
+          "P. Pritchard",
+          "J. Minott"
+        ],
+        "clock": "PT01M46.00S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "J. Minott"
+        ],
+        "first_action": 303,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203083"
+        ],
+        "period": 2,
+        "sequence": 255
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1628449",
+          "1629674",
+          "1630202"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "C. Boucher",
+          "N. Queta",
+          "P. Pritchard"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "C. Boucher"
+        ],
+        "first_action": 331,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 3,
+        "sequence": 277
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630202",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser"
+        ],
+        "clock": "PT07M37.00S",
+        "entries": [
+          "X. Tillman"
+        ],
+        "exits": [
+          "N. Queta"
+        ],
+        "first_action": 394,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 3,
+        "sequence": 327
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1630214",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "clock": "PT06M21.00S",
+        "entries": [
+          "A. Simons"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 407,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 3,
+        "sequence": 339
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630214",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "clock": "PT05M52.00S",
+        "entries": [
+          "P. Pritchard"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 417,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 3,
+        "sequence": 348
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630202",
+          "1630214"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "P. Pritchard",
+          "X. Tillman"
+        ],
+        "clock": "PT04M36.00S",
+        "entries": [
+          "J. Minott",
+          "N. Queta"
+        ],
+        "exits": [
+          "J. Brown",
+          "X. Tillman"
+        ],
+        "first_action": 435,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845",
+          "203954"
+        ],
+        "period": 3,
+        "sequence": 363
+      },
+      {
+        "before": [
+          "1628401",
+          "1629014",
+          "1629674",
+          "1630202",
+          "1631169"
+        ],
+        "before_names": [
+          "D. White",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "J. Minott"
+        ],
+        "clock": "PT04M02.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "D. White"
+        ],
+        "first_action": 450,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1631133",
+          "1641737",
+          "1642845"
+        ],
+        "period": 3,
+        "sequence": 378
+      },
+      {
+        "before": [
+          "1629014",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1631169"
+        ],
+        "before_names": [
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Minott"
+        ],
+        "clock": "PT02M31.00S",
+        "entries": [
+          "C. Boucher"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 471,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1631133",
+          "1641737",
+          "1642845"
+        ],
+        "period": 3,
+        "sequence": 396
+      },
+      {
+        "before": [
+          "1628449",
+          "1629014",
+          "1629674",
+          "1630202",
+          "1631169"
+        ],
+        "before_names": [
+          "C. Boucher",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "J. Minott"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "D. White",
+          "J. Brown",
+          "X. Tillman"
+        ],
+        "exits": [
+          "J. Minott",
+          "P. Pritchard",
+          "N. Queta"
+        ],
+        "first_action": 510,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631133",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 428
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1628449",
+          "1629014",
+          "1630214"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "C. Boucher",
+          "A. Simons",
+          "X. Tillman"
+        ],
+        "clock": "PT11M30.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "C. Boucher"
+        ],
+        "first_action": 523,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631133",
+          "203954"
+        ],
+        "period": 4,
+        "sequence": 440
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630214",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "clock": "PT09M18.00S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "X. Tillman"
+        ],
+        "first_action": 552,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631133",
+          "203954"
+        ],
+        "period": 4,
+        "sequence": 461
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1629674",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "N. Queta",
+          "S. Hauser"
+        ],
+        "clock": "PT07M56.00S",
+        "entries": [
+          "P. Pritchard"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 575,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629656",
+          "1630178",
+          "1631133",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 478
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1629674",
+          "1630202"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard"
+        ],
+        "clock": "PT01M42.00S",
+        "entries": [
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "exits": [
+          "A. Simons",
+          "N. Queta"
+        ],
+        "first_action": 644,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 531
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1630214",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "X. Tillman",
+          "S. Hauser"
+        ],
+        "clock": "PT00M55.80S",
+        "entries": [
+          "A. Simons"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 660,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 544
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630202",
+          "1630214"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "P. Pritchard",
+          "X. Tillman"
+        ],
+        "clock": "PT00M14.10S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "X. Tillman"
+        ],
+        "first_action": 684,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 563
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630202",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser"
+        ],
+        "clock": "PT00M09.10S",
+        "entries": [
+          "J. Minott"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 689,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 568
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630202",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "P. Pritchard",
+          "J. Minott"
+        ],
+        "clock": "PT00M08.50S",
+        "entries": [
+          "X. Tillman"
+        ],
+        "exits": [
+          "A. Simons"
+        ],
+        "first_action": 695,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 573
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1630214",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "X. Tillman",
+          "J. Minott"
+        ],
+        "clock": "PT00M07.80S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "X. Tillman"
+        ],
+        "first_action": 700,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1626162",
+          "1629656",
+          "1630178",
+          "1631230",
+          "1642845"
+        ],
+        "period": 4,
+        "sequence": 578
+      }
+    ],
+    "game_id": "0022500083",
+    "lineup_disagreements": [],
+    "official_actions": 586,
+    "official_celtics_rows": 78,
+    "official_celtics_sub_clock_buckets": 29,
+    "official_marker_clock_buckets": 76,
+    "official_negative_marker_buckets": 51,
+    "release_events": 586,
+    "source_disagreements": []
+  },
+  {
+    "celtics_contiguous_sub_blocks": 36,
+    "checks": [
+      {
+        "before": [
+          "1627759",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT06M47.00S",
+        "entries": [
+          "H. Gonz\u00e1lez",
+          "A. Simons"
+        ],
+        "exits": [
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "first_action": 55,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 1,
+        "sequence": 39
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630202",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT04M42.00S",
+        "entries": [
+          "L. Garza",
+          "J. Walsh"
+        ],
+        "exits": [
+          "P. Pritchard",
+          "N. Queta"
+        ],
+        "first_action": 88,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 1,
+        "sequence": 69
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630568",
+          "1641775",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "L. Garza",
+          "J. Walsh",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT04M17.00S",
+        "entries": [
+          "R. Harper Jr."
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 99,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1630533",
+          "1630549",
+          "1630560",
+          "1642849"
+        ],
+        "period": 1,
+        "sequence": 79
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630568",
+          "1631199",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "L. Garza",
+          "R. Harper Jr.",
+          "J. Walsh"
+        ],
+        "clock": "PT02M11.00S",
+        "entries": [
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "J. Walsh"
+        ],
+        "first_action": 125,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1630560",
+          "1642849",
+          "1642874"
+        ],
+        "period": 1,
+        "sequence": 99
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630568",
+          "1631199",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "L. Garza",
+          "R. Harper Jr.",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT00M09.80S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 157,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1641730",
+          "1642849",
+          "1642874"
+        ],
+        "period": 1,
+        "sequence": 125
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630568",
+          "1630573",
+          "1631199"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "L. Garza",
+          "S. Hauser",
+          "R. Harper Jr."
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "P. Pritchard",
+          "H. Gonz\u00e1lez",
+          "B. Scheierman"
+        ],
+        "exits": [
+          "A. Simons",
+          "J. Brown",
+          "R. Harper Jr."
+        ],
+        "first_action": 165,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1641730",
+          "1642849",
+          "1642874"
+        ],
+        "period": 2,
+        "sequence": 133
+      },
+      {
+        "before": [
+          "1630202",
+          "1630568",
+          "1630573",
+          "1631248",
+          "1642864"
+        ],
+        "before_names": [
+          "P. Pritchard",
+          "L. Garza",
+          "S. Hauser",
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT08M57.00S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "L. Garza"
+        ],
+        "first_action": 197,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1630560",
+          "1642849",
+          "1642874"
+        ],
+        "period": 2,
+        "sequence": 158
+      },
+      {
+        "before": [
+          "1629674",
+          "1630202",
+          "1630573",
+          "1631248",
+          "1642864"
+        ],
+        "before_names": [
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT08M06.00S",
+        "entries": [
+          "A. Simons"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 210,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1630560",
+          "1642849",
+          "1642874"
+        ],
+        "period": 2,
+        "sequence": 171
+      },
+      {
+        "before": [
+          "1629014",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT05M47.00S",
+        "entries": [
+          "J. Brown"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 247,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630560",
+          "1641730",
+          "1642849"
+        ],
+        "period": 2,
+        "sequence": 202
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT04M10.00S",
+        "entries": [
+          "J. Walsh"
+        ],
+        "exits": [
+          "B. Scheierman"
+        ],
+        "first_action": 277,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 2,
+        "sequence": 225
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630573",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "S. Hauser",
+          "J. Walsh"
+        ],
+        "clock": "PT02M24.00S",
+        "entries": [
+          "R. Harper Jr."
+        ],
+        "exits": [
+          "J. Walsh"
+        ],
+        "first_action": 299,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 2,
+        "sequence": 242
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630573",
+          "1631199"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "S. Hauser",
+          "R. Harper Jr."
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "B. Scheierman",
+          "P. Pritchard"
+        ],
+        "exits": [
+          "A. Simons",
+          "R. Harper Jr."
+        ],
+        "first_action": 325,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 3,
+        "sequence": 263
+      },
+      {
+        "before": [
+          "1627759",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT08M29.00S",
+        "entries": [
+          "J. Walsh"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 363,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 3,
+        "sequence": 293
+      },
+      {
+        "before": [
+          "1627759",
+          "1629674",
+          "1630202",
+          "1631248",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "N. Queta",
+          "P. Pritchard",
+          "B. Scheierman",
+          "J. Walsh"
+        ],
+        "clock": "PT05M43.00S",
+        "entries": [
+          "A. Simons"
+        ],
+        "exits": [
+          "B. Scheierman"
+        ],
+        "first_action": 401,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 3,
+        "sequence": 325
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630202",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "J. Walsh"
+        ],
+        "clock": "PT04M00.00S",
+        "entries": [
+          "H. Gonz\u00e1lez",
+          "L. Garza"
+        ],
+        "exits": [
+          "J. Walsh",
+          "N. Queta"
+        ],
+        "first_action": 419,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642856"
+        ],
+        "period": 3,
+        "sequence": 341
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630568",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "L. Garza",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT02M32.00S",
+        "entries": [
+          "J. Walsh"
+        ],
+        "exits": [
+          "J. Brown"
+        ],
+        "first_action": 443,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1630560",
+          "1642849",
+          "1642874"
+        ],
+        "period": 3,
+        "sequence": 362
+      },
+      {
+        "before": [
+          "1629014",
+          "1630202",
+          "1630568",
+          "1641775",
+          "1642864"
+        ],
+        "before_names": [
+          "A. Simons",
+          "P. Pritchard",
+          "L. Garza",
+          "J. Walsh",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 476,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630533",
+          "1630549",
+          "1630560",
+          "1642849",
+          "1642874"
+        ],
+        "period": 4,
+        "sequence": 389
+      },
+      {
+        "before": [
+          "1629014",
+          "1630568",
+          "1630573",
+          "1641775",
+          "1642864"
+        ],
+        "before_names": [
+          "A. Simons",
+          "L. Garza",
+          "S. Hauser",
+          "J. Walsh",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT08M23.00S",
+        "entries": [
+          "J. Brown",
+          "B. Scheierman"
+        ],
+        "exits": [
+          "J. Walsh",
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 511,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630549",
+          "1630560",
+          "1641730",
+          "1642849",
+          "1642874"
+        ],
+        "period": 4,
+        "sequence": 419
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630568",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "L. Garza",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT06M56.00S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "L. Garza"
+        ],
+        "first_action": 531,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1630549",
+          "1630560",
+          "1641730",
+          "1642849",
+          "1642874"
+        ],
+        "period": 4,
+        "sequence": 434
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT04M47.00S",
+        "entries": [
+          "P. Pritchard"
+        ],
+        "exits": [
+          "S. Hauser"
+        ],
+        "first_action": 553,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642849",
+          "1642874"
+        ],
+        "period": 4,
+        "sequence": 453
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630202",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "B. Scheierman"
+        ],
+        "clock": "PT03M39.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "N. Queta"
+        ],
+        "first_action": 571,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1641730",
+          "1642856",
+          "1642962"
+        ],
+        "period": 4,
+        "sequence": 466
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT02M39.00S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "B. Scheierman"
+        ],
+        "first_action": 589,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 4,
+        "sequence": 481
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1629674",
+          "1630202",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser"
+        ],
+        "clock": "PT01M50.00S",
+        "entries": [
+          "L. Garza"
+        ],
+        "exits": [
+          "N. Queta"
+        ],
+        "first_action": 630,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 4,
+        "sequence": 489
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630568",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "L. Garza",
+          "S. Hauser"
+        ],
+        "clock": "PT00M11.00S",
+        "entries": [
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "L. Garza"
+        ],
+        "first_action": 641,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 4,
+        "sequence": 512
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630573",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT00M01.90S",
+        "entries": [
+          "B. Scheierman"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 633,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 4,
+        "sequence": 520
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT05M00.00S",
+        "entries": [
+          "L. Garza"
+        ],
+        "exits": [
+          "B. Scheierman"
+        ],
+        "first_action": 646,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642962"
+        ],
+        "period": 5,
+        "sequence": 527
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630568",
+          "1630573"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "L. Garza",
+          "S. Hauser"
+        ],
+        "clock": "PT03M43.00S",
+        "entries": [
+          "B. Scheierman"
+        ],
+        "exits": [
+          "A. Simons"
+        ],
+        "first_action": 664,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 5,
+        "sequence": 541
+      },
+      {
+        "before": [
+          "1627759",
+          "1630202",
+          "1630568",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "P. Pritchard",
+          "L. Garza",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT02M59.00S",
+        "entries": [
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "L. Garza"
+        ],
+        "first_action": 674,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 5,
+        "sequence": 548
+      },
+      {
+        "before": [
+          "1627759",
+          "1630202",
+          "1630573",
+          "1631248",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT00M40.80S",
+        "entries": [
+          "A. Simons"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 706,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 5,
+        "sequence": 575
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT00M07.90S",
+        "entries": [
+          "A. Williams"
+        ],
+        "exits": [
+          "B. Scheierman"
+        ],
+        "first_action": 723,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849",
+          "1642962"
+        ],
+        "period": 5,
+        "sequence": 589
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630573",
+          "1642873"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "A. Williams"
+        ],
+        "clock": "PT00M03.90S",
+        "entries": [
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "A. Simons",
+          "A. Williams"
+        ],
+        "first_action": 730,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849",
+          "1642962"
+        ],
+        "period": 5,
+        "sequence": 595
+      },
+      {
+        "before": [
+          "1627759",
+          "1630202",
+          "1630573",
+          "1631248",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT00M02.80S",
+        "entries": [
+          "A. Williams"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez"
+        ],
+        "first_action": 740,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1630533",
+          "1641730",
+          "1642849",
+          "1642962"
+        ],
+        "period": 5,
+        "sequence": 604
+      },
+      {
+        "before": [
+          "1627759",
+          "1630202",
+          "1630573",
+          "1631248",
+          "1642873"
+        ],
+        "before_names": [
+          "J. Brown",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman",
+          "A. Williams"
+        ],
+        "clock": "PT00M02.50S",
+        "entries": [
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "A. Williams"
+        ],
+        "first_action": 747,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849",
+          "1642962"
+        ],
+        "period": 5,
+        "sequence": 611
+      },
+      {
+        "before": [
+          "1627759",
+          "1630202",
+          "1630573",
+          "1631248",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "P. Pritchard",
+          "S. Hauser",
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT00M00.40S",
+        "entries": [
+          "A. Williams"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 752,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642962"
+        ],
+        "period": 5,
+        "sequence": 615
+      },
+      {
+        "before": [
+          "1627759",
+          "1630573",
+          "1631248",
+          "1642864",
+          "1642873"
+        ],
+        "before_names": [
+          "J. Brown",
+          "S. Hauser",
+          "B. Scheierman",
+          "H. Gonz\u00e1lez",
+          "A. Williams"
+        ],
+        "clock": "PT05M00.00S",
+        "entries": [
+          "P. Pritchard",
+          "A. Simons"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez",
+          "S. Hauser"
+        ],
+        "first_action": 758,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642962"
+        ],
+        "period": 6,
+        "sequence": 621
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1631248",
+          "1642873"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "B. Scheierman",
+          "A. Williams"
+        ],
+        "clock": "PT02M35.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "A. Simons"
+        ],
+        "first_action": 793,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629008",
+          "1629651",
+          "1630533",
+          "1641730",
+          "1642849"
+        ],
+        "period": 6,
+        "sequence": 649
+      }
+    ],
+    "game_id": "0022500637",
+    "lineup_disagreements": [],
+    "official_actions": 677,
+    "official_celtics_rows": 90,
+    "official_celtics_sub_clock_buckets": 36,
+    "official_marker_clock_buckets": 89,
+    "official_negative_marker_buckets": 58,
+    "release_events": 677,
+    "source_disagreements": []
+  },
+  {
+    "celtics_contiguous_sub_blocks": 22,
+    "checks": [
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630202",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "P. Pritchard",
+          "J. Walsh"
+        ],
+        "clock": "PT05M43.00S",
+        "entries": [
+          "A. Simons"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 77,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1630559",
+          "1641733",
+          "1642876"
+        ],
+        "period": 1,
+        "sequence": 58
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1629674",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "N. Queta",
+          "J. Walsh"
+        ],
+        "clock": "PT03M05.00S",
+        "entries": [
+          "S. Hauser",
+          "J. Minott"
+        ],
+        "exits": [
+          "J. Walsh",
+          "N. Queta"
+        ],
+        "first_action": 107,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1630559",
+          "1641733",
+          "1642876"
+        ],
+        "period": 1,
+        "sequence": 84
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629014",
+          "1630573",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "A. Simons",
+          "S. Hauser",
+          "J. Minott"
+        ],
+        "clock": "PT01M59.00S",
+        "entries": [
+          "P. Pritchard"
+        ],
+        "exits": [
+          "D. White"
+        ],
+        "first_action": 128,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629060",
+          "1629216",
+          "1629637",
+          "1641733",
+          "1642876"
+        ],
+        "period": 1,
+        "sequence": 101
+      },
+      {
+        "before": [
+          "1627759",
+          "1629014",
+          "1630202",
+          "1630573",
+          "1631169"
+        ],
+        "before_names": [
+          "J. Brown",
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Minott"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "B. Scheierman"
+        ],
+        "exits": [
+          "J. Brown"
+        ],
+        "first_action": 161,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629216",
+          "1629637",
+          "1631222",
+          "1641733",
+          "1642261"
+        ],
+        "period": 2,
+        "sequence": 129
+      },
+      {
+        "before": [
+          "1629014",
+          "1630202",
+          "1630573",
+          "1631169",
+          "1631248"
+        ],
+        "before_names": [
+          "A. Simons",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Minott",
+          "B. Scheierman"
+        ],
+        "clock": "PT10M04.00S",
+        "entries": [
+          "N. Queta"
+        ],
+        "exits": [
+          "B. Scheierman"
+        ],
+        "first_action": 184,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629216",
+          "1629637",
+          "1630559",
+          "1631222",
+          "1642261"
+        ],
+        "period": 2,
+        "sequence": 149
+      },
+      {
+        "before": [
+          "1629014",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1631169"
+        ],
+        "before_names": [
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Minott"
+        ],
+        "clock": "PT08M33.00S",
+        "entries": [
+          "J. Walsh"
+        ],
+        "exits": [
+          "J. Minott"
+        ],
+        "first_action": 203,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1629028",
+          "1630559",
+          "1631222",
+          "1642261"
+        ],
+        "period": 2,
+        "sequence": 164
+      },
+      {
+        "before": [
+          "1629014",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1641775"
+        ],
+        "before_names": [
+          "A. Simons",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Walsh"
+        ],
+        "clock": "PT06M47.00S",
+        "entries": [
+          "J. Brown"
+        ],
+        "exits": [
+          "A. Simons"
+        ],
+        "first_action": 222,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1629028",
+          "1629060",
+          "1630559",
+          "1642261"
+        ],
+        "period": 2,
+        "sequence": 181
+      },
+      {
+        "before": [
+          "1627759",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Walsh"
+        ],
+        "clock": "PT05M52.00S",
+        "entries": [
+          "D. White"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 243,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1629216",
+          "1630559",
+          "1642876"
+        ],
+        "period": 2,
+        "sequence": 200
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630573",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "S. Hauser",
+          "J. Walsh"
+        ],
+        "clock": "PT05M09.00S",
+        "entries": [
+          "B. Scheierman"
+        ],
+        "exits": [
+          "J. Walsh"
+        ],
+        "first_action": 255,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1629216",
+          "1630559",
+          "1642876"
+        ],
+        "period": 2,
+        "sequence": 210
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630573",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "S. Hauser",
+          "B. Scheierman"
+        ],
+        "clock": "PT02M16.00S",
+        "entries": [
+          "J. Minott",
+          "P. Pritchard",
+          "J. Walsh"
+        ],
+        "exits": [
+          "S. Hauser",
+          "N. Queta",
+          "B. Scheierman"
+        ],
+        "first_action": 283,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1629216",
+          "1641733",
+          "1642876"
+        ],
+        "period": 2,
+        "sequence": 236
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1631169",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "J. Minott",
+          "J. Walsh"
+        ],
+        "clock": "PT01M40.00S",
+        "entries": [
+          "B. Scheierman"
+        ],
+        "exits": [
+          "J. Walsh"
+        ],
+        "first_action": 300,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629060",
+          "1629216",
+          "1629637",
+          "1630559",
+          "1642876"
+        ],
+        "period": 2,
+        "sequence": 251
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1631169",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "J. Minott",
+          "B. Scheierman"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "J. Walsh",
+          "N. Queta"
+        ],
+        "exits": [
+          "J. Minott",
+          "B. Scheierman"
+        ],
+        "first_action": 333,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629060",
+          "1629216",
+          "1629637",
+          "1630559",
+          "1642876"
+        ],
+        "period": 3,
+        "sequence": 274
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630202",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "P. Pritchard",
+          "J. Walsh"
+        ],
+        "clock": "PT08M18.00S",
+        "entries": [
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "J. Walsh"
+        ],
+        "first_action": 379,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1629216",
+          "1630559",
+          "1631222"
+        ],
+        "period": 3,
+        "sequence": 307
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630202",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "P. Pritchard",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT06M36.00S",
+        "entries": [
+          "S. Hauser"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 402,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1630559",
+          "1631222",
+          "1642876"
+        ],
+        "period": 3,
+        "sequence": 330
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1630573",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "S. Hauser",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT06M06.00S",
+        "entries": [
+          "P. Pritchard"
+        ],
+        "exits": [
+          "D. White"
+        ],
+        "first_action": 409,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1630559",
+          "1631222",
+          "1642876"
+        ],
+        "period": 3,
+        "sequence": 336
+      },
+      {
+        "before": [
+          "1627759",
+          "1629674",
+          "1630202",
+          "1630573",
+          "1642864"
+        ],
+        "before_names": [
+          "J. Brown",
+          "N. Queta",
+          "P. Pritchard",
+          "S. Hauser",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT04M28.00S",
+        "entries": [
+          "B. Scheierman",
+          "J. Minott"
+        ],
+        "exits": [
+          "H. Gonz\u00e1lez",
+          "N. Queta"
+        ],
+        "first_action": 420,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1630559",
+          "1631222",
+          "1642876"
+        ],
+        "period": 3,
+        "sequence": 347
+      },
+      {
+        "before": [
+          "1627759",
+          "1630202",
+          "1630573",
+          "1631169",
+          "1631248"
+        ],
+        "before_names": [
+          "J. Brown",
+          "P. Pritchard",
+          "S. Hauser",
+          "J. Minott",
+          "B. Scheierman"
+        ],
+        "clock": "PT12M00.00S",
+        "entries": [
+          "A. Simons",
+          "D. White",
+          "J. Walsh"
+        ],
+        "exits": [
+          "J. Brown",
+          "P. Pritchard",
+          "B. Scheierman"
+        ],
+        "first_action": 480,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1629216",
+          "1629637",
+          "1630559",
+          "1641733"
+        ],
+        "period": 4,
+        "sequence": 395
+      },
+      {
+        "before": [
+          "1628401",
+          "1629014",
+          "1630573",
+          "1631169",
+          "1641775"
+        ],
+        "before_names": [
+          "D. White",
+          "A. Simons",
+          "S. Hauser",
+          "J. Minott",
+          "J. Walsh"
+        ],
+        "clock": "PT07M04.00S",
+        "entries": [
+          "J. Brown",
+          "N. Queta"
+        ],
+        "exits": [
+          "A. Simons",
+          "S. Hauser"
+        ],
+        "first_action": 539,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1629028",
+          "1629060",
+          "1629216",
+          "1630559",
+          "1641733"
+        ],
+        "period": 4,
+        "sequence": 446
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1629674",
+          "1631169",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "N. Queta",
+          "J. Minott",
+          "J. Walsh"
+        ],
+        "clock": "PT05M17.00S",
+        "entries": [
+          "P. Pritchard"
+        ],
+        "exits": [
+          "N. Queta"
+        ],
+        "first_action": 592,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1631166",
+          "1641733",
+          "1642261",
+          "1642355"
+        ],
+        "period": 4,
+        "sequence": 484
+      },
+      {
+        "before": [
+          "1627759",
+          "1628401",
+          "1630202",
+          "1631169",
+          "1641775"
+        ],
+        "before_names": [
+          "J. Brown",
+          "D. White",
+          "P. Pritchard",
+          "J. Minott",
+          "J. Walsh"
+        ],
+        "clock": "PT04M10.00S",
+        "entries": [
+          "B. Scheierman",
+          "H. Gonz\u00e1lez"
+        ],
+        "exits": [
+          "J. Brown",
+          "D. White"
+        ],
+        "first_action": 596,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1631166",
+          "1641733",
+          "1642261",
+          "1642355"
+        ],
+        "period": 4,
+        "sequence": 494
+      },
+      {
+        "before": [
+          "1630202",
+          "1631169",
+          "1631248",
+          "1641775",
+          "1642864"
+        ],
+        "before_names": [
+          "P. Pritchard",
+          "J. Minott",
+          "B. Scheierman",
+          "J. Walsh",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT03M18.00S",
+        "entries": [
+          "X. Tillman"
+        ],
+        "exits": [
+          "P. Pritchard"
+        ],
+        "first_action": 605,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1631166",
+          "1641733",
+          "1642261",
+          "1642355"
+        ],
+        "period": 4,
+        "sequence": 502
+      },
+      {
+        "before": [
+          "1630214",
+          "1631169",
+          "1631248",
+          "1641775",
+          "1642864"
+        ],
+        "before_names": [
+          "X. Tillman",
+          "J. Minott",
+          "B. Scheierman",
+          "J. Walsh",
+          "H. Gonz\u00e1lez"
+        ],
+        "clock": "PT02M20.00S",
+        "entries": [
+          "L. Garza",
+          "A. Williams"
+        ],
+        "exits": [
+          "J. Walsh",
+          "J. Minott"
+        ],
+        "first_action": 617,
+        "lineup_agrees": true,
+        "opponent_before": [
+          "1628467",
+          "1631166",
+          "1641733",
+          "1642261",
+          "1642355"
+        ],
+        "period": 4,
+        "sequence": 510
+      }
+    ],
+    "game_id": "0022500338",
+    "lineup_disagreements": [],
+    "official_actions": 533,
+    "official_celtics_rows": 64,
+    "official_celtics_sub_clock_buckets": 22,
+    "official_marker_clock_buckets": 63,
+    "official_negative_marker_buckets": 43,
+    "release_events": 533,
+    "source_disagreements": []
+  }
+]

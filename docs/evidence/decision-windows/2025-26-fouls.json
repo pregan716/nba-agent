@@ -1,0 +1,177 @@
+[
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500017",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 5,
+    "game_id": "0022500021",
+    "official": 4,
+    "personal_fouls": 4,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500106",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1628401"
+  },
+  {
+    "all_fouler_roles": 6,
+    "game_id": "0022500117",
+    "official": 5,
+    "personal_fouls": 5,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 1,
+    "game_id": "0022500117",
+    "official": 0,
+    "personal_fouls": 0,
+    "player_id": "1630214"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500146",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 5,
+    "game_id": "0022500146",
+    "official": 4,
+    "personal_fouls": 4,
+    "player_id": "1628449"
+  },
+  {
+    "all_fouler_roles": 2,
+    "game_id": "0022500233",
+    "official": 1,
+    "personal_fouls": 1,
+    "player_id": "1630202"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500277",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 3,
+    "game_id": "0022500338",
+    "official": 2,
+    "personal_fouls": 2,
+    "player_id": "1629674"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500381",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 5,
+    "game_id": "0022500426",
+    "official": 4,
+    "personal_fouls": 4,
+    "player_id": "1630568"
+  },
+  {
+    "all_fouler_roles": 5,
+    "game_id": "0022500426",
+    "official": 4,
+    "personal_fouls": 4,
+    "player_id": "1641775"
+  },
+  {
+    "all_fouler_roles": 1,
+    "game_id": "0022500474",
+    "official": 0,
+    "personal_fouls": 0,
+    "player_id": "1629674"
+  },
+  {
+    "all_fouler_roles": 2,
+    "game_id": "0022500660",
+    "official": 1,
+    "personal_fouls": 1,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 2,
+    "game_id": "0022500702",
+    "official": 1,
+    "personal_fouls": 1,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 5,
+    "game_id": "0022500721",
+    "official": 4,
+    "personal_fouls": 4,
+    "player_id": "1629674"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500728",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1628401"
+  },
+  {
+    "all_fouler_roles": 2,
+    "game_id": "0022500894",
+    "official": 1,
+    "personal_fouls": 1,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 3,
+    "game_id": "0022500908",
+    "official": 2,
+    "personal_fouls": 2,
+    "player_id": "1629674"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022500942",
+    "official": 2,
+    "personal_fouls": 2,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 1,
+    "game_id": "0022501035",
+    "official": 0,
+    "personal_fouls": 0,
+    "player_id": "1628369"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022501067",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1629674"
+  },
+  {
+    "all_fouler_roles": 4,
+    "game_id": "0022501126",
+    "official": 3,
+    "personal_fouls": 3,
+    "player_id": "1627759"
+  },
+  {
+    "all_fouler_roles": 3,
+    "game_id": "0022501222",
+    "official": 2,
+    "personal_fouls": 2,
+    "player_id": "1627759"
+  }
+]
