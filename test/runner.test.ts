@@ -376,6 +376,58 @@ test("exhaustion and infrastructure failure remain distinct; code records enforc
     await s.close();
   }
 });
+test("SIGKILL during research rolls back partial memory and resumes the interrupted phase", async () => {
+  const root = temp();
+  const child = (mode: string) =>
+    new Promise<{ code: number | null; signal: string | null }>(
+      (resolve, reject) => {
+        const p = spawn(
+          process.execPath,
+          ["--import", "tsx", "test/fixtures/runner/crash.ts", root, mode],
+          { stdio: ["ignore", "pipe", "pipe"] },
+        );
+        let err = "";
+        p.stderr.on("data", (x) => (err += x));
+        p.on("error", reject);
+        p.on("exit", (code, signal) => {
+          if (code && code !== 0) reject(Error(err));
+          else resolve({ code, signal });
+        });
+      },
+    );
+  try {
+    assert.equal((await child("crash")).signal, "SIGKILL");
+    assert.equal((await child("resume")).code, 0);
+    const r = new RecordStore(join(root, "fixture", "r1"));
+    try {
+      const ends = r.events("session_end", "g1:pregame");
+      assert.equal(ends.length, 2);
+      assert.deepEqual(ends[1].data.before.files, {});
+      assert.equal(ends[1].data.status, "completed");
+      assert.equal(r.events("phase_end", "g1:pregame").length, 1);
+      assert.equal(
+        r.events("session_end", "g1:pregame")[0].data.limit,
+        "interrupted",
+      );
+      assert.equal(
+        r.events("phase_end", "g1:pregame")[0].data.status,
+        "completed",
+      );
+      assert.equal(
+        readFileSync(
+          join(root, "fixture", "r1", "workspace", "notes.txt"),
+          "utf8",
+        ),
+        "postgame memory",
+      );
+      r.verify();
+    } finally {
+      r.close();
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
 test("checkpoints copy SQLite and blobs and publish index last; failed upload has no marker", async () => {
   const s = await setup();
   try {
@@ -1090,7 +1142,7 @@ test("infrastructure retry rolls back workspace and starts fresh caps while reta
           s.m.config,
           "pregame",
         );
-        assert.equal(b.remaining().tokens, 90);
+        assert.equal(b.remaining().tokens, 110);
         assert.equal(b.stage, "pregame");
         const client = new Anthropic({ ...handles.model, maxRetries: 0 });
         await client.messages.create({

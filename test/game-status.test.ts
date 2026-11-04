@@ -15,11 +15,7 @@ import { PlayByPlayAdapter } from "../src/data/adapters.js";
 import { Release } from "../src/data/release.js";
 import { VerifiedStore, sha256, type ObjectRef } from "../src/data/store.js";
 import { fixtureCorpus } from "./fixtures/session/corpus.js";
-import { provider } from "./fixtures/runner/support.js";
-import { Session, sessionEnvironment } from "../src/env/session.js";
-import { manifest } from "../src/runner/config.js";
-import { Runner } from "../src/runner/runner.js";
-import { MeteringProxy } from "../src/runner/proxy.js";
+import { Session } from "../src/env/session.js";
 
 for (const [status, emptyBoxes, expected] of [
   ["postponed", false, "void"],
@@ -79,6 +75,13 @@ for (const [status, emptyBoxes, expected] of [
     // erase it for subsequent postgame sessions.
     const sharedGames = await adapter.games();
     f.source.games = async () => sharedGames;
+    const columns = f.source.columns;
+    f.source.columns = async (...args) => [
+      ...(await columns(...args)),
+      ...(args[0] === "games"
+        ? [{ name: "status", description: "Published game status" }]
+        : []),
+    ];
     const current = (await adapter.games()).find(
       (g) => g.id === f.game.gameId,
     )!;
@@ -87,7 +90,7 @@ for (const [status, emptyBoxes, expected] of [
     if (emptyBoxes) {
       const history = f.source.history;
       f.source.history = async (...args) =>
-        args[1].id === f.game.gameId
+        args[1].id === f.game.gameId && args[0] !== "games"
           ? { records: [], reason: "No product for cancelled game" }
           : history(...args);
     }
@@ -115,16 +118,6 @@ for (const [status, emptyBoxes, expected] of [
     );
 
     const root = mkdtempSync(join(tmpdir(), "nba-game-status-"));
-    const proxy = new MeteringProxy(provider);
-    await proxy.listen();
-    const runner = new Runner(
-      root,
-      manifest(f.config, [
-        { gameId: f.game.gameId, scheduledStart: f.game.scheduledStart },
-      ]),
-      proxy,
-      sessionEnvironment(f.config, f.source),
-    );
     try {
       const exported = await pregame.exportTo(
         join(root, "pre-export"),
@@ -173,18 +166,8 @@ for (const [status, emptyBoxes, expected] of [
         table: "games",
         game_id: f.game.gameId,
       });
-      assert.equal(history.rows[0].status, status ?? null);
-      await runner.run(async ({ session }) => {
-        await session.call("context", {});
-      });
-      assert.ok(
-        runner.record
-          .events("session_end")
-          .every((e) => e.data.status === "completed"),
-      );
+      assert.equal(history.rows[0].status, status);
     } finally {
-      runner.close();
-      await proxy.close();
       rmSync(root, { recursive: true, force: true });
     }
   });

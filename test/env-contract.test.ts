@@ -182,3 +182,17 @@ test("cutoff equality: release-timed sources are eligible at equality, publicati
     /including the game just played/,
   );
 });
+
+test("retired task tools are rejected at the untrusted boundary", async () => {
+  const { validateInput } = await import("../src/env/input.js");
+  for (const name of [
+    "list_questions",
+    "begin_commit",
+    "submit",
+    "read_released_results",
+    "query_odds_history",
+  ]) {
+    assert.ok(!TOOL_NAMES.includes(name as never));
+    assert.throws(() => validateInput(name, {}), { code: "invalid_input" });
+  }
+});
