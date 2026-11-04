@@ -1,10 +1,10 @@
 # NBA Coaching Policy Agent — Implementation Brief v3
 
-Nov 4, 2026 · @Patrick Regan · Draft for review (SPO-836)
+Nov 4, 2026 · @Patrick Regan · Revised Nov 4, 2026 after the first review (SPO-836)
 
 ## Purpose and research question
 
-Build a chronological NBA replay system that tests which kinds of accumulated knowledge help an autonomous research agent get better at a specialised job over repeated episodes. The job is to encode the Boston Celtics head coach's substitution tendencies into a decision policy. Before every game the research agent studies the team from time-restricted sources and writes a frozen policy package: prompt components plus deterministic assembly code. During a replay of the real game, at every substitution-eligible window, the assembly code builds a prompt from the observable game state and a fast, inexpensive decision model ("Jev") predicts whether the coach substituted and who came in and out. The predictions are scored against what the coach actually did. After the game the research agent sees a detailed trace of how its package performed and may reflect.
+Build a chronological NBA replay system that tests which kinds of accumulated knowledge help an autonomous research agent get better at a specialised job over repeated episodes. The job is to encode the Boston Celtics head coach's substitution tendencies into a decision policy. Before every game the research agent studies the team from time-restricted sources and writes a frozen policy package: prompt components plus deterministic assembly code. During a replay of the real game, at every substitution-eligible window, the assembly code builds a prompt from the observable game state and a fast, inexpensive decision model ("Jev") returns calibrated probabilities for whether the coach substituted and who came in and out. The predictions are scored against what the coach actually did. After the game the research agent sees a detailed trace of how its package performed and may reflect.
 
 The central question is not whether an elaborate policy prompt beats a plain one. It is whether, and which kinds of, knowledge preserved between games improve the next game's predictions: coach-specific knowledge, procedural knowledge about how to do the research and build the package, or executable skills. The primary experimental manipulation is what the agent may keep between games. Everything else is held constant.
 
@@ -31,7 +31,8 @@ The v2 brief asked an analyst agent to state P(over) for every market-priced pla
 - The question changes from "beat the market on prop probabilities" to "predict the coach's substitutions". There is no market baseline; the baselines are a conventional statistical predictor and a generic Jev prompt.
 - The agent's deliverable changes from a probability per question to a frozen policy package: prompt components and deterministic assembly code that a second model executes hundreds of times per game.
 - The memory axis changes from horizon, revision rights and process to three gated categories: coach profile, best-practices document, custom skills. The first comparison is a 2 × 2 on the first two.
-- A second model role, Jev, is added and pinned.
+- A second model role, Jev, is added and pinned. Jev is TypeSafe's System One decision model, which answers typed questions with calibrated probabilities and generates no text, so the assembler builds a state and a question set rather than a prose prompt.
+- The research agent runs under a third-party coding-agent harness, Pi, behind the harness contract the v2 brief already defined, so a different harness is a configuration change. v2 ran a hand-written tool loop over direct SDK calls.
 - The odds consensus is no longer the question source. The odds adapters stay in the repo; whether the game spread is exposed as pregame context is Open.
 
 What carries over unchanged in intent: the data contracts and pinned releases, the availability conventions, the scheduled-start cutoff and strict-before rule, the next-morning release, the isolation requirements, the metering proxy, the per-session sandbox, the experiment record, the contamination probe, the development-games rule and the per-run descriptor discipline. SPO-835 removed the prop-task code and kept this infrastructure.
@@ -49,8 +50,9 @@ What carries over unchanged in intent: the data contracts and pinned releases, t
 | Learning scope | Research and knowledge updates may cover anything eligible, not only what the trace flagged | Agreed, carried |
 | Core boundary | All external observations and binding actions go through the environment. Each run owns isolated agent memory. The research agent never touches the replay engine or Jev directly. | Agreed, carried |
 | Replay timing | Pregame cutoff at scheduled tip. Postgame release at 9 a.m. America/New_York the following morning. | Agreed, carried |
-| Research-agent model | Pinned per role. v2 pinned `claude-opus-4-6` because its training data cutoff (Aug 2025) precedes the Oct 21, 2025 opener. The constraint still applies; see Open decisions. | Open |
-| Jev model | A fast, inexpensive model whose training cutoff precedes the season. See Open decisions. | Open |
+| Research-agent model | `claude-opus-4-6`, as in v2: training data cutoff Aug 2025, before the Oct 21, 2025 opener; retirement not before Feb 5, 2027. Re-verify both against Anthropic's model documentation at pin time. | Agreed (Nov 4, 2026) |
+| Jev model | TypeSafe Jev, versioned id `jev-1.14.0`, through the System One API (`POST /v1/systemone`). Never the `jev-latest` alias. The same model the beat-reporting relevance labels were produced with. Credential added to the `nba-agent` Doppler project; held only by the runner's proxy. | Agreed (Nov 4, 2026) |
+| Research-agent harness | Pi (`@earendil-works/pi-coding-agent`, MIT) through its SDK, under the harness contract below. The v2 homemade loop remains as a second implementation for fixtures. Swapping harnesses is a harness-version change, not a rebuild. | Agreed (Nov 4, 2026) |
 | Evidence judge | Not in v3 | Agreed, carried |
 
 ### Guard against unnecessary process
@@ -59,7 +61,7 @@ Specify the access rules, the package contract, the Jev contract, the scoring an
 
 ### Naming
 
-"Jev" is also the name of the relevance-labelling model recorded in the beat-reporting bucket's label policy (Jev 1.14.0, see the sports-text data description). The two are unrelated. In this brief and in code, "Jev" means the decision model role. Where the label policy is meant, write "the relevance labeller".
+The decision model role and the relevance labeller recorded in the beat-reporting bucket's label policy (Jev 1.14.0, see the sports-text data description) are the same TypeSafe model, used for two unrelated jobs. In this brief and in code, "Jev" means the decision model role in this experiment. Where the label policy is meant, write "the relevance labeller". Nothing about the labelling job informs or constrains the decision job.
 
 ## The task
 
@@ -98,37 +100,43 @@ The actual decision and anything after the window are held outside the state obj
 Status: Agreed in shape; Proposed in detail. Before the cutoff the research agent writes one package per game and freezes it through the environment. A package has:
 
 - **Components**: text files the assembler may select from. Instructions, examples, rotation expectations, player roles, matchup notes, exceptions. Free-form.
-- **Assembly code**: one Python entry point, `assemble(state) -> {prompt, diagnostics}`, that reads the observable state, derives whatever features it wants, selects and orders components, and returns the prompt Jev receives plus a diagnostics object naming the components used and the features computed.
+- **Assembly code**: one Python entry point, `assemble(state) -> {jev_state, instructions, criteria, diagnostics}`, that reads the observable state, derives whatever features it wants, selects and orders components, and returns the `state` text Jev receives, the `instructions` text for each of the fixed questions, the per-option descriptions for the choice questions, and a diagnostics object naming the components used and the features computed. The question names, types and option keys are fixed by the environment (see the Jev contract); the agent controls everything Jev reads.
 - **Manifest**: component list with hashes, the state schema version it targets, and free-text notes.
 
 Freezing is atomic and happens before the cutoff; the frozen package is what the replay uses, and a later write to the package directory for that game is refused. A package that fails to load, or whose entry point raises on the first window, is a failed session with status `invalid_package`; the game is replayed with no predictions and reported as such. The package directory for each game is retained for audit and is never automatically visible to the next game's research agent; what the agent may carry forward is governed by the memory permissions below.
 
-The assembler is deterministic and sandboxed: no network, no model calls, no file writes outside a scratch directory, no access to the workspace during replay, and a per-window compute limit. Given the same package and state it returns the same prompt. It must not produce the substitution decision itself; Jev is the decision maker. An assembler that returns a prompt instructing Jev to copy a hard-coded answer is within the rules, since Jev still decides, and the trace shows what was done.
+The assembler is deterministic and sandboxed: no network, no model calls, no file writes outside a scratch directory, no access to the workspace during replay, and a per-window compute limit. Given the same package and state it returns the same request. It must not produce the substitution decision itself; Jev is the decision maker. An assembler that writes a state asserting the answer is within the rules, since Jev still decides, and the trace shows what was done.
 
 ### Jev prediction contract
 
-Status: Agreed in shape; schema details Proposed. Jev receives the assembled prompt and returns one JSON object:
+Status: Agreed in shape (Nov 4, 2026); question set and derived-action rule Proposed. Jev is a System One model: it takes a `state` and a set of typed `questions` and returns a probability per question, with no generated text. One request per window carries all questions. The environment fixes the question names, types and option keys; the assembler supplies the state text, each question's `instructions`, and the per-option `criteria` descriptions.
 
-```text
-{
-  p_any_substitution: float in [0, 1],
-  p_exit_by_player: { player_id: float },     // conditional on a substitution; Celtics players on the floor
-  p_entry_by_player: { player_id: float },    // conditional on a substitution; eligible bench
-  proposed_action: { players_out: [player_id], players_in: [player_id] }   // empty lists mean no substitution
-}
-```
+| Question | Type | Options | Answer used |
+| --- | --- | --- | --- |
+| `substitution` | `noul` | — | `noul`, read as P(any substitution) |
+| `count` | `score` | ordered levels `none`, `one`, `two`, `three_or_more` | `probabilities` over levels; the argmax level sets k for the derived action |
+| `exit` | `choice` | one option per Celtics player on the floor, keyed by player id | `probabilities` over players, read as exit marginals conditional on a substitution |
+| `entry` | `choice` | one option per eligible bench player, keyed by player id | `probabilities` over players, read as entry marginals conditional on a substitution |
 
-The environment validates every output: probabilities in range, players exist and are eligible for their list, `players_out` and `players_in` have equal length, and the resulting five is legal. An invalid output is recorded with its reason and scored by the documented rule in Scoring; it is never repaired. Entry and exit probabilities are marginal scores over players, not a joint distribution over multi-player actions.
+The environment constructs the `exit` and `entry` option keys from the observable state, so Jev can never name an ineligible player; the agent writes the option descriptions. Validation therefore reduces to: the response names every question, every probability is in range, and the option sets match the request. A response that fails is recorded with its reason and scored by the documented rule; it is never repaired.
 
-Jev's model, output schema, inference settings (effort, thinking, max tokens, structured output), state schema and validation rules are identical across every variant in a comparison. They are part of the harness version. Jev receives nothing but the assembled prompt; it has no tools and no memory between windows.
+**Derived action.** Jev returns marginals, not an action. The environment derives `proposed_action` deterministically: if `substitution` < 0.5 the action is empty; otherwise k is the argmax of `count` (with `none` mapped to one, since the timing question already said yes, and `three_or_more` to three), the k highest `exit` probabilities are the players out and the k highest `entry` probabilities are the players in. The rule is part of the harness version. Proposed.
+
+**Settings, part of the harness version.** Model `jev-1.14.0` by versioned id; the response's `model` field is checked against it on every call. Default context mode: the assembled state plus one question must stay under the 32k-token per-question limit, and the long-context header is never sent, since TypeSafe documents that mode as slower and less accurate. The assembler sandbox refuses a request over the limit and the window is scored as an assembler error. One retry on 429 or transport error, honouring `retry-after`. `usage.input_tokens` and the versioned model id are recorded per window; spend is computed at the pinned price ($0.042 per million input tokens, output free), so a game of a few hundred windows costs cents.
+
+**Determinism.** TypeSafe does not state whether identical requests return identical probabilities. The record stores every response, so scores are reproducible from the record regardless. The pilot replays one game twice with the same frozen package and reports the per-window probability differences; if they are material, the replay engine's reproducibility claim is stated as record-level only.
+
+**Contamination.** TypeSafe discloses the training method and that customer requests are not used for training, but no training-data sources and no knowledge cutoff. Jev's probe therefore asks typed questions whose answers are regular-season facts (which team won a named game, whether a named player played) with no state beyond the question, and reports discrimination against chance; a model that recovers season outcomes from the question alone is contaminated. The structural defence is stronger than the probe: Jev sees only the assembled state, which the trace records in full, and it cannot read anything else.
+
+**Access.** The TypeSafe credential lives in the `nba-agent` Doppler project and is injected only into the runner process. The metering proxy gains a second provider shape for the System One API alongside the Anthropic Messages shape; the replay engine calls Jev only through it, under the `jev` role. OpenRouter also serves `typesafe/jev-1.14`, but the direct API is the pinned route; a route change is a model-roles axis change.
 
 ### Replay
 
-For each window in canonical order, the environment builds the observable state from the real game, calls the frozen assembler, sends the prompt to Jev through the metering proxy, validates and records the output, and scores it against the actual decision. The next window is built from the real historical state, not from Jev's proposal; earlier hypothetical substitutions never alter later states. Replay is a trusted environment process; the research agent is not running during it.
+For each window in canonical order, the environment builds the observable state from the real game, calls the frozen assembler, sends the state and questions to Jev through the metering proxy, validates and records the answers, derives the action, and scores against the actual decision. The next window is built from the real historical state, not from Jev's proposal; earlier hypothetical substitutions never alter later states. Replay is a trusted environment process; the research agent is not running during it.
 
 ### Feedback trace
 
-Status: Agreed in shape; fields Proposed. After replay and scoring, the environment releases the game's trace at the next-morning release. The trace is the same for every variant and contains, per window: the state summary, the diagnostics the assembler returned (components selected, features computed), the assembled prompt, Jev's raw output and its validation result, the actual decision, and the per-window scores. Per game it contains the aggregate scores, the invalid-output count and reasons, failure categories, Jev latency and the package manifest hashes.
+Status: Agreed in shape; fields Proposed. After replay and scoring, the environment releases the game's trace at the next-morning release. The trace is the same for every variant and contains, per window: the state summary, the diagnostics the assembler returned (components selected, features computed), the assembled Jev request (state, instructions, criteria), Jev's raw answers and their validation result, the derived action, the actual decision, and the per-window scores. Per game it contains the aggregate scores, the invalid-output count and reasons, failure categories, Jev latency and the package manifest hashes.
 
 The trace is an observation, not a memory artifact. Every variant, including M0, reads the previous game's trace in its next pregame. Older traces are not retained as private memory unless a variant's permissions allow the agent to copy from them into a permitted memory directory.
 
@@ -148,13 +156,13 @@ Lower is better. Report alongside it: log loss where numerically stable (p clipp
 
 ### Player selection
 
-At windows where the coach substituted, regardless of what Jev predicted, score the conditional exit and entry distributions. Proposed normalization: renormalize Jev's reported marginals over the eligible set to sum to the number of players actually moved, k, so that an exit score at a two-for-two window compares a two-player distribution against two actual exits. For the exit side with eligible on-court set E, actual exits A ⊂ E with |A| = k, and normalized marginals q_j:
+At windows where the coach substituted, regardless of what Jev predicted, score the conditional exit and entry distributions. Jev's `exit` and `entry` answers are single distributions over the eligible set that sum to about one. Proposed normalization: scale the distribution by the number of players actually moved, k, so that an exit score at a two-for-two window compares a distribution of mass two against two actual exits. For the exit side with eligible on-court set E, actual exits A ⊂ E with |A| = k, and normalized marginals q_j:
 
 ```latex
 \mathrm{exit\ score} = \frac{1}{|E|}\sum_{j \in E} (q_j - \mathbb{1}[j \in A])^2
 ```
 
-The entry score is the same over the eligible bench. Lower is better. Also report top-k accuracy (the k highest marginals equal A) and top-1 accuracy (the highest marginal is in A). A player in the eligible set with no reported probability is scored as 0.
+The entry score is the same over the eligible bench. Lower is better. Also report top-k accuracy (the k highest probabilities equal A) and top-1 accuracy (the highest probability is in A). A player missing from Jev's `probabilities` map is scored as 0.
 
 ### Action match
 
@@ -164,10 +172,10 @@ Exact match: `proposed_action` equals the actual decision including the no-subst
 
 | Case | Handling |
 | --- | --- |
-| Jev output fails validation | Window scored as p = 0.5 for timing and uniform marginals for selection; counted and reported with reason. Proposed. |
+| Jev answers fail validation (missing question, out-of-range value, option set mismatch) | Window scored as p = 0.5 for timing and uniform marginals for selection; counted and reported with reason. Proposed. |
 | Jev call fails at the provider after retries | Window unscored; counted as infrastructure; the game is flagged if more than 5 % of its windows are affected. Proposed threshold. |
 | Package fails to load or raises on first window | Session status `invalid_package`; every window of the game unscored; reported |
-| Assembler raises or exceeds compute on a later window | That window scored as an invalid output; counted under `assembler_error` |
+| Assembler raises, exceeds compute, or returns a request over the per-question context limit on a later window | That window scored as an invalid output; counted under `assembler_error` |
 | Window flagged by the decision dataset | Excluded from every score; counted and reported with reason |
 | Game postponed or cancelled | Session voided; replayed on the rescheduled date's data |
 
@@ -183,7 +191,7 @@ Run on the same windows so the variants have a reference:
 
 - **Constant rate**: p = the warm-up-window substitution rate at every window; uniform marginals. Establishes the floor.
 - **Statistical predictor**: a documented simple model from the observable state only (for example a logistic hazard on stint length, period, score margin, fouls and stoppage type, fit on 2024–25 and the warm-up games), with player marginals from stint-length ranks. The conventional benchmark the proposal asks for. Proposed form; the replay MVP fixes it.
-- **Generic Jev**: a fixed, hand-written prompt with the observable state and no agent-written components. Establishes what Jev does unaided.
+- **Generic Jev**: a fixed, hand-written state template and fixed question instructions over the observable state, with no agent-written components. Establishes what Jev does unaided.
 
 Baselines are not variants of the memory axis. If no variant beats the statistical predictor, that is reportable on its own.
 
@@ -197,7 +205,7 @@ Six logical modules in one repository, plus external ingestion. These are owners
 | Runner | Configuration, schedules, budgets, run isolation, checkpoints, controlled clock, the metering proxy for both model roles | Basketball reasoning, replay construction |
 | Environment | Read adapters, temporal filtering, workspace tools with memory-permission enforcement, the research sandbox, package freeze, feedback release | Agent research strategy or memory contents |
 | Replay engine | The decision dataset, observable-state construction, the assembler sandbox, Jev calls, validation, the trace | Scoring policy |
-| Agent harness | The research agent's model loop and prompts. v3 is the homemade harness carried from v2 | Workspace enforcement, sandbox lifecycle, metering, replay |
+| Agent harness | The research agent's reasoning loop and prompts. v3 runs Pi through its SDK; the v2 homemade loop stays as a fixture implementation | Workspace enforcement, sandbox lifecycle, metering, replay |
 | Evaluators | Scoring, baselines, matched comparisons, learning curves, reports | Changing frozen packages or traces |
 | Experiment record | Immutable events, source references, configurations, package and workspace snapshots, traces | A shared memory across runs |
 
@@ -219,14 +227,14 @@ Six logical modules in one repository, plus external ingestion. These are owners
                             4. replay (trusted, no agent)     v
                             +-------------------------------------------------+
                             |  Replay engine: for each window                 |
-                            |    state <- real game ; prompt <- assemble(state)|
-                            |    output <- Jev(prompt) via proxy ; validate    |
+                            |    state <- real game ; request <- assemble(state)|
+                            |    answers <- Jev(request) via proxy ; validate  |
                             +-------------------------------------------------+
                                                               |
         7. postgame session: cutoff = 9 a.m. next day         | 5. trace frozen
         v                                                     v
   +-----------+  read_feedback(game)       released trace (states, diagnostics,
-  |  Harness  | <------------------------  prompts, Jev outputs, actuals, scores)
+  |  Harness  | <------------------------  requests, Jev answers, actuals, scores)
   |           |  update permitted memory
   +-----------+  dirs only
         |
@@ -253,11 +261,11 @@ A gated directory that is off for a run does not exist from the agent's point of
 
 ### Content boundaries
 
-Status: Agreed in principle; audit method Open. The best-practices document and skills must stay coach-agnostic. The agent may not use them as a disguised coach profile or embed team-specific historical labels in a generic skill. Boundaries are light and auditable, not a schema: a reviewer reading `best_practices.md` should find no Celtics player names, no Celtics-specific rotation facts, and no game-specific records. The audit method and its consequence are Open; the Proposed default is a per-game automated check (named-entity list of Celtics players and staff against the generic directories, flagged for human review, never auto-edited) plus a human sample at the end of each run, with a boundary breach reported as a confound on that variant rather than corrected after the fact.
+Status: Agreed (Nov 4, 2026), including the audit method. The best-practices document and skills must stay coach-agnostic. The agent may not use them as a disguised coach profile or embed team-specific historical labels in a generic skill. Boundaries are light and auditable, not a schema: a reviewer reading `best_practices.md` should find no Celtics player names, no Celtics-specific rotation facts, and no game-specific records. The audit is a per-game automated check (Celtics player and staff names and game ids against `memory/best_practices.md`, `memory/practices/` and `skills/`, flagged to a human queue, never auto-edited) plus an end-of-run human sample of ten reads per generic file. A confirmed breach is reported as a confound on that variant, never corrected after the fact.
 
 ### Memory budget
 
-Status: structure Agreed, number Open. The total retained text in `memory/` is capped at the same token count for every variant that has any memory gate on, measured at each checkpoint and reported per game. A write that would exceed the cap is refused with the current size named. Executable skill size and skill runtime cost are accounted separately and reported, not capped in the first stage.
+Status: Agreed (Nov 4, 2026). The total retained text in `memory/` is capped at 50,000 tokens, measured with the analyst model's tokenizer, for every variant that has any memory gate on, measured at each checkpoint and reported per game. A write that would exceed the cap is refused with the current size named. Executable skill size and skill runtime cost are accounted separately and reported, not capped in the first stage.
 
 ## Replay lifecycle and environment tool surface
 
@@ -284,7 +292,7 @@ Capability contracts, not final API names. Carried tools are implemented; new to
 | Workspace list, read, write, append, delete | Enforce the directory permissions above and the memory budget | Carried; policy changes |
 | Freeze package | Validate and atomically freeze `packages/<game_id>/`; return a receipt | New |
 | Read feedback | The previous game's trace, and the current game's trace in postgame; nothing older | New |
-| Validate package locally | Run the assembler against a small set of sample states from eligible prior games and return prompts and diagnostics, so the agent can test before freezing. Costs research compute. | New, Proposed |
+| Validate package locally | Run the assembler against a small set of sample states from eligible prior games and return the assembled requests and diagnostics, so the agent can test before freezing. Does not call Jev. Costs research compute. | New, Proposed |
 
 ### Code execution sandboxes
 
@@ -295,7 +303,21 @@ Two sandboxes, both per-session Docker containers from pinned images on the harn
 
 ## Harness contract
 
-Carried, Agreed. The research-agent harness receives three handles and nothing else: a session endpoint exposing the tools above, a metered model endpoint for the analyst role, and the memory-permission instructions for its prompts. It holds no credentials, data paths or direct workspace access. Every model call for either role passes through the runner's metering proxy, which pins the model and settings per role and records usage. Jev is called by the replay engine through the same proxy under the `jev` role; the harness never calls Jev.
+Carried, Agreed, with the harness choice made Nov 4, 2026. The research-agent harness receives three handles and nothing else: a session endpoint exposing the tools above, a metered model endpoint for the analyst role, and the memory-permission instructions for its prompts. It holds no credentials, data paths or direct workspace access. Every model call for either role passes through the runner's metering proxy, which pins the model and settings per role and records usage. Jev is called by the replay engine through the same proxy under the `jev` role; the harness never calls Jev.
+
+### Pi as the v3 harness
+
+The research agent writes code, and a coding-agent harness is better at that loop than the hand-written one v2 used. v3 runs Pi (`@earendil-works/pi-coding-agent`, MIT, SDK mode) as the harness implementation. Requirements, each an acceptance item for the harness issue:
+
+- **Same contract.** The Pi harness is one implementation of the runner's `Harness` function, receiving the three handles. The v2 homemade loop stays as a second implementation for fixtures and as the fallback. Choosing between them is a harness-version field.
+- **No built-in tools.** Pi's file, shell, search and web tools are disabled. The environment's tools are registered as Pi extension tools, and a `tool_call` hook refuses any tool name that is not one of ours. The only writable surfaces remain the workspace tool and the research sandbox.
+- **Model access only through the proxy.** Pi's model provider is configured with the proxy's base URL and the scoped per-session key the runner issues; no provider credential reaches the harness process. If Pi cannot be pointed at an Anthropic-Messages-compatible endpoint with a custom base URL, that is a blocker for the harness issue, not something to work around with a real key.
+- **No persistence outside the record.** Sessions are in-memory; Pi's own session files, settings directories, skills and extension discovery are off. Each phase is a fresh conversation. The full message history, tool calls and results are copied into the experiment record at the end of each run from Pi's events, so the record does not depend on Pi's storage.
+- **Prompts owned by the brief.** Pi's default system prompt is replaced entirely with the v3 system prompt and phase prompts; nothing from Pi's defaults or the host's Pi configuration is appended.
+- **Budget stops.** The proxy's budget refusal ends the run through the harness's abort; Pi has no turn cap of its own, so the budget is the limit, as in v2.
+- **Harness version.** Pi's package version, the extension and tool definitions, the prompt overrides, the model-provider configuration shape and the harness code revision are all in the harness version. Upgrading Pi is a new harness version and no run spans it.
+
+The v2 brief's rule stands: gate tests for isolation run against whatever harness is configured, and a third-party harness that ships its own file or shell tools must have them disabled or pointed at nothing.
 
 ## Run profile
 
@@ -306,7 +328,7 @@ Every run declares a profile on four axes, printed on every report. A comparison
 | Memory permissions | Which persistent directories exist for the run, each with read, create and revise rights | Three gates: coach profile, best practices, skills. First stage: M0 none; M1 coach; M2 practices; M3 coach and practices; M4 coach, practices and skills. Later: representation variants (episodic store, hypothesis ledger, player profiles) and management variants (append-only, periodic consolidation, retrieval) as named values |
 | Data sources | Which source types the environment exposes, each with its pinned release | Coach transcripts, play-by-play and box scores, injury reports, starting lineups, beat reporting, player reference. Game spread: Open |
 | Agent capabilities | What the research agent can do within a game | Search and fetch, game-history queries, workspace, research sandbox, local package validation |
-| Model roles | Which pinned model serves each role, with settings | analyst (Open), jev (Open). Later: reflector, critic |
+| Model roles | Which pinned model serves each role, with settings | analyst `claude-opus-4-6`; jev `jev-1.14.0` via the TypeSafe System One API. Later: reflector, critic |
 
 Rules carried from v2: axes are enumerated and versioned; adding a value never changes an existing one; data sources are declared by type and manifest, not by what was read; model roles are pinned per role and a different version in any role is a different value.
 
@@ -315,7 +337,7 @@ Rules carried from v2: axes are enumerated and versioned; adding a value never c
 | Descriptor | What it declares |
 | --- | --- |
 | Research budget | Pregame and postgame token caps, cache-read weight, compute caps for the research sandbox, the memory token cap, tool-call and wall-clock ceilings, the pinned price schedule. A named, versioned budget profile. |
-| Harness version | Harness identity, prompts, memory-permission instructions, tool definitions, loop parameters, SDK version, both sandbox image digests, the state schema version, Jev's settings, the assembler API version, the code revision |
+| Harness version | Harness identity (Pi and its package version, or the homemade loop), prompts, memory-permission instructions, tool definitions, loop parameters, SDK versions, both sandbox image digests, the state schema version, Jev's question set, settings and derived-action rule, the assembler API version, the code revision |
 | Decision dataset version | The release manifests and the window-definition version that produced the windows. Changing either changes every score, so it must match across compared runs. Replaces the v2 de-vig descriptor. |
 
 ## Experimental configurations
@@ -345,7 +367,7 @@ Carried, Agreed. First comparison: one replicate per variant, uncertainty from t
 
 ### Warm-up, scored and holdout windows
 
-Status: Open. The proposal suggests about 20 games of warm-up, a rolling scored sequence and an untouched final holdout. The v2 rule was that the first 10 games are development games and never evidence. See Open decisions for the Proposed split.
+Status: Agreed (Nov 4, 2026). Games 1–10 are development games for prompts, budgets and tooling and are never evidence (carried). Games 11–20 are warm-up: run for every variant so memory accumulates, reported but not in the headline. Games 21–70 are the scored rolling sequence. Games 71–82 are the untouched holdout, revealed once with learning frozen.
 
 Any prompt or harness change after scoring begins restarts the scored run. The holdout is either run with learning frozen or revealed once under a prespecified protocol; it is never tuned against.
 
@@ -403,7 +425,7 @@ Carried in intent. For every variant with a memory gate on, collect reviewed exa
 
 ### Contamination
 
-Carried, Agreed. Before any scored run, probe each pinned model, with no tools, for outcomes in the replay window and store the result in the manifest. The probe now covers both roles. Jev is the larger concern: a small model with a later cutoff could carry rotation facts from the season into its predictions. A model whose cutoff follows Oct 21, 2025 is not eligible for either role.
+Carried, Agreed. Before any scored run, probe each pinned model for outcomes in the replay window and store the result in the manifest. The analyst probe is the v2 no-tools probe. The Jev probe is the typed-question probe described in the Jev contract, since Jev takes no free-form prompt and TypeSafe publishes no cutoff. The user accepted Jev with that disclosure gap on Nov 4, 2026, on the grounds that Jev reads only the assembled state and the trace records it; the probe result is reported with every run so a reader can weigh it.
 
 ## Resolved decisions
 
@@ -418,6 +440,12 @@ Decisions made for v3, and v2 decisions explicitly re-affirmed. Agreed.
 | Trace | Same format for every variant; previous game's trace readable in every pregame; older traces not readable except through a permitted memory copy. |
 | Replay semantics | Real historical state at every window; Jev's proposals never alter later states. |
 | Jev constancy | Same model, settings, schema and validation across every variant in a comparison. |
+| Research-agent model | `claude-opus-4-6`, re-verified at pin time. Nov 4, 2026. |
+| Jev | TypeSafe Jev `jev-1.14.0` through the direct System One API, credential in Doppler, called only by the replay engine through the proxy. Alias ids never used. Nov 4, 2026. |
+| Harness | Pi through its SDK as the v3 harness implementation under the carried harness contract; homemade loop retained for fixtures; swap is a harness-version change. Nov 4, 2026. |
+| Game split | Development 1–10, warm-up 11–20, scored 21–70, holdout 71–82. Nov 4, 2026. |
+| Memory cap | 50,000 tokens of retained text in `memory/`; skills uncapped and reported in the first stage. Nov 4, 2026. |
+| Content-boundary audit | Automated name check into a human queue, end-of-run sample, breach reported as a confound. Nov 4, 2026. |
 | Carried from v2 | Team, season, data contracts, availability conventions, cutoff and release rules, isolation, metering, sandbox form, record, contamination probe, replicate policy, paired bootstrap over games, development games never evidence, harness contract, implementation choices (TypeScript on Node, SQLite plus files, adapters over R2, Docker sandboxes, in-process transport) |
 | Repository | v3 is built in the existing repository; prop-task code removed and v2 docs archived by SPO-835. |
 
@@ -427,12 +455,9 @@ Each must be resolved by the user before a scored run. Coding agents list the re
 
 | Decision | Proposed starting point | Why it matters |
 | --- | --- | --- |
-| Research-agent model | `claude-opus-4-6`, re-verified against Anthropic's model documentation at pin time for training cutoff (Aug 2025 as verified Oct 20, 2026) and retirement date (not before Feb 5, 2027). If retired or re-verification fails, the fallback is a model with a documented cutoff before Oct 21, 2025. | The cutoff constraint is the contamination defence; the retirement date bounds when scored runs must finish. |
-| Jev model and settings | `claude-haiku-4-5`, the only currently served low-cost model whose training cutoff is believed to precede the season; verify the cutoff against Anthropic's documentation before pinning. Settings: thinking disabled, structured output enforcing the prediction schema, `max_tokens` 1,024, effort not applicable. One retry on transport error. | Jev runs hundreds of times per game; cost and latency bound the experiment. A later-cutoff model would contaminate every prediction. |
-| Warm-up, scored and holdout windows | Games 1–10 are development games for prompts, budgets and tooling and are never evidence (carried). Games 11–20 are warm-up: run for every variant so memory accumulates, reported but not in the headline. Games 21–70 are the scored rolling sequence. Games 71–82 are the untouched holdout, revealed once with learning frozen. | Fixing these before any comparison is what makes the holdout a holdout. |
-| Memory token cap | 50,000 tokens of retained text across `memory/`, measured with the analyst model's tokenizer at each checkpoint. Skills uncapped in the first stage, size reported. | Equal budgets make M1, M2 and M3 comparable; the number should hold a season of notes without forcing consolidation, which is a second-stage question. |
-| Content-boundary audit | Automated per-game check: Celtics player and staff names and game ids against `memory/best_practices.md`, `memory/practices/` and `skills/`; flags to a human queue; never auto-edited; end-of-run human sample of ten reads per generic file; a confirmed breach is reported as a confound, not corrected. | Without it M2's result is uninterpretable. |
 | Budget numbers | By the pilot procedure, on M3 at effort `high` with code execution on. | Carried from v2; set by procedure by design. |
+| Jev question set and derived-action rule | The four fixed questions and the argmax rule in the Jev contract. | Both are part of the harness version and define the player-selection scores; changing them after scoring begins restarts the run. |
+| Jev determinism treatment | Replay one development game twice in the pilot; if per-window probabilities differ materially, state reproducibility as record-level only. | Decides what "the same package scores the same" can mean in the write-up. |
 | Game spread as pregame context | Expose the scheduled-start Celtics spread and game total in the session context, as SPO-829 did, as a data-source value `game_lines`. Not exposed to Jev or the assembler. | Blowout expectation is an input a real analyst has; the v2 pilot showed the agent used it. Exposing it to the agent but not the state keeps the state schema free of odds. |
 | 2024–25 as historical evidence | Yes, from the start of the replay, as in v2. | Rotation tendencies from the prior season are the obvious first source for a coach profile. |
 | Reflection in postgame | Voluntary for every first-stage variant; a mandated-reflection flag is a later value of the process sub-axis, as in v2. | Keeps the first stage to one manipulation. |
@@ -463,9 +488,9 @@ Complete (SPO-835). Prop-task code removed, v2 docs archived, entry points rewri
 
 ### R3 Package, assembler sandbox and Jev
 
-- Inputs: R2; the package contract; the `jev` role in the proxy.
-- Outputs: `freeze_package` and its validation; the assembler sandbox image and per-window execution; Jev integration through the proxy with structured output; the generic-Jev baseline; the trace builder; `read_feedback`; the local-validation tool.
-- Acceptance: a frozen package cannot be modified; the assembler cannot reach the network, the workspace or the host; the same package and state yield the same prompt; every Jev call and output is in the record; the trace contains no window after the released game.
+- Inputs: R2; the package contract; the Jev contract.
+- Outputs: `freeze_package` and its validation; the assembler sandbox image and per-window execution; the System One provider in the metering proxy and the `jev` role; Jev request construction, validation and the derived-action rule; the generic-Jev baseline; the trace builder; `read_feedback`; the local-validation tool; the Jev typed-question contamination probe.
+- Acceptance: a frozen package cannot be modified; the assembler cannot reach the network, the workspace or the host; the same package and state yield the same request; every Jev request and answer is in the record with the versioned model id and token usage; a request over the per-question limit is refused; the trace contains no window after the released game.
 - Status: to be filed after R2.
 
 ### R4 Memory permissions and reflection
@@ -475,11 +500,11 @@ Complete (SPO-835). Prop-task code removed, v2 docs archived, entry points rewri
 - Acceptance: a gated-off directory is unlistable, unreadable, unwritable and unmounted; a write over the cap is refused with the size; the check flags a planted player name in `best_practices.md`; M0 retains nothing between games while still reading the previous trace.
 - Status: to be filed after R3.
 
-### R5 Harness prompts and pilot
+### R5 Pi harness, prompts and pilot
 
-- Inputs: R3, R4; the research-budget procedure.
-- Outputs: the v3 system and phase prompts and memory-permission instructions; the contamination probes for both roles; the development-games pilot on M3; budget profile v1 proposed.
-- Acceptance: changing any prompt changes the harness version; the probes are stored; the pilot observation is written up as a pilot, not evidence.
+- Inputs: R3, R4; the harness contract; the research-budget procedure.
+- Outputs: the Pi harness implementation (in-memory sessions, built-in tools off, environment tools as extension tools, `tool_call` refusal of unknown tools, prompt override, proxy-only model access, history copied to the record); the v3 system and phase prompts and memory-permission instructions; the analyst and Jev contamination probes; the development-games pilot on M3 including the double replay; budget profile v1 proposed.
+- Acceptance: the isolation gate tests pass against the Pi harness; a run with a real provider key in the harness environment is impossible by construction; Pi's own storage directories are untouched after a run; changing any prompt, Pi's version or a tool definition changes the harness version; the probes are stored; the pilot observation is written up as a pilot, not evidence.
 
 ### R6 Evaluators and reporting
 
@@ -499,8 +524,8 @@ R1 and this brief in parallel. R2 after R1. R3 after R2. R4 can start against R3
 ## Delivery sequence and acceptance gates
 
 1. **Replay on fixtures.** R2 on a fixture game with a planted future record; the constant-rate baseline scores as expected; invalid predictions rejected.
-2. **One real game end to end.** A hand-written package through R3 on an audited game; the trace released at 9 a.m.; the assembler sandbox passes the isolation fixture; Jev outputs validated and scored; generic-Jev baseline runs.
-3. **Several chronological games with memory.** M3 and M0 on the development games through R4 and R5; M3's memory persists and M0's does not; the boundary check runs; a forced crash mid-game resumes without a duplicate freeze or replay; the previous trace is readable and older traces are not.
+2. **One real game end to end.** A hand-written package through R3 on an audited game; the trace released at 9 a.m.; the assembler sandbox passes the isolation fixture; Jev answers validated, actions derived and scored; generic-Jev baseline runs.
+3. **Several chronological games with memory.** M3 and M0 on the development games through R4 and R5 under the Pi harness; M3's memory persists and M0's does not; the boundary check runs; a forced crash mid-game resumes without a duplicate freeze or replay; the previous trace is readable and older traces are not.
 4. **Scored comparison.** Open decisions resolved; probes stored; budget profile v1 recorded; M0 through M3, one replicate each, on the scored games; report generated from the record alone; the holdout untouched.
 
 Minimum acceptance checks across all gates:
