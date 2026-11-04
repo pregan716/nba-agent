@@ -14,7 +14,7 @@ A good score alone does not establish that an agent learned. Findings must conne
 
 ## How to use this brief
 
-Agreed items are requirements. Proposed items are recommended defaults for the first implementation, not approved decisions. Open items must be resolved explicitly before a scored experiment. Coding agents must preserve these distinctions when writing project specs and issues, and must not silently infer an Open item.
+Agreed items are requirements. Proposed items are recommended defaults for the first implementation, not approved decisions: an implementer builds them as written and may raise a brief change against them before scored runs begin. Open items must be resolved explicitly before a scored experiment. Coding agents must preserve these distinctions when writing project specs and issues, and must not silently infer an Open item.
 
 | Status | Meaning |
 | --- | --- |
@@ -22,7 +22,7 @@ Agreed items are requirements. Proposed items are recommended defaults for the f
 | Proposed | Concrete default offered for review |
 | Open | Unresolved choice that must not be inferred |
 
-This brief supersedes the v2 player-prop brief, archived at [`docs/archive/v1-props/`](archive/v1-props/README.md), and the research proposal it was built from, archived at [`docs/archive/v2_agent_spec.md`](archive/v2_agent_spec.md). Decisions carried over from the v2 brief are marked "carried" and are not relitigated here; the v2 brief remains the record of why they were made.
+This brief supersedes the v2 player-prop brief, archived at [`docs/archive/v1-props/`](archive/v1-props/README.md), and the research proposal it was built from, archived at [`docs/archive/v2_agent_spec.md`](archive/v2_agent_spec.md). Decisions carried over from the v2 brief are marked "carried", are restated here in full, and are not relitigated; the v2 brief is the record of why they were made and is not needed to implement this one.
 
 ### What changed from the v2 brief
 
@@ -118,7 +118,7 @@ Status: Agreed (Nov 4, 2026), including the question set and the derived-action 
 | `exit` | `choice` | one option per Celtics player on the floor, keyed by player id | `probabilities` over players, read as exit marginals conditional on a substitution |
 | `entry` | `choice` | one option per eligible bench player, keyed by player id | `probabilities` over players, read as entry marginals conditional on a substitution |
 
-The environment constructs the `exit` and `entry` option keys from the observable state, so Jev can never name an ineligible player; the agent writes the option descriptions. Validation therefore reduces to: the response names every question, every probability is in range, and the option sets match the request. A response that fails is recorded with its reason and scored by the documented rule; it is never repaired.
+The environment constructs the `exit` and `entry` option keys from the observable state, so Jev can never name an ineligible player; the agent writes the option descriptions. Validation is per question: a question's answer is valid when it is present, its type matches, every probability is in [0, 1], and, for `exit`, `entry` and `count`, the keys of its `probabilities` map equal the requested option keys exactly, with none missing and none extra. An invalid answer invalidates that question only; the other questions in the same response are scored normally. The failure and its reason are recorded. Nothing is ever repaired, including a map that is one key short.
 
 **Derived action.** Jev returns marginals, not an action. The environment derives `proposed_action` deterministically: if `substitution` < 0.5 the action is empty; otherwise k is the argmax of `count` (with `none` mapped to one, since the timing question already said yes, and `three_or_more` to three), the k highest `exit` probabilities are the players out and the k highest `entry` probabilities are the players in. The rule is part of the harness version.
 
@@ -162,7 +162,7 @@ At windows where the coach substituted, regardless of what Jev predicted, score 
 \mathrm{exit\ score} = \frac{1}{|E|}\sum_{j \in E} (q_j - \mathbb{1}[j \in A])^2
 ```
 
-The entry score is the same over the eligible bench. Lower is better. Also report top-k accuracy (the k highest probabilities equal A) and top-1 accuracy (the highest probability is in A). A player missing from Jev's `probabilities` map is scored as 0.
+The entry score is the same over the eligible bench. Lower is better. Also report top-k accuracy (the k highest probabilities equal A) and top-1 accuracy (the highest probability is in A). A `probabilities` map whose keys differ from the requested option set is an invalid answer under the Jev contract and takes the invalid-answer score below; there is no per-player zero.
 
 ### Action match
 
@@ -172,7 +172,7 @@ Exact match: `proposed_action` equals the actual decision including the no-subst
 
 | Case | Handling |
 | --- | --- |
-| Jev answers fail validation (missing question, out-of-range value, option set mismatch) | Window scored as p = 0.5 for timing and uniform marginals for selection; counted and reported with reason. Proposed. |
+| A Jev answer is invalid (absent, wrong type, out-of-range value, option keys differ from the request) | That question only takes its fallback: `substitution` 0.5; `count` uniform over its levels; `exit` or `entry` uniform over its eligible set. The other questions in the response are scored as answered. The derived action uses the fallback values. Counted and reported per question with reason. Proposed. |
 | Jev call fails at the provider after retries | Window unscored; counted as infrastructure; the game is flagged if more than 5 % of its windows are affected. Proposed threshold. |
 | Package fails to load or raises on first window | Session status `invalid_package`; every window of the game unscored; reported |
 | Assembler raises, exceeds compute, or returns a request over the per-question context limit on a later window | That window scored as an invalid output; counted under `assembler_error` |
@@ -373,22 +373,43 @@ Any prompt or harness change after scoring begins restarts the scored run. The h
 
 ## Data contracts and temporal access rules
 
-Carried, Agreed. The environment consumes each source's published, immutable, hash-manifested release as published and does verification, temporal filtering, visibility projection and canonical ID joins only. Every record carries its availability time and the convention that assigned it. The full table, the odds findings and the audit dispositions are in the v2 brief; the sources that remain in v3 are:
+Status Agreed, carried in full from the v2 brief (decided Oct 23 and 24, 2026) and restated here so that this brief is the only document an implementer needs. The environment consumes each source's published, immutable, hash-manifested release as-is, including derived tables that ingestion has already computed (play-by-play lineups and stints, injury team snapshots, beat-post relevance labels, extracted starting lineups, derived game lines). It does not recompute them. The environment's responsibilities are verification against the manifest, temporal filtering, visibility projection and canonical ID joins. Each release identifier is the dataset manifest version on the data-sources axis; a different release is a different data-sources value. The bucket guides in `docs/data-descriptions/` are the reference for layouts and field semantics.
 
-| Source | Pinned release | Availability time | Change in v3 |
-| --- | --- | --- | --- |
-| Play-by-play, box scores, lineups, stints | `spo-771-full-v1-2025-26` and `-2024-25` | 9 a.m. America/New_York next morning; 2024–25 eligible from the start | Also the source of the decision dataset. The replay engine reads it at full fidelity; the agent still sees only released games. |
-| Injury reports | key `61f65449…` | Printed report timestamp | Also used for the eligible bench in the observable state |
-| Player reference | release `15fef727…` | Static | None |
-| Beat reporting | snapshot at pin time, NBA-related posts only | Version publication time | None |
-| Starting lineups | two JSON datasets | Announcement posting time; at-or-after-start announcements unavailable for their own game | Announced starters also enter the observable state when pregame-visible |
-| Coach media | index at commit `cc285352…` | `published_at`, or `stream_ended_at` for livestreams | None |
-| Schedule | play-by-play games table cross-checked against the ESPN schedule | Static | None |
-| Game lines | `derived/v3` spreads and totals through the consensus source manifest, as SPO-829 pinned them | `requested_at`, including scheduled-start equality | The scheduled-start Celtics spread and game total appear in the research agent's session context as the `game_lines` data-source value. Never in the observable state, the assembler or Jev. Player-prop consensus rows are absent from the run. |
+Every source has a stated availability convention. These are replay conventions, not measured delivery times: each guide says its timestamps do not certify when bytes were publicly accessible. The convention is recorded as the eligibility reason on every record.
 
-Temporal rules carried unchanged: apply the cutoff to every access path including search, counts, snippets, derived views, pagination and the sandbox export; non-odds records are eligible strictly before the cutoff; the cutoff is the scheduled start, not actual tip; news after 9 a.m. stays unavailable at that release; the research agent cannot override cutoff, run identity or dataset version.
+| Source | Bucket and prefix | Pinned release | What the environment exposes | Availability time |
+| --- | --- | --- | --- | --- |
+| Play-by-play, box scores, lineups, stints | `sports-nba-data`, `nba/releases/spo-771-full-v1-2025-26/` and `nba/releases/spo-771-full-v1-2024-25/` | Each release's `manifest.json` | Release tables per the data dictionary (`config/dictionaries/pbp-0.1.0.md`). `coverage.jsonl` is consulted per game; a game not `valid` for the product being queried is served as absent with a recorded reason. In v3 the same release is also the source of the decision dataset; the replay engine reads the replayed game at full fidelity while the agent still sees only released games. | Postgame release at 9 a.m. America/New_York on the morning after the game. 2024–25 games are eligible from the start of the replay. |
+| Injury reports | `sports-nba-data`, `nba/injury-reports/2025-26/` | Release key `61f65449f459752a0ad06c0f41efd1cc8c13494f7b5f9c838f6536637c411c2e` | Curated player observations and team snapshots as the PDF showed them, including `not_yet_submitted` placeholders and absent-team observations. The evidence register, `empty_report_corroborated` interpretations, and anything carrying an assessment time are retrospective and never agent-visible, and never enter the observable state. Unmatched rows excluded. In v3 the last pregame-eligible report also feeds the eligible bench in the observable state; a player listed out is removed, anything else is left in. | Printed report timestamp (`report_timestamp_utc`). A row whose UTC value is null because of daylight-saving ambiguity takes the later of the two readings. A `team_absent` snapshot (Boston, Apr 7, 2026, `0022501149`, printed 23:00Z) is served as unknown, never as a healthy roster, and no earlier report is carried forward; for the eligible bench that game uses the full roster and the window is tagged `availability_unknown`. |
+| Player reference | `sports-nba-data`, `nba/player-reference/2025-26-opening/releases/15fef7276244e616b0817be4/` | Manifest SHA-256 `7d9e7802344e90852d55eee4895b305a24a4f59e46fd18d87915b17ecfd8837f`; coverage summary in `docs/p1-data-adapters.md` | Release tables and SQL views only: opening roster profiles, career season totals through 2024–25, identity exceptions. `archive/` is never mounted or exposed. | Static. Built to a cutoff of 2025-10-21T23:29:59Z, before the opener, so eligible for every game. Age is computed for the replay date. |
+| Beat reporting | `sports-text`, `v1/relevance/celtics-2025-26/` | The snapshot manifest that `active.json` pointed to at pin time (hash in `config/datasets.json`), over backfill report `a57664cd-e4d8-4aaf-9741-1ac0b6b4fcf1` | Only posts labelled NBA-related (1,303 of 1,425 at pin time), latest retained version, with text, author handle where the release carries it, publication time and relationships. Unrelated posts are not exposed. The label policy (relevance labeller Jev 1.14.0, threshold 0.10) is part of the pinned manifest. Label precision is accepted with a recorded limitation: in the P1a sample of 50, 33 were verifiably basketball, 0 demonstrably off-topic, 17 could not be judged from retained text. | Publication time of the version. A later version whose edit time is known is available at that time; one whose edit time is unknown is excluded rather than shown at the original time. |
+| Starting lineups | `sports-text`, `v1/research/celtics-lineups/extracted-2026-10-16/` and `v1/research/opponent-lineups/2026-10-19-complete/` | SHA-256 of the two JSON datasets | Announced starters per team, the preferred announcement per game, with source post and posting time. Alternates retained as evidence, not exposed. Announced lineups that disagree with box-score starters stay as announced. In v3, pregame-visible announced starters also enter the observable state's pregame context. | Posting time of the announcement. Eligibility against the scheduled start decides whether a game's own lineup is pregame-visible. The 18 Celtics and 7 opponent announcements posted at or after the scheduled start, including the two posted at exactly that instant, are unavailable for their own game. They are not backdated and no game moves to actual tip. |
+| Coach media | `sports-transcription`, `dev/manifests/bos/<media-id>/<run-id>.json`, selected by the season manifest index at repository commit `cc28535292efc47316c163c6969d759875e95f86` (134 recordings) | The index plus each manifest's checksums; the index's `published_at_provenance` and `livestream_provenance` hashes | Readable transcript and structured transcript with provider speaker-cluster labels (not identities), title, source URL, publication time. Audio not exposed. | `published_at` (UTC, second precision, the indexed video's publication) for ordinary uploads. For the 10 livestreams and premieres, `stream_ended_at`, so a recording is visible only once the whole broadcast existed. An entry with `published_at_precision = day` would take the end of its Eastern `publicationDay`; none exist. An entry with `cutoff_requires_review = true` is excluded until reviewed; none exist. Title words are not availability evidence: the Nov 5, 2025 upload titled pregame for `0022500174` was published 87 seconds after the scheduled start and is unavailable for that game. Two transcription defects found by P1a (Jan 17 pregame at 38–52 s, Nov 11 pregame at 77–90 s) are flagged upstream; the immutable text is served as published. |
+| Schedule | Play-by-play release games table, cross-checked against the ESPN schedule preserved in the odds archive (`reference/schedule-response.json.gz`) | As above | Game identities, opponents, scheduled start, venue, status (final, postponed, cancelled) | Static for the season; schedule changes, if any, are recorded with the change's own timestamp. Game status is never visible before the game's release. |
+| Game lines | `pm-data-platform`, pinned odds `derived/v3` spreads and team totals, reached through the consensus source manifest (SPO-829) | Source and quotes hashes and the `game-lines-v1` adaptation hash in `config/datasets.json` | The scheduled-start Celtics spread, derived game total and implied team totals with contributor counts, in the research agent's session context only, as the `game_lines` data-source value. Never in the observable state, the assembler or Jev. The player-prop consensus layer is not exposed in v3. | `requested_at` of the observation, including equality with the scheduled start. |
 
-One new rule: the replay engine's access to the game being replayed is not a cutoff violation, because the agent is not running and the package is frozen. The engine's reads are recorded, and the trace released to the agent is the only path by which replay data reaches it.
+### Shared contract requirements
+
+- Stable canonical game, team and player IDs with explicit mappings from provider IDs: ESPN event ids in the odds archive, NBA game and player ids in the NBA data bucket, X account and post ids in the text bucket, media ids in the transcription bucket. Never join on ambiguous names. The mappings are checked in at `config/identities.json`.
+- Name joins (lineup names and injury names, which carry no player id) resolve only when exactly one candidate exists in the pinned catalogs after normalization; otherwise they fail and are reported. Agreed exceptions (Oct 24, 2026), each scoped to the injury source and backed by audit evidence: `Yang, Hansen` is an alias for `1642905` (the catalog prints the family name first); `Williams, Jaylin` resolves by the injury row's `team_id`, Oklahoma City to `1631119`, with `1642444` kept as a distinct person. `Jones, Dillon` stays refused until the play-by-play maintainers publish an identity exception for `196295686`; its observations are served unresolved and the incomplete opponent join for `0022500757` is recorded. No other alias or disambiguation rule exists; adding one is a brief change.
+- Every release is immutable and hash-manifested. The adapter verifies every object it reads against the manifest before serving it and refuses an unverified object. Folder listings are never used to assemble a dataset.
+- Separate event time, availability time, collection time and revision time. Each record carries its availability time and the convention that assigned it, from the table above.
+- Preserve corrections and revisions where the source has them (post edit chains, injury report updates, multiple transcript runs). Where history cannot be reconstructed, the table's exclusion rule applies and is reported.
+- The P1a data quality audit (`docs/p1a-data-quality-audit.md`, Oct 24, 2026) passed with eight accepted dispositions: the two injury-name rules above; Dillon Jones refused; at-or-after-cutoff lineup announcements unavailable including equality; title words never imply availability; `team_absent` served as unknown; relevance labels accepted with the 17-of-50 unverifiable limitation; two transcription defects flagged upstream with text kept. None changes a cutoff or a release.
+
+### Temporal access rules
+
+Apply the cutoff to every access path: search, direct fetch, metadata, aggregates, snippets, derived views, pagination and the sandbox export. A query for a future record must not expose its title, existence, count or contents. Derived statistics use only eligible observations. Agent requests cannot override the session cutoff, run identity or dataset version.
+
+The pregame cutoff is the scheduled start, not the actual tip. Non-odds records are eligible when their availability time is strictly before the cutoff; the game-lines observation requested at the scheduled start, whose availability time equals the cutoff, is eligible. Anything published between scheduled and actual tip is excluded, which is conservative. If a game's scheduled start is revised, use the final scheduled start. The postgame cutoff is 9 a.m. America/New_York on the calendar morning after the game date; news published after 9 a.m. remains unavailable at that release.
+
+An old recording transcribed today represents information available at its publication, provided the transformation uses only that recording. A retrospective article written today cannot be backdated. Reconstructed data is not necessarily a faithful snapshot of contemporary corrections.
+
+One rule is new in v3: the replay engine's access to the game being replayed is not a cutoff violation, because the agent is not running and the package is frozen. The engine's reads are recorded, and the trace released to the agent at the postgame cutoff is the only path by which replay data reaches it.
+
+### Game data scope
+
+The two pinned play-by-play releases cover all teams for 2024–25 and 2025–26 (1,394 and 1,393 inventory games), with 41 gap games across the two seasons listed in the releases' coverage records. Three involve the Celtics and all three have play-by-play: Celtics–Knicks `0022400061` (Oct 22, 2024, broken substitution chains, so lineup, stint and possession products are incomplete), Celtics–Raptors `0022400230` (Nov 16, 2024, fifth overtime player unidentified), and Celtics–Lakers `0022500338` (Dec 5, 2025, play-by-play-derived statistics disagree with the official box score, summaries partial). The two 2024–25 games are historical evidence only and their incomplete products are served as absent under the coverage rule. The Dec 5, 2025 game is in the scored window; what it can supply as a decision dataset is for SPO-837 to report, and windows it cannot support are flagged, not dropped. Phases are separated in the tables; preseason, play-in, Cup final and playoff rows are excluded. Opponent substitutions can occur inside an own-team lineup stint, so opponent-context queries use event-level segments, which the release's stint tables already provide.
 
 ## Isolation and reproducibility
 
@@ -409,15 +430,16 @@ Pilot procedure, carried: run the development games with generous ceilings and r
 
 ## Experiment record and limits on claims
 
-Carried, Agreed, with additions. Every scored claim must be reconstructible from the record alone.
+Agreed, carried and extended. Every scored claim must be reconstructible from the record alone. The record is an append-only, hash-chained SQLite event log plus content-addressed workspace blobs, checkpointed after every session and synced to R2 for scored runs.
 
-- Run manifest: as in v2, with the memory-permission axis, both model roles, the decision dataset version and the state schema version.
-- Session record: as in v2.
-- Package record: the frozen package's files and hashes, the freeze receipt, validation result, and the local-validation calls the agent made.
-- Window record: window id, state, assembler diagnostics, assembled prompt, Jev raw output, validation result, actual decision, per-window scores, Jev usage and latency.
-- Trace record: the released trace exactly as the agent saw it.
-- Workspace checkpoints: snapshots before and after each session, with diffs, and the memory size at each checkpoint.
-- Boundary audit record: every flag the content check raised and its human disposition.
+- Run manifest: team, season, game list with the development, warm-up, scored and holdout tags, run profile (memory permissions with each gate's read, create and revise rights; data sources with manifest versions; agent capabilities; model roles with pinned versions and settings), research budget profile with its full numbers including the memory cap, harness version with every resolved component, decision dataset version (release manifests plus window-definition version), state schema version, replicate id, code revision, contamination probe records for both roles, and all policy settings.
+- Session record: game, phase, cutoff, attempt number, every tool request and its observation (or a replayable reference), every model request and response including thinking blocks where the provider returns them, token counts by class, errors, retries, completion status, and which limit ended the session.
+- Package record: the frozen package's files and their hashes, the freeze receipt and timestamp, the validation result, and every local-validation call the agent made with its inputs and outputs.
+- Window record: window id, canonical sequence position, the observable state, the assembler's diagnostics and compute time, the assembled Jev request, Jev's raw response with the versioned model id and `usage`, per-question validation results, the derived action, the actual decision, per-window scores, Jev latency, and any flag or failure reason.
+- Trace record: the released trace exactly as the agent saw it, with its release time.
+- Code execution record: every program the agent ran in the research sandbox, with stdout, stderr, exit status, compute seconds and whether a limit truncated it. Programs are stored verbatim so a result can be re-derived.
+- Workspace checkpoints: snapshots before and after each session, diffs, and the measured memory size at each checkpoint.
+- Boundary audit record: every flag the content check raised, the text it matched, and its human disposition.
 
 ### Learning diagnostics
 
@@ -456,13 +478,21 @@ Decisions made for v3, and v2 decisions explicitly re-affirmed. Agreed.
 | Carried from v2 | Team, season, data contracts, availability conventions, cutoff and release rules, isolation, metering, sandbox form, record, contamination probe, replicate policy, paired bootstrap over games, development games never evidence, harness contract, implementation choices (TypeScript on Node, SQLite plus files, adapters over R2, Docker sandboxes, in-process transport) |
 | Repository | v3 is built in the existing repository; prop-task code removed and v2 docs archived by SPO-835. |
 
-## Open decisions
+## Open decisions and remaining Proposed items
 
-One remains, Open by design. Every other decision proposed in the first draft was accepted on Nov 4, 2026 and is in Resolved decisions.
+One decision is Open, by design. Everything proposed in the first draft's Open table was accepted on Nov 4, 2026 and is in Resolved decisions. Several contract details remain Proposed: under this brief's rules they are buildable defaults for the first implementation, not requirements, and an implementer may raise a brief change against any of them before scored runs begin. They are listed here so that the accounting is explicit.
 
-| Decision | Resolution path | Why it matters |
-| --- | --- | --- |
-| Budget numbers | Set by the pilot procedure in Research budget: development games on M3 at effort `high` with code execution on, caps at the 90th percentile, re-runs at a smaller and a larger pregame cap, recorded as budget profile v1. | Carried from v2; the numbers come from measurement, not a guess. |
+| Status | Item | Where | Resolution path |
+| --- | --- | --- | --- |
+| Open | Budget numbers | Research budget | Set by the pilot procedure: development games on M3 at effort `high` with code execution on, caps at the 90th percentile, re-runs at a smaller and a larger pregame cap, recorded as budget profile v1. |
+| Proposed, pending SPO-837 | Decision-window definition | The task, Decision windows | The spike proposes the definition in release fields; the user approves it as a brief change, after which R2 implements it. R2 does not start window reconstruction before then. |
+| Proposed | Package detail: component layout, entry-point signature, manifest fields | The task, Policy package | R3 implements as written; the first hand-written package in gate 2 is the review. |
+| Proposed | Trace fields | The task, Feedback trace | R3 implements as written; reviewed with the gate-2 trace. |
+| Proposed | Player-selection normalization (scale by k) | Scoring, Player selection | R2 implements as written with a hand-computed fixture; alternatives are a brief change. |
+| Proposed | Invalid-answer fallbacks and the 5 % provider-failure flag | Scoring, Invalid outputs and failures | R2 implements as written with a scorer fixture for the per-question rule. |
+| Proposed | Statistical predictor form | Scoring, Baselines | R2 fixes the model and documents it. |
+
+The scoring contract R2 builds against is therefore: the timing and selection equations (Agreed), the per-question validation rule in the Jev contract (Agreed), and the two Proposed rows above, which R2 implements as written and covers with fixtures. A later change to any of them before scoring begins is a brief change; after scoring begins it restarts the scored run.
 
 ## Implementation projects
 
@@ -483,7 +513,7 @@ Complete (SPO-835). Prop-task code removed, v2 docs archived, entry points rewri
 
 - Inputs: R1's definition, this brief's state schema, prediction contract and scoring.
 - Outputs: the decision dataset builder; `state-v1`; the prediction contract and validation; the scorer; the constant-rate and statistical baselines; window and trace records in SQLite.
-- Acceptance: windows on the audited games match the hand check or disagreements are listed; the planted future record never appears in a state; invalid predictions are rejected with reasons; hand-computed scores for a five-window fixture match; the statistical predictor is documented.
+- Acceptance: windows on the audited games match the hand check or disagreements are listed; the planted future record never appears in a state; invalid answers are detected per question with reasons; hand-computed scores for a five-window fixture match, including one window with an invalid `entry` answer and valid `substitution` and `exit` answers, which must score the fallback for `entry` only; the statistical predictor is documented.
 - Status: SPO-838, open, blocked on R1.
 
 ### R3 Package, assembler sandbox and Jev
