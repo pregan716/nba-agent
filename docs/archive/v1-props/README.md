@@ -4,7 +4,7 @@ The v1 experiment asked an NBA analyst agent to predict player-prop probabilitie
 and evaluated improvement over the market. It ran four B pilots and several
 stateless experiments on the ten development games. `pilot-b-4-observation.md`
 is the last written record. These documents are historical, not the current design.
-The pilot-b-4 notes and final brief edit were preserved in commit `0354283`
+The pilot-b-4 notes and final brief edit were preserved in commit `060eea9`
 before this archive move.
 
 Local experiment branches contain additional work: `exp/brown-points`,
