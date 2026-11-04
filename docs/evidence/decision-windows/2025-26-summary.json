@@ -1,0 +1,627 @@
+{
+  "all_sub_clock_buckets": 2506,
+  "all_team_group_sizes": {
+    "1": 1200,
+    "2": 617,
+    "3+": 689
+  },
+  "boundaries": 248,
+  "boundary_entry_sizes": {
+    "0": 24,
+    "1": 82,
+    "2": 84,
+    "3": 47,
+    "4": 10,
+    "5": 1
+  },
+  "celtics_contiguous_block_sizes": {
+    "1": 1133,
+    "2": 399,
+    "3+": 167
+  },
+  "celtics_entries": 2475,
+  "celtics_group_sizes": {
+    "1": 1105,
+    "2": 409,
+    "3+": 169
+  },
+  "celtics_groups_reentry": 8,
+  "celtics_groups_with_intervening_non_sub": 16,
+  "celtics_groups_without_marker": 166,
+  "celtics_sub_clock_buckets": 1683,
+  "changed_boundaries": 224,
+  "contiguous_sub_blocks": 2535,
+  "events": 45486,
+  "foul_box_rows": 1348,
+  "free_throw_number_null": 0,
+  "free_throw_total_null": 0,
+  "free_throw_types": {
+    "2ndchance": 444,
+    "2ndchance,fastbreak": 1,
+    "2ndchance,fromturnover": 4,
+    "None": 2181,
+    "fastbreak": 219,
+    "fastbreak,fromturnover": 32,
+    "fromturnover": 249,
+    "fromturnover,2ndchance": 60,
+    "fromturnover,fastbreak": 84
+  },
+  "games": 82,
+  "marker_buckets_without_celtics_sub": 3618,
+  "marker_clock_buckets": 5135,
+  "marker_events": {
+    "dead_ball_turnover": 921,
+    "ejection": 3,
+    "foul": 3135,
+    "free_throw": 3274,
+    "period_end": 330,
+    "period_start": 330,
+    "timeout": 887,
+    "violation": 83
+  },
+  "mixed_team_groups": 882,
+  "mixed_team_timeout_groups": 263,
+  "null_fouls_entry": 0,
+  "null_fouls_exit": 0,
+  "null_scores": 0,
+  "opponent_complete_changes_before_celtics": [
+    {
+      "entries": [
+        "203954"
+      ],
+      "exits": [
+        "1641737"
+      ],
+      "game_id": "0022500021",
+      "sequence": 479
+    },
+    {
+      "entries": [
+        "1627747"
+      ],
+      "exits": [
+        "1631105"
+      ],
+      "game_id": "0022500060",
+      "sequence": 239
+    },
+    {
+      "entries": [
+        "1642845",
+        "1631230"
+      ],
+      "exits": [
+        "1626162",
+        "203954"
+      ],
+      "game_id": "0022500083",
+      "sequence": 461
+    },
+    {
+      "entries": [
+        "1629130"
+      ],
+      "exits": [
+        "1630595"
+      ],
+      "game_id": "0022500106",
+      "sequence": 228
+    },
+    {
+      "entries": [
+        "1626204"
+      ],
+      "exits": [
+        "1642281"
+      ],
+      "game_id": "0022500128",
+      "sequence": 592
+    },
+    {
+      "entries": [
+        "201935"
+      ],
+      "exits": [
+        "1627739"
+      ],
+      "game_id": "0022500233",
+      "sequence": 457
+    },
+    {
+      "entries": [
+        "1641730"
+      ],
+      "exits": [
+        "1629008"
+      ],
+      "game_id": "0022500250",
+      "sequence": 125
+    },
+    {
+      "entries": [
+        "1642859"
+      ],
+      "exits": [
+        "1630532"
+      ],
+      "game_id": "0022500277",
+      "sequence": 134
+    },
+    {
+      "entries": [
+        "203944"
+      ],
+      "exits": [
+        "203497"
+      ],
+      "game_id": "0022500293",
+      "sequence": 84
+    },
+    {
+      "entries": [
+        "1629675"
+      ],
+      "exits": [
+        "203944"
+      ],
+      "game_id": "0022500293",
+      "sequence": 321
+    },
+    {
+      "entries": [
+        "1628418"
+      ],
+      "exits": [
+        "1641772"
+      ],
+      "game_id": "0022500302",
+      "sequence": 154
+    },
+    {
+      "entries": [
+        "1629011"
+      ],
+      "exits": [
+        "1626157"
+      ],
+      "game_id": "0022500320",
+      "sequence": 350
+    },
+    {
+      "entries": [
+        "1641733"
+      ],
+      "exits": [
+        "1630559"
+      ],
+      "game_id": "0022500338",
+      "sequence": 210
+    },
+    {
+      "entries": [
+        "1629614"
+      ],
+      "exits": [
+        "1641716"
+      ],
+      "game_id": "0022500426",
+      "sequence": 177
+    },
+    {
+      "entries": [
+        "1642270",
+        "1631126"
+      ],
+      "exits": [
+        "1630166",
+        "1631321"
+      ],
+      "game_id": "0022500444",
+      "sequence": 451
+    },
+    {
+      "entries": [
+        "1631321"
+      ],
+      "exits": [
+        "1642270"
+      ],
+      "game_id": "0022500444",
+      "sequence": 522
+    },
+    {
+      "entries": [
+        "1630577"
+      ],
+      "exits": [
+        "1631110"
+      ],
+      "game_id": "0022500545",
+      "sequence": 112
+    },
+    {
+      "entries": [
+        "1628436"
+      ],
+      "exits": [
+        "1641705"
+      ],
+      "game_id": "0022500545",
+      "sequence": 128
+    },
+    {
+      "entries": [
+        "1642844",
+        "1641705",
+        "203482",
+        "1630577"
+      ],
+      "exits": [
+        "1629640",
+        "1628436",
+        "203084",
+        "1642264"
+      ],
+      "game_id": "0022500545",
+      "sequence": 416
+    },
+    {
+      "entries": [
+        "1642277"
+      ],
+      "exits": [
+        "204456"
+      ],
+      "game_id": "0022500621",
+      "sequence": 452
+    },
+    {
+      "entries": [
+        "1642277",
+        "1628396",
+        "1641767",
+        "1627783"
+      ],
+      "exits": [
+        "1641716",
+        "1630695",
+        "204456",
+        "1630174"
+      ],
+      "game_id": "0022500621",
+      "sequence": 498
+    },
+    {
+      "entries": [
+        "1629651"
+      ],
+      "exits": [
+        "1629008"
+      ],
+      "game_id": "0022500637",
+      "sequence": 604
+    },
+    {
+      "entries": [
+        "1629008"
+      ],
+      "exits": [
+        "1642849"
+      ],
+      "game_id": "0022500637",
+      "sequence": 611
+    },
+    {
+      "entries": [
+        "1630245"
+      ],
+      "exits": [
+        "1630171"
+      ],
+      "game_id": "0022500647",
+      "sequence": 63
+    },
+    {
+      "entries": [
+        "1630581"
+      ],
+      "exits": [
+        "1630188"
+      ],
+      "game_id": "0022500647",
+      "sequence": 224
+    },
+    {
+      "entries": [
+        "202696"
+      ],
+      "exits": [
+        "1630188"
+      ],
+      "game_id": "0022500647",
+      "sequence": 334
+    },
+    {
+      "entries": [
+        "1630245"
+      ],
+      "exits": [
+        "1641824"
+      ],
+      "game_id": "0022500647",
+      "sequence": 360
+    },
+    {
+      "entries": [
+        "202696",
+        "1630581"
+      ],
+      "exits": [
+        "1630245",
+        "1630172"
+      ],
+      "game_id": "0022500647",
+      "sequence": 469
+    },
+    {
+      "entries": [
+        "1629057"
+      ],
+      "exits": [
+        "1642270"
+      ],
+      "game_id": "0022500660",
+      "sequence": 168
+    },
+    {
+      "entries": [
+        "202691"
+      ],
+      "exits": [
+        "1630702"
+      ],
+      "game_id": "0022500721",
+      "sequence": 477
+    },
+    {
+      "entries": [
+        "1629011"
+      ],
+      "exits": [
+        "203903"
+      ],
+      "game_id": "0022500757",
+      "sequence": 383
+    },
+    {
+      "entries": [
+        "1630230"
+      ],
+      "exits": [
+        "203939"
+      ],
+      "game_id": "0022500908",
+      "sequence": 253
+    },
+    {
+      "entries": [
+        "1631119",
+        "1627936"
+      ],
+      "exits": [
+        "1642272",
+        "1631096"
+      ],
+      "game_id": "0022500959",
+      "sequence": 169
+    },
+    {
+      "entries": [
+        "1641717"
+      ],
+      "exits": [
+        "1630198"
+      ],
+      "game_id": "0022500959",
+      "sequence": 258
+    },
+    {
+      "entries": [
+        "1630551",
+        "1641774",
+        "1642364"
+      ],
+      "exits": [
+        "1629027",
+        "1642848",
+        "1642259"
+      ],
+      "game_id": "0022500971",
+      "sequence": 88
+    },
+    {
+      "entries": [
+        "1630224"
+      ],
+      "exits": [
+        "1642853"
+      ],
+      "game_id": "0022500986",
+      "sequence": 392
+    },
+    {
+      "entries": [
+        "1630552",
+        "1630168"
+      ],
+      "exits": [
+        "1630228",
+        "1631243"
+      ],
+      "game_id": "0022501067",
+      "sequence": 167
+    },
+    {
+      "entries": [
+        "1629638"
+      ],
+      "exits": [
+        "1630700"
+      ],
+      "game_id": "0022501067",
+      "sequence": 329
+    },
+    {
+      "entries": [
+        "1630579",
+        "1627752"
+      ],
+      "exits": [
+        "1626167",
+        "1628398"
+      ],
+      "game_id": "0022501126",
+      "sequence": 67
+    },
+    {
+      "entries": [
+        "1642867"
+      ],
+      "exits": [
+        "1627751"
+      ],
+      "game_id": "0022501132",
+      "sequence": 238
+    },
+    {
+      "entries": [
+        "1641750",
+        "1641706"
+      ],
+      "exits": [
+        "1629684",
+        "1631217"
+      ],
+      "game_id": "0022501149",
+      "sequence": 491
+    },
+    {
+      "entries": [
+        "1631288"
+      ],
+      "exits": [
+        "1629048"
+      ],
+      "game_id": "0022501186",
+      "sequence": 273
+    }
+  ],
+  "opponent_rows_after": 2132,
+  "opponent_rows_before": 778,
+  "personal_foul_mismatches": [],
+  "raw_fouler_mismatches": 25,
+  "raw_inperiod_entries": 2039,
+  "repaired_events": 0,
+  "repaired_substitutions": 0,
+  "stint_action_count_differences": [
+    {
+      "game_id": "0022500193",
+      "raw_inperiod_entries": 29,
+      "stint_substitution_starts": 28
+    },
+    {
+      "game_id": "0022500358",
+      "raw_inperiod_entries": 27,
+      "stint_substitution_starts": 26
+    },
+    {
+      "game_id": "0022501085",
+      "raw_inperiod_entries": 25,
+      "stint_substitution_starts": 24
+    }
+  ],
+  "stint_end_reasons": {
+    "period_end": 1650,
+    "substitution": 2036
+  },
+  "stint_foul_disagreements": [],
+  "stint_start_reasons": {
+    "period_start": 1650,
+    "substitution": 2036
+  },
+  "stints": 3686,
+  "sub_groups_without_marker": 265,
+  "timeouts_after": 18,
+  "timeouts_before": 430,
+  "type_subtypes": {
+    "administrative/None": 70,
+    "block/None": 749,
+    "ejection/other": 3,
+    "field_goal/DUNK": 600,
+    "field_goal/Hook": 333,
+    "field_goal/Jump Shot": 10090,
+    "field_goal/Layup": 3492,
+    "foul/offensive": 270,
+    "foul/personal": 2800,
+    "foul/technical": 65,
+    "free_throw/1 of 1": 427,
+    "free_throw/1 of 2": 1326,
+    "free_throw/1 of 3": 65,
+    "free_throw/2 of 2": 1326,
+    "free_throw/2 of 3": 65,
+    "free_throw/3 of 3": 65,
+    "game/end": 82,
+    "jump_ball/recovered": 168,
+    "period_end/end": 330,
+    "period_start/start": 330,
+    "rebound/defensive": 5720,
+    "rebound/offensive": 2952,
+    "steal/None": 1091,
+    "substitution/in": 5032,
+    "substitution/out": 5032,
+    "timeout/challenge": 17,
+    "timeout/full": 870,
+    "turnover/3-second-violation": 11,
+    "turnover/5-second-violation": 7,
+    "turnover/8-second-violation": 2,
+    "turnover/backcourt": 17,
+    "turnover/bad pass": 623,
+    "turnover/discontinued dribble": 7,
+    "turnover/double dribble": 4,
+    "turnover/jumpball violation": 1,
+    "turnover/lost ball": 489,
+    "turnover/offensive foul": 272,
+    "turnover/offensive goaltending": 9,
+    "turnover/offensive-kicked-ball": 3,
+    "turnover/out-of-bounds": 397,
+    "turnover/shot clock": 108,
+    "turnover/traveling": 83,
+    "violation/defensive goaltending": 23,
+    "violation/delay-of-game": 25,
+    "violation/kicked ball": 29,
+    "violation/lane": 6
+  },
+  "types": {
+    "administrative": 70,
+    "block": 749,
+    "ejection": 3,
+    "field_goal": 14515,
+    "foul": 3135,
+    "free_throw": 3274,
+    "game": 82,
+    "jump_ball": 168,
+    "period_end": 330,
+    "period_start": 330,
+    "rebound": 8672,
+    "steal": 1091,
+    "substitution": 10064,
+    "timeout": 887,
+    "turnover": 2033,
+    "violation": 83
+  },
+  "unbalanced_celtics_groups": 0,
+  "unknown_boundaries": 0,
+  "validity": {
+    "effective": 45486
+  }
+}

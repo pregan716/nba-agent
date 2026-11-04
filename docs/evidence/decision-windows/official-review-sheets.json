@@ -1,0 +1,6484 @@
+[
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 2,
+        "description": "Period Start",
+        "sequence": 0
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT11M02.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 11,
+        "description": "T. Maxey shooting personal FOUL (1 PF) (Pritchard 2 FT)",
+        "sequence": 4
+      },
+      {
+        "action": 13,
+        "description": "MISS P. Pritchard Free Throw 1 of 2",
+        "sequence": 5
+      },
+      {
+        "action": 14,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 6
+      },
+      {
+        "action": 15,
+        "description": "P. Pritchard Free Throw 2 of 2 (1 PTS)",
+        "sequence": 7
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT10M21.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 19,
+        "description": "N. Queta shooting personal FOUL (1 PF) (Edgecombe 2 FT)",
+        "sequence": 11
+      },
+      {
+        "action": 21,
+        "description": "MISS V. Edgecombe Free Throw 1 of 2",
+        "sequence": 12
+      },
+      {
+        "action": 22,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 13
+      },
+      {
+        "action": 23,
+        "description": "V. Edgecombe Free Throw 2 of 2 (1 PTS)",
+        "sequence": 14
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT09M02.00S",
+    "game_id": "0022500083",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 38,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 25
+      },
+      {
+        "action": 36,
+        "description": "SUB out: N. Queta",
+        "sequence": 26
+      },
+      {
+        "action": 37,
+        "description": "SUB in: X. Tillman",
+        "sequence": 27
+      },
+      {
+        "action": 39,
+        "description": "Jump Ball D. Barlow vs. S. Hauser: Tip to V. Edgecombe",
+        "sequence": 28
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT08M55.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 42,
+        "description": "D. Barlow running Layup (2 PTS) (V. Edgecombe 2 AST)",
+        "sequence": 29
+      },
+      {
+        "action": 43,
+        "description": "X. Tillman shooting personal FOUL (1 PF) (Barlow 1 FT)",
+        "sequence": 30
+      },
+      {
+        "action": 45,
+        "description": "D. Barlow Free Throw 1 of 1 (3 PTS)",
+        "sequence": 31
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT06M53.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 63,
+        "description": "X. Tillman running Layup (2 PTS) (J. Brown 2 AST)",
+        "sequence": 47
+      },
+      {
+        "action": 65,
+        "description": "PHI Timeout",
+        "sequence": 48
+      },
+      {
+        "action": 66,
+        "description": "SUB out: S. Hauser",
+        "sequence": 49
+      },
+      {
+        "action": 67,
+        "description": "SUB out: D. White",
+        "sequence": 50
+      },
+      {
+        "action": 68,
+        "description": "SUB out: J. Embiid",
+        "sequence": 51
+      },
+      {
+        "action": 69,
+        "description": "SUB out: K. Oubre Jr.",
+        "sequence": 52
+      },
+      {
+        "action": 70,
+        "description": "SUB in: J. Minott",
+        "sequence": 53
+      },
+      {
+        "action": 71,
+        "description": "SUB in: A. Simons",
+        "sequence": 54
+      },
+      {
+        "action": 72,
+        "description": "SUB in: Q. Grimes",
+        "sequence": 55
+      },
+      {
+        "action": 73,
+        "description": "SUB in: A. Bona",
+        "sequence": 56
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT03M14.00S",
+    "game_id": "0022500083",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 100,
+        "description": "X. Tillman REBOUND (Off:1 Def:2)",
+        "sequence": 76
+      },
+      {
+        "action": 101,
+        "description": "SUB out: J. Brown",
+        "sequence": 77
+      },
+      {
+        "action": 102,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 78
+      },
+      {
+        "action": 103,
+        "description": "SUB out: T. Maxey",
+        "sequence": 79
+      },
+      {
+        "action": 104,
+        "description": "SUB out: D. Barlow",
+        "sequence": 80
+      },
+      {
+        "action": 105,
+        "description": "SUB in: D. White",
+        "sequence": 81
+      },
+      {
+        "action": 106,
+        "description": "SUB in: C. Boucher",
+        "sequence": 82
+      },
+      {
+        "action": 107,
+        "description": "SUB in: J. Walker",
+        "sequence": 83
+      },
+      {
+        "action": 108,
+        "description": "SUB in: K. Oubre Jr.",
+        "sequence": 84
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M36.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 120,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 93
+      },
+      {
+        "action": 121,
+        "description": "J. Minott loose ball personal FOUL (1 PF)",
+        "sequence": 94
+      },
+      {
+        "action": 123,
+        "description": "BOS Timeout",
+        "sequence": 95
+      },
+      {
+        "action": 124,
+        "description": "SUB out: J. Minott",
+        "sequence": 96
+      },
+      {
+        "action": 125,
+        "description": "SUB out: X. Tillman",
+        "sequence": 97
+      },
+      {
+        "action": 126,
+        "description": "SUB in: L. Garza",
+        "sequence": 98
+      },
+      {
+        "action": 127,
+        "description": "SUB in: J. Brown",
+        "sequence": 99
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M27.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 128,
+        "description": "L. Garza personal FOUL (1 PF)",
+        "sequence": 100
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M15.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 131,
+        "description": "L. Garza REBOUND (Off:0 Def:1)",
+        "sequence": 102
+      },
+      {
+        "action": 152,
+        "description": "L. Garza step out-of-bounds TURNOVER (1 TO)",
+        "sequence": 103
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT01M37.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 137,
+        "description": "A. Bona offensive goaltending TURNOVER (1 TO)",
+        "sequence": 108
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M43.60S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 145,
+        "description": "A. Bona offensive FOUL (1 PF)",
+        "sequence": 115
+      },
+      {
+        "action": 147,
+        "description": "A. Bona offensive foul TURNOVER (2 TO)",
+        "sequence": 116
+      },
+      {
+        "action": 148,
+        "description": "SUB out: L. Garza",
+        "sequence": 117
+      },
+      {
+        "action": 149,
+        "description": "SUB out: V. Edgecombe",
+        "sequence": 118
+      },
+      {
+        "action": 150,
+        "description": "SUB in: N. Queta",
+        "sequence": 119
+      },
+      {
+        "action": 151,
+        "description": "SUB in: T. Maxey",
+        "sequence": 120
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M05.80S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 155,
+        "description": "A. Simons shooting personal FOUL (1 PF) (Grimes 2 FT)",
+        "sequence": 123
+      },
+      {
+        "action": 157,
+        "description": "MISS Q. Grimes Free Throw 1 of 2",
+        "sequence": 124
+      },
+      {
+        "action": 158,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 125
+      },
+      {
+        "action": 159,
+        "description": "SUB out: A. Bona",
+        "sequence": 126
+      },
+      {
+        "action": 160,
+        "description": "SUB in: J. Edwards",
+        "sequence": 127
+      },
+      {
+        "action": 161,
+        "description": "Q. Grimes Free Throw 2 of 2 (1 PTS)",
+        "sequence": 128
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 164,
+        "description": "Period End",
+        "sequence": 131
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 165,
+        "description": "SUB out: J. Brown",
+        "sequence": 132
+      },
+      {
+        "action": 166,
+        "description": "SUB out: J. Edwards",
+        "sequence": 133
+      },
+      {
+        "action": 167,
+        "description": "SUB in: S. Hauser",
+        "sequence": 134
+      },
+      {
+        "action": 168,
+        "description": "SUB in: J. Embiid",
+        "sequence": 135
+      },
+      {
+        "action": 169,
+        "description": "Period Start",
+        "sequence": 136
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT11M31.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 174,
+        "description": "N. Queta shooting personal FOUL (2 PF) (Maxey 2 FT)",
+        "sequence": 141
+      },
+      {
+        "action": 176,
+        "description": "T. Maxey Free Throw 1 of 2 (4 PTS)",
+        "sequence": 142
+      },
+      {
+        "action": 177,
+        "description": "T. Maxey Free Throw 2 of 2 (5 PTS)",
+        "sequence": 143
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT10M47.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 184,
+        "description": "BOS Timeout",
+        "sequence": 150
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT10M38.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 185,
+        "description": "Q. Grimes personal FOUL (1 PF)",
+        "sequence": 151
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT09M50.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 192,
+        "description": "Q. Grimes offensive FOUL (2 PF)",
+        "sequence": 156
+      },
+      {
+        "action": 194,
+        "description": "Q. Grimes offensive foul TURNOVER (1 TO)",
+        "sequence": 157
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT09M38.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 195,
+        "description": "S. Hauser offensive FOUL (1 PF)",
+        "sequence": 158
+      },
+      {
+        "action": 197,
+        "description": "S. Hauser offensive foul TURNOVER (1 TO)",
+        "sequence": 159
+      },
+      {
+        "action": 198,
+        "description": "SUB out: Q. Grimes",
+        "sequence": 160
+      },
+      {
+        "action": 199,
+        "description": "SUB in: V. Edgecombe",
+        "sequence": 161
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M56.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 202,
+        "description": "A. Simons 11' driving floating Jump Shot (5 PTS)",
+        "sequence": 163
+      },
+      {
+        "action": 203,
+        "description": "T. Maxey shooting personal FOUL (2 PF) (Simons 1 FT)",
+        "sequence": 164
+      },
+      {
+        "action": 205,
+        "description": "SUB out: D. White",
+        "sequence": 165
+      },
+      {
+        "action": 206,
+        "description": "SUB out: N. Queta",
+        "sequence": 166
+      },
+      {
+        "action": 207,
+        "description": "SUB out: C. Boucher",
+        "sequence": 167
+      },
+      {
+        "action": 208,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 168
+      },
+      {
+        "action": 209,
+        "description": "SUB in: J. Brown",
+        "sequence": 169
+      },
+      {
+        "action": 210,
+        "description": "SUB in: X. Tillman",
+        "sequence": 170
+      },
+      {
+        "action": 211,
+        "description": "SUB out: J. Walker",
+        "sequence": 171
+      },
+      {
+        "action": 212,
+        "description": "SUB in: D. Barlow",
+        "sequence": 172
+      },
+      {
+        "action": 213,
+        "description": "A. Simons Free Throw 1 of 1 (6 PTS)",
+        "sequence": 173
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M09.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 217,
+        "description": "X. Tillman shooting personal FOUL (2 PF) (Embiid 2 FT)",
+        "sequence": 177
+      },
+      {
+        "action": 219,
+        "description": "J. Embiid Free Throw 1 of 2 (3 PTS)",
+        "sequence": 178
+      },
+      {
+        "action": 220,
+        "description": "J. Embiid Free Throw 2 of 2 (4 PTS)",
+        "sequence": 179
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT06M55.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 231,
+        "description": "X. Tillman shooting personal FOUL (3 PF) (Maxey 2 FT)",
+        "sequence": 189
+      },
+      {
+        "action": 233,
+        "description": "T. Maxey Free Throw 1 of 2 (12 PTS)",
+        "sequence": 190
+      },
+      {
+        "action": 234,
+        "description": "SUB out: X. Tillman",
+        "sequence": 191
+      },
+      {
+        "action": 235,
+        "description": "SUB out: S. Hauser",
+        "sequence": 192
+      },
+      {
+        "action": 236,
+        "description": "SUB out: J. Embiid",
+        "sequence": 193
+      },
+      {
+        "action": 237,
+        "description": "SUB in: J. Minott",
+        "sequence": 194
+      },
+      {
+        "action": 238,
+        "description": "SUB in: L. Garza",
+        "sequence": 195
+      },
+      {
+        "action": 239,
+        "description": "SUB in: A. Bona",
+        "sequence": 196
+      },
+      {
+        "action": 240,
+        "description": "MISS T. Maxey Free Throw 2 of 2",
+        "sequence": 197
+      },
+      {
+        "action": 241,
+        "description": "J. Brown REBOUND (Off:0 Def:4)",
+        "sequence": 198
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT06M31.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 244,
+        "description": "P. Pritchard shooting personal FOUL (1 PF) (Barlow 2 FT)",
+        "sequence": 201
+      },
+      {
+        "action": 246,
+        "description": "D. Barlow Free Throw 1 of 2 (4 PTS)",
+        "sequence": 202
+      },
+      {
+        "action": 247,
+        "description": "SUB out: J. Brown",
+        "sequence": 203
+      },
+      {
+        "action": 248,
+        "description": "SUB in: C. Boucher",
+        "sequence": 204
+      },
+      {
+        "action": 249,
+        "description": "D. Barlow Free Throw 2 of 2 (5 PTS)",
+        "sequence": 205
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT04M02.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 273,
+        "description": "P. Pritchard lost ball out-of-bounds TURNOVER (1 TO)",
+        "sequence": 226
+      },
+      {
+        "action": 274,
+        "description": "SUB out: A. Simons",
+        "sequence": 227
+      },
+      {
+        "action": 275,
+        "description": "SUB in: D. White",
+        "sequence": 228
+      },
+      {
+        "action": 301,
+        "description": "SUB out: K. Oubre Jr.",
+        "sequence": 229
+      },
+      {
+        "action": 302,
+        "description": "SUB in: Q. Grimes",
+        "sequence": 230
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT03M03.00S",
+    "game_id": "0022500083",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 286,
+        "description": "SUB out: L. Garza",
+        "sequence": 240
+      },
+      {
+        "action": 287,
+        "description": "SUB out: A. Bona",
+        "sequence": 241
+      },
+      {
+        "action": 288,
+        "description": "SUB in: J. Brown",
+        "sequence": 242
+      },
+      {
+        "action": 289,
+        "description": "SUB in: A. Drummond",
+        "sequence": 243
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT01M46.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 299,
+        "description": "P. Pritchard traveling TURNOVER (2 TO)",
+        "sequence": 253
+      },
+      {
+        "action": 300,
+        "description": "PHI Timeout",
+        "sequence": 254
+      },
+      {
+        "action": 303,
+        "description": "SUB out: J. Minott",
+        "sequence": 255
+      },
+      {
+        "action": 304,
+        "description": "SUB in: N. Queta",
+        "sequence": 256
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT01M32.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 306,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 258
+      },
+      {
+        "action": 307,
+        "description": "A. Drummond loose ball personal FOUL (1 PF)",
+        "sequence": 259
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT00M57.10S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 314,
+        "description": "N. Queta shooting personal FOUL (3 PF) (Barlow 2 FT)",
+        "sequence": 264
+      },
+      {
+        "action": 316,
+        "description": "D. Barlow Free Throw 1 of 2 (8 PTS)",
+        "sequence": 265
+      },
+      {
+        "action": 317,
+        "description": "D. Barlow Free Throw 2 of 2 (9 PTS)",
+        "sequence": 266
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT00M19.80S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 322,
+        "description": "A. Drummond shooting personal FOUL (2 PF) (Queta 2 FT)",
+        "sequence": 269
+      },
+      {
+        "action": 324,
+        "description": "N. Queta Free Throw 1 of 2 (7 PTS)",
+        "sequence": 270
+      },
+      {
+        "action": 325,
+        "description": "SUB out: A. Drummond",
+        "sequence": 271
+      },
+      {
+        "action": 326,
+        "description": "SUB in: K. Oubre Jr.",
+        "sequence": 272
+      },
+      {
+        "action": 327,
+        "description": "N. Queta Free Throw 2 of 2 (8 PTS)",
+        "sequence": 273
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 330,
+        "description": "Period End",
+        "sequence": 276
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 331,
+        "description": "SUB out: C. Boucher",
+        "sequence": 277
+      },
+      {
+        "action": 332,
+        "description": "SUB out: Q. Grimes",
+        "sequence": 278
+      },
+      {
+        "action": 333,
+        "description": "SUB in: S. Hauser",
+        "sequence": 279
+      },
+      {
+        "action": 334,
+        "description": "SUB in: J. Embiid",
+        "sequence": 280
+      },
+      {
+        "action": 335,
+        "description": "Period Start",
+        "sequence": 281
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT11M34.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 340,
+        "description": "J. Brown running Layup (10 PTS)",
+        "sequence": 286
+      },
+      {
+        "action": 341,
+        "description": "J. Embiid shooting personal FOUL (1 PF) (Brown 1 FT)",
+        "sequence": 287
+      },
+      {
+        "action": 344,
+        "description": "MISS J. Brown Free Throw 1 of 1",
+        "sequence": 288
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT11M08.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 347,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 291
+      },
+      {
+        "action": 348,
+        "description": "J. Embiid loose ball personal FOUL (2 PF)",
+        "sequence": 292
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT10M34.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 359,
+        "description": "P. Pritchard loose ball personal FOUL (2 PF)",
+        "sequence": 300
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT10M17.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 361,
+        "description": "T. Maxey charge offensive FOUL (3 PF)",
+        "sequence": 301
+      },
+      {
+        "action": 363,
+        "description": "T. Maxey offensive foul TURNOVER (1 TO)",
+        "sequence": 302
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT10M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 393,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 305
+      },
+      {
+        "action": 365,
+        "description": "K. Oubre Jr. away-from-play personal FOUL (1 PF) (Brown 1 FT)",
+        "sequence": 306
+      },
+      {
+        "action": 367,
+        "description": "J. Brown away-from-play Free Throw 1 of 1 (11 PTS)",
+        "sequence": 307
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT09M13.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 371,
+        "description": "J. Brown offensive FOUL (1 PF)",
+        "sequence": 310
+      },
+      {
+        "action": 373,
+        "description": "J. Brown offensive foul TURNOVER (1 TO)",
+        "sequence": 311
+      },
+      {
+        "action": 374,
+        "description": "TEAM delay-of-game VIOLATION",
+        "sequence": 312
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT07M37.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 390,
+        "description": "PHI Timeout",
+        "sequence": 326
+      },
+      {
+        "action": 394,
+        "description": "SUB out: N. Queta",
+        "sequence": 327
+      },
+      {
+        "action": 395,
+        "description": "SUB in: X. Tillman",
+        "sequence": 328
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT07M10.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 398,
+        "description": "D. Barlow traveling TURNOVER (2 TO)",
+        "sequence": 331
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT06M21.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 403,
+        "description": "D. Barlow shooting personal FOUL (1 PF) (White 3 FT)",
+        "sequence": 336
+      },
+      {
+        "action": 405,
+        "description": "D. White Free Throw 1 of 3 (16 PTS)",
+        "sequence": 337
+      },
+      {
+        "action": 406,
+        "description": "D. White Free Throw 2 of 3 (17 PTS)",
+        "sequence": 338
+      },
+      {
+        "action": 407,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 339
+      },
+      {
+        "action": 408,
+        "description": "SUB out: K. Oubre Jr.",
+        "sequence": 340
+      },
+      {
+        "action": 409,
+        "description": "SUB in: A. Simons",
+        "sequence": 341
+      },
+      {
+        "action": 410,
+        "description": "SUB in: Q. Grimes",
+        "sequence": 342
+      },
+      {
+        "action": 411,
+        "description": "D. White Free Throw 3 of 3 (18 PTS)",
+        "sequence": 343
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT05M52.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 414,
+        "description": "Q. Grimes shooting personal FOUL (3 PF) (White 2 FT)",
+        "sequence": 346
+      },
+      {
+        "action": 416,
+        "description": "D. White Free Throw 1 of 2 (19 PTS)",
+        "sequence": 347
+      },
+      {
+        "action": 417,
+        "description": "SUB out: S. Hauser",
+        "sequence": 348
+      },
+      {
+        "action": 418,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 349
+      },
+      {
+        "action": 419,
+        "description": "D. White Free Throw 2 of 2 (20 PTS)",
+        "sequence": 350
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT04M36.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 432,
+        "description": "T. Maxey shooting personal FOUL (4 PF) (White 2 FT)",
+        "sequence": 362
+      },
+      {
+        "action": 435,
+        "description": "SUB out: J. Brown",
+        "sequence": 363
+      },
+      {
+        "action": 436,
+        "description": "SUB out: X. Tillman",
+        "sequence": 364
+      },
+      {
+        "action": 437,
+        "description": "SUB out: T. Maxey",
+        "sequence": 365
+      },
+      {
+        "action": 438,
+        "description": "SUB out: J. Embiid",
+        "sequence": 366
+      },
+      {
+        "action": 439,
+        "description": "SUB out: D. Barlow",
+        "sequence": 367
+      },
+      {
+        "action": 440,
+        "description": "SUB in: J. Minott",
+        "sequence": 368
+      },
+      {
+        "action": 441,
+        "description": "SUB in: N. Queta",
+        "sequence": 369
+      },
+      {
+        "action": 442,
+        "description": "SUB in: J. Walker",
+        "sequence": 370
+      },
+      {
+        "action": 443,
+        "description": "SUB in: A. Bona",
+        "sequence": 371
+      },
+      {
+        "action": 444,
+        "description": "SUB in: K. Oubre Jr.",
+        "sequence": 372
+      },
+      {
+        "action": 434,
+        "description": "D. White Free Throw 1 of 2 (21 PTS)",
+        "sequence": 373
+      },
+      {
+        "action": 445,
+        "description": "D. White Free Throw 2 of 2 (22 PTS)",
+        "sequence": 374
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT04M02.00S",
+    "game_id": "0022500083",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 447,
+        "description": "MISS D. White 12' Jump Shot",
+        "sequence": 376
+      },
+      {
+        "action": 448,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 377
+      },
+      {
+        "action": 450,
+        "description": "SUB out: D. White",
+        "sequence": 378
+      },
+      {
+        "action": 451,
+        "description": "SUB in: S. Hauser",
+        "sequence": 379
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT03M40.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 452,
+        "description": "Q. Grimes bad pass out-of-bounds TURNOVER (3 TO)",
+        "sequence": 380
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT02M44.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 462,
+        "description": "J. Walker shooting personal FOUL (1 PF) (Hauser 2 FT)",
+        "sequence": 389
+      },
+      {
+        "action": 464,
+        "description": "BOS Timeout",
+        "sequence": 390
+      },
+      {
+        "action": 465,
+        "description": "S. Hauser Free Throw 1 of 2 (7 PTS)",
+        "sequence": 391
+      },
+      {
+        "action": 466,
+        "description": "S. Hauser Free Throw 2 of 2 (8 PTS)",
+        "sequence": 392
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT02M31.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 468,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 394
+      },
+      {
+        "action": 469,
+        "description": "J. Minott personal FOUL (2 PF)",
+        "sequence": 395
+      },
+      {
+        "action": 471,
+        "description": "SUB out: S. Hauser",
+        "sequence": 396
+      },
+      {
+        "action": 472,
+        "description": "SUB in: C. Boucher",
+        "sequence": 397
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT02M26.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 473,
+        "description": "N. Queta shooting personal FOUL (4 PF) (Oubre Jr. 2 FT)",
+        "sequence": 398
+      },
+      {
+        "action": 475,
+        "description": "K. Oubre Jr. Free Throw 1 of 2 (4 PTS)",
+        "sequence": 399
+      },
+      {
+        "action": 476,
+        "description": "K. Oubre Jr. Free Throw 2 of 2 (5 PTS)",
+        "sequence": 400
+      },
+      {
+        "action": 477,
+        "description": "A. Bona loose ball personal FOUL (2 PF) (Boucher 2 FT)",
+        "sequence": 401
+      },
+      {
+        "action": 479,
+        "description": "C. Boucher Free Throw 1 of 2 (5 PTS)",
+        "sequence": 402
+      },
+      {
+        "action": 480,
+        "description": "C. Boucher Free Throw 2 of 2 (6 PTS)",
+        "sequence": 403
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT01M21.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 487,
+        "description": "J. Walker personal FOUL (2 PF) (Pritchard 2 FT)",
+        "sequence": 408
+      },
+      {
+        "action": 489,
+        "description": "P. Pritchard Free Throw 1 of 2 (8 PTS)",
+        "sequence": 409
+      },
+      {
+        "action": 490,
+        "description": "P. Pritchard Free Throw 2 of 2 (9 PTS)",
+        "sequence": 410
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M30.40S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 497,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 417
+      },
+      {
+        "action": 498,
+        "description": "A. Bona loose ball personal FOUL (3 PF) (Queta 2 FT)",
+        "sequence": 418
+      },
+      {
+        "action": 500,
+        "description": "MISS N. Queta Free Throw 1 of 2",
+        "sequence": 419
+      },
+      {
+        "action": 501,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 420
+      },
+      {
+        "action": 502,
+        "description": "SUB out: A. Bona",
+        "sequence": 421
+      },
+      {
+        "action": 503,
+        "description": "SUB in: T. Maxey",
+        "sequence": 422
+      },
+      {
+        "action": 504,
+        "description": "N. Queta Free Throw 2 of 2 (9 PTS)",
+        "sequence": 423
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M09.60S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 505,
+        "description": "J. Minott personal FOUL (3 PF)",
+        "sequence": 424
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 509,
+        "description": "Period End",
+        "sequence": 427
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 510,
+        "description": "SUB out: J. Minott",
+        "sequence": 428
+      },
+      {
+        "action": 511,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 429
+      },
+      {
+        "action": 512,
+        "description": "SUB out: V. Edgecombe",
+        "sequence": 430
+      },
+      {
+        "action": 513,
+        "description": "SUB in: D. White",
+        "sequence": 431
+      },
+      {
+        "action": 514,
+        "description": "SUB in: J. Brown",
+        "sequence": 432
+      },
+      {
+        "action": 515,
+        "description": "SUB in: J. Embiid",
+        "sequence": 433
+      },
+      {
+        "action": 519,
+        "description": "SUB out: N. Queta",
+        "sequence": 434
+      },
+      {
+        "action": 520,
+        "description": "SUB in: X. Tillman",
+        "sequence": 435
+      },
+      {
+        "action": 516,
+        "description": "Period Start",
+        "sequence": 436
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT11M30.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 521,
+        "description": "J. Brown personal FOUL (2 PF)",
+        "sequence": 439
+      },
+      {
+        "action": 523,
+        "description": "SUB out: C. Boucher",
+        "sequence": 440
+      },
+      {
+        "action": 524,
+        "description": "SUB in: S. Hauser",
+        "sequence": 441
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT11M13.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 527,
+        "description": "T. Maxey personal FOUL (5 PF)",
+        "sequence": 444
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT10M49.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 531,
+        "description": "S. Hauser personal FOUL (2 PF)",
+        "sequence": 446
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT10M14.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 540,
+        "description": "J. Brown traveling TURNOVER (2 TO)",
+        "sequence": 450
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT09M18.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 546,
+        "description": "A. Simons driving DUNK (13 PTS)",
+        "sequence": 455
+      },
+      {
+        "action": 547,
+        "description": "PHI Timeout",
+        "sequence": 456
+      },
+      {
+        "action": 548,
+        "description": "SUB out: K. Oubre Jr.",
+        "sequence": 457
+      },
+      {
+        "action": 549,
+        "description": "SUB out: J. Embiid",
+        "sequence": 458
+      },
+      {
+        "action": 550,
+        "description": "SUB in: V. Edgecombe",
+        "sequence": 459
+      },
+      {
+        "action": 551,
+        "description": "SUB in: D. Barlow",
+        "sequence": 460
+      },
+      {
+        "action": 552,
+        "description": "SUB out: X. Tillman",
+        "sequence": 461
+      },
+      {
+        "action": 553,
+        "description": "SUB in: N. Queta",
+        "sequence": 462
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT09M14.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 554,
+        "description": "J. Brown personal FOUL (3 PF)",
+        "sequence": 463
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT08M17.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 568,
+        "description": "V. Edgecombe personal FOUL (1 PF)",
+        "sequence": 473
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT07M56.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 572,
+        "description": "V. Edgecombe running Layup (30 PTS)",
+        "sequence": 476
+      },
+      {
+        "action": 574,
+        "description": "BOS Timeout",
+        "sequence": 477
+      },
+      {
+        "action": 575,
+        "description": "SUB out: S. Hauser",
+        "sequence": 478
+      },
+      {
+        "action": 576,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 479
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT07M38.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 577,
+        "description": "J. Walker shooting personal FOUL (3 PF) (Brown 2 FT)",
+        "sequence": 480
+      },
+      {
+        "action": 580,
+        "description": "BOS Timeout",
+        "sequence": 481
+      },
+      {
+        "action": 582,
+        "description": "J. Brown Free Throw 1 of 2 (20 PTS)",
+        "sequence": 482
+      },
+      {
+        "action": 583,
+        "description": "J. Brown Free Throw 2 of 2 (21 PTS)",
+        "sequence": 483
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT07M08.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 586,
+        "description": "D. Barlow personal FOUL (2 PF)",
+        "sequence": 486
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT05M54.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 597,
+        "description": "PHI Timeout",
+        "sequence": 494
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT05M18.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 599,
+        "description": "D. Barlow shooting personal FOUL (3 PF) (Brown 2 FT)",
+        "sequence": 496
+      },
+      {
+        "action": 601,
+        "description": "J. Brown Free Throw 1 of 2 (22 PTS)",
+        "sequence": 497
+      },
+      {
+        "action": 602,
+        "description": "J. Brown Free Throw 2 of 2 (23 PTS)",
+        "sequence": 498
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M57.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 613,
+        "description": "Q. Grimes bad pass out-of-bounds TURNOVER (5 TO)",
+        "sequence": 507
+      },
+      {
+        "action": 614,
+        "description": "SUB out: J. Walker",
+        "sequence": 508
+      },
+      {
+        "action": 615,
+        "description": "SUB in: K. Oubre Jr.",
+        "sequence": 509
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 622,
+        "description": "D. Barlow driving Layup (13 PTS) (Q. Grimes 5 AST)",
+        "sequence": 515
+      },
+      {
+        "action": 624,
+        "description": "J. Brown shooting personal FOUL (4 PF) (Barlow 1 FT)",
+        "sequence": 516
+      },
+      {
+        "action": 626,
+        "description": "MISS D. Barlow Free Throw 1 of 1",
+        "sequence": 517
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT02M45.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 628,
+        "description": "N. Queta offensive FOUL (5 PF)",
+        "sequence": 519
+      },
+      {
+        "action": 630,
+        "description": "N. Queta offensive foul TURNOVER (2 TO)",
+        "sequence": 520
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT02M10.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 635,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 524
+      },
+      {
+        "action": 636,
+        "description": "D. White loose ball personal FOUL (1 PF) (Oubre Jr. 2 FT)",
+        "sequence": 525
+      },
+      {
+        "action": 638,
+        "description": "K. Oubre Jr. Free Throw 1 of 2 (6 PTS)",
+        "sequence": 526
+      },
+      {
+        "action": 639,
+        "description": "K. Oubre Jr. Free Throw 2 of 2 (7 PTS)",
+        "sequence": 527
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT01M42.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 641,
+        "description": "N. Queta shooting personal FOUL (6 PF) (Maxey 2 FT)",
+        "sequence": 529
+      },
+      {
+        "action": 643,
+        "description": "T. Maxey Free Throw 1 of 2 (37 PTS)",
+        "sequence": 530
+      },
+      {
+        "action": 644,
+        "description": "SUB out: A. Simons",
+        "sequence": 531
+      },
+      {
+        "action": 645,
+        "description": "SUB out: N. Queta",
+        "sequence": 532
+      },
+      {
+        "action": 646,
+        "description": "SUB in: X. Tillman",
+        "sequence": 533
+      },
+      {
+        "action": 647,
+        "description": "SUB in: S. Hauser",
+        "sequence": 534
+      },
+      {
+        "action": 648,
+        "description": "T. Maxey Free Throw 2 of 2 (38 PTS)",
+        "sequence": 535
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT01M10.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 653,
+        "description": "S. Hauser offensive FOUL (3 PF)",
+        "sequence": 539
+      },
+      {
+        "action": 655,
+        "description": "S. Hauser offensive foul TURNOVER (3 TO)",
+        "sequence": 540
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M55.80S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 656,
+        "description": "X. Tillman shooting personal FOUL (4 PF) (Grimes 2 FT)",
+        "sequence": 541
+      },
+      {
+        "action": 658,
+        "description": "MISS Q. Grimes Free Throw 1 of 2",
+        "sequence": 542
+      },
+      {
+        "action": 659,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 543
+      },
+      {
+        "action": 660,
+        "description": "SUB out: S. Hauser",
+        "sequence": 544
+      },
+      {
+        "action": 661,
+        "description": "SUB in: A. Simons",
+        "sequence": 545
+      },
+      {
+        "action": 662,
+        "description": "Q. Grimes Free Throw 2 of 2 (10 PTS)",
+        "sequence": 546
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M41.80S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 663,
+        "description": "K. Oubre Jr. kicked ball VIOLATION",
+        "sequence": 547
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M23.10S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 668,
+        "description": "Jump Ball V. Edgecombe vs. P. Pritchard: Tip to Q. Grimes",
+        "sequence": 552
+      },
+      {
+        "action": 671,
+        "description": "PHI Timeout",
+        "sequence": 553
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M22.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 672,
+        "description": "P. Pritchard take personal FOUL (3 PF) (Maxey 2 FT)",
+        "sequence": 554
+      },
+      {
+        "action": 674,
+        "description": "T. Maxey Free Throw 1 of 2 (39 PTS)",
+        "sequence": 555
+      },
+      {
+        "action": 675,
+        "description": "T. Maxey Free Throw 2 of 2 (40 PTS)",
+        "sequence": 556
+      },
+      {
+        "action": 676,
+        "description": "BOS Timeout",
+        "sequence": 557
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M14.10S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 681,
+        "description": "A. Simons take personal FOUL (2 PF) (Edgecombe 2 FT)",
+        "sequence": 561
+      },
+      {
+        "action": 683,
+        "description": "V. Edgecombe Free Throw 1 of 2 (33 PTS)",
+        "sequence": 562
+      },
+      {
+        "action": 684,
+        "description": "SUB out: X. Tillman",
+        "sequence": 563
+      },
+      {
+        "action": 685,
+        "description": "SUB in: S. Hauser",
+        "sequence": 564
+      },
+      {
+        "action": 686,
+        "description": "V. Edgecombe Free Throw 2 of 2 (34 PTS)",
+        "sequence": 565
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M09.10S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 687,
+        "description": "P. Pritchard driving Layup (16 PTS)",
+        "sequence": 566
+      },
+      {
+        "action": 688,
+        "description": "PHI Timeout",
+        "sequence": 567
+      },
+      {
+        "action": 689,
+        "description": "SUB out: S. Hauser",
+        "sequence": 568
+      },
+      {
+        "action": 690,
+        "description": "SUB in: J. Minott",
+        "sequence": 569
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M08.50S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 691,
+        "description": "J. Minott take personal FOUL (4 PF) (Edgecombe 2 FT)",
+        "sequence": 570
+      },
+      {
+        "action": 693,
+        "description": "MISS V. Edgecombe Free Throw 1 of 2",
+        "sequence": 571
+      },
+      {
+        "action": 694,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 572
+      },
+      {
+        "action": 695,
+        "description": "SUB out: A. Simons",
+        "sequence": 573
+      },
+      {
+        "action": 696,
+        "description": "SUB in: X. Tillman",
+        "sequence": 574
+      },
+      {
+        "action": 697,
+        "description": "MISS V. Edgecombe Free Throw 2 of 2",
+        "sequence": 575
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M07.80S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 698,
+        "description": "J. Brown REBOUND (Off:0 Def:6)",
+        "sequence": 576
+      },
+      {
+        "action": 699,
+        "description": "BOS Timeout",
+        "sequence": 577
+      },
+      {
+        "action": 700,
+        "description": "SUB out: X. Tillman",
+        "sequence": 578
+      },
+      {
+        "action": 701,
+        "description": "SUB in: S. Hauser",
+        "sequence": 579
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500083",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 707,
+        "description": "Period End",
+        "sequence": 584
+      },
+      {
+        "action": 708,
+        "description": "Game End",
+        "sequence": 585
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 2,
+        "description": "Period Start",
+        "sequence": 0
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT11M24.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 11,
+        "description": "N. Clowney backcourt TURNOVER (1 TO)",
+        "sequence": 6
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT09M56.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 27,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 18
+      },
+      {
+        "action": 28,
+        "description": "E. D\u00ebmin loose ball personal FOUL (1 PF)",
+        "sequence": 19
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT07M15.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 46,
+        "description": "D. Powell personal FOUL (1 PF)",
+        "sequence": 33
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT06M47.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 50,
+        "description": "D. Powell 14' fadeaway Jump Shot (5 PTS) (M. Porter Jr. 2 AST)",
+        "sequence": 36
+      },
+      {
+        "action": 52,
+        "description": "S. Hauser shooting personal FOUL (1 PF) (Powell 1 FT)",
+        "sequence": 37
+      },
+      {
+        "action": 54,
+        "description": "BKN Timeout",
+        "sequence": 38
+      },
+      {
+        "action": 55,
+        "description": "SUB out: S. Hauser",
+        "sequence": 39
+      },
+      {
+        "action": 56,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 40
+      },
+      {
+        "action": 57,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 41
+      },
+      {
+        "action": 58,
+        "description": "SUB in: A. Simons",
+        "sequence": 42
+      },
+      {
+        "action": 59,
+        "description": "D. Powell Free Throw 1 of 1 (6 PTS)",
+        "sequence": 43
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT06M24.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 60,
+        "description": "D. Powell shooting personal FOUL (2 PF) (Brown 2 FT)",
+        "sequence": 44
+      },
+      {
+        "action": 62,
+        "description": "MISS J. Brown Free Throw 1 of 2",
+        "sequence": 45
+      },
+      {
+        "action": 63,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 46
+      },
+      {
+        "action": 64,
+        "description": "SUB out: D. Powell",
+        "sequence": 47
+      },
+      {
+        "action": 65,
+        "description": "SUB out: E. D\u00ebmin",
+        "sequence": 48
+      },
+      {
+        "action": 66,
+        "description": "SUB in: Z. Williams",
+        "sequence": 49
+      },
+      {
+        "action": 67,
+        "description": "SUB in: N. Traore",
+        "sequence": 50
+      },
+      {
+        "action": 68,
+        "description": "J. Brown Free Throw 2 of 2 (1 PTS)",
+        "sequence": 51
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT04M42.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 82,
+        "description": "J. Brown shooting personal FOUL (1 PF) (Williams 2 FT)",
+        "sequence": 64
+      },
+      {
+        "action": 84,
+        "description": "MISS Z. Williams Free Throw 1 of 2",
+        "sequence": 65
+      },
+      {
+        "action": 85,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 66
+      },
+      {
+        "action": 86,
+        "description": "SUB out: N. Clowney",
+        "sequence": 67
+      },
+      {
+        "action": 87,
+        "description": "SUB out: N. Claxton",
+        "sequence": 68
+      },
+      {
+        "action": 88,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 69
+      },
+      {
+        "action": 89,
+        "description": "SUB out: N. Queta",
+        "sequence": 70
+      },
+      {
+        "action": 90,
+        "description": "SUB in: D. Sharpe",
+        "sequence": 71
+      },
+      {
+        "action": 91,
+        "description": "SUB in: C. Thomas",
+        "sequence": 72
+      },
+      {
+        "action": 92,
+        "description": "SUB in: L. Garza",
+        "sequence": 73
+      },
+      {
+        "action": 93,
+        "description": "SUB in: J. Walsh",
+        "sequence": 74
+      },
+      {
+        "action": 94,
+        "description": "Z. Williams Free Throw 2 of 2 (1 PTS)",
+        "sequence": 75
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT04M17.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 98,
+        "description": "BOS Timeout",
+        "sequence": 78
+      },
+      {
+        "action": 99,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 79
+      },
+      {
+        "action": 100,
+        "description": "SUB in: R. Harper Jr.",
+        "sequence": 80
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT03M53.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 101,
+        "description": "BOS shot clock Team TURNOVER",
+        "sequence": 81
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT03M40.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 102,
+        "description": "R. Harper Jr. personal FOUL (1 PF)",
+        "sequence": 82
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M55.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 109,
+        "description": "M. Porter Jr. REBOUND (Off:1 Def:3)",
+        "sequence": 86
+      },
+      {
+        "action": 110,
+        "description": "L. Garza shooting personal FOUL (1 PF) (Porter Jr. 2 FT)",
+        "sequence": 87
+      },
+      {
+        "action": 112,
+        "description": "M. Porter Jr. Free Throw 1 of 2 (6 PTS)",
+        "sequence": 88
+      },
+      {
+        "action": 113,
+        "description": "M. Porter Jr. Free Throw 2 of 2 (7 PTS)",
+        "sequence": 89
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M35.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 116,
+        "description": "D. Sharpe personal FOUL (1 PF)",
+        "sequence": 92
+      },
+      {
+        "action": 118,
+        "description": "SUB out: M. Porter Jr.",
+        "sequence": 93
+      },
+      {
+        "action": 119,
+        "description": "SUB in: D. Wolf",
+        "sequence": 94
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M11.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 122,
+        "description": "J. Walsh shooting personal FOUL (1 PF) (Sharpe 2 FT)",
+        "sequence": 97
+      },
+      {
+        "action": 124,
+        "description": "D. Sharpe Free Throw 1 of 2 (1 PTS)",
+        "sequence": 98
+      },
+      {
+        "action": 125,
+        "description": "SUB out: J. Walsh",
+        "sequence": 99
+      },
+      {
+        "action": 126,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 100
+      },
+      {
+        "action": 127,
+        "description": "MISS D. Sharpe Free Throw 2 of 2",
+        "sequence": 101
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT01M54.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 131,
+        "description": "BKN Timeout",
+        "sequence": 104
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M58.90S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 139,
+        "description": "MISS Z. Williams 25' 3PT - blocked",
+        "sequence": 110
+      },
+      {
+        "action": 140,
+        "description": "R. Harper Jr. BLOCK (1 BLK)",
+        "sequence": 111
+      },
+      {
+        "action": 141,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 112
+      },
+      {
+        "action": 142,
+        "description": "BKN shot clock Team TURNOVER",
+        "sequence": 113
+      },
+      {
+        "action": 143,
+        "description": "SUB out: C. Thomas",
+        "sequence": 114
+      },
+      {
+        "action": 144,
+        "description": "SUB in: N. Clowney",
+        "sequence": 115
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M26.80S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 149,
+        "description": "Z. Williams personal FOUL (1 PF) (Brown 2 FT)",
+        "sequence": 119
+      },
+      {
+        "action": 151,
+        "description": "MISS J. Brown Free Throw 1 of 2",
+        "sequence": 120
+      },
+      {
+        "action": 152,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 121
+      },
+      {
+        "action": 153,
+        "description": "J. Brown Free Throw 2 of 2 (7 PTS)",
+        "sequence": 122
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M09.80S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 154,
+        "description": "D. Sharpe offensive FOUL (2 PF)",
+        "sequence": 123
+      },
+      {
+        "action": 156,
+        "description": "D. Sharpe offensive foul TURNOVER (1 TO)",
+        "sequence": 124
+      },
+      {
+        "action": 157,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 125
+      },
+      {
+        "action": 158,
+        "description": "SUB in: S. Hauser",
+        "sequence": 126
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 163,
+        "description": "Period End",
+        "sequence": 131
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 164,
+        "description": "SUB out: N. Clowney",
+        "sequence": 132
+      },
+      {
+        "action": 165,
+        "description": "SUB out: A. Simons",
+        "sequence": 133
+      },
+      {
+        "action": 166,
+        "description": "SUB out: J. Brown",
+        "sequence": 134
+      },
+      {
+        "action": 167,
+        "description": "SUB out: R. Harper Jr.",
+        "sequence": 135
+      },
+      {
+        "action": 168,
+        "description": "SUB in: C. Thomas",
+        "sequence": 136
+      },
+      {
+        "action": 169,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 137
+      },
+      {
+        "action": 170,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 138
+      },
+      {
+        "action": 171,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 139
+      },
+      {
+        "action": 172,
+        "description": "Period Start",
+        "sequence": 140
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT10M21.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 184,
+        "description": "D. Sharpe REBOUND (Off:1 Def:2)",
+        "sequence": 149
+      },
+      {
+        "action": 185,
+        "description": "L. Garza shooting personal FOUL (2 PF) (Sharpe 2 FT)",
+        "sequence": 150
+      },
+      {
+        "action": 187,
+        "description": "D. Sharpe Free Throw 1 of 2 (2 PTS)",
+        "sequence": 151
+      },
+      {
+        "action": 188,
+        "description": "D. Sharpe Free Throw 2 of 2 (3 PTS)",
+        "sequence": 152
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M57.00S",
+    "game_id": "0022500637",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 197,
+        "description": "SUB out: L. Garza",
+        "sequence": 158
+      },
+      {
+        "action": 198,
+        "description": "SUB in: N. Queta",
+        "sequence": 159
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M39.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 202,
+        "description": "C. Thomas offensive FOUL (1 PF)",
+        "sequence": 165
+      },
+      {
+        "action": 204,
+        "description": "C. Thomas offensive foul TURNOVER (1 TO)",
+        "sequence": 166
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M06.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 207,
+        "description": "H. Gonz\u00e1lez shooting personal FOUL (1 PF) (Thomas 2 FT)",
+        "sequence": 169
+      },
+      {
+        "action": 209,
+        "description": "C. Thomas Free Throw 1 of 2 (1 PTS)",
+        "sequence": 170
+      },
+      {
+        "action": 210,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 171
+      },
+      {
+        "action": 211,
+        "description": "SUB in: A. Simons",
+        "sequence": 172
+      },
+      {
+        "action": 212,
+        "description": "C. Thomas Free Throw 2 of 2 (2 PTS)",
+        "sequence": 173
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT07M06.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 224,
+        "description": "D. Wolf running Layup (2 PTS)",
+        "sequence": 185
+      },
+      {
+        "action": 225,
+        "description": "BOS Timeout",
+        "sequence": 186
+      },
+      {
+        "action": 230,
+        "description": "SUB out: Z. Williams",
+        "sequence": 187
+      },
+      {
+        "action": 231,
+        "description": "SUB out: D. Wolf",
+        "sequence": 188
+      },
+      {
+        "action": 232,
+        "description": "SUB out: D. Sharpe",
+        "sequence": 189
+      },
+      {
+        "action": 233,
+        "description": "SUB in: M. Porter Jr.",
+        "sequence": 190
+      },
+      {
+        "action": 234,
+        "description": "SUB in: N. Clowney",
+        "sequence": 191
+      },
+      {
+        "action": 235,
+        "description": "SUB in: N. Claxton",
+        "sequence": 192
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT05M47.00S",
+    "game_id": "0022500637",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 254,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 199
+      },
+      {
+        "action": 245,
+        "description": "SUB out: C. Thomas",
+        "sequence": 200
+      },
+      {
+        "action": 246,
+        "description": "SUB out: N. Traore",
+        "sequence": 201
+      },
+      {
+        "action": 247,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 202
+      },
+      {
+        "action": 248,
+        "description": "SUB in: D. Powell",
+        "sequence": 203
+      },
+      {
+        "action": 249,
+        "description": "SUB in: E. D\u00ebmin",
+        "sequence": 204
+      },
+      {
+        "action": 250,
+        "description": "SUB in: J. Brown",
+        "sequence": 205
+      },
+      {
+        "action": 251,
+        "description": "Jump Ball N. Clowney vs. N. Queta: Tip to M. Porter Jr.",
+        "sequence": 206
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT04M48.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 263,
+        "description": "N. Claxton personal FOUL (1 PF)",
+        "sequence": 214
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT04M39.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 267,
+        "description": "N. Queta personal FOUL (1 PF)",
+        "sequence": 217
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT04M10.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 273,
+        "description": "A. Simons shooting personal FOUL (1 PF) (Porter Jr. 2 FT)",
+        "sequence": 222
+      },
+      {
+        "action": 275,
+        "description": "MISS M. Porter Jr. Free Throw 1 of 2",
+        "sequence": 223
+      },
+      {
+        "action": 276,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 224
+      },
+      {
+        "action": 277,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 225
+      },
+      {
+        "action": 278,
+        "description": "SUB in: J. Walsh",
+        "sequence": 226
+      },
+      {
+        "action": 279,
+        "description": "M. Porter Jr. Free Throw 2 of 2 (10 PTS)",
+        "sequence": 227
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT03M44.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 280,
+        "description": "MISS A. Simons 6' driving floating Shot - blocked",
+        "sequence": 228
+      },
+      {
+        "action": 284,
+        "description": "N. Claxton BLOCK (1 BLK)",
+        "sequence": 229
+      },
+      {
+        "action": 281,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 230
+      },
+      {
+        "action": 282,
+        "description": "N. Clowney loose ball personal FOUL (1 PF)",
+        "sequence": 231
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT02M56.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 291,
+        "description": "A. Simons bad pass out-of-bounds TURNOVER (2 TO)",
+        "sequence": 236
+      },
+      {
+        "action": 292,
+        "description": "BKN Timeout",
+        "sequence": 237
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT02M24.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 296,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 240
+      },
+      {
+        "action": 297,
+        "description": "N. Claxton loose ball personal FOUL (2 PF)",
+        "sequence": 241
+      },
+      {
+        "action": 299,
+        "description": "SUB out: J. Walsh",
+        "sequence": 242
+      },
+      {
+        "action": 300,
+        "description": "SUB in: R. Harper Jr.",
+        "sequence": 243
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT01M18.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 312,
+        "description": "N. Clowney personal FOUL (2 PF)",
+        "sequence": 254
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 321,
+        "description": "Period End",
+        "sequence": 262
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 325,
+        "description": "SUB out: A. Simons",
+        "sequence": 263
+      },
+      {
+        "action": 326,
+        "description": "SUB out: R. Harper Jr.",
+        "sequence": 264
+      },
+      {
+        "action": 327,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 265
+      },
+      {
+        "action": 328,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 266
+      },
+      {
+        "action": 329,
+        "description": "Period Start",
+        "sequence": 267
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT11M23.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 332,
+        "description": "S. Hauser shooting personal FOUL (2 PF) (Porter Jr. 3 FT)",
+        "sequence": 269
+      },
+      {
+        "action": 334,
+        "description": "M. Porter Jr. Free Throw 1 of 3 (14 PTS)",
+        "sequence": 270
+      },
+      {
+        "action": 335,
+        "description": "M. Porter Jr. Free Throw 2 of 3 (15 PTS)",
+        "sequence": 271
+      },
+      {
+        "action": 336,
+        "description": "M. Porter Jr. Free Throw 3 of 3 (16 PTS)",
+        "sequence": 272
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT11M03.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 337,
+        "description": "MISS J. Brown driving finger roll Layup",
+        "sequence": 273
+      },
+      {
+        "action": 338,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 274
+      },
+      {
+        "action": 339,
+        "description": "N. Clowney loose ball personal FOUL (3 PF)",
+        "sequence": 275
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT09M39.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 352,
+        "description": "N. Clowney bad pass out-of-bounds TURNOVER (3 TO)",
+        "sequence": 286
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT08M29.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 359,
+        "description": "E. D\u00ebmin shooting personal FOUL (2 PF) (Brown 3 FT)",
+        "sequence": 291
+      },
+      {
+        "action": 362,
+        "description": "BKN Timeout",
+        "sequence": 292
+      },
+      {
+        "action": 363,
+        "description": "SUB out: S. Hauser",
+        "sequence": 293
+      },
+      {
+        "action": 364,
+        "description": "SUB in: J. Walsh",
+        "sequence": 294
+      },
+      {
+        "action": 365,
+        "description": "MISS J. Brown Free Throw 1 of 3",
+        "sequence": 295
+      },
+      {
+        "action": 366,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 296
+      },
+      {
+        "action": 367,
+        "description": "J. Brown Free Throw 2 of 3 (16 PTS)",
+        "sequence": 297
+      },
+      {
+        "action": 368,
+        "description": "MISS J. Brown Free Throw 3 of 3",
+        "sequence": 298
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT08M13.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 370,
+        "description": "N. Queta shooting personal FOUL (2 PF) (Claxton 2 FT)",
+        "sequence": 300
+      },
+      {
+        "action": 372,
+        "description": "N. Claxton Free Throw 1 of 2 (9 PTS)",
+        "sequence": 301
+      },
+      {
+        "action": 373,
+        "description": "N. Claxton Free Throw 2 of 2 (10 PTS)",
+        "sequence": 302
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT07M56.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 376,
+        "description": "N. Queta kicked ball VIOLATION",
+        "sequence": 305
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT07M11.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 382,
+        "description": "N. Queta offensive FOUL (3 PF)",
+        "sequence": 310
+      },
+      {
+        "action": 384,
+        "description": "N. Queta offensive foul TURNOVER (1 TO)",
+        "sequence": 311
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT05M43.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 397,
+        "description": "M. Porter Jr. offensive FOUL (1 PF)",
+        "sequence": 322
+      },
+      {
+        "action": 399,
+        "description": "M. Porter Jr. offensive foul TURNOVER (1 TO)",
+        "sequence": 323
+      },
+      {
+        "action": 400,
+        "description": "SUB out: D. Powell",
+        "sequence": 324
+      },
+      {
+        "action": 401,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 325
+      },
+      {
+        "action": 402,
+        "description": "SUB in: Z. Williams",
+        "sequence": 326
+      },
+      {
+        "action": 403,
+        "description": "SUB in: A. Simons",
+        "sequence": 327
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT04M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 414,
+        "description": "J. Walsh loose ball personal FOUL (2 PF)",
+        "sequence": 337
+      },
+      {
+        "action": 416,
+        "description": "SUB out: E. D\u00ebmin",
+        "sequence": 338
+      },
+      {
+        "action": 417,
+        "description": "SUB out: N. Clowney",
+        "sequence": 339
+      },
+      {
+        "action": 418,
+        "description": "SUB out: N. Claxton",
+        "sequence": 340
+      },
+      {
+        "action": 419,
+        "description": "SUB out: J. Walsh",
+        "sequence": 341
+      },
+      {
+        "action": 420,
+        "description": "SUB out: N. Queta",
+        "sequence": 342
+      },
+      {
+        "action": 421,
+        "description": "SUB in: D. Sharpe",
+        "sequence": 343
+      },
+      {
+        "action": 422,
+        "description": "SUB in: N. Traore",
+        "sequence": 344
+      },
+      {
+        "action": 423,
+        "description": "SUB in: C. Thomas",
+        "sequence": 345
+      },
+      {
+        "action": 424,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 346
+      },
+      {
+        "action": 425,
+        "description": "SUB in: L. Garza",
+        "sequence": 347
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT03M30.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 428,
+        "description": "A. Simons driving Layup (5 PTS) (J. Brown 6 AST)",
+        "sequence": 349
+      },
+      {
+        "action": 430,
+        "description": "TEAM delay-of-game VIOLATION",
+        "sequence": 350
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT03M14.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 431,
+        "description": "MISS C. Thomas 6' driving floating Shot",
+        "sequence": 351
+      },
+      {
+        "action": 432,
+        "description": "D. Sharpe REBOUND (Off:3 Def:2)",
+        "sequence": 352
+      },
+      {
+        "action": 433,
+        "description": "L. Garza personal FOUL (3 PF)",
+        "sequence": 353
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT03M12.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 435,
+        "description": "C. Thomas bad pass out-of-bounds TURNOVER (2 TO)",
+        "sequence": 354
+      },
+      {
+        "action": 436,
+        "description": "SUB out: M. Porter Jr.",
+        "sequence": 355
+      },
+      {
+        "action": 437,
+        "description": "SUB in: D. Wolf",
+        "sequence": 356
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT02M32.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 442,
+        "description": "BKN Timeout",
+        "sequence": 361
+      },
+      {
+        "action": 443,
+        "description": "SUB out: J. Brown",
+        "sequence": 362
+      },
+      {
+        "action": 444,
+        "description": "SUB in: J. Walsh",
+        "sequence": 363
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT02M25.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 445,
+        "description": "H. Gonz\u00e1lez personal FOUL (2 PF) (Thomas 2 FT)",
+        "sequence": 364
+      },
+      {
+        "action": 447,
+        "description": "C. Thomas Free Throw 1 of 2 (5 PTS)",
+        "sequence": 365
+      },
+      {
+        "action": 448,
+        "description": "MISS C. Thomas Free Throw 2 of 2",
+        "sequence": 366
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT01M51.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 452,
+        "description": "D. Sharpe lost ball TURNOVER (3 TO)",
+        "sequence": 369
+      },
+      {
+        "action": 453,
+        "description": "A. Simons STEAL (2 STL)",
+        "sequence": 370
+      },
+      {
+        "action": 454,
+        "description": "D. Sharpe personal FOUL (3 PF)",
+        "sequence": 371
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M30.20S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 464,
+        "description": "A. Simons lost ball TURNOVER (3 TO)",
+        "sequence": 379
+      },
+      {
+        "action": 475,
+        "description": "N. Traore STEAL (1 STL)",
+        "sequence": 380
+      },
+      {
+        "action": 465,
+        "description": "P. Pritchard personal FOUL (1 PF) (Williams 2 FT)",
+        "sequence": 381
+      },
+      {
+        "action": 467,
+        "description": "Z. Williams Free Throw 1 of 2 (11 PTS)",
+        "sequence": 382
+      },
+      {
+        "action": 468,
+        "description": "Z. Williams Free Throw 2 of 2 (12 PTS)",
+        "sequence": 383
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 474,
+        "description": "Period End",
+        "sequence": 388
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 476,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 389
+      },
+      {
+        "action": 477,
+        "description": "SUB in: S. Hauser",
+        "sequence": 390
+      },
+      {
+        "action": 478,
+        "description": "Period Start",
+        "sequence": 391
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT11M41.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 479,
+        "description": "Z. Williams traveling TURNOVER (1 TO)",
+        "sequence": 392
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT09M40.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 494,
+        "description": "Z. Williams traveling TURNOVER (2 TO)",
+        "sequence": 406
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT09M25.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 495,
+        "description": "L. Garza cutting Layup (11 PTS) (J. Walsh 2 AST)",
+        "sequence": 407
+      },
+      {
+        "action": 497,
+        "description": "D. Wolf shooting personal FOUL (1 PF) (Garza 1 FT)",
+        "sequence": 408
+      },
+      {
+        "action": 499,
+        "description": "SUB out: Z. Williams",
+        "sequence": 409
+      },
+      {
+        "action": 500,
+        "description": "SUB in: N. Clowney",
+        "sequence": 410
+      },
+      {
+        "action": 501,
+        "description": "L. Garza Free Throw 1 of 1 (12 PTS)",
+        "sequence": 411
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT08M23.00S",
+    "game_id": "0022500637",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 509,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 418
+      },
+      {
+        "action": 511,
+        "description": "SUB out: J. Walsh",
+        "sequence": 419
+      },
+      {
+        "action": 512,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 420
+      },
+      {
+        "action": 513,
+        "description": "SUB in: J. Brown",
+        "sequence": 421
+      },
+      {
+        "action": 514,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 422
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT06M56.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 523,
+        "description": "N. Clowney REBOUND (Off:1 Def:3)",
+        "sequence": 427
+      },
+      {
+        "action": 524,
+        "description": "MISS N. Clowney driving Layup - blocked",
+        "sequence": 428
+      },
+      {
+        "action": 525,
+        "description": "L. Garza BLOCK (1 BLK)",
+        "sequence": 429
+      },
+      {
+        "action": 526,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 430
+      },
+      {
+        "action": 528,
+        "description": "BKN Timeout",
+        "sequence": 431
+      },
+      {
+        "action": 529,
+        "description": "SUB out: D. Sharpe",
+        "sequence": 432
+      },
+      {
+        "action": 530,
+        "description": "SUB out: C. Thomas",
+        "sequence": 433
+      },
+      {
+        "action": 531,
+        "description": "SUB out: L. Garza",
+        "sequence": 434
+      },
+      {
+        "action": 532,
+        "description": "SUB in: M. Porter Jr.",
+        "sequence": 435
+      },
+      {
+        "action": 533,
+        "description": "SUB in: N. Claxton",
+        "sequence": 436
+      },
+      {
+        "action": 534,
+        "description": "SUB in: N. Queta",
+        "sequence": 437
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT04M48.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 548,
+        "description": "M. Porter Jr. offensive FOUL (2 PF)",
+        "sequence": 449
+      },
+      {
+        "action": 550,
+        "description": "M. Porter Jr. offensive foul TURNOVER (2 TO)",
+        "sequence": 450
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT04M47.00S",
+    "game_id": "0022500637",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 551,
+        "description": "SUB out: D. Wolf",
+        "sequence": 451
+      },
+      {
+        "action": 552,
+        "description": "SUB out: N. Traore",
+        "sequence": 452
+      },
+      {
+        "action": 553,
+        "description": "SUB out: S. Hauser",
+        "sequence": 453
+      },
+      {
+        "action": 554,
+        "description": "SUB in: D. Powell",
+        "sequence": 454
+      },
+      {
+        "action": 555,
+        "description": "SUB in: E. D\u00ebmin",
+        "sequence": 455
+      },
+      {
+        "action": 556,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 456
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT04M14.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 559,
+        "description": "N. Queta personal FOUL (4 PF)",
+        "sequence": 458
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT04M09.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 561,
+        "description": "N. Queta personal FOUL (5 PF)",
+        "sequence": 459
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M53.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 565,
+        "description": "E. D\u00ebmin shooting personal FOUL (3 PF) (Queta 2 FT)",
+        "sequence": 462
+      },
+      {
+        "action": 567,
+        "description": "N. Queta Free Throw 1 of 2 (5 PTS)",
+        "sequence": 463
+      },
+      {
+        "action": 568,
+        "description": "N. Queta Free Throw 2 of 2 (6 PTS)",
+        "sequence": 464
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M39.00S",
+    "game_id": "0022500637",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 570,
+        "description": "SUB out: N. Claxton",
+        "sequence": 465
+      },
+      {
+        "action": 571,
+        "description": "SUB out: N. Queta",
+        "sequence": 466
+      },
+      {
+        "action": 572,
+        "description": "SUB in: D. Sharpe",
+        "sequence": 467
+      },
+      {
+        "action": 573,
+        "description": "SUB in: S. Hauser",
+        "sequence": 468
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M05.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 578,
+        "description": "BKN Timeout",
+        "sequence": 472
+      },
+      {
+        "action": 579,
+        "description": "SUB out: D. Powell",
+        "sequence": 473
+      },
+      {
+        "action": 580,
+        "description": "SUB out: E. D\u00ebmin",
+        "sequence": 474
+      },
+      {
+        "action": 581,
+        "description": "SUB out: D. Sharpe",
+        "sequence": 475
+      },
+      {
+        "action": 582,
+        "description": "SUB in: Z. Williams",
+        "sequence": 476
+      },
+      {
+        "action": 583,
+        "description": "SUB in: N. Traore",
+        "sequence": 477
+      },
+      {
+        "action": 584,
+        "description": "SUB in: N. Claxton",
+        "sequence": 478
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT02M39.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 587,
+        "description": "N. Traore personal FOUL (1 PF)",
+        "sequence": 480
+      },
+      {
+        "action": 589,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 481
+      },
+      {
+        "action": 590,
+        "description": "SUB in: N. Queta",
+        "sequence": 482
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT01M50.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 594,
+        "description": "MISS P. Pritchard 7' fadeaway Shot - blocked",
+        "sequence": 485
+      },
+      {
+        "action": 595,
+        "description": "M. Porter Jr. BLOCK (1 BLK)",
+        "sequence": 486
+      },
+      {
+        "action": 596,
+        "description": "Z. Williams REBOUND (Off:0 Def:4)",
+        "sequence": 487
+      },
+      {
+        "action": 597,
+        "description": "N. Queta personal FOUL (6 PF)",
+        "sequence": 488
+      },
+      {
+        "action": 630,
+        "description": "SUB out: N. Queta",
+        "sequence": 489
+      },
+      {
+        "action": 631,
+        "description": "SUB in: L. Garza",
+        "sequence": 490
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M50.80S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 606,
+        "description": "J. Brown personal FOUL (2 PF) (Clowney 2 FT)",
+        "sequence": 500
+      },
+      {
+        "action": 609,
+        "description": "N. Clowney Free Throw 1 of 2 (9 PTS)",
+        "sequence": 501
+      },
+      {
+        "action": 610,
+        "description": "N. Clowney Free Throw 2 of 2 (10 PTS)",
+        "sequence": 502
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M13.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 617,
+        "description": "N. Claxton personal FOUL (3 PF)",
+        "sequence": 508
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M11.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 619,
+        "description": "M. Porter Jr. personal FOUL (3 PF) (Simons 2 FT)",
+        "sequence": 509
+      },
+      {
+        "action": 621,
+        "description": "MISS A. Simons Free Throw 1 of 2",
+        "sequence": 510
+      },
+      {
+        "action": 622,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 511
+      },
+      {
+        "action": 641,
+        "description": "SUB out: L. Garza",
+        "sequence": 512
+      },
+      {
+        "action": 642,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 513
+      },
+      {
+        "action": 625,
+        "description": "A. Simons Free Throw 2 of 2 (10 PTS)",
+        "sequence": 514
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M01.90S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 627,
+        "description": "N. Claxton REBOUND (Off:3 Def:3)",
+        "sequence": 516
+      },
+      {
+        "action": 628,
+        "description": "N. Claxton tip DUNK (16 PTS)",
+        "sequence": 517
+      },
+      {
+        "action": 629,
+        "description": "BOS Timeout",
+        "sequence": 518
+      },
+      {
+        "action": 632,
+        "description": "SUB out: N. Traore",
+        "sequence": 519
+      },
+      {
+        "action": 633,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 520
+      },
+      {
+        "action": 634,
+        "description": "SUB in: D. Powell",
+        "sequence": 521
+      },
+      {
+        "action": 635,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 522
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 640,
+        "description": "Period End",
+        "sequence": 525
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT05M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 645,
+        "description": "SUB out: D. Powell",
+        "sequence": 526
+      },
+      {
+        "action": 646,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 527
+      },
+      {
+        "action": 647,
+        "description": "SUB in: N. Traore",
+        "sequence": 528
+      },
+      {
+        "action": 648,
+        "description": "SUB in: L. Garza",
+        "sequence": 529
+      },
+      {
+        "action": 649,
+        "description": "Period Start",
+        "sequence": 530
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT03M43.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 662,
+        "description": "L. Garza personal FOUL (4 PF)",
+        "sequence": 540
+      },
+      {
+        "action": 664,
+        "description": "SUB out: A. Simons",
+        "sequence": 541
+      },
+      {
+        "action": 665,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 542
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT03M35.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 666,
+        "description": "L. Garza shooting personal FOUL (5 PF) (Porter Jr. 2 FT)",
+        "sequence": 543
+      },
+      {
+        "action": 668,
+        "description": "M. Porter Jr. Free Throw 1 of 2 (23 PTS)",
+        "sequence": 544
+      },
+      {
+        "action": 669,
+        "description": "M. Porter Jr. Free Throw 2 of 2 (24 PTS)",
+        "sequence": 545
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT02M59.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 672,
+        "description": "L. Garza shooting personal FOUL (6 PF) (Traore 2 FT)",
+        "sequence": 547
+      },
+      {
+        "action": 674,
+        "description": "SUB out: L. Garza",
+        "sequence": 548
+      },
+      {
+        "action": 675,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 549
+      },
+      {
+        "action": 676,
+        "description": "N. Traore Free Throw 1 of 2 (17 PTS)",
+        "sequence": 550
+      },
+      {
+        "action": 677,
+        "description": "N. Traore Free Throw 2 of 2 (18 PTS)",
+        "sequence": 551
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT02M41.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 679,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 553
+      },
+      {
+        "action": 680,
+        "description": "N. Traore personal FOUL (2 PF)",
+        "sequence": 554
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M40.80S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 705,
+        "description": "BOS Timeout",
+        "sequence": 574
+      },
+      {
+        "action": 706,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 575
+      },
+      {
+        "action": 707,
+        "description": "SUB in: A. Simons",
+        "sequence": 576
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M19.50S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 710,
+        "description": "A. Simons take personal FOUL (2 PF) (Traore 2 FT)",
+        "sequence": 579
+      },
+      {
+        "action": 712,
+        "description": "N. Traore Free Throw 1 of 2 (19 PTS)",
+        "sequence": 580
+      },
+      {
+        "action": 713,
+        "description": "SUB out: M. Porter Jr.",
+        "sequence": 581
+      },
+      {
+        "action": 714,
+        "description": "SUB in: D. Powell",
+        "sequence": 582
+      },
+      {
+        "action": 715,
+        "description": "N. Traore Free Throw 2 of 2 (20 PTS)",
+        "sequence": 583
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M16.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 716,
+        "description": "N. Claxton take personal FOUL (4 PF)",
+        "sequence": 584
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M07.90S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 719,
+        "description": "Z. Williams REBOUND (Off:1 Def:5)",
+        "sequence": 586
+      },
+      {
+        "action": 720,
+        "description": "A. Simons personal FOUL (3 PF) (Williams 2 FT)",
+        "sequence": 587
+      },
+      {
+        "action": 722,
+        "description": "Z. Williams Free Throw 1 of 2 (13 PTS)",
+        "sequence": 588
+      },
+      {
+        "action": 723,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 589
+      },
+      {
+        "action": 724,
+        "description": "SUB in: A. Williams",
+        "sequence": 590
+      },
+      {
+        "action": 725,
+        "description": "Z. Williams Free Throw 2 of 2 (14 PTS)",
+        "sequence": 591
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M03.90S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 728,
+        "description": "BKN Timeout",
+        "sequence": 593
+      },
+      {
+        "action": 729,
+        "description": "SUB out: N. Claxton",
+        "sequence": 594
+      },
+      {
+        "action": 730,
+        "description": "SUB out: A. Simons",
+        "sequence": 595
+      },
+      {
+        "action": 731,
+        "description": "SUB out: A. Williams",
+        "sequence": 596
+      },
+      {
+        "action": 732,
+        "description": "SUB in: M. Porter Jr.",
+        "sequence": 597
+      },
+      {
+        "action": 733,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 598
+      },
+      {
+        "action": 734,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 599
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M02.80S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 735,
+        "description": "P. Pritchard take personal FOUL (2 PF) (Traore 2 FT)",
+        "sequence": 600
+      },
+      {
+        "action": 737,
+        "description": "N. Traore Free Throw 1 of 2 (21 PTS)",
+        "sequence": 601
+      },
+      {
+        "action": 738,
+        "description": "SUB out: M. Porter Jr.",
+        "sequence": 602
+      },
+      {
+        "action": 739,
+        "description": "SUB in: N. Claxton",
+        "sequence": 603
+      },
+      {
+        "action": 740,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 604
+      },
+      {
+        "action": 741,
+        "description": "SUB in: A. Williams",
+        "sequence": 605
+      },
+      {
+        "action": 742,
+        "description": "MISS N. Traore Free Throw 2 of 2",
+        "sequence": 606
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M02.50S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 743,
+        "description": "B. Scheierman REBOUND (Off:1 Def:6)",
+        "sequence": 607
+      },
+      {
+        "action": 744,
+        "description": "BOS Timeout",
+        "sequence": 608
+      },
+      {
+        "action": 745,
+        "description": "SUB out: N. Traore",
+        "sequence": 609
+      },
+      {
+        "action": 746,
+        "description": "SUB in: M. Porter Jr.",
+        "sequence": 610
+      },
+      {
+        "action": 747,
+        "description": "SUB out: A. Williams",
+        "sequence": 611
+      },
+      {
+        "action": 748,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 612
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M00.40S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 749,
+        "description": "H. Gonz\u00e1lez 3PT  (10 PTS) (B. Scheierman 3 AST)",
+        "sequence": 613
+      },
+      {
+        "action": 751,
+        "description": "BKN Timeout",
+        "sequence": 614
+      },
+      {
+        "action": 752,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 615
+      },
+      {
+        "action": 753,
+        "description": "SUB in: A. Williams",
+        "sequence": 616
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 754,
+        "description": "MISS M. Porter Jr. 33' 3PT",
+        "sequence": 617
+      },
+      {
+        "action": 755,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 618
+      },
+      {
+        "action": 756,
+        "description": "Period End",
+        "sequence": 619
+      }
+    ],
+    "period": 5
+  },
+  {
+    "clock": "PT05M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 757,
+        "description": "SUB out: D. Powell",
+        "sequence": 620
+      },
+      {
+        "action": 758,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 621
+      },
+      {
+        "action": 759,
+        "description": "SUB out: S. Hauser",
+        "sequence": 622
+      },
+      {
+        "action": 760,
+        "description": "SUB in: N. Traore",
+        "sequence": 623
+      },
+      {
+        "action": 761,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 624
+      },
+      {
+        "action": 762,
+        "description": "SUB in: A. Simons",
+        "sequence": 625
+      },
+      {
+        "action": 763,
+        "description": "Period Start",
+        "sequence": 626
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT04M12.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 774,
+        "description": "J. Brown running Layup (25 PTS)",
+        "sequence": 634
+      },
+      {
+        "action": 775,
+        "description": "Z. Williams shooting personal FOUL (2 PF) (Brown 1 FT)",
+        "sequence": 635
+      },
+      {
+        "action": 777,
+        "description": "MISS J. Brown Free Throw 1 of 1",
+        "sequence": 636
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT03M30.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 780,
+        "description": "A. Williams Layup (2 PTS) (P. Pritchard 4 AST)",
+        "sequence": 639
+      },
+      {
+        "action": 782,
+        "description": "N. Clowney shooting personal FOUL (4 PF) (Williams 1 FT)",
+        "sequence": 640
+      },
+      {
+        "action": 784,
+        "description": "A. Williams Free Throw 1 of 1 (3 PTS)",
+        "sequence": 641
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT02M35.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 790,
+        "description": "N. Traore shooting personal FOUL (3 PF) (Brown 2 FT)",
+        "sequence": 647
+      },
+      {
+        "action": 792,
+        "description": "J. Brown Free Throw 1 of 2 (26 PTS)",
+        "sequence": 648
+      },
+      {
+        "action": 793,
+        "description": "SUB out: A. Simons",
+        "sequence": 649
+      },
+      {
+        "action": 794,
+        "description": "SUB in: S. Hauser",
+        "sequence": 650
+      },
+      {
+        "action": 795,
+        "description": "J. Brown Free Throw 2 of 2 (27 PTS)",
+        "sequence": 651
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT02M13.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 797,
+        "description": "J. Brown lost ball out-of-bounds TURNOVER (2 TO)",
+        "sequence": 653
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT02M08.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 798,
+        "description": "S. Hauser personal FOUL (3 PF)",
+        "sequence": 654
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT01M37.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 805,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 659
+      },
+      {
+        "action": 806,
+        "description": "P. Pritchard loose ball personal FOUL (3 PF)",
+        "sequence": 660
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT00M44.20S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 814,
+        "description": "P. Pritchard driving Layup (32 PTS) (J. Brown 12 AST)",
+        "sequence": 666
+      },
+      {
+        "action": 816,
+        "description": "BKN Timeout",
+        "sequence": 667
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500637",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 824,
+        "description": "Period End",
+        "sequence": 675
+      },
+      {
+        "action": 825,
+        "description": "Game End",
+        "sequence": 676
+      }
+    ],
+    "period": 6
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 2,
+        "description": "Period Start",
+        "sequence": 0
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT07M25.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 47,
+        "description": "J. Brown shooting personal FOUL (1 PF) (Reaves 2 FT)",
+        "sequence": 34
+      },
+      {
+        "action": 49,
+        "description": "A. Reaves Free Throw 1 of 2 (1 PTS)",
+        "sequence": 35
+      },
+      {
+        "action": 50,
+        "description": "A. Reaves Free Throw 2 of 2 (2 PTS)",
+        "sequence": 36
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT06M39.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 55,
+        "description": "J. Walsh cutting Layup (5 PTS) (J. Brown 2 AST)",
+        "sequence": 40
+      },
+      {
+        "action": 57,
+        "description": "D. Ayton shooting personal FOUL (1 PF) (Walsh 1 FT)",
+        "sequence": 41
+      },
+      {
+        "action": 59,
+        "description": "BOS Timeout",
+        "sequence": 42
+      },
+      {
+        "action": 60,
+        "description": "SUB out: J. LaRavia",
+        "sequence": 43
+      },
+      {
+        "action": 61,
+        "description": "SUB out: G. Vincent",
+        "sequence": 44
+      },
+      {
+        "action": 62,
+        "description": "SUB in: A. Thiero",
+        "sequence": 45
+      },
+      {
+        "action": 63,
+        "description": "SUB in: N. Smith Jr.",
+        "sequence": 46
+      },
+      {
+        "action": 64,
+        "description": "J. Walsh Free Throw 1 of 1 (6 PTS)",
+        "sequence": 47
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT05M43.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 74,
+        "description": "A. Thiero personal FOUL (1 PF)",
+        "sequence": 57
+      },
+      {
+        "action": 77,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 58
+      },
+      {
+        "action": 78,
+        "description": "SUB in: A. Simons",
+        "sequence": 59
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT03M05.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 104,
+        "description": "J. Brown 8' pullup bank Jump Shot (4 PTS)",
+        "sequence": 82
+      },
+      {
+        "action": 105,
+        "description": "A. Thiero shooting personal FOUL (2 PF) (Brown 1 FT)",
+        "sequence": 83
+      },
+      {
+        "action": 107,
+        "description": "SUB out: J. Walsh",
+        "sequence": 84
+      },
+      {
+        "action": 108,
+        "description": "SUB out: N. Queta",
+        "sequence": 85
+      },
+      {
+        "action": 109,
+        "description": "SUB out: D. Ayton",
+        "sequence": 86
+      },
+      {
+        "action": 110,
+        "description": "SUB out: A. Reaves",
+        "sequence": 87
+      },
+      {
+        "action": 111,
+        "description": "SUB in: S. Hauser",
+        "sequence": 88
+      },
+      {
+        "action": 112,
+        "description": "SUB in: J. Minott",
+        "sequence": 89
+      },
+      {
+        "action": 113,
+        "description": "SUB in: G. Vincent",
+        "sequence": 90
+      },
+      {
+        "action": 114,
+        "description": "SUB in: J. Hayes",
+        "sequence": 91
+      },
+      {
+        "action": 115,
+        "description": "MISS J. Brown Free Throw 1 of 1",
+        "sequence": 92
+      },
+      {
+        "action": 116,
+        "description": "R. Hachimura REBOUND (Off:0 Def:4)",
+        "sequence": 93
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT02M59.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 117,
+        "description": "LAL Timeout",
+        "sequence": 94
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT01M59.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 127,
+        "description": "J. Brown bad pass out-of-bounds TURNOVER (1 TO)",
+        "sequence": 100
+      },
+      {
+        "action": 128,
+        "description": "SUB out: D. White",
+        "sequence": 101
+      },
+      {
+        "action": 129,
+        "description": "SUB out: A. Thiero",
+        "sequence": 102
+      },
+      {
+        "action": 130,
+        "description": "SUB out: R. Hachimura",
+        "sequence": 103
+      },
+      {
+        "action": 131,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 104
+      },
+      {
+        "action": 132,
+        "description": "SUB in: J. LaRavia",
+        "sequence": 105
+      },
+      {
+        "action": 133,
+        "description": "SUB in: D. Knecht",
+        "sequence": 106
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT01M38.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 136,
+        "description": "J. LaRavia shooting personal FOUL (1 PF) (Brown 2 FT)",
+        "sequence": 109
+      },
+      {
+        "action": 138,
+        "description": "J. Brown Free Throw 1 of 2 (5 PTS)",
+        "sequence": 110
+      },
+      {
+        "action": 139,
+        "description": "J. Brown Free Throw 2 of 2 (6 PTS)",
+        "sequence": 111
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M55.10S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 143,
+        "description": "A. Simons personal FOUL (1 PF)",
+        "sequence": 114
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M22.10S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 151,
+        "description": "N. Smith Jr. shooting personal FOUL (1 PF) (Brown 2 FT)",
+        "sequence": 120
+      },
+      {
+        "action": 153,
+        "description": "MISS J. Brown Free Throw 1 of 2",
+        "sequence": 121
+      },
+      {
+        "action": 154,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 122
+      },
+      {
+        "action": 155,
+        "description": "J. Brown Free Throw 2 of 2 (9 PTS)",
+        "sequence": 123
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 160,
+        "description": "Period End",
+        "sequence": 128
+      }
+    ],
+    "period": 1
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 161,
+        "description": "SUB out: J. Brown",
+        "sequence": 129
+      },
+      {
+        "action": 162,
+        "description": "SUB out: N. Smith Jr.",
+        "sequence": 130
+      },
+      {
+        "action": 163,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 131
+      },
+      {
+        "action": 164,
+        "description": "SUB in: A. Reaves",
+        "sequence": 132
+      },
+      {
+        "action": 165,
+        "description": "Period Start",
+        "sequence": 133
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT11M46.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 166,
+        "description": "J. LaRavia shooting personal FOUL (2 PF) (Simons 2 FT)",
+        "sequence": 134
+      },
+      {
+        "action": 168,
+        "description": "A. Simons Free Throw 1 of 2 (7 PTS)",
+        "sequence": 135
+      },
+      {
+        "action": 169,
+        "description": "A. Simons Free Throw 2 of 2 (8 PTS)",
+        "sequence": 136
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT10M04.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 183,
+        "description": "LAL Timeout",
+        "sequence": 148
+      },
+      {
+        "action": 184,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 149
+      },
+      {
+        "action": 185,
+        "description": "SUB out: G. Vincent",
+        "sequence": 150
+      },
+      {
+        "action": 186,
+        "description": "SUB out: J. Hayes",
+        "sequence": 151
+      },
+      {
+        "action": 187,
+        "description": "SUB in: N. Queta",
+        "sequence": 152
+      },
+      {
+        "action": 188,
+        "description": "SUB in: D. Ayton",
+        "sequence": 153
+      },
+      {
+        "action": 189,
+        "description": "SUB in: M. Kleber",
+        "sequence": 154
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT09M52.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 190,
+        "description": "S. Hauser personal FOUL (1 PF)",
+        "sequence": 155
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M33.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 200,
+        "description": "P. Pritchard shooting personal FOUL (1 PF) (Knecht 2 FT)",
+        "sequence": 162
+      },
+      {
+        "action": 202,
+        "description": "D. Knecht Free Throw 1 of 2 (1 PTS)",
+        "sequence": 163
+      },
+      {
+        "action": 203,
+        "description": "SUB out: J. Minott",
+        "sequence": 164
+      },
+      {
+        "action": 204,
+        "description": "SUB out: J. LaRavia",
+        "sequence": 165
+      },
+      {
+        "action": 205,
+        "description": "SUB in: J. Walsh",
+        "sequence": 166
+      },
+      {
+        "action": 206,
+        "description": "SUB in: R. Hachimura",
+        "sequence": 167
+      },
+      {
+        "action": 207,
+        "description": "D. Knecht Free Throw 2 of 2 (2 PTS)",
+        "sequence": 168
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT08M10.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 208,
+        "description": "P. Pritchard traveling TURNOVER (1 TO)",
+        "sequence": 169
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT07M27.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 216,
+        "description": "N. Queta kicked ball VIOLATION",
+        "sequence": 176
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT06M47.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 220,
+        "description": "J. Walsh personal FOUL (1 PF)",
+        "sequence": 180
+      },
+      {
+        "action": 222,
+        "description": "SUB out: A. Simons",
+        "sequence": 181
+      },
+      {
+        "action": 223,
+        "description": "SUB out: D. Knecht",
+        "sequence": 182
+      },
+      {
+        "action": 224,
+        "description": "SUB out: M. Kleber",
+        "sequence": 183
+      },
+      {
+        "action": 225,
+        "description": "SUB in: J. Brown",
+        "sequence": 184
+      },
+      {
+        "action": 226,
+        "description": "SUB in: G. Vincent",
+        "sequence": 185
+      },
+      {
+        "action": 227,
+        "description": "SUB in: A. Thiero",
+        "sequence": 186
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT06M43.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 228,
+        "description": "P. Pritchard shooting personal FOUL (2 PF) (Vincent 2 FT)",
+        "sequence": 187
+      },
+      {
+        "action": 230,
+        "description": "G. Vincent Free Throw 1 of 2 (4 PTS)",
+        "sequence": 188
+      },
+      {
+        "action": 231,
+        "description": "G. Vincent Free Throw 2 of 2 (5 PTS)",
+        "sequence": 189
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT05M52.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 240,
+        "description": "J. Walsh personal FOUL (2 PF) (Reaves 2 FT)",
+        "sequence": 198
+      },
+      {
+        "action": 242,
+        "description": "A. Reaves Free Throw 1 of 2 (7 PTS)",
+        "sequence": 199
+      },
+      {
+        "action": 243,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 200
+      },
+      {
+        "action": 244,
+        "description": "SUB in: D. White",
+        "sequence": 201
+      },
+      {
+        "action": 245,
+        "description": "A. Reaves Free Throw 2 of 2 (8 PTS)",
+        "sequence": 202
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT05M09.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 252,
+        "description": "BOS Timeout",
+        "sequence": 207
+      },
+      {
+        "action": 253,
+        "description": "SUB out: A. Reaves",
+        "sequence": 208
+      },
+      {
+        "action": 254,
+        "description": "SUB in: N. Smith Jr.",
+        "sequence": 209
+      },
+      {
+        "action": 255,
+        "description": "SUB out: J. Walsh",
+        "sequence": 210
+      },
+      {
+        "action": 256,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 211
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT04M19.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 265,
+        "description": "D. White bad pass out-of-bounds TURNOVER (1 TO)",
+        "sequence": 220
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT02M16.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 280,
+        "description": "D. White personal FOUL (1 PF) (Vincent 2 FT)",
+        "sequence": 234
+      },
+      {
+        "action": 282,
+        "description": "G. Vincent Free Throw 1 of 2 (9 PTS)",
+        "sequence": 235
+      },
+      {
+        "action": 283,
+        "description": "SUB out: S. Hauser",
+        "sequence": 236
+      },
+      {
+        "action": 284,
+        "description": "SUB out: N. Queta",
+        "sequence": 237
+      },
+      {
+        "action": 285,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 238
+      },
+      {
+        "action": 286,
+        "description": "SUB out: D. Ayton",
+        "sequence": 239
+      },
+      {
+        "action": 287,
+        "description": "SUB out: N. Smith Jr.",
+        "sequence": 240
+      },
+      {
+        "action": 288,
+        "description": "SUB in: J. Minott",
+        "sequence": 241
+      },
+      {
+        "action": 289,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 242
+      },
+      {
+        "action": 290,
+        "description": "SUB in: J. Walsh",
+        "sequence": 243
+      },
+      {
+        "action": 291,
+        "description": "SUB in: J. Hayes",
+        "sequence": 244
+      },
+      {
+        "action": 292,
+        "description": "SUB in: A. Reaves",
+        "sequence": 245
+      },
+      {
+        "action": 293,
+        "description": "G. Vincent Free Throw 2 of 2 (10 PTS)",
+        "sequence": 246
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT01M40.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 296,
+        "description": "J. Walsh shooting personal FOUL (3 PF) (Reaves 2 FT)",
+        "sequence": 248
+      },
+      {
+        "action": 298,
+        "description": "MISS A. Reaves Free Throw 1 of 2",
+        "sequence": 249
+      },
+      {
+        "action": 299,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 250
+      },
+      {
+        "action": 300,
+        "description": "SUB out: J. Walsh",
+        "sequence": 251
+      },
+      {
+        "action": 301,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 252
+      },
+      {
+        "action": 302,
+        "description": "A. Reaves Free Throw 2 of 2 (9 PTS)",
+        "sequence": 253
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT01M23.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 304,
+        "description": "TEAM defensive REBOUND",
+        "sequence": 255
+      },
+      {
+        "action": 305,
+        "description": "J. Minott loose ball personal FOUL (1 PF) (Hayes 2 FT)",
+        "sequence": 256
+      },
+      {
+        "action": 307,
+        "description": "MISS J. Hayes Free Throw 1 of 2",
+        "sequence": 257
+      },
+      {
+        "action": 308,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 258
+      },
+      {
+        "action": 309,
+        "description": "J. Hayes Free Throw 2 of 2 (3 PTS)",
+        "sequence": 259
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT01M05.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 313,
+        "description": "A. Thiero personal FOUL (3 PF)",
+        "sequence": 260
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT00M02.50S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 322,
+        "description": "B. Scheierman shooting personal FOUL (1 PF) (Reaves 3 FT)",
+        "sequence": 265
+      },
+      {
+        "action": 324,
+        "description": "A. Reaves Free Throw 1 of 3 (10 PTS)",
+        "sequence": 266
+      },
+      {
+        "action": 325,
+        "description": "A. Reaves Free Throw 2 of 3 (11 PTS)",
+        "sequence": 267
+      },
+      {
+        "action": 326,
+        "description": "A. Reaves Free Throw 3 of 3 (12 PTS)",
+        "sequence": 268
+      },
+      {
+        "action": 327,
+        "description": "B. Scheierman bad pass TURNOVER (1 TO)",
+        "sequence": 269
+      },
+      {
+        "action": 328,
+        "description": "J. Hayes STEAL (1 STL)",
+        "sequence": 270
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 329,
+        "description": "LAL Heave",
+        "sequence": 271
+      },
+      {
+        "action": 330,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 272
+      },
+      {
+        "action": 331,
+        "description": "Period End",
+        "sequence": 273
+      }
+    ],
+    "period": 2
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 333,
+        "description": "SUB out: J. Minott",
+        "sequence": 274
+      },
+      {
+        "action": 334,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 275
+      },
+      {
+        "action": 335,
+        "description": "SUB out: A. Thiero",
+        "sequence": 276
+      },
+      {
+        "action": 336,
+        "description": "SUB out: J. Hayes",
+        "sequence": 277
+      },
+      {
+        "action": 337,
+        "description": "SUB in: J. Walsh",
+        "sequence": 278
+      },
+      {
+        "action": 338,
+        "description": "SUB in: N. Queta",
+        "sequence": 279
+      },
+      {
+        "action": 339,
+        "description": "SUB in: D. Ayton",
+        "sequence": 280
+      },
+      {
+        "action": 340,
+        "description": "SUB in: J. LaRavia",
+        "sequence": 281
+      },
+      {
+        "action": 341,
+        "description": "Period Start",
+        "sequence": 282
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT11M26.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 346,
+        "description": "N. Queta defensive-3-second technical FOUL (1 Tech)",
+        "sequence": 285
+      },
+      {
+        "action": 347,
+        "description": "A. Reaves technical Free Throw 1 of 1 (13 PTS)",
+        "sequence": 286
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT09M55.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 358,
+        "description": "A. Reaves REBOUND (Off:1 Def:1)",
+        "sequence": 295
+      },
+      {
+        "action": 360,
+        "description": "LAL Timeout",
+        "sequence": 296
+      },
+      {
+        "action": 362,
+        "description": "D. White shooting personal FOUL (2 PF) (Reaves 2 FT)",
+        "sequence": 297
+      },
+      {
+        "action": 365,
+        "description": "A. Reaves Free Throw 1 of 2 (14 PTS)",
+        "sequence": 298
+      },
+      {
+        "action": 366,
+        "description": "A. Reaves Free Throw 2 of 2 (15 PTS)",
+        "sequence": 299
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT09M47.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 367,
+        "description": "D. Ayton personal FOUL (2 PF)",
+        "sequence": 300
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT08M18.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 377,
+        "description": "J. Walsh personal FOUL (4 PF)",
+        "sequence": 306
+      },
+      {
+        "action": 379,
+        "description": "SUB out: J. Walsh",
+        "sequence": 307
+      },
+      {
+        "action": 380,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 308
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT08M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 383,
+        "description": "G. Vincent personal FOUL (1 PF)",
+        "sequence": 311
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT07M33.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 387,
+        "description": "D. Ayton 3-second-violation TURNOVER (1 TO)",
+        "sequence": 314
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT06M58.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 392,
+        "description": "N. Queta shooting personal FOUL (1 PF) (LaRavia 2 FT)",
+        "sequence": 321
+      },
+      {
+        "action": 394,
+        "description": "J. LaRavia Free Throw 1 of 2 (3 PTS)",
+        "sequence": 322
+      },
+      {
+        "action": 395,
+        "description": "SUB out: G. Vincent",
+        "sequence": 323
+      },
+      {
+        "action": 396,
+        "description": "SUB in: A. Thiero",
+        "sequence": 324
+      },
+      {
+        "action": 397,
+        "description": "J. LaRavia Free Throw 2 of 2 (4 PTS)",
+        "sequence": 325
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT06M36.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 400,
+        "description": "R. Hachimura 17' pullup Jump Shot (13 PTS)",
+        "sequence": 328
+      },
+      {
+        "action": 401,
+        "description": "BOS Timeout",
+        "sequence": 329
+      },
+      {
+        "action": 402,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 330
+      },
+      {
+        "action": 403,
+        "description": "SUB in: S. Hauser",
+        "sequence": 331
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT06M06.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 407,
+        "description": "J. LaRavia personal FOUL (3 PF)",
+        "sequence": 335
+      },
+      {
+        "action": 409,
+        "description": "SUB out: D. White",
+        "sequence": 336
+      },
+      {
+        "action": 410,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 337
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT04M28.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 419,
+        "description": "A. Reaves driving finger roll Layup (22 PTS)",
+        "sequence": 345
+      },
+      {
+        "action": 432,
+        "description": "N. Queta shooting personal FOUL (2 PF) (Reaves 1 FT)",
+        "sequence": 346
+      },
+      {
+        "action": 420,
+        "description": "SUB out: H. Gonz\u00e1lez",
+        "sequence": 347
+      },
+      {
+        "action": 421,
+        "description": "SUB out: N. Queta",
+        "sequence": 348
+      },
+      {
+        "action": 422,
+        "description": "SUB out: D. Ayton",
+        "sequence": 349
+      },
+      {
+        "action": 423,
+        "description": "SUB out: J. LaRavia",
+        "sequence": 350
+      },
+      {
+        "action": 424,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 351
+      },
+      {
+        "action": 425,
+        "description": "SUB in: J. Minott",
+        "sequence": 352
+      },
+      {
+        "action": 426,
+        "description": "SUB in: J. Hayes",
+        "sequence": 353
+      },
+      {
+        "action": 427,
+        "description": "SUB in: N. Smith Jr.",
+        "sequence": 354
+      },
+      {
+        "action": 437,
+        "description": "A. Reaves Free Throw 1 of 1 (23 PTS)",
+        "sequence": 355
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT03M30.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 436,
+        "description": "R. Hachimura offensive goaltending TURNOVER (2 TO)",
+        "sequence": 360
+      },
+      {
+        "action": 438,
+        "description": "SUB out: A. Thiero",
+        "sequence": 361
+      },
+      {
+        "action": 439,
+        "description": "SUB in: M. Kleber",
+        "sequence": 362
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT03M14.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 441,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 364
+      },
+      {
+        "action": 442,
+        "description": "R. Hachimura personal FOUL (1 PF)",
+        "sequence": 365
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT02M05.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 449,
+        "description": "B. Scheierman personal FOUL (2 PF) (Reaves 2 FT)",
+        "sequence": 370
+      },
+      {
+        "action": 451,
+        "description": "MISS A. Reaves Free Throw 1 of 2",
+        "sequence": 371
+      },
+      {
+        "action": 452,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 372
+      },
+      {
+        "action": 453,
+        "description": "SUB out: R. Hachimura",
+        "sequence": 373
+      },
+      {
+        "action": 454,
+        "description": "SUB in: G. Vincent",
+        "sequence": 374
+      },
+      {
+        "action": 455,
+        "description": "A. Reaves Free Throw 2 of 2 (24 PTS)",
+        "sequence": 375
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M59.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 462,
+        "description": "J. Brown offensive FOUL (2 PF)",
+        "sequence": 382
+      },
+      {
+        "action": 464,
+        "description": "J. Brown offensive foul TURNOVER (2 TO)",
+        "sequence": 383
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M58.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 465,
+        "description": "BOS Timeout",
+        "sequence": 384
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M01.80S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 474,
+        "description": "J. Brown lost ball out-of-bounds TURNOVER (3 TO)",
+        "sequence": 391
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 475,
+        "description": "LAL Heave",
+        "sequence": 392
+      },
+      {
+        "action": 476,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 393
+      },
+      {
+        "action": 477,
+        "description": "Period End",
+        "sequence": 394
+      }
+    ],
+    "period": 3
+  },
+  {
+    "clock": "PT12M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 480,
+        "description": "SUB out: J. Brown",
+        "sequence": 395
+      },
+      {
+        "action": 481,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 396
+      },
+      {
+        "action": 482,
+        "description": "SUB out: B. Scheierman",
+        "sequence": 397
+      },
+      {
+        "action": 483,
+        "description": "SUB out: A. Reaves",
+        "sequence": 398
+      },
+      {
+        "action": 484,
+        "description": "SUB in: A. Simons",
+        "sequence": 399
+      },
+      {
+        "action": 485,
+        "description": "SUB in: D. White",
+        "sequence": 400
+      },
+      {
+        "action": 486,
+        "description": "SUB in: J. Walsh",
+        "sequence": 401
+      },
+      {
+        "action": 487,
+        "description": "SUB in: A. Thiero",
+        "sequence": 402
+      },
+      {
+        "action": 488,
+        "description": "Period Start",
+        "sequence": 403
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT11M23.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 495,
+        "description": "A. Thiero personal FOUL (4 PF)",
+        "sequence": 408
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT09M55.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 507,
+        "description": "LAL Timeout",
+        "sequence": 417
+      },
+      {
+        "action": 508,
+        "description": "SUB out: J. Hayes",
+        "sequence": 418
+      },
+      {
+        "action": 509,
+        "description": "SUB out: M. Kleber",
+        "sequence": 419
+      },
+      {
+        "action": 510,
+        "description": "SUB out: N. Smith Jr.",
+        "sequence": 420
+      },
+      {
+        "action": 511,
+        "description": "SUB in: J. LaRavia",
+        "sequence": 421
+      },
+      {
+        "action": 512,
+        "description": "SUB in: D. Ayton",
+        "sequence": 422
+      },
+      {
+        "action": 513,
+        "description": "SUB in: A. Reaves",
+        "sequence": 423
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT09M35.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 514,
+        "description": "D. Ayton 3-second-violation TURNOVER (2 TO)",
+        "sequence": 424
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT08M37.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 518,
+        "description": "BOS shot clock Team TURNOVER",
+        "sequence": 427
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT07M25.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 527,
+        "description": "A. Simons shooting personal FOUL (2 PF) (Reaves 2 FT)",
+        "sequence": 436
+      },
+      {
+        "action": 529,
+        "description": "A. Reaves Free Throw 1 of 2 (35 PTS)",
+        "sequence": 437
+      },
+      {
+        "action": 530,
+        "description": "SUB out: A. Thiero",
+        "sequence": 438
+      },
+      {
+        "action": 531,
+        "description": "SUB out: J. LaRavia",
+        "sequence": 439
+      },
+      {
+        "action": 532,
+        "description": "SUB in: R. Hachimura",
+        "sequence": 440
+      },
+      {
+        "action": 533,
+        "description": "SUB in: N. Smith Jr.",
+        "sequence": 441
+      },
+      {
+        "action": 534,
+        "description": "A. Reaves Free Throw 2 of 2 (36 PTS)",
+        "sequence": 442
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT07M04.00S",
+    "game_id": "0022500338",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 537,
+        "description": "D. White REBOUND (Off:2 Def:3)",
+        "sequence": 445
+      },
+      {
+        "action": 539,
+        "description": "SUB out: A. Simons",
+        "sequence": 446
+      },
+      {
+        "action": 540,
+        "description": "SUB out: S. Hauser",
+        "sequence": 447
+      },
+      {
+        "action": 541,
+        "description": "SUB in: J. Brown",
+        "sequence": 448
+      },
+      {
+        "action": 542,
+        "description": "SUB in: N. Queta",
+        "sequence": 449
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT07M03.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 543,
+        "description": "G. Vincent shooting personal FOUL (2 PF) (Brown 2 FT)",
+        "sequence": 450
+      },
+      {
+        "action": 545,
+        "description": "J. Brown Free Throw 1 of 2 (27 PTS)",
+        "sequence": 451
+      },
+      {
+        "action": 546,
+        "description": "J. Brown Free Throw 2 of 2 (28 PTS)",
+        "sequence": 452
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT06M38.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 550,
+        "description": "N. Queta REBOUND (Off:1 Def:5)",
+        "sequence": 457
+      },
+      {
+        "action": 551,
+        "description": "N. Queta tip DUNK (10 PTS)",
+        "sequence": 458
+      },
+      {
+        "action": 552,
+        "description": "LAL Timeout",
+        "sequence": 459
+      },
+      {
+        "action": 554,
+        "description": "SUB out: D. Ayton",
+        "sequence": 460
+      },
+      {
+        "action": 555,
+        "description": "SUB out: G. Vincent",
+        "sequence": 461
+      },
+      {
+        "action": 556,
+        "description": "SUB out: A. Reaves",
+        "sequence": 462
+      },
+      {
+        "action": 557,
+        "description": "SUB out: R. Hachimura",
+        "sequence": 463
+      },
+      {
+        "action": 558,
+        "description": "SUB in: D. Knecht",
+        "sequence": 464
+      },
+      {
+        "action": 559,
+        "description": "SUB in: B. James",
+        "sequence": 465
+      },
+      {
+        "action": 560,
+        "description": "SUB in: M. Kleber",
+        "sequence": 466
+      },
+      {
+        "action": 561,
+        "description": "SUB in: D. Timme",
+        "sequence": 467
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT05M50.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 566,
+        "description": "J. Brown shooting personal FOUL (3 PF) (Knecht 2 FT)",
+        "sequence": 471
+      },
+      {
+        "action": 568,
+        "description": "MISS D. Knecht Free Throw 1 of 2",
+        "sequence": 472
+      },
+      {
+        "action": 569,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 473
+      },
+      {
+        "action": 570,
+        "description": "D. Knecht Free Throw 2 of 2 (3 PTS)",
+        "sequence": 474
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT05M17.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 577,
+        "description": "D. Knecht shooting personal FOUL (1 PF) (Brown 2 FT)",
+        "sequence": 481
+      },
+      {
+        "action": 579,
+        "description": "J. Brown Free Throw 1 of 2 (29 PTS)",
+        "sequence": 482
+      },
+      {
+        "action": 580,
+        "description": "J. Brown Free Throw 2 of 2 (30 PTS)",
+        "sequence": 483
+      },
+      {
+        "action": 592,
+        "description": "SUB out: N. Queta",
+        "sequence": 484
+      },
+      {
+        "action": 593,
+        "description": "SUB in: P. Pritchard",
+        "sequence": 485
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT04M10.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 595,
+        "description": "N. Smith Jr. lost ball out-of-bounds TURNOVER (1 TO)",
+        "sequence": 493
+      },
+      {
+        "action": 596,
+        "description": "SUB out: J. Brown",
+        "sequence": 494
+      },
+      {
+        "action": 597,
+        "description": "SUB out: D. White",
+        "sequence": 495
+      },
+      {
+        "action": 598,
+        "description": "SUB in: B. Scheierman",
+        "sequence": 496
+      },
+      {
+        "action": 599,
+        "description": "SUB in: H. Gonz\u00e1lez",
+        "sequence": 497
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M36.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 601,
+        "description": "B. James bad pass out-of-bounds TURNOVER (1 TO)",
+        "sequence": 499
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT03M18.00S",
+    "game_id": "0022500338",
+    "marker_candidate": false,
+    "official_actions": [
+      {
+        "action": 603,
+        "description": "TEAM offensive REBOUND",
+        "sequence": 501
+      },
+      {
+        "action": 605,
+        "description": "SUB out: P. Pritchard",
+        "sequence": 502
+      },
+      {
+        "action": 606,
+        "description": "SUB in: X. Tillman",
+        "sequence": 503
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT02M20.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 615,
+        "description": "H. Gonz\u00e1lez personal FOUL (1 PF)",
+        "sequence": 509
+      },
+      {
+        "action": 617,
+        "description": "SUB out: J. Walsh",
+        "sequence": 510
+      },
+      {
+        "action": 618,
+        "description": "SUB in: L. Garza",
+        "sequence": 511
+      },
+      {
+        "action": 622,
+        "description": "SUB out: J. Minott",
+        "sequence": 512
+      },
+      {
+        "action": 623,
+        "description": "SUB in: A. Williams",
+        "sequence": 513
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT01M39.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 627,
+        "description": "H. Gonz\u00e1lez traveling TURNOVER (2 TO)",
+        "sequence": 517
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M03.80S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 641,
+        "description": "BOS shot clock Team TURNOVER",
+        "sequence": 530
+      }
+    ],
+    "period": 4
+  },
+  {
+    "clock": "PT00M00.00S",
+    "game_id": "0022500338",
+    "marker_candidate": true,
+    "official_actions": [
+      {
+        "action": 644,
+        "description": "Period End",
+        "sequence": 531
+      },
+      {
+        "action": 646,
+        "description": "Game End",
+        "sequence": 532
+      }
+    ],
+    "period": 4
+  }
+]
