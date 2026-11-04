@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P3f: session export and Docker execution
 
 SPO-791 installs the production `execute_code` implementation in

@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P4 runner and experiment record (SPO-780)
 
 The runner in `src/runner/` controls configuration, chronological scheduling, phase budgets, model metering and the durable record. It consumes P3 through a typed adapter; P3's real temporal tools, submission validation and Docker lifecycle remain separate implementation work. The included adapter and harness are fixtures, not a production analyst or a completed acceptance gate.

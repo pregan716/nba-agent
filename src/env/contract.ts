@@ -1,4 +1,3 @@
-import type { GameLineValues, GameLineLayer } from "../questions/game-lines.js";
 // P3a session contract (SPO-786).
 //
 // This module fixes the typed in-process interface between the P4 runner, the
@@ -10,16 +9,13 @@ import type { GameLineValues, GameLineLayer } from "../questions/game-lines.js";
 //   * The harness (and through it the model) sees only `ToolInput`/`ToolResult`
 //     shapes. Every field in a result type is agent-visible by definition.
 //   * The environment implementations fill the result types from P1 record
-//     envelopes and P2 question records. Nothing from those internal records may
+//     envelopes. Nothing from those internal records may
 //     be spread into a result; each result is built field by field.
 //
 // Field naming: results never use a property called `type`. The P4 metering
 // proxy rejects any nested object whose `type` is `url`, `file`, `image`,
 // `document` or `container_upload`, and tool results are echoed back to the
 // model inside `messages`. Discriminators are called `kind` or `source`.
-
-import type { AgentQuestion, Stat } from "../questions/builder.js";
-export type { AgentQuestion, Stat };
 
 // ---------------------------------------------------------------------------
 // Phases and tool names
@@ -35,17 +31,12 @@ export const TOOL_NAMES = [
   "fetch_evidence",
   "query_game_history",
   "read_schedule_and_injuries",
-  "query_odds_history",
-  "list_questions",
   "execute_code",
   "workspace_list",
   "workspace_read",
   "workspace_write",
   "workspace_append",
   "workspace_delete",
-  "begin_commit",
-  "submit",
-  "read_released_results",
 ] as const;
 export type ToolName = (typeof TOOL_NAMES)[number];
 
@@ -55,11 +46,7 @@ export const CAPABILITY_TOOLS = {
   "Search and fetch evidence": "search_evidence",
   "Query game history": "query_game_history",
   "Read injuries and schedule": "read_schedule_and_injuries",
-  "Query odds history": "query_odds_history",
-  "List questions": "list_questions",
   "Execute code": "execute_code",
-  Submit: "submit",
-  "Read released results": "read_released_results",
 } as const satisfies Record<string, ToolName>;
 
 /**
@@ -69,16 +56,11 @@ export const CAPABILITY_TOOLS = {
  */
 export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
   context: null,
-  list_questions: null,
-  begin_commit: null,
-  submit: null,
-  read_released_results: null,
   search_evidence: "search_and_fetch",
   list_evidence: "search_and_fetch",
   fetch_evidence: "search_and_fetch",
   query_game_history: "game_history",
   read_schedule_and_injuries: "game_history",
-  query_odds_history: "odds_history",
   execute_code: "code_execution",
   workspace_list: "workspace",
   workspace_read: "workspace",
@@ -100,17 +82,12 @@ export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
   fetch_evidence: ["pregame", "postgame"],
   query_game_history: ["pregame", "postgame"],
   read_schedule_and_injuries: ["pregame", "postgame"],
-  query_odds_history: ["pregame", "postgame"],
-  list_questions: ["pregame", "commit", "postgame"],
   execute_code: ["pregame", "postgame"],
   workspace_list: ["pregame", "postgame"],
   workspace_read: ["pregame", "postgame"],
   workspace_write: ["pregame", "postgame"],
   workspace_append: ["pregame", "postgame"],
   workspace_delete: ["pregame", "postgame"],
-  begin_commit: ["pregame"],
-  submit: ["commit"],
-  read_released_results: ["pregame", "postgame"],
 };
 
 // ---------------------------------------------------------------------------
@@ -151,8 +128,6 @@ export interface BudgetRemaining {
   tokens: number;
   compute_seconds: number;
   tool_calls: number;
-  /** Tokens held back for the final submission; unavailable until `begin_commit`. */
-  submission_reserve: number;
   /** True once remaining research tokens are at or below the configured warning level. */
   warning: boolean;
 }
@@ -161,14 +136,7 @@ export interface DatasetVersion {
   release: string;
   manifest_sha256: string;
 }
-export interface GameLines extends GameLineValues {
-  game_id: GameId;
-  available_at: Instant;
-  snapshot_kind: string;
-  provenance: GameLineLayer["provenance"] | null;
-}
 export interface ContextResult {
-  game_lines: GameLines;
   team: TeamRef;
   season: "2025-26";
   game: {
@@ -365,47 +333,6 @@ export interface ReadScheduleAndInjuriesResult {
   team_snapshots: TeamStatusSnapshot[];
 }
 
-export interface QueryOddsHistoryInput {
-  /** Defaults to the current game. */
-  game_id?: GameId;
-  player_id?: PlayerId;
-  stat?: Stat;
-}
-export interface OddsObservation {
-  game_id: GameId;
-  /** `requested_at` of the observation; the availability time. */
-  available_at: Instant;
-  player: PlayerRef;
-  stat: Stat;
-  line: number;
-  p_over: number;
-}
-export type Outcome =
-  "over" | "under" | "push" | "did_not_play" | "unresolved" | "void";
-export interface OddsSettlement {
-  game_id: GameId;
-  player: PlayerRef;
-  stat: Stat;
-  line: number;
-  actual: number | null;
-  outcome: Outcome;
-}
-export interface QueryOddsHistoryResult {
-  game_lines: GameLines[];
-  /** Consensus observations with availability time at or before the cutoff. No per-book or dispersion fields. */
-  observations: OddsObservation[];
-  /** Only for games whose release time is at or before the cutoff. */
-  settlements: OddsSettlement[];
-}
-
-export interface ListQuestionsInput {}
-export interface ListQuestionsResult {
-  game_id: GameId;
-  cutoff: Instant;
-  /** Exactly the P2 `agentQuestion` projection. Complete; no pagination. */
-  questions: AgentQuestion[];
-}
-
 export interface ExecuteCodeInput {
   /** A Python 3 program. Runs in the session sandbox with pandas, numpy, scipy, scikit-learn. */
   program: string;
@@ -456,63 +383,6 @@ export interface WorkspaceMutationResult {
   bytes: number;
 }
 
-export interface BeginCommitInput {}
-export interface BeginCommitResult {
-  phase: "commit";
-  budget: BudgetRemaining;
-}
-
-export interface Answer {
-  question_id: string;
-  /** In [0.01, 0.99]. Values outside are clipped and the clip is logged. */
-  p_over: number;
-  /** Required when |p_over − market| ≥ 0.05; may be empty otherwise. */
-  rationale?: string;
-  evidence_refs?: EvidenceId[];
-}
-export interface SubmitInput {
-  answers: Answer[];
-  /** Free text for the whole submission. Stored, never scored. */
-  notes?: string;
-}
-export interface ClipEvent {
-  question_id: string;
-  submitted: number;
-  clipped_to: number;
-}
-export interface SubmitResult {
-  /** Stable; identical valid resubmission returns the same receipt. */
-  receipt: string;
-  attempt: number;
-  clips: ClipEvent[];
-}
-
-export interface ReadReleasedResultsInput {
-  /** Defaults to every released game of this run. */
-  game_id?: GameId;
-}
-export interface ReleasedQuestion {
-  question_id: string;
-  player: PlayerRef;
-  stat: Stat;
-  line: number;
-  market_p_over: number;
-  /** Null when the session for that game failed. Never accompanied by the rationale. */
-  agent_p_over: number | null;
-  actual: number | null;
-  outcome: Outcome;
-  /** Log-loss skill versus the market; null when excluded or unresolved. */
-  score: number | null;
-}
-export interface ReleasedGame {
-  game_id: GameId;
-  released_at: Instant;
-  questions: ReleasedQuestion[];
-}
-export interface ReadReleasedResultsResult {
-  games: ReleasedGame[];
-}
-
 // ---------------------------------------------------------------------------
 // Typed tool map
 // ---------------------------------------------------------------------------
@@ -530,11 +400,6 @@ export interface ToolContract {
     input: ReadScheduleAndInjuriesInput;
     result: ReadScheduleAndInjuriesResult;
   };
-  query_odds_history: {
-    input: QueryOddsHistoryInput;
-    result: QueryOddsHistoryResult;
-  };
-  list_questions: { input: ListQuestionsInput; result: ListQuestionsResult };
   execute_code: { input: ExecuteCodeInput; result: ExecuteCodeResult };
   workspace_list: { input: WorkspaceListInput; result: WorkspaceListResult };
   workspace_read: { input: WorkspaceReadInput; result: WorkspaceReadResult };
@@ -550,20 +415,13 @@ export interface ToolContract {
     input: WorkspaceDeleteInput;
     result: WorkspaceMutationResult;
   };
-  begin_commit: { input: BeginCommitInput; result: BeginCommitResult };
-  submit: { input: SubmitInput; result: SubmitResult };
-  read_released_results: {
-    input: ReadReleasedResultsInput;
-    result: ReadReleasedResultsResult;
-  };
 }
 export type ToolInput<N extends ToolName> = ToolContract[N]["input"];
 export type ToolResult<N extends ToolName> = ToolContract[N]["result"];
 
 /**
  * What the harness holds: one typed call. The P4 runner implements this over
- * its `SessionEndpoint.call(name, args)` and routes `context`, `begin_commit`,
- * `submit` and `execute_code` itself; everything else reaches the environment.
+ * its `SessionEndpoint.call(name, args)` and routes `context` and `execute_code` itself; everything else reaches the environment.
  */
 export interface SessionTools {
   call<N extends ToolName>(
@@ -574,13 +432,12 @@ export interface SessionTools {
 
 /**
  * What P3b–P3f implement: the typed tool methods, plus the runner-facing hooks
- * the P4 `Environment` adapter already expects (`transition`, `questions`,
- * `validateSubmission`, `execute`, `close`). The runner owns the budget ledger,
- * the record and the receipt; the environment owns visibility, phase legality,
- * memory-mode enforcement and submission validation.
+ * the P4 `Environment` adapter already expects (`transition`, `execute`, `close`). The runner owns the budget ledger,
+ * the record; the environment owns visibility, phase legality,
+ * memory-mode enforcement.
  */
 export type EnvironmentTools = {
-  [N in Exclude<ToolName, "context" | "begin_commit" | "submit">]: (
+  [N in Exclude<ToolName, "context">]: (
     input: ToolInput<N>,
     signal: AbortSignal,
   ) => Promise<ToolResult<N>>;
@@ -603,8 +460,6 @@ export type SessionErrorCode =
   | "invalid_input"
   /** An id that does not resolve to an eligible record. Never distinguishes "future" from "nonexistent". */
   | "not_found"
-  /** Submission failed validation; `problems` names every problem. */
-  | "validation_failed"
   /** The phase's token, compute, tool-call or wall-clock allowance is spent. */
   | "budget_exhausted";
 
@@ -612,10 +467,7 @@ export class SessionError extends Error {
   constructor(
     readonly code: SessionErrorCode,
     message: string,
-    /** For `validation_failed`: one entry per problem, each naming the question id where applicable. */
     readonly problems: readonly string[] = [],
-    /** For `validation_failed`: resubmissions left before the session fails. */
-    readonly attemptsRemaining: number | null = null,
   ) {
     super(message);
     this.name = "SessionError";
@@ -625,13 +477,11 @@ export class SessionError extends Error {
     error: SessionErrorCode;
     message: string;
     problems: string[];
-    attempts_remaining: number | null;
   } {
     return {
       error: this.code,
       message: this.message,
       problems: [...this.problems],
-      attempts_remaining: this.attemptsRemaining,
     };
   }
 }
@@ -647,7 +497,7 @@ export class SessionError extends Error {
  * scheduled boundary (an odds observation's `requested_at`; a game's 9 a.m. ET
  * release, which is also the postgame cutoff), so a record whose availability
  * equals the cutoff is eligible. This is what lets the scheduled-start
- * observation define the questions and lets postgame reflection read the
+ * observation remain visible and lets postgame reflection read the
  * just-released box score.
  *
  * `strictly_before`: the availability time is a publication time outside the
@@ -760,27 +610,5 @@ export const VISIBILITY = {
     never: ["audio", "speaker identities", "title words as availability"],
     cutoff: "strictly_before",
     equality: "strictly before the cutoff (livestreams: stream end)",
-  },
-  questions: {
-    exposes: ["question_id", "player", "stat", "line", "p_over"],
-    never: ["p_under", "provenance", "exclusions", "the full question record"],
-    cutoff: "at_or_before",
-    equality: "built from the observation whose requested_at equals the cutoff",
-  },
-  released_results: {
-    exposes: [
-      "outcome",
-      "actual",
-      "market and agent probabilities",
-      "per-question score",
-    ],
-    never: [
-      "rationales",
-      "notes",
-      "evidence_refs",
-      "any game whose release time is after the cutoff",
-    ],
-    cutoff: "at_or_before",
-    equality: "release time at or before the cutoff",
   },
 } as const satisfies Record<string, VisibilityRule>;

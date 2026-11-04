@@ -27,8 +27,6 @@ function fixture(future = true) {
     "pregame",
     f.game.scheduledStart,
     f.source,
-    undefined,
-    undefined,
     workspace,
     root,
   );
@@ -87,10 +85,10 @@ test("session export is invariant to planted future evidence, preserves public p
     try {
       const path = await s.session.exportTo(join(s.root, "export"), signal());
       const data = dump(path);
-      assert.equal(data.questions.length, 1);
-      assert.equal(data.released_results.length, 0);
+      assert.ok(!("questions" in data));
+      assert.ok(!("released_results" in data));
       assert.ok(data.evidence.length > 0);
-      assert.ok(data.odds_history.length > 0);
+      assert.ok(!("odds_history" in data));
       assert.ok(!JSON.stringify(data).includes("future-secret"));
       exports.push(data);
     } finally {
@@ -121,7 +119,7 @@ model=LinearRegression().fit([[1],[2]],[2,4])
 with open('/workspace/models/fit.pkl','wb') as file: pickle.dump(model,file)
 with open('/workspace/models/fit.pkl','rb') as file: assert abs(pickle.load(file).predict([[3]])[0]-6)<1e-6
 print('packages-ok')
-print(sqlite3.connect('file:/data/session.sqlite?mode=ro',uri=True).execute('select count(*) from questions').fetchone()[0])
+print(sqlite3.connect('file:/data/session.sqlite?mode=ro',uri=True).execute('select count(*) from session').fetchone()[0])
 print(os.path.exists(${JSON.stringify(join(s.root, "future-secret"))}))
 open('/scratch/state','w').write('scratch')
 open('/workspace/notes','w').write('first')
@@ -190,8 +188,6 @@ dockerTest(
       "pregame",
       s.f.game.scheduledStart,
       s.f.source,
-      undefined,
-      undefined,
       join(s.root, "workspace"),
       s.root,
     );
@@ -249,8 +245,6 @@ print('x'*10000)`,
       "postgame",
       s.f.game.release,
       s.f.source,
-      undefined,
-      undefined,
       join(s.root, "workspace"),
       s.root,
     );
@@ -356,12 +350,7 @@ test("postgame exports release history at the shared boundary and disabled capab
     const data = dump(
       await limited.exportTo(join(s.root, "limited"), signal()),
     );
-    assert.deepEqual(Object.keys(data).sort(), [
-      "game_lines",
-      "questions",
-      "released_results",
-      "session",
-    ]);
+    assert.deepEqual(Object.keys(data).sort(), ["session"]);
   } finally {
     s.clean();
   }
@@ -401,21 +390,8 @@ dockerTest(
         const result = await session.call("execute_code", { program: code });
         assert.equal(result.exit_status, 0, result.stderr);
         assert.ok(result.compute_seconds > 0);
-        if (context.phase === "pregame") {
-          const questions = await session.call("list_questions", {});
-          await session.call("begin_commit", {});
-          await assert.rejects(
-            () =>
-              session.call("execute_code", { program: "print('forbidden')" }),
-            { code: "phase_refused" },
-          );
-          await session.call("submit", {
-            answers: questions.questions.map((q) => ({
-              question_id: q.question_id,
-              p_over: q.p_over,
-            })),
-          });
-        } else assert.match(result.stdout, /trained\nFalse/);
+        if (context.phase === "postgame")
+          assert.match(result.stdout, /trained\nFalse/);
         checked++;
       });
       assert.equal(checked, 2);
@@ -426,7 +402,7 @@ dockerTest(
           .every((e) => e.data.status === "completed"),
       );
       const journal =
-        runner.record.events("submission")[0].data.value.workspaceChanges;
+        runner.record.events("session_end")[0].data.workspaceChanges;
       assert.ok(journal.length > 0);
       assert.ok(journal.every((r: any) => r.sha256 && !r.content));
     } finally {
@@ -583,20 +559,13 @@ test("bulk session projections match the schedule, injury and odds tools", async
       await s.session.exportTo(join(s.root, "export"), signal()),
     );
     const expectedInjuries = [],
-      expectedSnapshots = [],
-      expectedOdds = [],
-      expectedSettlements = [];
+      expectedSnapshots = [];
     for (const team of s.f.source.teams) {
       const result = await s.session.read_schedule_and_injuries({
         team_id: team.team_id,
       });
       expectedInjuries.push(...result.injury_reports);
       expectedSnapshots.push(...result.team_snapshots);
-    }
-    for (const game of await s.f.source.games()) {
-      const result = await s.session.query_odds_history({ game_id: game.id });
-      expectedOdds.push(...result.observations);
-      expectedSettlements.push(...result.settlements);
     }
     const normalize = (rows: object[]) =>
       rows
@@ -617,8 +586,6 @@ test("bulk session projections match the schedule, injury and odds tools", async
     for (const [table, expected] of [
       ["injuries", expectedInjuries],
       ["injury_team_snapshots", expectedSnapshots],
-      ["odds_history", expectedOdds],
-      ["odds_settlements", expectedSettlements],
     ] as const) {
       assert.deepEqual(normalize(data[table]), normalize(expected), table);
     }

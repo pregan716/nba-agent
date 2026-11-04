@@ -1,6 +1,3 @@
-import { emptyGameLines } from "../questions/game-lines.js";
-import type { GameLines } from "./contract.js";
-import { logSkill } from "../evaluation/scoring.js";
 import { DockerSandbox } from "./sandbox.js";
 import {
   projectHistory,
@@ -10,20 +7,10 @@ import {
 } from "./export.js";
 import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
-import {
-  resolveOutcome,
-  resolveGameStatus,
-  resolveFrozen,
-  type ResolutionInput,
-  type QuestionScorer,
-  type RecordedGame,
-} from "./results.js";
-import { validateSubmission } from "./submission.js";
 import { EvidenceIndex } from "./evidence.js";
 import { Temporal } from "@js-temporal/polyfill";
 import type { RecordEnvelope } from "../data/contracts.js";
 import { Identities } from "../data/identity.js";
-import { agentQuestion, buildQuestionSet } from "../questions/builder.js";
 import {
   deepFreeze,
   digest,
@@ -48,13 +35,11 @@ import {
   type PlayerReferenceTable,
   type ReadScheduleAndInjuriesInput,
   type ReadScheduleAndInjuriesResult,
-  type QueryOddsHistoryInput,
-  type QueryOddsHistoryResult,
   type TeamRef,
 } from "./contract.js";
 import { validateInput } from "./input.js";
 import type { SessionSource } from "./source.js";
-import { visible, releasedGame, releaseTime } from "./visibility.js";
+import { visible, releasedGame } from "./visibility.js";
 
 const compare = (a: string, b: string) => Temporal.Instant.compare(a, b);
 const stable = (a: RecordEnvelope, b: RecordEnvelope) =>
@@ -88,8 +73,6 @@ export class Session {
     phase: Phase,
     cutoff: string,
     source: SessionSource,
-    private records: () => RecordedGame[] = () => [],
-    private scorer: QuestionScorer = logSkill,
     workspacePath?: string,
     runRoot?: string,
   ) {
@@ -115,11 +98,7 @@ export class Session {
     }));
     const sort = (vs: typeof configured) =>
       [...vs].sort((a, b) => a.source.localeCompare(b.source));
-    if (
-      digest(sort(configured)) !== digest(sort(source.versions)) ||
-      config.devig.manifestSha256 !== source.layer.manifest.sha256 ||
-      config.devig.methodologySha256 !== source.layer.methodology.sha256
-    )
+    if (digest(sort(configured)) !== digest(sort(source.versions)))
       throw Error("Session dataset pins differ from the run configuration");
     // Copy identity and metadata inputs so the creator cannot later alter run identity.
     const identities = new Identities();
@@ -130,7 +109,6 @@ export class Session {
       identities,
       versions: deepFreeze(sort(structuredClone(source.versions))),
       teams: deepFreeze(structuredClone(source.teams)),
-      layer: deepFreeze(structuredClone(source.layer)),
     };
   }
   #check(name: ToolName, input: unknown) {
@@ -173,48 +151,6 @@ export class Session {
       throw Error("Session game differs from pinned schedule");
     return game;
   }
-  #gameLines(gameId: string): GameLines[] {
-    const layer = this.#source.layer.gameLines;
-    if (!layer) return [];
-    return layer.rows
-      .filter(
-        (r) =>
-          compare(r.available_at, this.#cutoff) <= 0 &&
-          this.#source.identities.resolve("game", "espn", r.espn_event_id) ===
-            gameId,
-      )
-      .map((r) =>
-        structuredClone({
-          game_id: gameId,
-          available_at: r.available_at,
-          snapshot_kind: r.snapshot_kind,
-          celtics_spread: r.celtics_spread,
-          spread_book_count: r.spread_book_count,
-          p_celtics_cover: r.p_celtics_cover,
-          game_total: r.game_total,
-          total_book_count: r.total_book_count,
-          celtics_implied_total: r.celtics_implied_total,
-          opponent_implied_total: r.opponent_implied_total,
-          implied_total_book_count: r.implied_total_book_count,
-          provenance: layer.provenance,
-        }),
-      );
-  }
-  #openingGameLines(): GameLines {
-    return (
-      this.#gameLines(this.#game.gameId).find(
-        (r) =>
-          r.snapshot_kind === "scheduled_start" &&
-          compare(r.available_at, this.#game.scheduledStart) === 0,
-      ) ?? {
-        ...emptyGameLines(),
-        game_id: this.#game.gameId,
-        available_at: this.#game.scheduledStart,
-        snapshot_kind: "scheduled_start",
-        provenance: null,
-      }
-    );
-  }
   async context(budget: BudgetRemaining): Promise<ContextResult> {
     this.#check("context", {});
     const game = await this.#current(),
@@ -222,7 +158,6 @@ export class Session {
     const { horizon, revision, process, windowGames } =
       this.#config.profile.memory;
     return {
-      game_lines: this.#openingGameLines(),
       team: this.#team(BOS),
       season: "2025-26",
       game: {
@@ -245,51 +180,6 @@ export class Session {
         process,
         ...(windowGames === undefined ? {} : { window_games: windowGames }),
       },
-    };
-  }
-  async questions() {
-    const game = await this.#current();
-    if (
-      !visible(
-        {
-          ...game,
-          availableAt: this.#game.scheduledStart,
-          availabilityConvention: "odds_requested_at",
-        },
-        this.#cutoff,
-      )
-    )
-      throw new SessionError("cutoff_refused", "Questions unavailable");
-    const mappings = this.#source.identities
-      .rows()
-      .filter(
-        (m) =>
-          m.entity === "game" &&
-          m.provider === "espn" &&
-          m.canonicalId === this.#game.gameId,
-      );
-    if (mappings.length !== 1)
-      throw Error("Missing or ambiguous ESPN game mapping");
-    return buildQuestionSet(
-      {
-        game_id: this.#game.gameId,
-        espn_event_id: mappings[0].providerId,
-        scheduled_start: this.#game.scheduledStart,
-      },
-      this.#source.layer,
-    );
-  }
-  async list_questions(
-    input: ToolInput<"list_questions">,
-    _signal?: AbortSignal,
-  ): Promise<ToolResult<"list_questions">> {
-    this.#check("list_questions", input);
-    const set = await this.questions();
-    // The P2 builder selects the exact scheduled-start observation; no provenance escapes.
-    return {
-      game_id: this.#game.gameId,
-      cutoff: this.#cutoff,
-      questions: set.questions.map(agentQuestion),
     };
   }
   async #evidence() {
@@ -656,186 +546,6 @@ export class Session {
       })),
     };
   }
-  async query_odds_history(
-    input: QueryOddsHistoryInput,
-    _signal?: AbortSignal,
-  ): Promise<QueryOddsHistoryResult> {
-    this.#check("query_odds_history", input);
-    return this.#oddsHistory(input);
-  }
-  async #oddsHistory(
-    input: QueryOddsHistoryInput,
-    known?: {
-      games: RecordEnvelope[];
-      profiles: RecordEnvelope[];
-      odds: RecordEnvelope[];
-      history?: { boxes: RecordEnvelope[]; summaries: RecordEnvelope[] };
-    },
-  ): Promise<QueryOddsHistoryResult> {
-    const id = input.game_id ?? this.#game.gameId;
-    const game = (known?.games ?? (await this.#games())).find(
-      (g) =>
-        g.id === id &&
-        compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
-    );
-    if (!game) return { observations: [], settlements: [], game_lines: [] };
-    const profiles =
-      known?.profiles ??
-      this.#eligible(await this.#source.reference("player_profiles"));
-    const observations: QueryOddsHistoryResult["observations"] = [];
-    for (const r of known?.odds ?? this.#eligible(await this.#source.odds())) {
-      if (
-        this.#source.identities.resolve(
-          "game",
-          "espn",
-          r.data.espn_event_id,
-        ) !== id
-      )
-        continue;
-      const playerId = this.#source.identities.resolve(
-        "player",
-        "espn",
-        r.data.espn_player_id,
-      );
-      const stat = String(r.data.prop_type).replace(/^player_/, "");
-      if (
-        !["points", "rebounds", "assists"].includes(stat) ||
-        (input.player_id && playerId !== input.player_id) ||
-        (input.stat && stat !== input.stat)
-      )
-        continue;
-      const profile = profiles.find((p) => p.data.player_id === playerId);
-      if (!profile) throw Error("Missing static player reference");
-      observations.push({
-        game_id: id,
-        available_at: r.availableAt,
-        player: { id: playerId, name: profile.data.full_name },
-        stat: stat as "points" | "rebounds" | "assists",
-        line: r.data.selected_line,
-        p_over: r.data.p_over,
-      });
-    }
-    const settlements: QueryOddsHistoryResult["settlements"] = [];
-    if (visible(releasedGame(game), this.#cutoff)) {
-      let history = known?.history;
-      if (!history) {
-        const boxBatch = await this.#source.history("player_box_scores", game);
-        const summaryBatch = await this.#source.history(
-          "player_game_summary",
-          game,
-        );
-        history = {
-          boxes: boxBatch.reason ? [] : this.#eligible(boxBatch.records),
-          summaries: summaryBatch.reason
-            ? []
-            : this.#eligible(summaryBatch.records),
-        };
-      }
-      const { boxes, summaries } = history;
-      // One settled outcome per distinct offered line, not one per snapshot.
-      const lines = new Map(
-        observations.map((o) => [`${o.player.id}:${o.stat}:${o.line}`, o]),
-      );
-      for (const o of lines.values()) {
-        const { actual, outcome } =
-          resolveGameStatus(String(game.data.status ?? "")) ??
-          resolveOutcome(id, o.player.id, o.stat, o.line, boxes, summaries);
-        settlements.push({
-          game_id: id,
-          player: o.player,
-          stat: o.stat,
-          line: o.line,
-          actual,
-          outcome,
-        });
-      }
-    }
-    return { observations, settlements, game_lines: this.#gameLines(id) };
-  }
-  async validateSubmission(value: unknown) {
-    if (this.#closed || this.#phase !== "commit")
-      throw new SessionError(
-        "phase_refused",
-        "Submit only before reveal, during commit",
-      );
-    return validateSubmission(value, await this.questions());
-  }
-  /** Trusted runner hook, never part of the model tool surface. */
-  async resolutionInput(gameId: string): Promise<ResolutionInput> {
-    const game = (await this.#games()).find((g) => g.id === gameId);
-    if (!game || !visible(releasedGame(game), this.#cutoff))
-      throw new SessionError("cutoff_refused", "Outcome data is not released");
-    const box = await this.#source.history("player_box_scores", game);
-    const summary = await this.#source.history("player_game_summary", game);
-    return {
-      gameId,
-      status: String(game.data.status ?? ""),
-      boxes: this.#eligible(box.records),
-      summaries: this.#eligible(summary.records),
-      boxReason: box.reason,
-      summaryReason: summary.reason,
-    };
-  }
-
-  async read_released_results(
-    input: ToolInput<"read_released_results">,
-  ): Promise<ToolResult<"read_released_results">> {
-    this.#check("read_released_results", input);
-    const games: ToolResult<"read_released_results">["games"] = [];
-    const schedule = await this.#games();
-    for (const record of this.records()) {
-      const game = schedule.find((g) => g.id === record.questions.game.game_id);
-      if (
-        !game ||
-        (input.game_id && game.id !== input.game_id) ||
-        !visible(releasedGame(game), this.#cutoff)
-      )
-        continue;
-      const resolution =
-        record.resolution ?? (await this.resolutionInput(game.id));
-      const questions = record.questions.questions.map((q) => {
-        const resolved = resolveFrozen(
-          resolution,
-          q.player.id,
-          q.stat,
-          q.selected_line,
-        );
-        const p =
-          record.submission?.answers.find(
-            (a) => a.question_id === q.question_id,
-          )?.p_over ?? null;
-        return {
-          question_id: q.question_id,
-          player: { ...q.player },
-          stat: q.stat,
-          line: q.selected_line,
-          market_p_over: q.p_over,
-          agent_p_over: p,
-          ...resolved,
-          score:
-            p === null || !["over", "under"].includes(resolved.outcome)
-              ? null
-              : this.scorer({
-                  ...resolved,
-                  agent_p_over: p,
-                  market_p_over: q.p_over,
-                }),
-        };
-      });
-      games.push({
-        game_id: game.id,
-        released_at: releaseTime(game.data.scheduled_tipoff),
-        questions,
-      });
-    }
-    return {
-      games: games.sort(
-        (a, b) =>
-          compare(a.released_at, b.released_at) ||
-          a.game_id.localeCompare(b.game_id),
-      ),
-    };
-  }
   /** Runner-only clock advancement; never included in the agent tool surface. */
   async transition(phase: LifecyclePhase, cutoff: string) {
     if (this.#closed) throw new SessionError("phase_refused", "Session closed");
@@ -877,14 +587,11 @@ export class Session {
       return result as ToolResult<N>;
     }
     const methods = {
-      read_released_results: this.read_released_results.bind(this),
       search_evidence: this.search_evidence.bind(this),
       list_evidence: this.list_evidence.bind(this),
       fetch_evidence: this.fetch_evidence.bind(this),
       query_game_history: this.query_game_history.bind(this),
       read_schedule_and_injuries: this.read_schedule_and_injuries.bind(this),
-      query_odds_history: this.query_odds_history.bind(this),
-      list_questions: this.list_questions.bind(this),
     };
     const method = methods[name as keyof typeof methods];
     if (!method)
@@ -926,10 +633,6 @@ export class Session {
         },
       ],
     };
-    yield {
-      table: "questions",
-      rows: (await this.list_questions({})).questions,
-    };
     if (enabled.includes("game_history")) {
       for (const table of PLAYER_REFERENCE_TABLES) {
         const definitions = await this.#source.columns(table);
@@ -950,79 +653,6 @@ export class Session {
       yield { table: "injury_team_snapshots", rows: result.team_snapshots };
       yield { table: "schedule", rows: result.schedule };
     }
-    if (!enabled.includes("odds_history"))
-      yield { table: "game_lines", rows: [this.#openingGameLines()] };
-    if (enabled.includes("odds_history")) {
-      yield { table: "game_lines", rows: [] };
-      for (const game of games.filter(
-        (g) => compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
-      ))
-        yield { table: "game_lines", rows: this.#gameLines(game.id) };
-      yield { table: "odds_history", rows: [] };
-      yield { table: "odds_settlements", rows: [] };
-      const oddsByGame = new Map<string, RecordEnvelope[]>();
-      for (const r of this.#eligible(await this.#source.odds())) {
-        const id = this.#source.identities.resolve(
-          "game",
-          "espn",
-          r.data.espn_event_id,
-        );
-        const rows = oddsByGame.get(id) ?? [];
-        rows.push(r);
-        oddsByGame.set(id, rows);
-      }
-      const profiles = this.#eligible(
-        await this.#source.reference("player_profiles"),
-      );
-      const settlementHistory = new Map<
-        string,
-        { boxes: RecordEnvelope[]; summaries: RecordEnvelope[] }
-      >();
-      const released = games.filter(
-        (g) =>
-          oddsByGame.has(g.id) &&
-          visible(releasedGame(g), this.#cutoff) &&
-          compare(g.data.scheduled_tipoff, this.#game.scheduledStart) <= 0,
-      );
-      for (const game of released)
-        settlementHistory.set(game.id, { boxes: [], summaries: [] });
-      for (const table of [
-        "player_box_scores",
-        "player_game_summary",
-      ] as const) {
-        async function* individual(source: SessionSource) {
-          for (const game of released)
-            yield { gameId: game.id, ...(await source.history(table, game)) };
-        }
-        for await (const batch of this.#source.exportHistory?.(
-          table,
-          released,
-        ) ?? individual(this.#source)) {
-          signal.throwIfAborted();
-          const entry = settlementHistory.get(batch.gameId);
-          if (!entry)
-            throw Error("Settlement adapter returned an unselected game");
-          if (!batch.reason)
-            entry[table === "player_box_scores" ? "boxes" : "summaries"].push(
-              ...this.#eligible(batch.records),
-            );
-        }
-      }
-      for (const game of games.filter((g) => oddsByGame.has(g.id))) {
-        signal.throwIfAborted();
-        const result = await this.#oddsHistory(
-          { game_id: game.id },
-          {
-            games,
-            profiles,
-            odds: oddsByGame.get(game.id)!,
-            history: settlementHistory.get(game.id),
-          },
-        );
-        yield { table: "odds_history", rows: result.observations };
-        yield { table: "odds_settlements", rows: result.settlements };
-      }
-    }
     if (enabled.includes("search_and_fetch")) {
       const evidence = (await this.#evidence()).all();
       yield { table: "evidence", rows: evidence };
@@ -1032,17 +662,6 @@ export class Session {
           rows: evidence.filter((e) => e.source === source),
         };
     }
-    const released = await this.read_released_results({});
-    yield {
-      table: "released_results",
-      rows: released.games.flatMap((g) =>
-        g.questions.map((q) => ({
-          game_id: g.game_id,
-          released_at: g.released_at,
-          ...q,
-        })),
-      ),
-    };
   }
   /** Trusted P3f integration; all calls use the same service and live policy as tools. */
   workspaceForSandbox() {
@@ -1069,9 +688,7 @@ export class Session {
 export function sessionEnvironment(
   config: RunConfig,
   source: SessionSource,
-  hooks: Partial<Pick<Environment, "validateSubmission" | "execute">> & {
-    scorer?: QuestionScorer;
-  } = {},
+  hooks: Partial<Pick<Environment, "execute">> = {},
 ): EnvironmentFactory {
   return async (context, trusted) => {
     const session = new Session(
@@ -1080,8 +697,6 @@ export function sessionEnvironment(
       context.phase,
       context.cutoff,
       source,
-      trusted.results,
-      hooks.scorer,
       trusted.workspace,
       trusted.root,
     );
@@ -1090,16 +705,11 @@ export function sessionEnvironment(
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
       context: (budget) => session.context(budget),
-      questions: () => session.questions(),
-      resolutionInput: () => session.resolutionInput(context.game.gameId),
       transition: (phase, cutoff) => session.transition(phase, cutoff),
       call: (name, input, signal) => {
         validateInput(name, input);
         return session.call(name, input as never, signal);
       },
-      validateSubmission:
-        hooks.validateSubmission ??
-        ((value) => session.validateSubmission(value)),
       execute:
         hooks.execute ??
         (async (program, limits, signal) => {

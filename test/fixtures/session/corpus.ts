@@ -7,7 +7,6 @@ import { Identities } from "../../../src/data/identity.js";
 import type { SessionSource } from "../../../src/env/source.js";
 import { releaseTime } from "../../../src/env/visibility.js";
 import { fixtureConfig } from "../runner/support.js";
-import type { QuestionLayer } from "../../../src/questions/builder.js";
 
 export const cutoff = "2025-11-02T23:00:00Z",
   before = "2025-11-02T22:59:59Z",
@@ -43,7 +42,6 @@ export function fixtureCorpus(includeFuture = true) {
   const config = fixtureConfig("session-fixture");
   config.profile.capabilities.enabled = [
     "game_history",
-    "odds_history",
     "search_and_fetch",
     "workspace",
     "code_execution",
@@ -179,41 +177,6 @@ export function fixtureCorpus(includeFuture = true) {
       },
     ),
   ];
-  const row = {
-    espn_event_id: "current",
-    espn_player_id: "espn-player",
-    player_name: "Fixture Player",
-    prop_type: "player_points",
-    snapshot_kind: "scheduled_start",
-    requested_at: cutoff,
-    scheduled_start: cutoff,
-    status: "ok",
-    selected_line: 10.5,
-    p_over: 0.5,
-    p_under: 0.5,
-    contributing_books: ["fixture"],
-    contributing_book_count: 1,
-  };
-  const layer: QuestionLayer = {
-    manifest: ref,
-    methodology: ref,
-    consensus: ref,
-    bookLines: ref,
-    summaryRef: ref,
-    rows: [row],
-    pairs: [
-      {
-        ...row,
-        bookmaker: "fixture",
-        line: 10.5,
-        over_price: -110,
-        under_price: -110,
-        contributes_to_consensus: true,
-      },
-    ],
-    summary: {},
-    playerIds: { "espn-player": "player" },
-  };
   const history: Record<string, RecordEnvelope[]> = {};
   for (const g of schedule)
     for (const table of ["events", "player_box_scores", "player_game_summary"])
@@ -258,7 +221,6 @@ export function fixtureCorpus(includeFuture = true) {
     versions: [
       { source: "fixture", release: "fixture-v1", manifest_sha256: ref.sha256 },
     ],
-    layer,
     identities: ids,
     teams: [
       { team_id: BOS, abbreviation: "BOS", name: "Boston Celtics" },

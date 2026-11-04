@@ -52,7 +52,6 @@ export const configSchema = z.strictObject({
     pilotApproved: z.boolean(),
     pregame: phaseBudget,
     postgame: phaseBudget,
-    submissionReserve: integer,
     warnRemainingTokens: integer,
     /** Weight of a cache-read token against the token caps (uncached input, cache
      * writes and output count in full). Part of the budget profile. Optional, not
@@ -94,8 +93,6 @@ export const configSchema = z.strictObject({
     prompts: z.record(name, name),
     memoryInstructions: name,
     toolDefinitions: z.array(z.unknown()),
-    submissionFormat: name,
-    retryPolicy: z.literal("two-resubmissions"),
     loop: z.strictObject({
       effort: z.enum(["low", "medium", "high", "max"]),
       thinking: z.enum(["adaptive", "disabled"]),
@@ -106,18 +103,9 @@ export const configSchema = z.strictObject({
     sandboxImage: z.string().regex(/@sha256:[a-f0-9]{64}$/),
     codeRevision: name,
   }),
-  devig: z.strictObject({
-    layer: name,
-    manifestSha256: hash,
-    methodologySha256: hash,
-  }),
   policy: z.strictObject({
     version: name,
-    lineSelection: name,
-    contributingBookRule: name,
-    minimumBooks: z.literal(1),
     developmentGames: z.literal(10),
-    maxSubmissionAttempts: z.literal(3),
     release: z.literal("next-morning-09:00-America/New_York"),
   }),
   contaminationProbe: z
@@ -142,18 +130,12 @@ export type Game = ScheduledGame & {
 };
 export type Phase = "pregame" | "commit" | "postgame";
 export type Status =
-  | "completed"
-  | "budget_exhausted"
-  | "invalid_output"
-  | "infrastructure_failure"
-  | "skipped";
+  "completed" | "budget_exhausted" | "infrastructure_failure" | "skipped";
 export type Limit =
   | "tokens"
-  | "research_tokens"
   | "compute"
   | "tool_calls"
   | "wall_clock"
-  | "submission_attempts"
   | "interrupted"
   | "infrastructure"
   | null;
@@ -175,8 +157,6 @@ export function manifest(
     throw Error(
       "Window memory requires windowGames; other horizons must omit it",
     );
-  if (c.budget.submissionReserve >= c.budget.pregame.tokens)
-    throw Error("Reserve must be smaller than pregame cap");
   if (
     c.profile.memory.horizon === "stateless" &&
     c.profile.memory.process !== "voluntary"

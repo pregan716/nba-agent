@@ -15,12 +15,7 @@ import { PlayByPlayAdapter } from "../src/data/adapters.js";
 import { Release } from "../src/data/release.js";
 import { VerifiedStore, sha256, type ObjectRef } from "../src/data/store.js";
 import { fixtureCorpus } from "./fixtures/session/corpus.js";
-import { provider } from "./fixtures/runner/support.js";
-import { Session, sessionEnvironment } from "../src/env/session.js";
-import { manifest } from "../src/runner/config.js";
-import { Runner } from "../src/runner/runner.js";
-import { MeteringProxy } from "../src/runner/proxy.js";
-import { readReport } from "../src/evaluation/report.js";
+import { Session } from "../src/env/session.js";
 
 for (const [status, emptyBoxes, expected] of [
   ["postponed", false, "void"],
@@ -34,7 +29,7 @@ for (const [status, emptyBoxes, expected] of [
   ["unknown", false, "unresolved"],
   ["suspended", false, "unresolved"],
 ] as const) {
-  test(`P1 ${status ?? "missing"} status reaches runner capture, feedback and offline report`, async () => {
+  test(`P1 ${status ?? "missing"} status stays hidden until release`, async () => {
     const f = fixtureCorpus(false);
     // A verified release exercises the actual P1 pick list, not a pre-built envelope.
     const key = "tables/games/phase=regular_season/part.jsonl";
@@ -80,6 +75,13 @@ for (const [status, emptyBoxes, expected] of [
     // erase it for subsequent postgame sessions.
     const sharedGames = await adapter.games();
     f.source.games = async () => sharedGames;
+    const columns = f.source.columns;
+    f.source.columns = async (...args) => [
+      ...(await columns(...args)),
+      ...(args[0] === "games"
+        ? [{ name: "status", description: "Published game status" }]
+        : []),
+    ];
     const current = (await adapter.games()).find(
       (g) => g.id === f.game.gameId,
     )!;
@@ -88,7 +90,7 @@ for (const [status, emptyBoxes, expected] of [
     if (emptyBoxes) {
       const history = f.source.history;
       f.source.history = async (...args) =>
-        args[1].id === f.game.gameId
+        args[1].id === f.game.gameId && args[0] !== "games"
           ? { records: [], reason: "No product for cancelled game" }
           : history(...args);
     }
@@ -98,10 +100,6 @@ for (const [status, emptyBoxes, expected] of [
       "pregame",
       f.game.scheduledStart,
       f.source,
-    );
-    await assert.rejects(
-      () => pregame.resolutionInput(f.game.gameId),
-      /not released/,
     );
     // Static metadata must not make final status available to the pregame agent.
     const schedule = await pregame.read_schedule_and_injuries({
@@ -120,16 +118,6 @@ for (const [status, emptyBoxes, expected] of [
     );
 
     const root = mkdtempSync(join(tmpdir(), "nba-game-status-"));
-    const proxy = new MeteringProxy(provider);
-    await proxy.listen();
-    const runner = new Runner(
-      root,
-      manifest(f.config, [
-        { gameId: f.game.gameId, scheduledStart: f.game.scheduledStart },
-      ]),
-      proxy,
-      sessionEnvironment(f.config, f.source),
-    );
     try {
       const exported = await pregame.exportTo(
         join(root, "pre-export"),
@@ -174,78 +162,12 @@ for (const [status, emptyBoxes, expected] of [
         f.game.release,
         f.source,
       );
-      const postExport = await postgame.exportTo(
-        join(root, "post-export"),
-        new AbortController().signal,
-      );
-      const postDb = new DatabaseSync(postExport, { readOnly: true });
-      try {
-        const settlements = postDb
-          .prepare("SELECT outcome FROM odds_settlements WHERE game_id = ?")
-          .all(f.game.gameId);
-        assert.ok(settlements.length > 0);
-        assert.ok(settlements.every((row) => row.outcome === expected));
-      } finally {
-        postDb.close();
-      }
-      let feedback:
-        | { outcome: string; actual: number | null; score: number | null }
-        | undefined;
-      await runner.run(async ({ session }) => {
-        const ctx = await session.call("context", {});
-        if (ctx.phase === "postgame") {
-          feedback = (await session.call("read_released_results", {})).games[0]
-            .questions[0];
-          const odds = await session.call("query_odds_history", {
-            game_id: f.game.gameId,
-          });
-          assert.ok(odds.settlements.length > 0);
-          for (const settlement of odds.settlements) {
-            assert.equal(settlement.outcome, expected);
-            assert.equal(settlement.actual, feedback.actual);
-          }
-          return;
-        }
-        assert.ok(!("status" in ctx.game));
-        const qs = await session.call("list_questions", {});
-        await session.call("begin_commit", {});
-        await session.call("submit", {
-          answers: qs.questions.map((q) => ({
-            question_id: q.question_id,
-            p_over: 0.6,
-            rationale: "fixture",
-          })),
-        });
+      const history = await postgame.query_game_history({
+        table: "games",
+        game_id: f.game.gameId,
       });
-      const captured = runner.record.events("resolution_input");
-      assert.equal(captured.length, 1);
-      assert.equal(captured[0].data.status, status ?? "");
-      assert.equal(feedback?.outcome, expected);
-      runner.close();
-      const report = readReport(runner.root);
-      assert.equal(report.rows[0].outcome, expected);
-      assert.equal(report.rows[0].skill, feedback!.score);
-      assert.equal(report.rows[0].actual, feedback!.actual);
-      if (expected === "void") {
-        assert.equal(report.rows[0].reason, "void");
-        assert.equal(report.rows[0].actual, null);
-        assert.equal(report.rows[0].skill, null);
-        assert.equal(report.totals.scored, 0);
-      } else if (expected === "unresolved") {
-        assert.equal(
-          report.rows[0].reason,
-          `unresolved: game status ${status}`,
-        );
-        assert.equal(report.rows[0].actual, null);
-        assert.equal(report.rows[0].skill, null);
-        assert.equal(report.totals.scored, 0);
-      } else {
-        assert.equal(report.totals.scored, 1);
-        assert.ok(report.rows[0].skill! > 0);
-      }
+      assert.equal(history.rows[0].status, status);
     } finally {
-      runner.close();
-      await proxy.close();
       rmSync(root, { recursive: true, force: true });
     }
   });

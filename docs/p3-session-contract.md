@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P3a session contract (SPO-786)
 
 `src/env/contract.ts` and `src/env/tools.ts` fix the interface between the P4 runner, the P3 replay environment (P3b–P3f) and the P5 harness. This issue ships types, tool definitions as data, the error vocabulary, the phase-legality table and the visibility rules. It ships no behaviour. The brief's "Environment tools", "Harness contract", "Agent output contract" and "Temporal access rules" sections are the spec.

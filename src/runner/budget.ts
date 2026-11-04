@@ -84,15 +84,7 @@ export class Budget {
     return this.record.events(kind, this.scope).filter((e) => e.seq > since);
   }
   get stage(): Phase {
-    return this.phase === "postgame"
-      ? "postgame"
-      : this.events("commit").length
-        ? "commit"
-        : "pregame";
-  }
-  commit(): void {
-    if (this.phase !== "pregame") throw Error("Cannot commit postgame");
-    if (this.stage !== "commit") this.record.append("commit", this.scope, {});
+    return this.phase;
   }
   totals() {
     const events = this.events();
@@ -111,16 +103,13 @@ export class Budget {
     return { tokens, compute, tools };
   }
   remaining() {
-    const used = this.totals(),
-      reserve =
-        this.stage === "pregame" ? this.config.budget.submissionReserve : 0;
+    const used = this.totals();
     return {
-      tokens: Math.max(0, this.caps.tokens - reserve - used.tokens),
+      tokens: Math.max(0, this.caps.tokens - used.tokens),
       compute: Math.max(0, this.caps.computeSeconds - used.compute),
       tools: Math.max(0, this.caps.toolCalls - used.tools),
-      reserve,
       warning:
-        this.caps.tokens - reserve - used.tokens <=
+        this.caps.tokens - used.tokens <=
         this.config.budget.warnRemainingTokens,
     };
   }
@@ -130,8 +119,7 @@ export class Budget {
   }
   reserve(tokens: number, compute: number, kind: string): string {
     const remaining = this.remaining();
-    if (tokens > remaining.tokens)
-      this.block(this.stage === "pregame" ? "research_tokens" : "tokens");
+    if (tokens > remaining.tokens) this.block("tokens");
     if (compute > remaining.compute) this.block("compute");
     const id = randomUUID();
     this.record.append("reservation", this.scope, {
@@ -155,12 +143,6 @@ export class Budget {
       details,
     });
     if (this.totals().tokens > this.caps.tokens) this.block("tokens");
-    if (
-      this.stage === "pregame" &&
-      this.totals().tokens >
-        this.caps.tokens - this.config.budget.submissionReserve
-    )
-      this.block("research_tokens");
     if (this.totals().compute > this.caps.computeSeconds) this.block("compute");
   }
   tool(name: string, args: unknown): void {

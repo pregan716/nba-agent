@@ -1,7 +1,6 @@
 // Builds the `harness` block of a run config so that P4's manifest hash covers
 // every component the brief lists under "Harness version": identity, prompts,
-// memory-mode instructions, tool definitions and schemas, submission format and
-// retry policy, loop parameters (effort, thinking, prompt caching), access method and SDK
+// memory-mode instructions, tool definitions and schemas, loop parameters (effort, thinking, prompt caching), access method and SDK
 // version, sandbox image digest, and code revision.
 
 import { execFileSync } from "node:child_process";
@@ -22,8 +21,6 @@ export interface LoopParameters {
   timeoutMs: number;
   /** Hard stop on model turns per phase, as a loop safeguard; the budget is the real limit. */
   maxTurns: number;
-  /** How many times the harness reminds a model that ended its turn without submitting. */
-  nudges: number;
   /** Refresh the budget line (via the context tool) every N tool rounds. */
   contextEvery: number;
   /** Retries of a response whose tool call was cut at max_tokens, each with a larger allowance. */
@@ -39,13 +36,11 @@ export const DEFAULT_LOOP: LoopParameters = {
   maxTokens: 16000,
   timeoutMs: 10 * 60 * 1000,
   maxTurns: 200,
-  nudges: 2,
   contextEvery: 5,
   truncationRetries: 2,
   maxTokensCeiling: 64000,
   promptCache: "ephemeral-5m",
 };
-export type BaselineName = "market" | "naive-stats" | "random-deviation";
 
 export interface HarnessConfigOptions {
   memory: RunConfig["profile"]["memory"];
@@ -54,10 +49,6 @@ export interface HarnessConfigOptions {
   sandboxImage: string;
   codeRevision?: string;
   loop?: Partial<LoopParameters>;
-  /** A null baseline instead of the analyst. Baselines make no model calls. */
-  baseline?: BaselineName;
-  /** Random-deviation seed; part of the harness version. */
-  seed?: number;
 }
 
 export function currentCodeRevision(): string {
@@ -75,36 +66,22 @@ export function harnessConfig(
   options: HarnessConfigOptions,
 ): RunConfig["harness"] {
   const loop = { ...DEFAULT_LOOP, ...options.loop };
-  const baseline = options.baseline;
   return {
-    identity: baseline ? `baseline-${baseline}-v1` : "homemade-analyst-v1",
-    prompts: baseline
-      ? { baseline: `${baseline} null baseline; no model calls` }
-      : {
-          system: SYSTEM_PROMPT,
-          ...PHASE_PROMPTS,
-          ...Object.fromEntries(
-            Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [
-              `memory:${k}`,
-              v,
-            ]),
-          ),
-        },
-    memoryInstructions: baseline
-      ? "n/a: baseline does not read instructions"
-      : memoryInstructions(options.memory),
-    toolDefinitions: baseline
-      ? []
-      : JSON.parse(serializeToolDefinitions(TOOL_DEFINITIONS)),
-    submissionFormat: "answers-v1",
-    retryPolicy: "two-resubmissions",
+    identity: "replay-infrastructure-v2",
+    prompts: {
+      system: SYSTEM_PROMPT,
+      ...PHASE_PROMPTS,
+      ...Object.fromEntries(
+        Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [`memory:${k}`, v]),
+      ),
+    },
+    memoryInstructions: memoryInstructions(options.memory),
+    toolDefinitions: JSON.parse(serializeToolDefinitions(TOOL_DEFINITIONS)),
     loop: {
       effort: options.effort,
       thinking: options.thinking,
       parameters: {
         ...loop,
-        ...(baseline ? { baseline } : {}),
-        ...(options.seed !== undefined ? { seed: options.seed } : {}),
       },
     },
     accessMethod: "anthropic-sdk-via-metering-proxy",

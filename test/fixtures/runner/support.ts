@@ -1,4 +1,3 @@
-import { emptyGameLines } from "../../../src/questions/game-lines.js";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Message } from "@anthropic-ai/sdk/resources/messages";
@@ -8,8 +7,6 @@ import type {
   EnvironmentFactory,
   Harness,
 } from "../../../src/runner/runner.js";
-import { buildQuestionSet } from "../../../src/questions/builder.js";
-import type { ObjectRef } from "../../../src/data/store.js";
 export function fixtureConfig(
   runId = "fixture",
   horizon: "stateless" | "season" = "season",
@@ -54,7 +51,6 @@ export function fixtureConfig(
         toolCalls: 10,
         wallSeconds: 5,
       },
-      submissionReserve: 200,
       warnRemainingTokens: 100,
       rollover: false,
       sandbox: {
@@ -77,8 +73,6 @@ export function fixtureConfig(
       prompts: { system: "Fixture only" },
       memoryInstructions: "Use only scoped session tools.",
       toolDefinitions: [],
-      submissionFormat: "fixture-v1",
-      retryPolicy: "two-resubmissions",
       loop: { effort: "high", thinking: "adaptive", parameters: {} },
       accessMethod: "anthropic-sdk-via-metering-proxy",
       sdkVersion: JSON.parse(
@@ -93,14 +87,9 @@ export function fixtureConfig(
       sandboxImage: `fixture@sha256:${hash}`,
       codeRevision: "fixture-only",
     },
-    devig: { layer: "fixture", manifestSha256: hash, methodologySha256: hash },
     policy: {
       version: "v1",
-      lineSelection: "fixture",
-      contributingBookRule: "fixture",
-      minimumBooks: 1,
       developmentGames: 10,
-      maxSubmissionAttempts: 3,
       release: "next-morning-09:00-America/New_York",
     },
     contaminationProbe: null,
@@ -134,23 +123,9 @@ export const environment: EnvironmentFactory = async (
   { workspace },
 ) => {
   let phase = context.phase;
-  const question = {
-    question_id: `${context.game.gameId}:q`,
-    player: { id: "player", name: "Fixture" },
-    stat: "points",
-    line: 1.5,
-    p_over: 0.5,
-  };
   return {
     async context(budget) {
       return {
-        game_lines: {
-          ...emptyGameLines(),
-          game_id: context.game.gameId,
-          available_at: context.game.scheduledStart,
-          snapshot_kind: "scheduled_start",
-          provenance: null,
-        },
         team: {
           team_id: "1610612738",
           abbreviation: "BOS",
@@ -180,67 +155,10 @@ export const environment: EnvironmentFactory = async (
         },
       };
     },
-    async questions() {
-      const ref = (key: string): ObjectRef => ({
-        bucket: "pm-data-platform",
-        key,
-        sha256: "a".repeat(64),
-      });
-      const row = {
-        espn_event_id: context.game.gameId,
-        espn_player_id: "player",
-        player_name: "Fixture",
-        prop_type: "player_points",
-        snapshot_kind: "scheduled_start",
-        requested_at: context.game.scheduledStart,
-        scheduled_start: context.game.scheduledStart,
-        status: "ok",
-        selected_line: 1.5,
-        p_over: 0.5,
-        p_under: 0.5,
-        contributing_books: ["fixture"],
-        contributing_book_count: 1,
-      };
-      const set = buildQuestionSet(
-        {
-          game_id: context.game.gameId,
-          espn_event_id: context.game.gameId,
-          scheduled_start: context.game.scheduledStart,
-        },
-        {
-          manifest: ref("manifest"),
-          methodology: ref("methodology"),
-          consensus: ref("consensus"),
-          bookLines: ref("pairs"),
-          summaryRef: ref("summary"),
-          rows: [row],
-          pairs: [
-            {
-              ...row,
-              bookmaker: "fixture",
-              line: 1.5,
-              over_price: -110,
-              under_price: -110,
-              contributes_to_consensus: true,
-            },
-          ],
-          summary: {},
-          playerIds: { player: "player" },
-        },
-      );
-      question.question_id = set.questions[0].question_id;
-      return set;
-    },
     async transition(next) {
       if (next !== "initialize" && next !== "checkpoint") phase = next;
     },
     async call(name, args) {
-      if (name === "list_questions")
-        return {
-          game_id: context.game.gameId,
-          cutoff: context.cutoff,
-          questions: [question],
-        };
       if (name === "workspace_read") {
         const content = existsSync(join(workspace, "notes.txt"))
           ? readFileSync(join(workspace, "notes.txt"), "utf8")
@@ -259,23 +177,6 @@ export const environment: EnvironmentFactory = async (
       }
       throw Error("Unknown fixture tool");
     },
-    async validateSubmission(value) {
-      return (value as { notes?: string })?.notes === "valid"
-        ? {
-            ok: true,
-            errors: [],
-            value: {
-              answers: [
-                {
-                  question_id: question.question_id,
-                  p_over: 0.5,
-                  rationale: "",
-                },
-              ],
-            },
-          }
-        : { ok: false, errors: ["Invalid fixture submission"] };
-    },
     async execute(program) {
       return {
         stdout: program,
@@ -290,11 +191,8 @@ export const environment: EnvironmentFactory = async (
   };
 };
 export const harness: Harness = async ({ session }) => {
-  const ctx = (await session.call("context", {})) as any;
-  if (ctx.phase !== "postgame") {
-    await session.call("begin_commit", {});
-    await session.call("submit", { answers: [], notes: "valid" });
-  } else
+  const ctx = await session.call("context", {});
+  if (ctx.phase === "postgame")
     await session.call("workspace_write", {
       path: "notes.txt",
       content: `reflected ${ctx.game.game_id}`,

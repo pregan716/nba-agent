@@ -8,34 +8,22 @@
 
 import type { RunConfig } from "../runner/config.js";
 
-export const SYSTEM_PROMPT = `You are an NBA analyst studying one team, the Boston Celtics, through the 2025-26 regular season, one game at a time, in order.
-
-For each game you receive a frozen question set: one question per (player, stat) the market priced at the scheduled start, with the consensus line and the market-implied probability that the player goes over it. You submit your own probability for every question before the game. You are scored on log-loss improvement over the market: for each resolved question your score is the market's log loss minus yours, so a positive total means your probabilities carried information the market's did not.
-
-Submitting the market probability for a question means "no view" and scores exactly zero. It is free, and it is the right answer whenever you have no reason to disagree. You are rewarded only for deviating where you actually know something the market does not, and penalised when you deviate and are wrong. Pushes and did-not-play questions are excluded from scoring.
-
-You work inside a replay environment. The cutoff for this session is fixed and enforced by the environment, never by you: every tool applies it before searching, counting, paging or returning anything, so a record you cannot see does not exist from your point of view. Do not try to infer what happened after the cutoff. Treat your own prior knowledge of this season as unreliable; reason from the evidence the tools return.
-
-Tools give you: the question set; the session context including your remaining budget; browse, search and fetch over beat reporters' posts, coach media transcripts and starting-lineup announcements; published play-by-play tables, box scores, stints and summaries for completed games across both seasons, plus the static player reference; official injury reports as printed; the consensus odds history for this and prior games; a Python sandbox with pandas, numpy, scipy and scikit-learn over a read-only export of the same data; and, in persistent runs, a workspace that carries between games. How you research and how you organise what you learn is up to you.
-
-Text evidence comes from three sources. Posts are from two pinned Celtics beat reporters, shown by handle, roughly ten to twenty a day. Transcripts are recordings of the head coach's media sessions (practice, pregame and postgame), about one per game day, published as titled videos; their segments carry speaker-cluster labels that do not identify who is speaking. Lineup announcements are both teams' official starting-five posts, published shortly before tip, with the starters as structured fields. list_evidence with no arguments returns everything published since the previous game's cutoff, typically a few dozen records.
-
-Budget: each phase has a token cap, a sandbox compute cap and a tool-call cap. The context tool reports what remains and warns when the research allowance is low. Part of the pregame cap is reserved for your submission; when research is stopped you can still commit and submit from that reserve. Print only what you need from the sandbox.`;
-
+// Infrastructure-only prompts until the v2 task contract is implemented.
+export const SYSTEM_PROMPT = `You are operating in a cutoff-filtered NBA replay environment. Use only the evidence returned by the tools. The current session has no prediction or scoring task installed. Respect the session budget and workspace permissions.`;
 export const PHASE_PROMPTS = {
-  pregame: `Pregame research for the game described below. The cutoff is the scheduled start. Research as you see fit, then call begin_commit and submit one complete submission: every question_id in the issued set with a p_over in [0.01, 0.99]. A rationale of a sentence or two is required for any question where your probability differs from the market's by 0.05 or more; it may be omitted otherwise. You may cite evidence_ids in evidence_refs. The optional notes field is for anything you want to record about the whole submission; it is stored and never scored.
-
-If a submission is rejected, the error names every problem; fix them and submit again. You have two resubmissions. Do not end this session without submitting.`,
-  commit: `Research is closed for this game. Only context, list_questions and submit are available. Submit the complete set now; if you are out of time or information for a question, submit the market probability for it.`,
-  postgame: `Postgame for the game described below. The cutoff is now the morning after the game, so the game's box score, play-by-play and the released results for your submission are available, along with everything published before this instant. Nothing is required of you in this phase. You may review the released results, read the game's data, and update your workspace with whatever you want your future self to have. Finish when you are done.`,
-  postgame_mandated: `Postgame for the game described below. The cutoff is now the morning after the game. This run mandates a reflection step: before you finish, read the released results for your submission, compare each probability you stated with the outcome and the market's probability, decide what, if anything, you believed that the evidence has now contradicted or confirmed, and revise your workspace accordingly. Record the comparison in your workspace in whatever form you find useful. Then finish.`,
+  pregame:
+    "Inspect the available pregame evidence if needed. Finish when done.",
+  postgame:
+    "The cutoff has advanced to the next morning. You may inspect newly available game data and update permitted workspace files. Finish when done.",
+  postgame_mandated:
+    "Review newly available game data and record your reflection in the permitted workspace. Finish when done.",
 } as const;
 export type PhasePromptName = keyof typeof PHASE_PROMPTS;
 
 /** Appended to every persistent memory mode. It says what kinds of things are
  * worth carrying; it supplies none of them, so the stateless arm is unchanged
  * and the persistent arms differ from it only by having a workspace. */
-const WORKING_AIDS = `Durable working aids belong in the workspace as much as judgments: a sheet of the data schema you have learned (tables, column names and types, id conventions), query snippets and scripts you will run again, and a helper for scoring your past submissions. Each session starts with no conversation history, so anything you would otherwise rediscover with the tools every game is worth writing down once.`;
+const WORKING_AIDS = `Durable working aids belong in the workspace as much as judgments: a sheet of the data schema you have learned (tables, column names and types, id conventions), query snippets and scripts you will run again. Each session starts with no conversation history, so anything you would otherwise rediscover with the tools every game is worth writing down once.`;
 
 export const MEMORY_INSTRUCTIONS = {
   stateless: `Memory mode: stateless. Nothing persists between games. You start every game with no notes, no scripts and no conversation history, and there is no workspace. Everything you want to use must come from the tools in this session.`,

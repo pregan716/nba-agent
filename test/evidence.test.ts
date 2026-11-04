@@ -212,7 +212,6 @@ test("browse is offered and callable only in research phases with the evidence c
       tokens: 100,
       compute_seconds: 0,
       tool_calls: 10,
-      submission_reserve: 0,
       warning: false,
     });
     assert.ok(offeredTools(context).includes("list_evidence"));

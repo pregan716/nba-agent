@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # Session core (SPO-787)
 
 `Session` in `src/env/session.ts` implements context and the four structured read tools against the merged P3a contract. Construct it on the trusted side with the run configuration, manifest game, phase, cutoff, and `SessionSource`. `corpusSource(corpus, layer, identities)` adapts the verified P1 corpus and P2 layer; `sessionEnvironment(config, source, hooks)` connects it to P4. The harness receives only `SessionTools.call`, never the source, paths, credentials, phase-transition hook, or raw question set.

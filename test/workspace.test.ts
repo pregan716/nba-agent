@@ -148,8 +148,6 @@ test("session routes workspace tools and revokes the shared service at commit an
     "pregame",
     s.f.game.scheduledStart,
     s.f.source,
-    undefined,
-    undefined,
     s.path,
     s.root,
   );

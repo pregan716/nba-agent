@@ -1,6 +1,5 @@
 import { Workspace, WorkspacePolicy } from "../../../src/env/workspace.js";
 import type { LifecyclePhase } from "../../../src/env/lifecycle.js";
-import { validateSubmission } from "../../../src/env/submission.js";
 import { manifest } from "../../../src/runner/config.js";
 import { Runner } from "../../../src/runner/runner.js";
 import { MeteringProxy } from "../../../src/runner/proxy.js";
@@ -41,8 +40,6 @@ const runner = new Runner(
         }
         return env.call(name, args, signal);
       },
-      validateSubmission: async (value) =>
-        validateSubmission(value, await env.questions()),
     };
   },
 );
@@ -50,22 +47,11 @@ try {
   await runner.run(async ({ session }) => {
     const ctx = (await session.call("context", {})) as any;
     if (ctx.phase !== "postgame") {
-      if (process.argv[3] === "resume")
-        throw Error("Committed pregame was replayed");
       await session.call("workspace_write", {
         path: "notes.txt",
-        content: "committed memory",
+        content: process.argv[3] === "resume" ? "recovered memory" : "partial memory",
       });
-      const { questions } = await session.call("list_questions", {});
-      await session.call("begin_commit", {});
-      await session.call("submit", {
-        answers: questions.map((q) => ({
-          question_id: q.question_id,
-          p_over: q.p_over,
-        })),
-        notes: "valid",
-      });
-      process.kill(process.pid, "SIGKILL");
+      if (process.argv[3] !== "resume") process.kill(process.pid, "SIGKILL");
     } else
       await session.call("workspace_write", {
         path: "notes.txt",

@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P5 agent harness (SPO-781)
 
 `src/harness/` is the v1 homemade harness: a hand-written tool loop over direct Anthropic SDK calls, plus the three null baselines, the prompts, the harness-version builder, the contamination probe and the trusted launcher. It holds exactly the three contract handles the brief allows (session endpoint, metered model endpoint, memory-mode instructions) and nothing else. Workspace enforcement, sandbox lifecycle and token metering live in P3 and P4 and are not duplicated here.

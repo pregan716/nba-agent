@@ -101,7 +101,7 @@ test("manifest pins all axes/descriptors and chronological 82-game schedule, fir
     /duplicate/,
   );
 });
-test("record is append-only, hash-verified, manifest-bound and submissions are atomic/idempotent", () => {
+test("record is append-only, hash-verified and manifest-bound", () => {
   const root = temp(),
     m = manifest(fixtureConfig(), games),
     r = new RecordStore(root, m);
@@ -111,10 +111,7 @@ test("record is append-only, hash-verified, manifest-bound and submissions are a
       m.config.profile.dataSources,
     );
     assert.ok(m.config.profile.dataSources.length > 0);
-    const receipt = r.submission("g1", { answers: [1] });
-    assert.deepEqual(r.submission("g1", { answers: [1] }), receipt);
-    assert.equal(r.events("submission").length, 1);
-    assert.throws(() => r.submission("g1", { answers: [2] }), /frozen/);
+    r.append("fixture", "g1", { value: 1 });
     assert.throws(() => r.db.exec("UPDATE events SET data='{}'"), /immutable/);
     assert.throws(() => r.db.exec("DELETE FROM events"), /immutable/);
     r.verify();
@@ -123,7 +120,7 @@ test("record is append-only, hash-verified, manifest-bound and submissions are a
       /manifest mismatch/,
     );
     r.db.exec(
-      "DROP TRIGGER immutable_update; UPDATE events SET data='{}' WHERE kind='submission'",
+      "DROP TRIGGER immutable_update; UPDATE events SET data='{}' WHERE kind='fixture'",
     );
     assert.throws(() => r.verify(), /hash chain/);
   } finally {
@@ -191,22 +188,20 @@ test("proxy works with Anthropic SDK, pins model/effort, records exact usage and
     await s.close();
   }
 });
-test("budget reserves final submission, has no rollover, counts all token classes and uncertain calls", async () => {
+test("budget has no rollover, counts all token classes and uncertain calls", async () => {
   const c = fixtureConfig();
   c.budget.pregame.tokens = 100;
-  c.budget.submissionReserve = 30;
   const s = await setup(c);
   try {
     const b = new Budget(s.runner.record, "g1:pregame", s.m.config, "pregame");
     const id = b.reserve(60, 0, "model");
-    assert.equal(b.remaining().tokens, 10);
+    assert.equal(b.remaining().tokens, 40);
     assert.ok(b.remaining().warning);
     assert.throws(
-      () => b.reserve(11, 0, "model"),
-      (e: any) => e.limit === "research_tokens",
+      () => b.reserve(41, 0, "model"),
+      (e: any) => e.limit === "tokens",
     );
     b.settle(id, 60, 0, {});
-    b.commit();
     assert.equal(b.remaining().tokens, 40);
     assert.equal(
       new Budget(
@@ -227,7 +222,7 @@ test("budget reserves final submission, has no rollover, counts all token classe
         s.m.config,
         "pregame",
       ).remaining().tokens,
-      70,
+      100,
     );
     assert.equal(
       new Budget(
@@ -274,7 +269,7 @@ test("failed model transport is charged conservatively and cannot spend again co
     await s.close();
   }
 });
-test("runner preserves B workspace, resets A, locks commit and hands harness only scoped handles", async () => {
+test("runner preserves B workspace, resets A and hands harness only scoped handles", async () => {
   for (const horizon of ["season", "stateless"] as const) {
     const s = await setup(fixtureConfig(horizon, horizon));
     const observed: string[] = [];
@@ -307,25 +302,8 @@ test("runner preserves B workspace, resets A, locks commit and hands harness onl
             () => handles.session.call("workspace_read", { path: "notes.txt" }),
             /disabled/,
           );
-        await handles.session.call("begin_commit", {});
-        await assert.rejects(
-          () =>
-            handles.session.call("workspace_write", {
-              path: "notes.txt",
-              content: "bad",
-            }),
-          /locked/,
-        );
-        const r = await handles.session.call("submit", {
-          answers: [],
-          notes: "valid",
-        });
-        assert.deepEqual(
-          await handles.session.call("submit", { answers: [], notes: "valid" }),
-          r,
-        );
       });
-      assert.equal(s.runner.record.events("submission").length, 2);
+      assert.equal(s.runner.record.events("game_end").length, 2);
       assert.deepEqual(observed, horizon === "season" ? ["", "after g1"] : []);
       assert.equal(
         s.runner.record.events("clock").at(-1)?.data.cutoff,
@@ -334,9 +312,7 @@ test("runner preserves B workspace, resets A, locks commit and hands harness onl
       const ends = s.runner.record.events("session_end");
       assert.ok(ends.every((e) => e.data.status === "completed"));
       assert.ok(
-        s.runner.record
-          .events("game_end")
-          .every((e) => e.data.development && !e.data.scoringEligible),
+        s.runner.record.events("game_end").every((e) => e.data.development),
       );
       if (horizon === "season")
         assert.deepEqual(ends[1].data.diff.added, ["notes.txt"]);
@@ -348,17 +324,8 @@ test("runner preserves B workspace, resets A, locks commit and hands harness onl
     }
   }
 });
-test("invalid output, exhaustion and infrastructure failure remain distinct; code records enforce truncation", async () => {
+test("exhaustion and infrastructure failure remain distinct; code records enforce truncation", async () => {
   const cases: { run: Harness; status: string; limit: string | null }[] = [
-    {
-      run: async ({ session }) => {
-        await session.call("begin_commit", {});
-        for (let i = 0; i < 4; i++)
-          await session.call("submit", { answers: [], notes: "invalid" });
-      },
-      status: "invalid_output",
-      limit: "submission_attempts",
-    },
     {
       run: async () => {
         throw Error("fixture failure");
@@ -397,8 +364,6 @@ test("invalid output, exhaustion and infrastructure failure remain distinct; cod
       })) as any;
       assert.equal(Buffer.byteLength(result.stdout), 128);
       assert.equal(result.truncated, true);
-      await session.call("begin_commit", {});
-      await session.call("submit", { answers: [], notes: "valid" });
     });
     const codes = s.runner.record.events("code_start");
     assert.equal(codes.length, 2);
@@ -411,7 +376,7 @@ test("invalid output, exhaustion and infrastructure failure remain distinct; cod
     await s.close();
   }
 });
-test("SIGKILL after commit resumes from durable receipt and committed workspace, without duplicate submission", async () => {
+test("SIGKILL during research rolls back partial memory and resumes the interrupted phase", async () => {
   const root = temp();
   const child = (mode: string) =>
     new Promise<{ code: number | null; signal: string | null }>(
@@ -435,21 +400,11 @@ test("SIGKILL after commit resumes from durable receipt and committed workspace,
     assert.equal((await child("resume")).code, 0);
     const r = new RecordStore(join(root, "fixture", "r1"));
     try {
-      assert.equal(r.events("submission").length, 1);
-      assert.equal(r.events("submission_attempt").length, 1);
-      assert.equal(
-        readFileSync(
-          join(
-            root,
-            "fixture",
-            "r1",
-            "blobs",
-            r.events("submission")[0].data.value.workspaceChanges[0].sha256,
-          ),
-          "utf8",
-        ),
-        "committed memory",
-      );
+      const ends = r.events("session_end", "g1:pregame");
+      assert.equal(ends.length, 2);
+      assert.deepEqual(ends[1].data.before.files, {});
+      assert.equal(ends[1].data.status, "completed");
+      assert.equal(r.events("phase_end", "g1:pregame").length, 1);
       assert.equal(
         r.events("session_end", "g1:pregame")[0].data.limit,
         "interrupted",
@@ -533,71 +488,7 @@ test("run and replicate directories cannot share state; an active runner cannot 
     await s.close();
   }
 });
-test("research exhaustion allows reserve submission while compute/tool limits are explicit", async () => {
-  const c = fixtureConfig();
-  c.budget.pregame.tokens = 100;
-  c.budget.submissionReserve = 30;
-  const s = await setup(c, {
-    count: async () => 1,
-    create: async (r) => ({
-      ...sdkMessage,
-      usage: {
-        ...sdkMessage.usage,
-        input_tokens: 1,
-        output_tokens: r.max_tokens,
-        cache_creation_input_tokens: 0,
-        cache_read_input_tokens: 0,
-        cache_creation: null,
-      },
-    }),
-  });
-  try {
-    await s.runner.run(async ({ session, model }) => {
-      const ctx = (await session.call("context", {})) as any;
-      if (ctx.phase === "postgame") return;
-      const client = new Anthropic({ ...model, maxRetries: 0 });
-      await client.messages.create({
-        model: "ignored",
-        messages: [],
-        max_tokens: 1000,
-      });
-      await assert.rejects(
-        () =>
-          client.messages.create({
-            model: "ignored",
-            messages: [],
-            max_tokens: 1,
-          }),
-        /research_tokens/,
-      );
-      await session.call("begin_commit", {});
-      await client.messages.create({
-        model: "ignored",
-        messages: [],
-        max_tokens: 10,
-      });
-      await session.call("submit", { answers: [], notes: "valid" });
-    });
-    assert.equal(s.runner.record.events("submission").length, 2);
-    assert.equal(
-      s.runner.record.events("limit")[0].data.limit,
-      "research_tokens",
-    );
-    const b = new Budget(s.runner.record, "limits", s.m.config, "pregame");
-    assert.throws(
-      () => b.reserve(0, 11, "code"),
-      (e: any) => e.limit === "compute",
-    );
-    for (let i = 0; i < 30; i++) b.tool("query", {});
-    assert.throws(
-      () => b.tool("query", {}),
-      (e: any) => e.limit === "tool_calls",
-    );
-  } finally {
-    await s.close();
-  }
-});
-test("proxy refuses concurrent calls and does not allow phase change to spend research against reserve", async () => {
+test("proxy refuses concurrent calls", async () => {
   let release!: () => void;
   const model: ModelProvider = {
     count: provider.count,
@@ -619,18 +510,12 @@ test("proxy refuses concurrent calls and does not allow phase change to spend re
         .then((r) => r);
       while (!release) await new Promise((r) => setTimeout(r, 1));
       await assert.rejects(
-        () => session.call("begin_commit", {}),
-        /Wait for the model/,
-      );
-      await assert.rejects(
         () =>
           client.messages.create({ model: "x", messages: [], max_tokens: 50 }),
         /Concurrent/,
       );
       release();
       await response;
-      await session.call("begin_commit", {});
-      await session.call("submit", { answers: [], notes: "valid" });
     });
     assert.equal(s.runner.record.events("model_response").length, 1);
   } finally {
@@ -687,8 +572,8 @@ test("a crash between session end and phase checkpoint neither reruns the phase 
     });
     s.runner.record.append("session_end", "g1:pregame", {
       attempt: 1,
-      status: "invalid_output",
-      limit: "submission_attempts",
+      status: "budget_exhausted",
+      limit: "tool_calls",
       after: before,
     });
     await s.runner.run(async ({ session }) => {
@@ -697,7 +582,7 @@ test("a crash between session end and phase checkpoint neither reruns the phase 
     });
     assert.equal(
       s.runner.record.events("phase_end", "g1:pregame")[0].data.status,
-      "invalid_output",
+      "budget_exhausted",
     );
     assert.equal(
       s.runner.record.events("session_start", "g1:pregame").length,
@@ -790,183 +675,13 @@ test("resume charges observed attempt time but excludes a long outage and other 
     assert.equal(attempts[0].data.limit, "interrupted");
     assert.equal(attempts[0].data.elapsedMs, 2000);
     assert.equal(attempts[1].data.status, "completed");
-    assert.equal(s.runner.record.events("submission", "g1").length, 1);
+    assert.equal(s.runner.record.events("phase_end", "g1:pregame").length, 1);
     assert.equal(
       s.runner.record.events("phase_end", scope)[0].data.status,
       "completed",
     );
   } finally {
     t.mock.timers.reset();
-    await s.close();
-  }
-});
-
-test("runner implements typed SessionTools results and capability groups at every routed boundary", async () => {
-  const { SessionError } = await import("../src/env/contract.js");
-  const { sessionEnvironment } = await import("../src/env/session.js");
-  const { fixtureCorpus } = await import("./fixtures/session/corpus.js");
-  const f = fixtureCorpus();
-  const clips = [{ question_id: "fixture-q", submitted: 1, clipped_to: 0.99 }];
-  const factory = sessionEnvironment(f.config, f.source, {
-    async validateSubmission(value) {
-      const v = value as { notes?: string };
-      return v.notes === "invalid"
-        ? {
-            ok: false,
-            errors: [
-              "fixture-q: missing probability",
-              "fixture-q: missing rationale",
-            ],
-          }
-        : { ok: true, errors: [], value: { answers: [] }, clips };
-    },
-    async execute(program) {
-      return {
-        stdout: program,
-        stderr: "",
-        exitStatus: 0,
-        computeSeconds: 0.1,
-        truncated: false,
-        limit: null,
-      };
-    },
-  });
-  // Later P3d–f methods are trusted fixture implementations; verify delegation
-  // still uses the exact public types without making their features part of P3b.
-  const routed: Partial<{
-    [
-      N in import("../src/env/contract.js").ToolName
-    ]: import("../src/env/contract.js").ToolResult<N>;
-  }> = {
-    workspace_list: { entries: [] },
-    workspace_read: { path: "notes", content: "", bytes: 0 },
-    workspace_write: { path: "notes", bytes: 1 },
-    workspace_append: { path: "notes", bytes: 1 },
-    workspace_delete: { path: "notes", bytes: 0 },
-    read_released_results: { games: [] },
-  };
-  const env: EnvironmentFactory = async (ctx, trusted) => {
-    const base = await factory(ctx, trusted);
-    return {
-      ...base,
-      async call(name, args, signal) {
-        return name in routed
-          ? routed[name as keyof typeof routed]
-          : base.call(name, args, signal);
-      },
-    };
-  };
-  const s = await setup(f.config, provider, env, [
-    { gameId: f.game.gameId, scheduledStart: f.game.scheduledStart },
-  ]);
-  let checked = false;
-  try {
-    await s.runner.run(async ({ session }) => {
-      const typed: import("../src/env/contract.js").SessionTools = session;
-      const context: import("../src/env/contract.js").ToolResult<"context"> =
-        await typed.call("context", {});
-      assert.equal(context.game.game_id, "current");
-      assert.equal(context.game.game_index, 1);
-      assert.deepEqual(
-        Object.keys(context.budget).sort(),
-        [
-          "tokens",
-          "compute_seconds",
-          "tool_calls",
-          "submission_reserve",
-          "warning",
-        ].sort(),
-      );
-      assert.equal(context.memory.horizon, "season");
-      assert.equal("dataset_versions" in context, false);
-      const questions: import("../src/env/contract.js").ToolResult<"list_questions"> =
-        await typed.call("list_questions", {});
-      assert.equal(questions.questions.length, 1);
-      const released: import("../src/env/contract.js").ToolResult<"read_released_results"> =
-        await typed.call("read_released_results", {});
-      assert.deepEqual(released, { games: [] });
-      if (context.phase === "postgame") return;
-      const history: import("../src/env/contract.js").ToolResult<"query_game_history"> =
-        await typed.call("query_game_history", {
-          table: "events",
-          game_id: "prior",
-        });
-      assert.equal(history.total, 2);
-      const schedule: import("../src/env/contract.js").ToolResult<"read_schedule_and_injuries"> =
-        await typed.call("read_schedule_and_injuries", { game_id: "current" });
-      assert.equal(schedule.schedule.length, 1);
-      const odds: import("../src/env/contract.js").ToolResult<"query_odds_history"> =
-        await typed.call("query_odds_history", {});
-      assert.equal(odds.observations.length, 2);
-      const search: import("../src/env/contract.js").ToolResult<"search_evidence"> =
-        await typed.call("search_evidence", { query: "visible" });
-      assert.equal(search.total, 3);
-      const fetch: import("../src/env/contract.js").ToolResult<"fetch_evidence"> =
-        await typed.call("fetch_evidence", {
-          evidence_id: search.items[0].evidence_id,
-        });
-      assert.equal(fetch.text, "visible");
-      assert.equal(fetch.provenance.objects.length, 1);
-      const list: import("../src/env/contract.js").ToolResult<"workspace_list"> =
-        await typed.call("workspace_list", {});
-      assert.deepEqual(list.entries, []);
-      const read: import("../src/env/contract.js").ToolResult<"workspace_read"> =
-        await typed.call("workspace_read", { path: "notes" });
-      assert.equal(read.content, "");
-      const write: import("../src/env/contract.js").ToolResult<"workspace_write"> =
-        await typed.call("workspace_write", { path: "notes", content: "x" });
-      assert.equal(write.bytes, 1);
-      const append: import("../src/env/contract.js").ToolResult<"workspace_append"> =
-        await typed.call("workspace_append", { path: "notes", content: "x" });
-      assert.equal(append.bytes, 1);
-      const del: import("../src/env/contract.js").ToolResult<"workspace_delete"> =
-        await typed.call("workspace_delete", { path: "notes" });
-      assert.equal(del.bytes, 0);
-      const code: import("../src/env/contract.js").ToolResult<"execute_code"> =
-        await typed.call("execute_code", { program: "print(1)" });
-      assert.deepEqual(code, {
-        stdout: "print(1)",
-        stderr: "",
-        exit_status: 0,
-        compute_seconds: 0.1,
-        truncated: false,
-        limit: null,
-      });
-      await assert.rejects(
-        () => typed.call("execute_code", "bad" as never),
-        (e) => e instanceof SessionError && e.code === "invalid_input",
-      );
-      const commit: import("../src/env/contract.js").ToolResult<"begin_commit"> =
-        await typed.call("begin_commit", {});
-      assert.equal(commit.budget.submission_reserve, 0);
-      assert.equal((await typed.call("context", {})).phase, "commit");
-      await assert.rejects(
-        () => typed.call("query_odds_history", {}),
-        (e) => e instanceof SessionError && e.code === "phase_refused",
-      );
-      await assert.rejects(
-        () => typed.call("submit", { answers: [], notes: "invalid" }),
-        (e) =>
-          e instanceof SessionError &&
-          e.code === "validation_failed" &&
-          e.attemptsRemaining === 2 &&
-          e.problems.length === 2,
-      );
-      const submission: import("../src/env/contract.js").ToolResult<"submit"> =
-        await typed.call("submit", { answers: [] });
-      assert.equal(submission.attempt, 2);
-      assert.deepEqual(submission.clips, clips);
-      assert.equal(typeof submission.receipt, "string");
-      assert.deepEqual(await typed.call("submit", { answers: [] }), submission);
-      checked = true;
-    });
-    assert.equal(checked, true);
-    assert.ok(
-      s.runner.record
-        .events("session_end")
-        .every((e) => e.data.status === "completed"),
-    );
-  } finally {
     await s.close();
   }
 });
@@ -992,7 +707,8 @@ test("runner refusals use SessionError codes for memory, disabled capabilities a
       await s.runner.run(async ({ session }) => {
         const ctx = await session.call("context", {});
         if (ctx.phase === "postgame") return;
-        if (mode === "budget") await session.call("list_questions", {});
+        if (mode === "budget")
+          await session.call("execute_code", { program: "pass" });
         const expected =
           mode === "disabled"
             ? "capability_disabled"
@@ -1004,7 +720,7 @@ test("runner refusals use SessionError codes for memory, disabled capabilities a
             mode === "disabled"
               ? session.call("execute_code", { program: "pass" })
               : mode === "budget"
-                ? session.call("list_questions", {})
+                ? session.call("execute_code", { program: "pass" })
                 : mode === "append-only"
                   ? session.call("workspace_delete", { path: "notes.txt" })
                   : session.call("workspace_write", {
@@ -1013,131 +729,13 @@ test("runner refusals use SessionError codes for memory, disabled capabilities a
                     }),
           (e) => e instanceof SessionError && e.code === expected,
         );
-        await session.call("begin_commit", {});
-        await session.call("submit", { answers: [], notes: "valid" });
+
         checked++;
       });
       assert.equal(checked, 2);
     } finally {
       await s.close();
     }
-  }
-});
-
-test("real P3 submissions freeze once, persist clips, expose redacted results and survive reopen", async () => {
-  const { sessionEnvironment } = await import("../src/env/session.js");
-  const { fixtureCorpus } = await import("./fixtures/session/corpus.js");
-  const f = fixtureCorpus();
-  const s = await setup(
-    f.config,
-    provider,
-    sessionEnvironment(f.config, f.source),
-    [{ gameId: f.game.gameId, scheduledStart: f.game.scheduledStart }],
-  );
-  let receipt = "",
-    postgame = false;
-  try {
-    await s.runner.run(async ({ session }) => {
-      const ctx = await session.call("context", {});
-      if (ctx.phase === "postgame") {
-        const results = await session.call("read_released_results", {});
-        assert.equal(results.games[0].questions[0].agent_p_over, 0.99);
-        assert.ok(!JSON.stringify(results).includes("SECRET"));
-        await assert.rejects(() => session.call("submit", { answers: [] }), {
-          code: "phase_refused",
-        });
-        postgame = true;
-        return;
-      }
-      const { questions } = await session.call("list_questions", {});
-      await session.call("begin_commit", {});
-      await assert.rejects(() => session.call("submit", { answers: [] }), {
-        code: "validation_failed",
-        attemptsRemaining: 2,
-      });
-      const input = {
-        answers: questions.map((q) => ({
-          question_id: q.question_id,
-          p_over: 2,
-          rationale: "SECRET",
-        })),
-        notes: "SECRET",
-      };
-      const first = await session.call("submit", input);
-      assert.equal(first.attempt, 2);
-      assert.equal(first.clips.length, 1);
-      receipt = first.receipt;
-      assert.deepEqual(await session.call("submit", input), first);
-      await assert.rejects(
-        () => session.call("submit", { ...input, notes: "changed" }),
-        { code: "phase_refused" },
-      );
-    });
-    assert.ok(postgame);
-    assert.equal(s.runner.record.events("submission").length, 1);
-    assert.equal(s.runner.record.events("submission_attempt").length, 2);
-    assert.equal(
-      s.runner.record.events("phase_end")[0].data.status,
-      "completed",
-    );
-    s.runner.close();
-    const reopened = new RecordStore(s.runner.root, s.m);
-    assert.equal(reopened.events("submission")[0].data.receipt, receipt);
-    assert.equal(
-      reopened.events("submission")[0].data.value.submission.answers[0].p_over,
-      0.99,
-    );
-    reopened.close();
-  } finally {
-    await s.close();
-  }
-});
-
-test("third real validation failure persists every problem and never fabricates market answers", async () => {
-  const { sessionEnvironment } = await import("../src/env/session.js");
-  const { fixtureCorpus } = await import("./fixtures/session/corpus.js");
-  const f = fixtureCorpus();
-  const s = await setup(
-    f.config,
-    provider,
-    sessionEnvironment(f.config, f.source),
-    [{ gameId: f.game.gameId, scheduledStart: f.game.scheduledStart }],
-  );
-  let checked = false;
-  try {
-    await s.runner.run(async ({ session }) => {
-      if ((await session.call("context", {})).phase === "postgame") {
-        const result = await session.call("read_released_results", {});
-        assert.equal(result.games[0].questions[0].agent_p_over, null);
-        assert.equal(result.games[0].questions[0].score, null);
-        checked = true;
-        return;
-      }
-      await session.call("begin_commit", {});
-      for (let i = 0; i < 3; i++)
-        await assert.rejects(() => session.call("submit", { answers: [] }), {
-          code: "validation_failed",
-          attemptsRemaining: 2 - i,
-        });
-      await assert.rejects(() => session.call("submit", { answers: [] }), {
-        code: "budget_exhausted",
-      });
-    });
-    assert.ok(checked);
-    assert.equal(s.runner.record.events("submission").length, 0);
-    const attempts = s.runner.record.events("submission_attempt");
-    assert.equal(attempts.length, 3);
-    assert.ok(
-      attempts[2].data.validation.errors.some((e: string) =>
-        e.includes("Missing question_id"),
-      ),
-    );
-    assert.equal(
-      s.runner.record.events("phase_end")[0].data.status,
-      "invalid_output",
-    );
-  } finally {
-    await s.close();
   }
 });
 
@@ -1226,8 +824,6 @@ test("real workspace service carries season memory, expires k-window writes and 
             content: `pre-${ctx.game.game_id};`,
           });
         }
-        await session.call("begin_commit", {});
-        await session.call("submit", { answers: [], notes: "valid" });
       });
       assert.equal(seen.length, 3);
       if (horizon === "stateless") assert.deepEqual(seen, ["", "", ""]);
@@ -1243,11 +839,9 @@ test("real workspace service carries season memory, expires k-window writes and 
         const ends = s.runner.record.events("session_end");
         assert.equal(ends.length, 6);
         assert.ok(ends.every((e) => e.data.workspaceChanges.length === 1));
-        const persisted = [...ends, ...s.runner.record.events("submission")];
+        const persisted = ends;
         for (const event of persisted) {
-          const journal = (
-            event.kind === "submission" ? event.data.value : event.data
-          ).workspaceChanges;
+          const journal = event.data.workspaceChanges;
           assert.equal(Object.hasOwn(journal[0], "content"), false);
           assert.deepEqual(Object.keys(journal[0]).sort(), [
             "operation",
@@ -1259,7 +853,7 @@ test("real workspace service carries season memory, expires k-window writes and 
           );
           assert.equal(
             bytes.toString(),
-            `${event.kind === "submission" || event.scope.endsWith(":pregame") ? "pre" : "post"}-${event.scope.split(":")[0]};`,
+            `${event.scope.endsWith(":pregame") ? "pre" : "post"}-${event.scope.split(":")[0]};`,
           );
           assert.ok(
             !JSON.stringify(event.data).includes(bytes.toString("base64")),
@@ -1267,11 +861,7 @@ test("real workspace service carries season memory, expires k-window writes and 
         }
         assert.deepEqual(ends[0].data.diff.added, ["notes"]);
         assert.deepEqual(ends[1].data.diff.changed, ["notes"]);
-        assert.equal(
-          s.runner.record.events("submission")[0].data.value.workspaceChanges
-            .length,
-          1,
-        );
+        assert.equal(ends[0].data.workspaceChanges.length, 1);
       }
       assert.ok(
         s.runner.record
@@ -1380,7 +970,6 @@ test("cache reads count at the budget profile's weight: charge, preflight estima
   const c = fixtureConfig();
   c.budget.cacheReadWeight = 0.1;
   c.budget.pregame.tokens = 1000;
-  c.budget.submissionReserve = 100;
   c.budget.warnRemainingTokens = 1;
   const counts = [400, 500];
   const seen: any[] = [];
@@ -1413,8 +1002,8 @@ test("cache reads count at the budget profile's weight: charge, preflight estima
       max_tokens: 2000,
       messages: [],
     });
-    // First call: no previous request, 400 charged in full; clamp to 900 - 400.
-    assert.equal(seen[0].max_tokens, 500);
+    // First call: no previous request, 400 charged in full; clamp to 1000 - 400.
+    assert.equal(seen[0].max_tokens, 600);
     let requests = s.runner.record.events("model_request");
     assert.equal(requests[0].data.chargedEstimate, 400);
     assert.equal(requests[0].data.cacheReadWeight, 0.1);
@@ -1425,8 +1014,8 @@ test("cache reads count at the budget profile's weight: charge, preflight estima
       max_tokens: 2000,
       messages: [],
     });
-    // Second call: 500 counted, 400 assumed cached (40) plus 100 new; clamp to 840 - 140.
-    assert.equal(seen[1].max_tokens, 700);
+    // Second call: 500 counted, 400 assumed cached (40) plus 100 new; clamp to 940 - 140.
+    assert.equal(seen[1].max_tokens, 800);
     requests = s.runner.record.events("model_request");
     assert.equal(requests[1].data.chargedEstimate, 140);
     assert.equal(b.totals().tokens, 120);
@@ -1521,7 +1110,6 @@ test("proxy does not retry provider limits or client errors", async () => {
 test("infrastructure retry rolls back workspace and starts fresh caps while retaining failed charges", async () => {
   const c = fixtureConfig();
   c.budget.pregame.tokens = 110;
-  c.budget.submissionReserve = 20;
   let calls = 0;
   const s = await setup(
     c,
@@ -1554,7 +1142,7 @@ test("infrastructure retry rolls back workspace and starts fresh caps while reta
           s.m.config,
           "pregame",
         );
-        assert.equal(b.remaining().tokens, 90);
+        assert.equal(b.remaining().tokens, 110);
         assert.equal(b.stage, "pregame");
         const client = new Anthropic({ ...handles.model, maxRetries: 0 });
         await client.messages.create({
@@ -1574,7 +1162,7 @@ test("infrastructure retry rolls back workspace and starts fresh caps while reta
       ends.map((e) => e.data.usage.tokens),
       [81, 48],
     );
-    assert.equal(s.runner.record.events("submission", "g1").length, 1);
+    assert.equal(s.runner.record.events("phase_end", "g1:pregame").length, 1);
     assert.equal(
       s.runner.record.events("phase_end", "g1:pregame")[0].data.status,
       "completed",

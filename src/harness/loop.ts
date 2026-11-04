@@ -98,11 +98,9 @@ export function withCacheBreakpoints(
   };
 }
 
-function budgetError(error: unknown): "research" | "hard" | null {
+function budgetError(error: unknown): "hard" | null {
   if (!(error instanceof Anthropic.APIError) || error.status !== 429)
     return null;
-  const message = String(error.message);
-  if (message.includes("research_tokens")) return "research";
   return "hard";
 }
 
@@ -127,23 +125,14 @@ export function analystHarness(options: AnalystOptions): Harness {
           : PHASE_PROMPTS.postgame,
       );
       opening.push(`Session context:\n${text(context)}`);
-      const released = await session.call("read_released_results", {
-        game_id: context.game.game_id,
-      });
-      opening.push(`Released results for this game:\n${text(released)}`);
     } else {
       opening.push(PHASE_PROMPTS.pregame);
       opening.push(`Session context:\n${text(context)}`);
-      const questions = await session.call("list_questions", {});
-      opening.push(`Question set:\n${text(questions)}`);
     }
     const messages: MessageParam[] = [
       { role: "user", content: opening.join("\n\n") },
     ];
-    let submitted = false,
-      committed = false,
-      nudges = 0,
-      rounds = 0,
+    let rounds = 0,
       maxTokens = loop.maxTokens,
       truncations = 0;
     for (let turn = 1; turn <= loop.maxTurns; turn++) {
@@ -160,19 +149,7 @@ export function analystHarness(options: AnalystOptions): Harness {
       } catch (error) {
         const kind = budgetError(error);
         if (kind === null) throw error;
-        if (phase === "postgame" || kind === "hard" || submitted) return;
-        // Research allowance spent: the brief says stop research and require a
-        // complete submission from the reserve. The harness commits on the
-        // model's behalf so the next call can draw on the reserve.
-        if (!committed) {
-          await session.call("begin_commit", {});
-          committed = true;
-        }
-        messages.push({
-          role: "user",
-          content: `${PHASE_PROMPTS.commit}\n\nYour research allowance is exhausted and the session has entered commit. Submit now.`,
-        });
-        continue;
+        return;
       }
       const truncatedToolCall =
         response.stop_reason === "max_tokens" &&
@@ -219,8 +196,6 @@ export function analystHarness(options: AnalystOptions): Harness {
               (use.input ?? {}) as never,
             );
             content = text(result);
-            if (use.name === "submit") submitted = true;
-            if (use.name === "begin_commit") committed = true;
           } catch (error) {
             if (!(error instanceof SessionError)) throw error;
             content = text(error.toJSON());
@@ -234,24 +209,19 @@ export function analystHarness(options: AnalystOptions): Harness {
           });
         }
         rounds++;
-        if (
-          !submitted &&
-          phase !== "postgame" &&
-          rounds % loop.contextEvery === 0
-        ) {
+        if (phase !== "postgame" && rounds % loop.contextEvery === 0) {
           try {
             context = await session.call("context", {});
             if (context.budget.warning)
               results.push({
                 type: "text",
-                text: `Budget warning: ${text(context.budget)}. Finish research and submit.`,
+                text: `Budget warning: ${text(context.budget)}. Finish within the remaining allowance.`,
               });
           } catch (error) {
             if (!(error instanceof SessionError)) throw error;
           }
         }
         messages.push({ role: "user", content: results });
-        if (submitted && phase !== "postgame") return;
         continue;
       }
       if (response.stop_reason === "max_tokens") {
@@ -259,22 +229,12 @@ export function analystHarness(options: AnalystOptions): Harness {
           role: "user",
           content: truncatedToolCall
             ? "Your tool call was cut off at the output limit and was not executed. Make smaller tool calls: shorter programs, fewer fields, less text per call."
-            : phase === "postgame"
-              ? "Your reply was cut off at the output limit. Finish briefly."
-              : "Your reply was cut off at the output limit. Keep replies short and proceed to begin_commit and submit.",
+            : "Your reply was cut off at the output limit. Finish briefly.",
         });
         continue;
       }
       // end_turn (or any other stop) without tools.
-      if (phase === "postgame" || submitted) return;
-      if (nudges >= loop.nudges) return;
-      nudges++;
-      messages.push({
-        role: "user",
-        content: committed
-          ? `${PHASE_PROMPTS.commit}\n\nYou have not submitted. Call submit now.`
-          : "You have not submitted. Call begin_commit, then submit the complete set.",
-      });
+      return;
     }
   };
 }
