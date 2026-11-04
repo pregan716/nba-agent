@@ -1,14 +1,14 @@
 # NBA coaching policy agent
 
-A chronological Boston Celtics replay experiment studying whether a research
-agent can accumulate knowledge about coaching tendencies that improves a separate
-agent's substitution predictions. The v2 authority brief is being prepared in
-[SPO-836](https://linear.app/sports-data-platform/issue/SPO-836) as
-`docs/NBA Coaching Policy Agent — Implementation Brief v3.md`; until then,
-[the v2 proposal](docs/v2_agent_spec.md) describes the research direction. This
-repository currently contains the reused data, replay, runner and harness
-infrastructure; v2 prediction and scoring behavior is not implemented.
-[V1 records are archived](docs/archive/v1-props/README.md).
+A chronological Boston Celtics replay experiment studying which kinds of accumulated
+knowledge help a research agent get better at encoding the head coach's substitution
+tendencies into a decision policy for a second model. The design lives in
+[the v3 implementation brief](docs/NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md),
+with Agreed, Proposed and Open status on every decision. This repository currently
+contains the reused data, replay, runner and harness infrastructure; the v3 replay,
+package and scoring behaviour is not yet implemented.
+[V1 records are archived](docs/archive/v1-props/README.md), as is
+[the original v2 research proposal](docs/archive/v2_agent_spec.md).
 
 ## Data adapters (SPO-776)
 

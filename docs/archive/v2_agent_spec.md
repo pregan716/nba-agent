@@ -1,3 +1,5 @@
+> Archived research proposal (Nov 4, 2026). Superseded by [the v3 implementation brief](../NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md), which carries every decision here with an Agreed, Proposed or Open status. Kept as the record of the original proposal; not an implementation contract.
+
 # Celtics Coaching Policy Agent — Experiment Specification
 
 **Status:** Proposed; revised November 4, 2026  
