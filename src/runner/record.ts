@@ -34,7 +34,6 @@ export class RecordStore {
       CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY, kind TEXT NOT NULL, scope TEXT NOT NULL, data TEXT NOT NULL, previous TEXT NOT NULL, hash TEXT NOT NULL, at TEXT NOT NULL);
       CREATE TRIGGER IF NOT EXISTS immutable_update BEFORE UPDATE ON events BEGIN SELECT RAISE(ABORT, 'immutable record'); END;
       CREATE TRIGGER IF NOT EXISTS immutable_delete BEFORE DELETE ON events BEGIN SELECT RAISE(ABORT, 'immutable record'); END;
-      CREATE UNIQUE INDEX IF NOT EXISTS one_submission ON events(scope) WHERE kind='submission';
       CREATE INDEX IF NOT EXISTS events_scope_kind ON events(scope,kind);
       CREATE UNIQUE INDEX IF NOT EXISTS one_manifest ON events(kind) WHERE kind='manifest';`);
     this.verify();
@@ -134,26 +133,6 @@ export class RecordStore {
         throw Error("Record hash chain mismatch");
       previous = row.hash as string;
     }
-  }
-  submission(
-    game: string,
-    value: unknown,
-    attempt?: unknown,
-  ): { receipt: string } {
-    const existing = this.events("submission", game)[0];
-    const receipt = digest([game, value]);
-    if (existing) {
-      if (existing.data.receipt !== receipt)
-        throw Error("Submission already frozen");
-      return { receipt };
-    }
-    this.appendMany([
-      ...(attempt
-        ? [{ kind: "submission_attempt", scope: game, data: attempt }]
-        : []),
-      { kind: "submission", scope: game, data: { receipt, value } },
-    ]);
-    return { receipt };
   }
   close(): void {
     this.db.close();

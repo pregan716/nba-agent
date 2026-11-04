@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P3e workspace tools and memory policy
 
 SPO-790 adds list/read/write/append/delete to the production session. Paths and

@@ -6,7 +6,7 @@
 import { readFileSync } from "node:fs";
 import type { RunConfig } from "../runner/config.js";
 import type { DatasetVersion } from "../env/contract.js";
-import { harnessConfig, type BaselineName } from "./version.js";
+import { harnessConfig } from "./version.js";
 
 export const PILOT_BUDGET: RunConfig["budget"] = {
   id: "pilot-generous-v1-not-approved",
@@ -23,7 +23,6 @@ export const PILOT_BUDGET: RunConfig["budget"] = {
     toolCalls: 150,
     wallSeconds: 2 * 3600,
   },
-  submissionReserve: 200_000,
   warnRemainingTokens: 400_000,
   // Cache reads at their price ratio to uncached input (0.5 / 5); see SPO-814.
   cacheReadWeight: 0.1,
@@ -52,10 +51,7 @@ export interface PresetOptions {
   purpose: "fixture" | "pilot" | "scored";
   memory: RunConfig["profile"]["memory"];
   dataSources: DatasetVersion[];
-  devig: RunConfig["devig"];
   effort?: RunConfig["harness"]["loop"]["effort"];
-  baseline?: BaselineName;
-  seed?: number;
   codeExecution?: boolean;
   contaminationProbe?: RunConfig["contaminationProbe"];
   host?: RunConfig["host"];
@@ -79,7 +75,6 @@ export function presetConfig(options: PresetOptions): RunConfig {
   const enabled = [
     "search_and_fetch",
     "game_history",
-    "odds_history",
     ...(options.memory.horizon === "stateless" ? [] : ["workspace"]),
     ...(options.codeExecution ? ["code_execution"] : []),
   ];
@@ -107,17 +102,10 @@ export function presetConfig(options: PresetOptions): RunConfig {
       effort: options.effort ?? "high",
       thinking: "adaptive",
       sandboxImage: image ?? `none@sha256:${"0".repeat(64)}`,
-      baseline: options.baseline,
-      seed: options.seed,
     }),
-    devig: options.devig,
     policy: {
       version: "policy-v1",
-      lineSelection: "median_book_main_lines",
-      contributingBookRule: "all_books_with_valid_pair_at_selected_line",
-      minimumBooks: 1,
       developmentGames: 10,
-      maxSubmissionAttempts: 3,
       release: "next-morning-09:00-America/New_York",
     },
     contaminationProbe: options.contaminationProbe ?? null,

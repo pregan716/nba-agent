@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P1a data quality audit — SPO-777
 
 Audit date: 2026-10-24. Scope: the immutable P1 corpus pinned in `config/datasets.json`, served through the adapters on the merged SPO-776 implementation. **Audit complete with findings; this is not an unconditional Gate 2 approval.** No dataset pins, identity mappings, replay availability rules, question sets, scoring rules, or implementation-brief decisions were changed.

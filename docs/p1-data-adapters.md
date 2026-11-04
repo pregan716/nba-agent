@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # P1 data contracts and adapters — SPO-776
 
 ## Published releases and API boundary

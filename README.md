@@ -1,7 +1,14 @@
-# NBA analyst agent
+# NBA coaching policy agent
 
-Chronological NBA replay research for the Boston Celtics. The agreed design lives in
-[the implementation brief](docs/NBA%20Analyst%20Agent%20%E2%80%94%20Implementation%20Brief%20v2.md).
+A chronological Boston Celtics replay experiment studying whether a research
+agent can accumulate knowledge about coaching tendencies that improves a separate
+agent's substitution predictions. The v2 authority brief is being prepared in
+[SPO-836](https://linear.app/sports-data-platform/issue/SPO-836) as
+`docs/NBA Coaching Policy Agent — Implementation Brief v3.md`; until then,
+[the v2 proposal](docs/v2_agent_spec.md) describes the research direction. This
+repository currently contains the reused data, replay, runner and harness
+infrastructure; v2 prediction and scoring behavior is not implemented.
+[V1 records are archived](docs/archive/v1-props/README.md).
 
 ## Data adapters (SPO-776)
 
@@ -17,7 +24,7 @@ The TypeScript adapters in `src/data/` read published releases without recomputi
 consensus, relevance, lineups, or game statistics. `config/datasets.json` pins every
 root manifest and selected transcript manifest; objects are verified before parsing.
 The transcript index and publication evidence are copied from the exact Git revision
-specified in the brief. No bucket listing is used.
+specified in `config/datasets.json`. No bucket listing is used.
 
 With Doppler installed and authenticated for `nba-agent/prd`:
 
@@ -48,3 +55,25 @@ the resulting config diff before adopting it; normal reads never follow a live p
 
 See [adapter contracts and verified coverage](docs/p1-data-adapters.md) for API boundaries,
 availability conventions, limitations, and the player-reference release decision.
+
+## Available commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run check` | TypeScript checks |
+| `npm run format:check` / `npm run format` | Check / apply formatting |
+| `npm test` | Remaining data and infrastructure tests |
+| `npm run pin -- /path/to/sports-transcription` | Intentionally refresh dataset pins |
+| `npm run coverage` / `npm run verify:live` | Authenticated data coverage and verification |
+| `npm run audit` | Data-quality audit |
+| `npm run session:verify` | Verify cutoff-filtered session data |
+| `npm run runner:fixture` | Synthetic runner smoke test, no model calls |
+| `npm run sandbox:build` / `npm run test:sandbox` | Build pinned Docker image / run isolation tests |
+| `npm run probe` | Model contamination probe |
+| `npm run launch -- --infrastructure-only --mode=analyst --purpose=pilot --run-id=infra-pilot` | Explicit, unscored infrastructure diagnostic using the metered model |
+
+Live model commands require the Anthropic credential under Doppler. The launcher
+requires `--infrastructure-only` because the task has not been installed yet;
+its placeholder prompt does not produce predictions. The former prop-task
+commands and null baselines are removed. Old v1 manifests are intentionally
+incompatible; use the corresponding historical code revision for those records.

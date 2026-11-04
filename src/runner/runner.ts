@@ -3,7 +3,6 @@ import {
   sweepOwnOrphanContainers,
   sweepClaimHeld,
 } from "./orphans.js";
-import type { ResolutionInput } from "../env/results.js";
 import {
   WorkspacePolicy,
   type WorkspaceOperation,
@@ -12,7 +11,6 @@ import {
 } from "../env/workspace.js";
 import { windowSnapshot } from "./workspace.js";
 import type { LifecyclePhase } from "../env/lifecycle.js";
-import type { RecordedGame } from "../env/results.js";
 import {
   mkdirSync,
   existsSync,
@@ -48,10 +46,8 @@ import {
   type ContextResult,
   type SessionTools,
   type ToolName,
-  type ClipEvent,
 } from "../env/contract.js";
 import { validateInput } from "../env/input.js";
-import type { QuestionSet } from "../questions/builder.js";
 
 export interface CodeResult {
   stdout: string;
@@ -69,20 +65,11 @@ export interface SessionContext {
   memory: Manifest["config"]["profile"]["memory"];
   dataSources: Manifest["config"]["profile"]["dataSources"];
 }
-export interface Validation {
-  ok: boolean;
-  errors: string[];
-  value?: unknown;
-  clips?: ClipEvent[];
-}
 /** Trusted P3 adapter. Paths and persistence hooks are never exposed to the harness. */
 export interface Environment {
-  resolutionInput?(): Promise<ResolutionInput>;
   context(budget: BudgetRemaining): Promise<ContextResult>;
-  questions(): Promise<QuestionSet>;
   transition(phase: LifecyclePhase, cutoff: string): Promise<void>;
   call(name: string, args: unknown, signal: AbortSignal): Promise<unknown>;
-  validateSubmission(value: unknown): Promise<Validation>;
   execute(
     program: string,
     limits: {
@@ -103,8 +90,6 @@ export type EnvironmentFactory = (
   trusted: {
     workspace: string;
     root: string;
-    submission: unknown | null;
-    results: () => RecordedGame[];
   },
 ) => Promise<Environment>;
 export type SessionEndpoint = SessionTools;
@@ -166,18 +151,12 @@ export class Runner {
       const state = this.record
         .events()
         .reverse()
-        .find((e) =>
-          ["submission", "session_end", "session_start"].includes(e.kind),
-        );
+        .find((e) => ["session_end", "session_start"].includes(e.kind));
       if (state)
         restore(
           this.root,
           this.workspace,
-          state.kind === "submission"
-            ? state.data.value.workspace
-            : state.kind === "session_end"
-              ? state.data.after
-              : state.data.before,
+          state.kind === "session_end" ? state.data.after : state.data.before,
         );
       if (manifest.config.purpose === "scored" && !sink)
         throw Error("Scored runs require an R2 checkpoint sink");
@@ -225,44 +204,8 @@ export class Runner {
           await this.session(game, phase, harness);
           await checkpoint(this.record, this.sink);
         }
-        // Stateless runs skip the postgame harness, but still need frozen outcomes.
-        // Also retry capture if a postgame session failed before reading its source.
-        if (!this.record.events("resolution_input", game.gameId).length) {
-          const env = await this.environment(
-            {
-              game,
-              phase: "postgame",
-              cutoff: game.release,
-              capabilities: this.manifest.config.profile.capabilities.enabled,
-              memory: this.manifest.config.profile.memory,
-              dataSources: this.manifest.config.profile.dataSources,
-            },
-            {
-              workspace: this.workspace,
-              root: this.root,
-              submission: null,
-              results: () => [],
-            },
-          );
-          try {
-            if (env.resolutionInput)
-              this.record.append(
-                "resolution_input",
-                game.gameId,
-                await env.resolutionInput(),
-              );
-          } finally {
-            await env.close();
-          }
-        }
         this.record.append("game_end", game.gameId, {
           development: game.development,
-          scoringEligible:
-            this.manifest.config.purpose === "scored" &&
-            !game.development &&
-            this.record.events("submission", game.gameId).length === 1 &&
-            this.record.events("phase_end", `${game.gameId}:pregame`)[0]?.data
-              .status === "completed",
         });
         await checkpoint(this.record, this.sink);
       }
@@ -281,7 +224,6 @@ export class Runner {
     const scope = `${game.gameId}:${phase}`,
       budget = new Budget(this.record, scope, this.manifest.config, phase);
     const prior = this.record.events("session_start", scope).at(-1);
-    const frozen = this.record.events("submission", game.gameId)[0];
     const durableEnd =
       prior &&
       this.record
@@ -292,8 +234,7 @@ export class Runner {
       durableEnd?.data.limit !== "interrupted" &&
       durableEnd?.data.status === "infrastructure_failure" &&
       prior.data.attempt <
-        (this.manifest.config.recovery?.maxSessionAttempts ?? 2) &&
-      !(phase === "pregame" && frozen);
+        (this.manifest.config.recovery?.maxSessionAttempts ?? 2);
     if (durableEnd && durableEnd.data.limit !== "interrupted" && !retry) {
       this.record.append("phase_end", scope, {
         status: durableEnd.data.status,
@@ -314,12 +255,7 @@ export class Runner {
         .events("session_end", scope)
         .some((e) => e.data.attempt === prior.data.attempt)
     ) {
-      // Roll back partial memory changes; a committed submission owns its exact
-      // workspace checkpoint and is never re-delivered to a new pregame harness.
-      before =
-        phase === "pregame" && frozen
-          ? frozen.data.value.workspace
-          : prior.data.before;
+      before = prior.data.before;
       restore(this.root, this.workspace, before);
       this.record.append("session_end", scope, {
         attempt: prior.data.attempt,
@@ -356,31 +292,16 @@ export class Runner {
           game.index,
         )) {
           for (const p of ["pregame", "postgame"] as const) {
-            const committed =
-              p === "pregame"
-                ? this.record.events("submission", previous.gameId)[0]?.data
-                    .value
-                : undefined;
             const ended = this.record
               .events("session_end", `${previous.gameId}:${p}`)
               .filter((e) => e.data.limit !== "interrupted")
               .at(-1)?.data;
-            changes.push(
-              ...(committed?.workspaceChanges ?? ended?.workspaceChanges ?? []),
-            );
+            changes.push(...(ended?.workspaceChanges ?? []));
           }
         }
         restore(this.root, this.workspace, windowSnapshot(this.root, changes));
       }
       before = snapshot(this.root, this.workspace);
-    }
-    if (phase === "pregame" && frozen) {
-      this.record.append("phase_end", scope, {
-        status: "completed",
-        limit: null,
-        recoveredReceipt: frozen.data.receipt,
-      });
-      return;
     }
     if (
       phase === "postgame" &&
@@ -440,23 +361,8 @@ export class Runner {
             dataSources: this.manifest.config.profile.dataSources,
           },
           {
-            results: () =>
-              this.record.events("questions").map((event) => ({
-                questions: structuredClone(event.data),
-                resolution: structuredClone(
-                  this.record.events("resolution_input", event.scope)[0]?.data,
-                ),
-                submission: structuredClone(
-                  this.record.events("phase_end", `${event.scope}:pregame`)[0]
-                    ?.data.status === "completed"
-                    ? (this.record.events("submission", event.scope)[0]?.data
-                        .value.submission ?? null)
-                    : null,
-                ),
-              })),
             root: this.root,
             workspace: this.workspace,
-            submission: frozen?.data.value.submission ?? null,
           },
         );
         const env = environment;
@@ -477,26 +383,6 @@ export class Runner {
           budget.stage,
           phase === "pregame" ? game.scheduledStart : game.release,
         );
-        if (
-          phase === "postgame" &&
-          env.resolutionInput &&
-          !this.record.events("resolution_input", game.gameId).length
-        ) {
-          const input = await env.resolutionInput();
-          if (!active || controller.signal.aborted)
-            throw new LimitError("wall_clock");
-          this.record.append("resolution_input", game.gameId, input);
-        }
-        if (phase === "pregame") {
-          const questions = await env.questions();
-          if (!active || controller.signal.aborted)
-            throw new LimitError("wall_clock");
-          const existing = this.record.events("questions", game.gameId)[0];
-          if (existing && digest(existing.data) !== digest(questions))
-            throw Error("P3 changed the frozen question set");
-          if (!existing)
-            this.record.append("questions", game.gameId, questions);
-        }
         if (!active || controller.signal.aborted)
           throw new LimitError("wall_clock");
         endpoint = this.proxy.issue(budget, controller.signal);
@@ -510,7 +396,7 @@ export class Runner {
             );
           busy = true;
           const work = async () => {
-            if (name !== "submit") validateInput(name, args ?? {});
+            validateInput(name, args ?? {});
             if (!Object.hasOwn(TOOL_PHASES, name))
               throw new SessionError("invalid_input", "Unknown tool");
             const tool = name as ToolName;
@@ -536,99 +422,16 @@ export class Runner {
                 tokens: r.tokens,
                 compute_seconds: r.compute,
                 tool_calls: r.tools,
-                submission_reserve: r.reserve,
                 warning: r.warning,
               };
             };
             if (name === "context") return env.context(remaining());
-            if (name === "begin_commit") {
-              if (endpoint && this.proxy.busy(endpoint))
-                throw new SessionError(
-                  "phase_refused",
-                  "Wait for the model call before committing",
-                );
-              budget.commit();
-              await env.transition("commit", game.scheduledStart);
-              return { phase: "commit", budget: remaining() };
-            }
             if (name.startsWith("workspace_"))
               new WorkspacePolicy(
                 this.manifest.config.profile.memory,
                 () => budget.stage,
               ).authorize(name.slice(10) as WorkspaceOperation);
-            // Submission remains possible when the research/tool allowance stops.
-            if (name !== "submit") budget.tool(name, args);
-            if (name === "submit") {
-              if (budget.stage !== "commit")
-                throw new SessionError(
-                  "phase_refused",
-                  "Begin commit before submitting",
-                );
-              const existing = this.record.events("submission", game.gameId)[0];
-              const attempts = this.record.events(
-                "submission_attempt",
-                game.gameId,
-              );
-              if (!existing && attempts.length >= 3)
-                budget.block("submission_attempts");
-              const validated = await env.validateSubmission(args);
-              if (!active || controller.signal.aborted)
-                throw new SessionError("phase_refused", "Session closed");
-              const attemptRecord = {
-                attempt: attempts.length + 1,
-                input: args,
-                validation: validated,
-              };
-              if (!validated.ok) {
-                if (!existing)
-                  this.record.append(
-                    "submission_attempt",
-                    game.gameId,
-                    attemptRecord,
-                  );
-                throw new SessionError(
-                  "validation_failed",
-                  "Submission validation failed",
-                  validated.errors,
-                  Math.max(0, 3 - (attempts.length + 1)),
-                );
-              }
-              if (validated.value === undefined)
-                throw Error("P3 omitted normalized submission");
-              const workspace =
-                existing?.data.value.workspace ??
-                snapshot(this.root, this.workspace);
-              if (existing) {
-                if (
-                  digest(existing.data.value.submission) !==
-                  digest(validated.value)
-                )
-                  throw new SessionError(
-                    "phase_refused",
-                    "Submission already frozen",
-                  );
-                return {
-                  receipt: existing.data.receipt,
-                  attempt: attempts.length,
-                  clips: existing.data.value.clips,
-                };
-              }
-              const receipt = this.record.submission(
-                game.gameId,
-                {
-                  submission: validated.value,
-                  clips: validated.clips ?? [],
-                  workspace,
-                  workspaceChanges: env.workspaceChanges?.() ?? [],
-                },
-                attemptRecord,
-              );
-              return {
-                ...receipt,
-                attempt: attemptRecord.attempt,
-                clips: validated.clips ?? [],
-              };
-            }
+            budget.tool(name, args);
             if (name === "execute_code") {
               const program = (args as { program: string }).program;
               const sandbox = this.manifest.config.budget.sandbox;
@@ -721,50 +524,29 @@ export class Runner {
         await harness(handles);
       };
       await Promise.race([executeSession(), expired]);
-      if (
-        phase === "postgame" ||
-        !this.record.events("submission", game.gameId).length
-      ) {
-        const last = budget.events("limit").at(-1);
-        const modelFailure = budget
-          .events("model_error")
-          .some((e) => !e.data.limit && e.data.terminal !== false);
-        status = last
-          ? last.data.limit === "submission_attempts"
-            ? "invalid_output"
-            : "budget_exhausted"
-          : modelFailure
-            ? "infrastructure_failure"
-            : phase === "postgame"
-              ? "completed"
-              : "invalid_output";
-        limit =
-          last?.data.limit ??
-          (modelFailure
-            ? "infrastructure"
-            : phase === "postgame"
-              ? null
-              : "submission_attempts");
-      }
+      const last = budget.events("limit").at(-1);
+      const modelFailure = budget
+        .events("model_error")
+        .some((e) => !e.data.limit && e.data.terminal !== false);
+      status = last
+        ? "budget_exhausted"
+        : modelFailure
+          ? "infrastructure_failure"
+          : "completed";
+      limit = last?.data.limit ?? (modelFailure ? "infrastructure" : null);
     } catch (e) {
       status =
         e instanceof LimitError
-          ? e.limit === "submission_attempts"
-            ? "invalid_output"
-            : "budget_exhausted"
-          : e instanceof SessionError && e.code === "validation_failed"
-            ? "invalid_output"
-            : e instanceof SessionError && e.code === "budget_exhausted"
-              ? "budget_exhausted"
-              : "infrastructure_failure";
+          ? "budget_exhausted"
+          : e instanceof SessionError && e.code === "budget_exhausted"
+            ? "budget_exhausted"
+            : "infrastructure_failure";
       limit =
         e instanceof LimitError
           ? e.limit
-          : e instanceof SessionError && e.code === "validation_failed"
-            ? "submission_attempts"
-            : e instanceof SessionError && e.code === "budget_exhausted"
-              ? (budget.events("limit").at(-1)?.data.limit ?? "tool_calls")
-              : "infrastructure";
+          : e instanceof SessionError && e.code === "budget_exhausted"
+            ? (budget.events("limit").at(-1)?.data.limit ?? "tool_calls")
+            : "infrastructure";
       this.record.append("session_error", scope, {
         attempt,
         message: e instanceof Error ? e.message : String(e),
@@ -802,11 +584,7 @@ export class Runner {
     });
     if (
       status === "infrastructure_failure" &&
-      attempt < (this.manifest.config.recovery?.maxSessionAttempts ?? 2) &&
-      !(
-        phase === "pregame" &&
-        this.record.events("submission", game.gameId).length
-      )
+      attempt < (this.manifest.config.recovery?.maxSessionAttempts ?? 2)
     ) {
       await this.session(game, phase, harness);
       return;

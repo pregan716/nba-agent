@@ -1,10 +1,8 @@
-import { gameLineMethodHash } from "../questions/game-lines.js";
 import { historyExportCacheDirectory } from "./cache.js";
 import { readFile } from "node:fs/promises";
 import type { Corpus } from "../data/corpus.js";
 import type { RecordEnvelope } from "../data/contracts.js";
 import { Identities } from "../data/identity.js";
-import type { QuestionLayer } from "../questions/builder.js";
 import type {
   ColumnDefinition,
   DatasetVersion,
@@ -24,7 +22,6 @@ export interface HistoryBatch {
 export interface SessionSource {
   exportCacheDirectory?: string;
   versions: DatasetVersion[];
-  layer: QuestionLayer;
   identities: Identities;
   teams: TeamRef[];
   games(): Promise<RecordEnvelope[]>;
@@ -112,7 +109,6 @@ const abbreviations = [
 /** Bridge over the pinned corpus; no reads from raw/ or archive/ trees. */
 export async function corpusSource(
   corpus: Corpus,
-  layer: QuestionLayer,
   identities: Identities,
   options: { exportCacheDirectory?: string } = {},
 ): Promise<SessionSource> {
@@ -145,16 +141,10 @@ export async function corpusSource(
   }
   return {
     exportCacheDirectory,
-    layer,
     identities,
     teams,
     versions: [
       corpus.postAuthors.version,
-      {
-        source: "gameLines",
-        release: "game-lines-v1",
-        manifest_sha256: gameLineMethodHash,
-      },
       ...Object.entries(corpus.pins.sources).map(([source, ref]) => ({
         source,
         release: ref.key,

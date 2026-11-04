@@ -125,10 +125,7 @@ export class MeteringProxy {
         // estimated from the previous request in this scope. Preserve actual SDK
         // usage and stop on any overrun; never silently erase it to fit the budget.
         request.max_tokens = Math.min(request.max_tokens, remaining - charged);
-        if (request.max_tokens < 1)
-          scope.budget.block(
-            scope.budget.stage === "pregame" ? "research_tokens" : "tokens",
-          );
+        if (request.max_tokens < 1) scope.budget.block("tokens");
         const reservation = scope.budget.reserve(
           charged + request.max_tokens,
           0,

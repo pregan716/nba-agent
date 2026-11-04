@@ -11,13 +11,11 @@ import {
   future,
   BOS,
 } from "./fixtures/session/corpus.js";
-import { agentQuestion } from "../src/questions/builder.js";
 import { STATIC_AT } from "../src/data/contracts.js";
 const budget: BudgetRemaining = {
   tokens: 123,
   compute_seconds: 4.5,
   tool_calls: 6,
-  submission_reserve: 20,
   warning: false,
 };
 const create = (
@@ -106,8 +104,6 @@ test("adding future records cannot change any implemented read, total, columns o
       page,
       next,
       await session.read_schedule_and_injuries({ game_id: "current" }),
-      await session.query_odds_history({}),
-      await session.list_questions({}),
       await session.query_game_history({ table: "player_profiles" }),
     ];
   };
@@ -131,45 +127,6 @@ test("future and nonexistent games have identical empty history, odds, and gap m
       await s.query_game_history({ table, game_id: "future" }),
       await s.query_game_history({ table, game_id: "absent" }),
     );
-  assert.deepEqual(
-    await s.query_odds_history({ game_id: "future" }),
-    await s.query_odds_history({ game_id: "absent" }),
-  );
-});
-
-test("cutoff odds equality, exact P2 projection, and postgame release equality", async () => {
-  const f = fixtureCorpus(),
-    s = create(f);
-  assert.equal((await s.query_odds_history({})).observations.length, 2);
-  assert.deepEqual((await s.query_odds_history({})).settlements, []);
-  assert.deepEqual(
-    (await s.list_questions({})).questions,
-    (await s.questions()).questions.map(agentQuestion),
-  );
-  assert.equal(
-    (
-      await s.query_game_history({
-        table: "player_box_scores",
-        game_id: "current",
-      })
-    ).total,
-    0,
-  );
-  const post = create(f, "postgame");
-  assert.equal(
-    (
-      await post.query_game_history({
-        table: "player_box_scores",
-        game_id: "current",
-      })
-    ).total,
-    2,
-  );
-  assert.equal(
-    (await post.query_odds_history({})).settlements[0].outcome,
-    "over",
-  );
-  assert.equal(visible(releasedGame(f.schedule[1]), f.game.release), true);
 });
 
 test("latest absent team is unknown and carries no older player report forward", async () => {
@@ -242,12 +199,6 @@ test("eligible coverage gaps are absent with reason and Dec 5 uses official box 
     ).unavailable,
     [{ game_id: f.game.gameId, reason: "Published summaries are partial" }],
   );
-  assert.equal((await s.query_odds_history({})).settlements[0].outcome, "over");
-  f.history[`${f.game.gameId}:player_box_scores`][0].data.minutes_seconds = 0;
-  assert.equal(
-    (await create(f, "postgame").query_odds_history({})).settlements[0].outcome,
-    "did_not_play",
-  );
 });
 
 test("context uses supplied budgets; run identity, pins, cutoff and cursors cannot be changed", async () => {
@@ -298,8 +249,6 @@ test("context uses supplied budgets; run identity, pins, cutoff and cursors cann
     code("phase_refused"),
   );
   await s.transition("commit", cutoff);
-  await assert.rejects(() => s.query_odds_history({}), code("phase_refused"));
-  assert.equal((await s.list_questions({})).questions.length, 1);
   f.config.profile.dataSources[0].manifestSha256 = "b".repeat(64);
   assert.throws(() => create(f), /pins differ/);
 });
@@ -332,7 +281,7 @@ test("stable pagination is independent of source iteration order and rejects mal
     );
   f.config.profile.capabilities.enabled = [];
   await assert.rejects(
-    () => create(f).query_odds_history({}),
+    () => create(f).read_schedule_and_injuries({}),
     code("capability_disabled"),
   );
 });

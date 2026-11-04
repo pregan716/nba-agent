@@ -20,7 +20,6 @@ import { Session, sessionEnvironment } from "../src/env/session.js";
 import { manifest } from "../src/runner/config.js";
 import { Runner } from "../src/runner/runner.js";
 import { MeteringProxy } from "../src/runner/proxy.js";
-import { readReport } from "../src/evaluation/report.js";
 
 for (const [status, emptyBoxes, expected] of [
   ["postponed", false, "void"],
@@ -34,7 +33,7 @@ for (const [status, emptyBoxes, expected] of [
   ["unknown", false, "unresolved"],
   ["suspended", false, "unresolved"],
 ] as const) {
-  test(`P1 ${status ?? "missing"} status reaches runner capture, feedback and offline report`, async () => {
+  test(`P1 ${status ?? "missing"} status stays hidden until release`, async () => {
     const f = fixtureCorpus(false);
     // A verified release exercises the actual P1 pick list, not a pre-built envelope.
     const key = "tables/games/phase=regular_season/part.jsonl";
@@ -98,10 +97,6 @@ for (const [status, emptyBoxes, expected] of [
       "pregame",
       f.game.scheduledStart,
       f.source,
-    );
-    await assert.rejects(
-      () => pregame.resolutionInput(f.game.gameId),
-      /not released/,
     );
     // Static metadata must not make final status available to the pregame agent.
     const schedule = await pregame.read_schedule_and_injuries({
@@ -174,75 +169,19 @@ for (const [status, emptyBoxes, expected] of [
         f.game.release,
         f.source,
       );
-      const postExport = await postgame.exportTo(
-        join(root, "post-export"),
-        new AbortController().signal,
-      );
-      const postDb = new DatabaseSync(postExport, { readOnly: true });
-      try {
-        const settlements = postDb
-          .prepare("SELECT outcome FROM odds_settlements WHERE game_id = ?")
-          .all(f.game.gameId);
-        assert.ok(settlements.length > 0);
-        assert.ok(settlements.every((row) => row.outcome === expected));
-      } finally {
-        postDb.close();
-      }
-      let feedback:
-        | { outcome: string; actual: number | null; score: number | null }
-        | undefined;
-      await runner.run(async ({ session }) => {
-        const ctx = await session.call("context", {});
-        if (ctx.phase === "postgame") {
-          feedback = (await session.call("read_released_results", {})).games[0]
-            .questions[0];
-          const odds = await session.call("query_odds_history", {
-            game_id: f.game.gameId,
-          });
-          assert.ok(odds.settlements.length > 0);
-          for (const settlement of odds.settlements) {
-            assert.equal(settlement.outcome, expected);
-            assert.equal(settlement.actual, feedback.actual);
-          }
-          return;
-        }
-        assert.ok(!("status" in ctx.game));
-        const qs = await session.call("list_questions", {});
-        await session.call("begin_commit", {});
-        await session.call("submit", {
-          answers: qs.questions.map((q) => ({
-            question_id: q.question_id,
-            p_over: 0.6,
-            rationale: "fixture",
-          })),
-        });
+      const history = await postgame.query_game_history({
+        table: "games",
+        game_id: f.game.gameId,
       });
-      const captured = runner.record.events("resolution_input");
-      assert.equal(captured.length, 1);
-      assert.equal(captured[0].data.status, status ?? "");
-      assert.equal(feedback?.outcome, expected);
-      runner.close();
-      const report = readReport(runner.root);
-      assert.equal(report.rows[0].outcome, expected);
-      assert.equal(report.rows[0].skill, feedback!.score);
-      assert.equal(report.rows[0].actual, feedback!.actual);
-      if (expected === "void") {
-        assert.equal(report.rows[0].reason, "void");
-        assert.equal(report.rows[0].actual, null);
-        assert.equal(report.rows[0].skill, null);
-        assert.equal(report.totals.scored, 0);
-      } else if (expected === "unresolved") {
-        assert.equal(
-          report.rows[0].reason,
-          `unresolved: game status ${status}`,
-        );
-        assert.equal(report.rows[0].actual, null);
-        assert.equal(report.rows[0].skill, null);
-        assert.equal(report.totals.scored, 0);
-      } else {
-        assert.equal(report.totals.scored, 1);
-        assert.ok(report.rows[0].skill! > 0);
-      }
+      assert.equal(history.rows[0].status, status ?? null);
+      await runner.run(async ({ session }) => {
+        await session.call("context", {});
+      });
+      assert.ok(
+        runner.record
+          .events("session_end")
+          .every((e) => e.data.status === "completed"),
+      );
     } finally {
       runner.close();
       await proxy.close();

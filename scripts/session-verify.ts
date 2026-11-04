@@ -1,7 +1,6 @@
 import { DopplerStore } from "../src/data/store.js";
 import { openCorpus } from "../src/data/corpus.js";
 import { Identities } from "../src/data/identity.js";
-import { loadQuestionLayer } from "../src/questions/builder.js";
 import { corpusSource } from "../src/env/source.js";
 import { Session } from "../src/env/session.js";
 import { fixtureConfig } from "../test/fixtures/runner/support.js";
@@ -18,24 +17,14 @@ try {
   const ids = new Identities();
   for (const m of JSON.parse(await readFile("config/identities.json", "utf8")))
     ids.add(m);
-  const source = await corpusSource(
-    c,
-    await loadQuestionLayer(c.odds, ids),
-    ids,
-  );
+  const source = await corpusSource(c, ids);
   const config = fixtureConfig("live-smoke");
-  config.profile.capabilities.enabled = [
-    "game_history",
-    "odds_history",
-    "search_and_fetch",
-  ];
+  config.profile.capabilities.enabled = ["game_history", "search_and_fetch"];
   config.profile.dataSources = source.versions.map((v) => ({
     type: v.source,
     release: v.release,
     manifestSha256: v.manifest_sha256,
   }));
-  config.devig.manifestSha256 = source.layer.manifest.sha256;
-  config.devig.methodologySha256 = source.layer.methodology.sha256;
   const gs = (await source.games()).filter(
     (g) =>
       g.data.season === "2025-26" &&
@@ -132,22 +121,7 @@ try {
         phase === "pregame" ? g.scheduledStart : g.release,
         source,
       );
-      const q = await s.list_questions({});
-      const odds = await s.query_odds_history({});
-      const result = {
-        id,
-        phase,
-        questions: q.questions.length,
-        odds: odds.observations.length,
-        settlements: odds.settlements.length,
-        unresolved: odds.settlements.filter((s) => s.outcome === "unresolved")
-          .length,
-      };
-      console.log(result);
-      if (phase === "pregame") assert.equal(odds.settlements.length, 0);
       if (phase === "postgame") {
-        assert.ok(odds.settlements.length > 0);
-        assert.equal(result.unresolved, 0);
         for (const table of Object.keys(
           HISTORY_TABLE,
         ) as (keyof typeof HISTORY_TABLE)[]) {

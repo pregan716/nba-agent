@@ -9,7 +9,7 @@ import {
   provider,
   harness,
 } from "../test/fixtures/runner/support.js";
-// Exercises all schedule slots using synthetic questions, tools and model usage.
+// Exercises all schedule slots using synthetic tools and model usage.
 // This is neither a scored run nor an assertion that the P3/P5/P6 gates have passed.
 const schedule = JSON.parse(
   readFileSync("docs/evidence/audit/schedule.json", "utf8"),
@@ -31,7 +31,6 @@ try {
         fixtureOnly: true,
         root: runner.root,
         games: events.filter((e) => e.kind === "game_end").length,
-        submissions: events.filter((e) => e.kind === "submission").length,
         sessions: events.filter((e) => e.kind === "session_end").length,
         developmentGames: runner.manifest.games
           .filter((g) => g.development)

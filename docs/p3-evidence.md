@@ -1,3 +1,5 @@
+> Historical component documentation: SPO-835 removed the v1 prop task, odds/game-line session tools, submission reserve and scoring; those sections and commands no longer apply. Reused infrastructure remains, and the v2 authority brief is tracked in SPO-836.
+
 # Evidence browsing, search and fetch (SPO-788, SPO-819)
 
 `Session.list_evidence`, `search_evidence` and `fetch_evidence` implement the `search_and_fetch` capability in pregame and postgame. The trusted P1 source supplies posts, transcripts and preferred lineup announcements. The Session applies `visible()` before selecting versions, projecting fields or constructing its lazy per-session index. Lineups must also precede their own game's scheduled start, even when queried in a later session. The index is reused at the same immutable cutoff; commit-phase access remains refused.

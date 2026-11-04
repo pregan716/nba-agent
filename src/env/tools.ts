@@ -61,7 +61,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "context",
     description:
-      "Return game_lines at scheduled start: Celtics spread (negative when favoured), game total derived from paired team-total quotes, implied team totals, contributing-book counts and provenance; null values mean unavailable markets. Also return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, the reserve held for the final submission, and a low-budget warning), and the memory mode of this run. Call it first in every session and again whenever you need the budget.",
+      "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory mode of this run. Call it first in every session and again whenever you need the budget.",
     input_schema: object({}),
     phases: ["pregame", "commit", "postgame"],
   },
@@ -175,26 +175,9 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     phases: ["pregame", "postgame"],
   },
   {
-    name: "query_odds_history",
-    description: `Return the consensus market history for this game or a prior one: for each observation, its availability time, player, stat, consensus line and market-implied P(over). Observations are taken at fixed times before tip and at the scheduled start; the scheduled-start observation defines the questions. For prior games whose results have been released, settled outcomes (over, under, push, did_not_play, unresolved) are included. Never includes per-book prices, contributing books or dispersion. ${CUTOFF} Do not interpolate between observations. Also returns game_lines observations for line movement, with the same cutoff and game selection.`,
-    input_schema: object({
-      game_id: id("Defaults to the current game."),
-      player_id: id("Restrict to one player."),
-      stat: { type: "string", enum: ["points", "rebounds", "assists"] },
-    }),
-    phases: ["pregame", "postgame"],
-  },
-  {
-    name: "list_questions",
-    description:
-      "Return the frozen question set for this game: for each question its question_id, player, stat, the consensus line and the market-implied P(over) at the scheduled start. Complete in one call. Submitting the market probability for a question means no view and scores exactly zero; deviate only where you have a reason.",
-    input_schema: object({}),
-    phases: ["pregame", "commit", "postgame"],
-  },
-  {
     name: "execute_code",
     description:
-      "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (questions, schedule, references, injuries, odds, evidence and released results), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace when the run has one (same rules as the workspace tools). No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
+      "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (schedule, references, injuries and evidence), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace when the run has one (same rules as the workspace tools). No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
     input_schema: object({ program: { type: "string", minLength: 1 } }, [
       "program",
     ]),
@@ -253,45 +236,6 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
       { path: id("File path relative to the workspace root.") },
       ["path"],
     ),
-    phases: ["pregame", "postgame"],
-  },
-  {
-    name: "begin_commit",
-    description:
-      "End research and enter the commit phase for this game. After this call only context, list_questions and submit are available; evidence, history, odds, code and workspace tools are locked until postgame. The submission reserve becomes available. Call it when you are ready to submit, or when context reports the research budget is exhausted.",
-    input_schema: object({}),
-    phases: ["pregame"],
-  },
-  {
-    name: "submit",
-    description:
-      "Submit your probabilities for every question in this game, as one atomic submission. Each answer needs the question_id and p_over in [0.01, 0.99] (values outside are clipped and the clip is recorded); a short rationale is required when p_over differs from the market P(over) by 0.05 or more and may be omitted otherwise; evidence_refs may list evidence_ids the rationale relies on. notes is optional free text for the whole submission, stored and never scored. A submission missing a question, naming an unknown question, or malformed is rejected with every problem named and may be corrected up to two more times; a third failure ends the session as failed. A valid submission is frozen and returns a receipt; sending the identical submission again returns the same receipt. Submitting the market probability is free and scores zero.",
-    input_schema: object(
-      {
-        answers: {
-          type: "array",
-          minItems: 1,
-          items: object(
-            {
-              question_id: { type: "string" },
-              p_over: { type: "number" },
-              rationale: { type: "string" },
-              evidence_refs: { type: "array", items: { type: "string" } },
-            },
-            ["question_id", "p_over"],
-          ),
-        },
-        notes: { type: "string" },
-      },
-      ["answers"],
-    ),
-    phases: ["commit"],
-  },
-  {
-    name: "read_released_results",
-    description:
-      "Return released results for prior games of this run: for each question the player, stat, line, market P(over), the probability you submitted (null if that session failed), the actual stat, the outcome (over, under, push, did_not_play, unresolved) and your per-question score against the market (null when excluded). Results for a game are released at 9 a.m. Eastern the morning after it; a game not yet released is absent. Rationales and notes are never returned here; if you kept them, they are in your workspace.",
-    input_schema: object({ game_id: id("Defaults to every released game.") }),
     phases: ["pregame", "postgame"],
   },
 ];

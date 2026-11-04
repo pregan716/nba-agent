@@ -38,7 +38,7 @@ export function implied(price: number): number {
 }
 const close = (a: number, b: number) =>
   Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= 1e-12;
-// Independent audit only. Never feeds replay questions or replaces published rows.
+// Independent audit only. Never defines replay tasks or replaces published rows.
 export function checkConsensus(row: Row, pairs: Row[]) {
   if (!pairs.length) throw Error(`Missing accepted pairs: ${auditKey(row)}`);
   const computed: Row[] = pairs.map((p) => {
