@@ -4,6 +4,7 @@ import itertools
 import json
 import pathlib
 import re
+import sys
 
 ROOT = pathlib.Path('.cache/spo837')
 OUT = pathlib.Path('docs/evidence/decision-windows')
@@ -157,20 +158,130 @@ def analyze(x):
                  changed_boundaries=sum(bool(b['entries']) for b in boundaries),boundary_entry_sizes=dist(str(len(b['entries'])) if b['entries'] is not None else 'unknown' for b in boundaries))
     return summary,game_results,groups,boundaries,comparisons
 
-for season in ['2025-26','2024-25']:
-    x=json.loads((ROOT/(season+'.json')).read_text())
-    summary,games,groups,boundaries,fouls=analyze(x)
-    write(season+'-summary.json',summary)
-    write(season+'-games.json',games)
-    if season=='2025-26': write(season+'-groups.json',[g for g in groups if g['game_id'] in SAMPLE or g['non_sub_between_celtics'] or set(g['entries']) & set(g['exits'])])
-    if season=='2025-26': write(season+'-boundaries.json',[b for b in boundaries if b['game_id'] in SAMPLE or b['entries'] is None])
-    write(season+'-fouls.json',[f for f in fouls if f['official']!=f['all_fouler_roles'] or f['official']!=f['personal_fouls']])
-    issue_groups={}
-    for issue in x['tables']['data_quality_issues']:
-        key=tuple(issue.get(k) for k in ['game_id','product','code','message'])
-        if key not in issue_groups:
-            issue_groups[key]={k:issue.get(k) for k in ['game_id','product','code','message']}
-            issue_groups[key].update(count=0,example_issue_id=issue['issue_id'])
-        issue_groups[key]['count']+=1
-    write(season+'-provenance.json',dict(pin=x['pin'],objects=x['objects'],coverage=[{k:r.get(k) for k in ['game_id','product','quality_status','record_count','missing_reason','issue_ids']} for r in x['coverage']],issue_groups=list(issue_groups.values()),official_sources=[r for r in x['tables']['raw_objects'] if r['game_id'] in SAMPLE and r['source'] in {'cdn_pbp','cdn_box'}]))
-    print(season,json.dumps(summary,indent=2))
+def opener_types(event, include_new=True):
+    """Proposed openers, independent of the substitution target.
+
+    Missing qualifiers mean unavailable, never a TEAM-description proxy.
+    Period openings/ends are excluded by opener_counts, not counted twice.
+    """
+    t, subtype = event['type'], event.get('subtype')
+    kinds = []
+    if t == 'timeout' and subtype == 'full':
+        kinds.append('timeout')
+    if t == 'foul' and subtype in {'personal', 'offensive'}:
+        kinds.append('foul')
+    if t == 'turnover' and subtype in DEAD_TURNOVERS:
+        kinds.append('dead_ball_turnover')
+    if t == 'violation' and subtype in {'kicked ball', 'defensive goaltending', 'lane'}:
+        kinds.append('violation')
+    if include_new:
+        opening_clock = 720000 if event['period'] <= 4 else 300000
+        if t == 'jump_ball' and event['clock_remaining_ms'] != opening_clock:
+            kinds.append('jump_ball')
+        qualifiers = event.get('qualifiers') or []
+        if t == 'rebound' and {'team', 'deadball'}.issubset(qualifiers):
+            kinds.append('deadball_team_rebound')
+    return kinds
+
+
+def opener_counts(events, include_new=True):
+    """Count candidate buckets, not qualified/scored windows.
+
+    Adjacency associates an otherwise unanchored substitution bucket with the
+    immediately previous opener bucket in canonical order, in the same period,
+    with 0 < previous clock - current clock <= 2000 ms. No skipped buckets,
+    period crossings or recursive/chained associations; no new candidates.
+    """
+    counts = C.Counter()
+    remainder = C.Counter()
+    ledger, adjacent = [], []
+    ordered = sorted((e for e in events if e['validity'] == 'effective'),
+                     key=lambda e: (e['game_id'], e['canonical_sequence']))
+    for game_id, rows in itertools.groupby(ordered, lambda e: e['game_id']):
+        bs = buckets(list(rows))
+        def in_period(b):
+            return 0 < b[0]['clock_remaining_ms'] < (720000 if b[0]['period'] <= 4 else 300000)
+        candidates = {i for i, b in enumerate(bs) if in_period(b) and any(opener_types(e, include_new) for e in b)}
+        direct, attached = set(), set()
+        counts['candidate_inperiod_buckets'] += len(candidates)
+        for i, b in enumerate(bs):
+            own = [e for e in b if e['type'] == 'substitution' and e['team_id'] == BOS]
+            if not own or not in_period(b):
+                continue
+            counts['celtics_substitution_buckets'] += 1
+            if i in candidates:
+                direct.add(i)
+                continue
+            counts['unanchored_before_adjacency'] += 1
+            previous = bs[i - 1] if i else []
+            gap = previous[0]['clock_remaining_ms'] - b[0]['clock_remaining_ms'] if previous else None
+            reference = dict(game_id=game_id, period=b[0]['period'], clock_ms=b[0]['clock_remaining_ms'],
+                             first_sub_sequence=own[0]['canonical_sequence'])
+            if i - 1 in candidates and previous[0]['period'] == b[0]['period'] and 0 < gap <= 2000:
+                attached.add(i - 1)
+                counts['adjacency_anchored_substitution_buckets'] += 1
+                adjacent.append(dict(reference, opener_bucket_sequence=previous[0]['canonical_sequence'], game_clock_gap_ms=gap))
+                continue
+            # Descriptions classify residual mechanisms ONLY; they never open a candidate.
+            if any(e['type'] in {'foul', 'ejection'} for e in b):
+                mechanism = 'technical_foul_or_ejection'
+            elif any(e['type'] in {'violation', 'timeout'} for e in b):
+                mechanism = 'delay_of_game_or_challenge'
+            elif any(e['type'] == 'rebound' and (e.get('description') or '').startswith('TEAM ') for e in b):
+                mechanism = 'team_rebound_qualifier_unavailable_or_not_deadball'
+            elif all(e['type'] == 'substitution' for e in b):
+                prior = previous[-1] if previous else {}
+                if prior.get('type') == 'field_goal' and prior.get('shot_result') == 'made':
+                    mechanism = 'substitution_only_after_made_basket'
+                elif prior.get('type') == 'rebound':
+                    mechanism = 'substitution_only_after_rebound'
+                else:
+                    mechanism = 'other_substitution_only'
+            elif any(e['type'] == 'jump_ball' for e in b):
+                mechanism = 'jump_ball'
+            elif any(e['type'] == 'rebound' for e in b):
+                mechanism = 'player_rebound'
+            elif any(e['type'] == 'field_goal' and e.get('shot_result') == 'made' for e in b):
+                mechanism = 'same_bucket_made_basket'
+            else:
+                mechanism = 'other'
+            remainder[mechanism] += 1
+            ledger.append(dict(reference, mechanism=mechanism))
+        counts['same_bucket_positive_candidates'] += len(direct)
+        counts['positive_candidates_after_adjacency'] += len(direct | attached)
+    result = {key: counts[key] for key in [
+        'candidate_inperiod_buckets', 'celtics_substitution_buckets',
+        'same_bucket_positive_candidates', 'unanchored_before_adjacency',
+        'adjacency_anchored_substitution_buckets', 'positive_candidates_after_adjacency']}
+    result.update(unanchored_after_adjacency=len(ledger), remainder_mechanisms=dict(sorted(remainder.items())),
+                  adjacency_ledger=adjacent, unanchored_ledger=ledger)
+    n = result['candidate_inperiod_buckets']
+    result['substitution_share_before_adjacency'] = result['same_bucket_positive_candidates'] / n if n else None
+    result['substitution_share_after_adjacency'] = result['positive_candidates_after_adjacency'] / n if n else None
+    assert sum(remainder.values()) == result['unanchored_after_adjacency']
+    assert result['same_bucket_positive_candidates'] + result['adjacency_anchored_substitution_buckets'] + len(ledger) == result['celtics_substitution_buckets']
+    return result
+
+
+if __name__ == '__main__' and '--openers' in sys.argv:
+    x = json.loads((ROOT / '2025-26.json').read_text())
+    print(json.dumps(dict(baseline=opener_counts(x['tables']['events'], include_new=False),
+                          proxy_free=opener_counts(x['tables']['events'])), indent=2, sort_keys=True))
+elif __name__ == '__main__':
+    for season in ['2025-26','2024-25']:
+        x=json.loads((ROOT/(season+'.json')).read_text())
+        summary,games,groups,boundaries,fouls=analyze(x)
+        write(season+'-summary.json',summary)
+        write(season+'-games.json',games)
+        if season=='2025-26': write(season+'-groups.json',[g for g in groups if g['game_id'] in SAMPLE or g['non_sub_between_celtics'] or set(g['entries']) & set(g['exits'])])
+        if season=='2025-26': write(season+'-boundaries.json',[b for b in boundaries if b['game_id'] in SAMPLE or b['entries'] is None])
+        write(season+'-fouls.json',[f for f in fouls if f['official']!=f['all_fouler_roles'] or f['official']!=f['personal_fouls']])
+        issue_groups={}
+        for issue in x['tables']['data_quality_issues']:
+            key=tuple(issue.get(k) for k in ['game_id','product','code','message'])
+            if key not in issue_groups:
+                issue_groups[key]={k:issue.get(k) for k in ['game_id','product','code','message']}
+                issue_groups[key].update(count=0,example_issue_id=issue['issue_id'])
+            issue_groups[key]['count']+=1
+        write(season+'-provenance.json',dict(pin=x['pin'],objects=x['objects'],coverage=[{k:r.get(k) for k in ['game_id','product','quality_status','record_count','missing_reason','issue_ids']} for r in x['coverage']],issue_groups=list(issue_groups.values()),official_sources=[r for r in x['tables']['raw_objects'] if r['game_id'] in SAMPLE and r['source'] in {'cdn_pbp','cdn_box'}]))
+        print(season,json.dumps(summary,indent=2))

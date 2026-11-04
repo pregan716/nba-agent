@@ -5,6 +5,7 @@ import collections as C
 import itertools
 import json
 import pathlib
+import sys
 
 ROOT=pathlib.Path('.cache/spo837')
 OUT=pathlib.Path('docs/evidence/decision-windows')
@@ -18,6 +19,25 @@ def marker(a):
     return t in {'foul','timeout','freethrow','violation','ejection','period'} or (t=='turnover' and s in DEAD)
 
 def dump(name,obj): (OUT/name).write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n')
+if '--openers' in sys.argv:
+    # Reuse the release-field predicates, enriching ONLY the three audited games
+    # with qualifiers from their cached official source action IDs.
+    import runpy
+    opener_counts = runpy.run_path(str(pathlib.Path(__file__).with_name('decision-window-analysis.py')))['opener_counts']
+    reports = []
+    combined = []
+    for gid in SAMPLE:
+        raw = json.loads((ROOT / f'cdn_pbp-{gid}.json').read_text())['game']['actions']
+        by_id = {str(a['actionNumber']): a for a in raw}
+        es = [dict(e, qualifiers=by_id[e['source_event_ids'][0]]['qualifiers'])
+              for e in x['tables']['events'] if e['game_id'] == gid]
+        combined.extend(es)
+        reports.append(dict(game_id=gid, counts=opener_counts(es),
+                            team_rebounds=sum(a['actionType']=='rebound' and 'team' in a['qualifiers'] for a in raw),
+                            deadball_team_rebounds=sum(a['actionType']=='rebound' and {'team','deadball'}.issubset(a['qualifiers']) for a in raw)))
+    print(json.dumps(dict(games=reports, combined=opener_counts(combined)), indent=2, sort_keys=True))
+    raise SystemExit(0)
+
 reports=[]; sheets=[]
 for gid in SAMPLE:
     raw=json.loads((ROOT/f'cdn_pbp-{gid}.json').read_text())['game']['actions']
