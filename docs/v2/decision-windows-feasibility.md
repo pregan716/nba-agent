@@ -27,6 +27,15 @@ Evidence index:
 - [Official comparison and every audited Celtics pre-substitution five](../evidence/decision-windows/official-audit.json), [official descriptions for every sample candidate](../evidence/decision-windows/official-review-sheets.json).
 - [Historical per-game results](../evidence/decision-windows/2024-25-games.json) and [historical summary](../evidence/decision-windows/2024-25-summary.json).
 
+For the scoped opener follow-up, use only the existing cache; no export or network access is needed:
+
+```sh
+python3 scripts/decision-window-analysis.py --openers
+python3 scripts/decision-window-official-audit.py --openers
+```
+
+These modes print counts, adjacency associations and the unanchored ledger to stdout without rewriting the original evidence artifacts. The first reports the original proposed opener baseline and the final **proxy-free** full-season set; the second joins the three cached official responses' `qualifiers` by `source_event_ids` to measure the **with-`deadball`** sample. Historical diagnostic-marker counts below remain unchanged; the follow-up counts use the narrower proposed opener set and exclude period boundaries.
+
 ### Counting conventions
 
 An **event** is one effective release row. All 45,486 rows in the 82-game sample are `validity=effective`; there are zero superseded, overturned or unresolved rows. Sort each game by `canonical_sequence`, never Parquet row order.
@@ -52,7 +61,7 @@ The 921 turnover markers are `out-of-bounds` 397, `offensive foul` 272, `shot cl
 
 These markers identify **5,135 clock buckets**, of which **3,618 have no Celtics substitution** and 1,517 do. Thus negative examples do exist independently of substitutions. The remainder of the season's 1,683 Celtics substitution buckets includes **166 without any of these markers**; all-team substitution buckets without markers number 265. Of the 166 Celtics cases, 73 have only rebounds among live-event types, 52 have no live-event type at all (substitution-only buckets), 29 have field goals and rebounds, and 12 have other combinations recorded in the group evidence. This is a failure of a universal marker rule, not permission to create positive-only windows.
 
-Out-of-bounds **turnovers** are explicit. Out-of-bounds stops retaining possession are not a separate normalized type: team rebounds, jump-ball records, or substitutions may be the only hints. `rebound/offensive` and `rebound/defensive` also occur in live play and after non-final free throws. There are 8,672 rebound rows and 168 `jump_ball/recovered` rows; neither is a universally safe stoppage opener. The 70 `administrative` rows are heaves, not review markers. The 17 challenge timeouts do not enumerate all reviews.
+Out-of-bounds **turnovers** are explicit. Out-of-bounds stops retaining possession are not a separate normalized type in the pinned release: team rebounds, jump-ball records, or substitutions may be the only hints. `rebound/offensive` and `rebound/defensive` also occur in live play and after non-final free throws. There are 8,672 rebound rows and 168 `jump_ball/recovered` rows; neither is a universally safe stoppage opener. The 70 `administrative` rows are heaves, not review markers. The 17 challenge timeouts do not enumerate all reviews. The cached official responses do contain a `deadball` qualifier on some team rebounds; that field is dropped by the current release. The follow-up below measures its contribution in the audited sample without using descriptions as an opener proxy.
 
 Free-throw numbers and totals are populated on all 3,274 attempts (zero nulls in either field). They identify position within a series, not every legal substitution interval. `free_throw_type` is null on 2,181 attempts; its non-null values in this release are scoring qualifiers such as `2ndchance` and `fromturnover`, not a reliable technical/flagrant/retained-possession classification. A “pending free throws” value cannot be obtained by looking ahead to the next shot in an assembler state.
 
@@ -145,14 +154,59 @@ Method: compare every official action number, description, period and clock to t
 
 The official feed has no total of legal stoppages to compare with 76/89/63. Those are reproducible marker counts, not a claim of zero disagreement about the complete legal opportunity set.
 
+## Follow-up: final opener set and adjacency counts
+
+This follow-up implements the [SPO-837 scope](https://linear.app/sports-data-platform/issue/SPO-837) and [PR #37 review](https://github.com/pregan716/nba-agent/pull/37#issuecomment-6642677919), using only the cached export. “Final” means the opener set proposed for review, not an approved brief change or a scored dataset.
+
+The baseline openers are `timeout/full`, `foul/personal`, `foul/offensive`, the 13 dead-ball turnover subtypes listed in question 1, and `violation` subtypes `kicked ball`, `defensive goaltending` and `lane`. Add `jump_ball` away from the period-opening clock, plus a `rebound` whose source `qualifiers` contains **both `team` and `deadball`**. A missing qualifier field does not satisfy this predicate. The team-rebound opener is enabled for release-based analysis only when a pinned release exposes qualifiers (upstream SPO-839). `TEAM` in a description is **not** a usable opener proxy: only **17 of 68** team rebounds in the audited official feeds carry `deadball`; the other **51** do not. The script uses descriptions only to classify the residual ledger.
+
+Count maximal consecutive `(game_id, period, clock_remaining_ms)` buckets in canonical order, restricting in-period clocks to **0 < clock < 720,000 ms** in regulation and **0 < clock < 300,000 ms** in overtime. Thus the sample has **76** in-period Celtics substitution buckets, not the 87 including boundary changes in the original audit. The full season has **1,459**, not 1,683. Candidate membership depends only on opener evidence, including candidates with no substitution.
+
+**Adjacency rule:** if a Celtics substitution bucket lacks its own opener, associate it with the **immediately preceding canonical bucket** only when that bucket contains an opener, is in the same game and period, and its remaining game clock exceeds the substitution bucket's clock by **more than zero and at most 2,000 ms** (inclusive). Do not skip intervening buckets, cross periods, chain adjacency through another substitution bucket, or use wall-clock proximity as eligibility evidence. Preserve the original substitution sequences and the opener reference; do not rewrite source timestamps. The association does not add a candidate or move the observable cutoff forward. A candidate with both direct and adjacent substitutions is counted once in the positive-candidate share; multiple action blocks remain subject to the existing ambiguity exclusions.
+
+### Counts before ambiguity and state qualification
+
+| Scope and available opener set | In-period candidates | Same-bucket positive candidates | Additional substitution buckets anchored by adjacency | Positive candidates after adjacency | Remaining unanchored / substitution buckets |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Full season, original proposed baseline | 4,420 | 1,284 (29.05%) | 5 | 1,288 (29.14%) | 170 / 1,459 (11.65%) |
+| Full season, final set **without qualifier proxy** | 4,576 | 1,295 (28.30%) | 5 | 1,299 (28.39%) | 159 / 1,459 (10.90%) |
+| Opener `0022500083`, with official `deadball` | 72 | 23 (31.94%) | 0 | 23 (31.94%) | 3 / 26 (11.54%) |
+| Double OT `0022500637`, with official `deadball` | 80 | 27 (33.75%) | 1 | 28 (35.00%) | 3 / 31 (9.68%) |
+| Gap game `0022500338`, with official `deadball` | 55 | 17 (30.91%) | 0 | 17 (30.91%) | 2 / 19 (10.53%) |
+| Audited three games combined, with official `deadball` | **207** | **67 (32.37%)** | **1** | **68 (32.85%)** | **8 / 76 (10.53%)** |
+
+Before adjacency, the original baseline reproduces the review's **175** unanchored buckets; adding non-opening jump balls reduces this to **164** in the proxy-free season. The qualifier-enabled sample reproduces **67/76 anchored**, leaving **9**, before adjacency. The strict two-second rule recovers **one**, not most, of those nine: Brooklyn Q4 4:47, sequence 453, attaches to the offensive-foul bucket at 4:48, sequence 449. The other four season-wide associations are `0022500158` Q4 7:59 → 8:00 (518 → 508), `0022500209` Q1 7.5 → 7.6 seconds (128 → 124), `0022500721` Q1 2:11 → 2:13 (107 → 98), and `0022500778` Q3 9:09 → 9:10 (298 → 294). These are original substitution sequence → opener-bucket sequence. Five associations add only four positive candidates because one opener candidate already has a direct Celtics substitution.
+
+Short wall-clock gaps, as noted in the review, do not establish an eligible opener. For example, opener Q2 3:03 follows a made basket at 3:04, which is not an opener; Brooklyn Q4 3:39 follows free throws at 3:53, outside the two-second limit. Neither is repaired by guessing.
+
+### Unanchored mechanisms after adjacency
+
+| Exclusive ledger classification | Full season, proxy-free | Three games, with official qualifiers |
+| --- | ---: | ---: |
+| Team rebound: qualifier unavailable in release / no `deadball` in sample | 91 | 3 |
+| Substitution-only bucket after a made basket | 22 | 2 |
+| Substitution-only bucket after a rebound | 21 | 0 |
+| Other substitution-only bucket | 7 | 1 |
+| Player rebound | 8 | 2 |
+| Technical foul or ejection | 7 | 0 |
+| Delay-of-game or challenge | 2 | 0 |
+| Made basket in the same bucket | 1 | 0 |
+| **Total** | **159** | **8** |
+
+Classification precedence is technical foul/ejection, delay/challenge, team rebound, substitution-only by prior action, jump ball, player rebound, made basket, other. It prevents a missed technical free throw's team rebound from hiding the excluded technical-foul mechanism. A description-based classification is not proof of a dead-ball stop. There are no remaining non-opening jump-ball cases. The sample residuals are opener Q1 3:14, Q2 3:03 and Q3 4:02; Brooklyn Q2 8:57, Q4 8:23 and Q4 3:39; Lakers Q4 7:04 and Q4 3:18. Both `--openers` modes print the complete per-bucket ledger, not just these totals.
+
+Marked stoppages over-represent fouls and timeouts, so the dataset's substitution rate is above the true rate over all stoppages; comparisons between variants are unaffected by differing window composition because every variant sees the same windows, although the result still concerns this restricted population.
+
+**Pending release update:** full-season qualifier-enabled counts are intentionally not estimated from `TEAM` descriptions or extrapolated from three games. Once the qualifier-carrying release is pinned, add a one-paragraph update with its candidate count, substitution share, adjacency recovery and remaining unanchored count; the present proxy-free and sample results do not depend on that release. All counts above precede ambiguity, lineup, coverage and running-stat exclusions and are not a final scored denominator.
+
 ## Proposed definition in existing release fields — for review, not approved
 
 Propose an initially **restricted, independently marked opportunity dataset**, with an exclusion ledger, rather than claiming every legal substitution opportunity. Its version should be pinned separately from `state-v1`. It is a brief amendment because the current Proposed text treats reviews and all dead balls as open windows.
 
-1. Read effective events in `canonical_sequence` order, retain all quality flags and coverage. A candidate must start from a non-substitution marker: `timeout/full`, a personal/offensive `foul`, or a dead-ball turnover/violation from the explicit values above. Exclude isolated `violation/delay-of-game`, review/challenge suspensions, technical-only or ejection-only situations unless an independently qualifying timeout/whistle is established. Do not infer an opener from a substitution, made basket, team rebound, or an observed later entrant.
-2. Freeze the candidate snapshot immediately after its opening marker and before any following event. This fixed rule applies whether a Celtics substitution follows or not. Use the marker's scores and five-player state after its statistical contribution; include only fouls, timeouts and completed substitutions through that prefix. Keep free-throw pending state unknown unless the prefix itself establishes it. If state-v1 cannot represent that uncertainty, flag the candidate instead of looking ahead. No outcome, later free-throw result, later timeout, or later opponent change enters the state.
+1. Read effective events in `canonical_sequence` order, retain all quality flags and coverage. A candidate must start from a non-substitution marker: `timeout/full`, a personal/offensive `foul`, or a dead-ball turnover/violation from the explicit values above. Exclude isolated `violation/delay-of-game`, review/challenge suspensions, technical-only or ejection-only situations unless an independently qualifying timeout/whistle is established. Add `jump_ball` at a non-period-start clock and a team rebound carrying both `team` and `deadball` in `qualifiers`. The team-rebound branch is enabled only when the pinned release exposes that field; `TEAM` description text alone is not sufficient. Do not infer an opener from a substitution, made basket, unqualified team rebound, or an observed later entrant.
+2. Freeze the candidate snapshot immediately after its opening marker and before any following event. This fixed rule applies whether a Celtics substitution follows or not. Use the marker's scores and five-player state after its statistical contribution; include only fouls, timeouts and completed substitutions through that prefix. Keep free-throw pending state unknown unless the prefix itself establishes it. If state-v1 cannot represent that uncertainty, flag the candidate instead of looking ahead. No outcome, later free-throw result, later timeout, or later opponent change enters the state. A `jump_ball/recovered` row is evidence of the held-ball candidate, not permission to reveal the recovery outcome: if the opener follows the substitution in canonical order, flag the snapshot as ambiguous rather than reading through the decision. The follow-up counts are candidate counts before this check.
 3. For this conservative first definition, coalesce duplicate foul/offensive-turnover records of one whistle, but flag equal-clock runs with another potentially distinct whistle, timeout, live action after the opener, multiple Celtics blocks, re-entry, unknown free-throw eligibility, or incomplete opponent batches as `ambiguous_stoppage`. Do not use equal clock alone to resolve them. Free-throw numbers/total and descriptions support audit, but are insufficient to certify every exception or retained-possession case. Retain an exclusion reason and source sequence span for each rejected candidate.
-4. Within a qualified interval, collect `sub_in`/`sub_out` participant IDs from its single contiguous same-period/same-clock Celtics substitution block. Validate unique, disjoint, equal-sized sets against the pre-decision five and eligible roster. No block means no substitution. A substitution without an independent opener is a separately counted `unanchored_substitution`, never a positive-only new window. Do not interpret its absence from the candidate dataset as a negative.
+4. Within a qualified interval, collect `sub_in`/`sub_out` participant IDs from its single contiguous same-period/same-clock Celtics substitution block. Validate unique, disjoint, equal-sized sets against the pre-decision five and eligible roster. No block means no substitution. For an otherwise unanchored substitution bucket, apply the immediately-previous-bucket, same-period, positive-game-clock-gap-at-most-two-seconds adjacency rule above; retain the opener cutoff and original action sequences, create no new candidate, and continue to apply ambiguity checks. A substitution with neither a direct nor an adjacent independent opener is a separately counted `unanchored_substitution`, never a positive-only new window. Do not interpret its absence from the candidate dataset as a negative.
 5. Create one separate `between_periods` candidate for each transition to a subsequent `period_start`, with the prior `period_end` state and next-period clock (12 minutes regulation, 5 overtime). Its outcome is the net lineup change across the boundary, including new-period opening substitution rows, and may be empty. Never expose the next-period five in the input. Do not create duplicate windows at both boundary rows, the opening tip, or terminal game end.
 6. Exclude unknown/non-five lineups, unsupported running statistics, failed product coverage, and unresolved ordering with explicit reasons. Report all marker candidates, unanchored substitutions, exclusions by reason, and period windows before any scoring. The counts in this report characterize the inputs and failure modes; the final qualified-window count awaits the reviewed definition and R2.
 
@@ -162,7 +216,7 @@ This proposal sacrifices recall to avoid inventing a full denominator. It does n
 
 | Missing evidence | Consequence | Upstream requirement |
 | --- | --- | --- |
-| Independent stoppage opener/resumption and legal substitution interval | 166 Celtics substitution clock buckets lack diagnostic openers; negative-opportunity completeness is unmeasurable | Publish source-evidenced stoppage IDs/spans and eligibility reasons for **all** opportunities, including those with no substitutions; preserve uncertainty where official PBP does not establish a stop. Additional official event detail or manual/video qualification may be necessary. |
+| Independent stoppage opener/resumption and legal substitution interval | The original diagnostic scan found 166 Celtics substitution clock buckets without markers; the follow-up final proxy-free set leaves 159 in-period buckets unanchored after adjacency | Expose the official `qualifiers` array (SPO-839) to enable the dead-ball team-rebound predicate, then publish source-evidenced stoppage IDs/spans and eligibility reasons for **all** opportunities, including those with no substitutions; preserve uncertainty where official PBP does not establish a stop. Additional official event detail or manual/video qualification may be necessary. |
 | Multiple decisions at the same clock | 16 interleaved Celtics groups, 8 with re-entry | Distinguish whistle/timeout/free-throw/live-ball boundaries in canonical sequence; carry the supporting source action IDs and unresolved-order flags. |
 | Reliable free-throw/retained-possession and review semantics | FT position exists, but legal entry timing and standalone review opportunities do not follow from it | Normalize source-supported free-throw category and possession-retention facts; separate replay suspension from charged timeout and distinguish non-substitution suspensions. Do not derive these from scoring qualifiers. |
 | Fully sequential opponent state within an atomic batch | 42 blocks have a completed opponent change before the first Celtics row | Document atomic batch semantics and expose a qualified prefix/grouping rule (or prefix lineup product) that never imports later changes. R2 may reconstruct this only under the approved cutoff rule. |
