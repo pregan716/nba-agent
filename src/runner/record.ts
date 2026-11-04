@@ -21,11 +21,11 @@ export interface Event {
   hash: string;
   at: string;
 }
-export class RecordStore {
+export class RecordStore<TManifest = Manifest> {
   readonly db: DatabaseSync;
   constructor(
     readonly root: string,
-    expected?: Manifest,
+    expected?: TManifest,
   ) {
     mkdirSync(root, { recursive: true, mode: 0o700 });
     this.db = new DatabaseSync(join(root, "record.sqlite"));
