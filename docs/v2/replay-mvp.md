@@ -37,13 +37,15 @@ Timing below 0.5 derives an empty action. Otherwise count argmax chooses one/two
 
 The pure scorer reports timing Brier, log loss (only here clipping to [0.001, 0.999]), clip count, ten calibration bins, precision and recall. Conditional entry/exit Brier uses `k * p_j`, with actual k, and divides by eligible-set size. Top-1 and exact top-k selection are evaluated on every actual substitution regardless of predicted timing. Exact-action accuracy includes empty actions; overlap is Jaccard on direction-labelled moved players and omits empty/empty windows. Empty metric denominators are null.
 
+For outcome y in {0,1}, timing Brier is `(p-y)^2`; log loss is `-[y log(p_clip) + (1-y) log(1-p_clip)]`. For actual moved set A of size k and eligible set E, selection Brier is `sum_j_in_E (k*p_j - 1[j in A])^2 / |E|`. Exact action requires equality of both sets; partial overlap is `|predicted ∩ actual| / |predicted ∪ actual|` on direction-labelled players.
+
 Provider failures are unscored and flag a game above 5% of eligible windows. An invalid package on its first eligible window makes the entire game unscored and prevents further calls. Assembler errors use all four fallbacks and remain scored. Informational availability/summary flags do not remove windows. Every failure and invalid question is counted separately. The append-only record verifies its hash chain, binds inputs/predictor/harness versions to the manifest, and resumes already-recorded windows without recalling the predictor.
 
 ## Baselines
 
 Both baselines fit only qualified windows in chronological Celtics games 11–20, the brief's warm-up split. The MVP chooses this simple warm-up-only fit rather than adding 2024–25 training. No audited game's label is used in this fit. The opener precedes training and is explicitly a retrospective development diagnostic, not out-of-sample evidence. Dec 5 and Jan 23 follow warm-up. This three-game implementation check is not a statistical comparison over the scored season.
 
-- **Constant:** warm-up substitution rate, uniform count and player maps. The rate is about 0.318 on 601 qualified warm-up windows. This is a rate over independently marked stoppages, which over-represent fouls/timeouts and substitutions; it is not the true rate over all coaching opportunities.
+- **Constant:** warm-up substitution rate, uniform count and player maps. The rate is about 0.319 on 596 qualified warm-up windows. This is a rate over independently marked stoppages, which over-represent fouls/timeouts and substitutions; it is not the true rate over all coaching opportunities.
 - **Statistical:** deterministic logistic regression with intercept, capped maximum current stint / 6 minutes, capped absolute margin / 15, period / 4, timeout indicator, between-period indicator, and maximum personal fouls / 6. Full-batch gradient descent uses 500 steps, learning rate 0.1 and L2 0.01 excluding the intercept. Count probabilities are warm-up empirical frequencies. Exit probabilities rank current stint length; entry probabilities rank observed rest, with never-entered players first. Rank weights descend n through 1 and normalize to one; canonical ID breaks ties. This intentionally simple entry rule does not infer who will later play.
 
 ## Cached audit
@@ -52,17 +54,17 @@ Both baselines fit only qualified windows in chronological Celtics games 11–20
 
 | Game | In-period candidates | Positive candidates | Own substitution buckets | Adjacency attachments | Unanchored buckets | Boundaries | Scored windows |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Oct 22 opener, 0022500083 | 72 | 23 | 26 | 0 | 3 | 3 | 67 |
-| Dec 5 Lakers, 0022500338 | 55 | 17 | 19 | 0 | 2 | 3 | 55 |
+| Oct 22 opener, 0022500083 | 72 | 23 | 26 | 0 | 3 | 3 | 66 |
+| Dec 5 Lakers, 0022500338 | 55 | 17 | 19 | 0 | 2 | 3 | 54 |
 | Jan 23 Brooklyn, 0022500637 | 80 | 28 | 31 | 1 | 3 | 5 | 82 |
 
-All 8 residual buckets have an explicit mechanism and block span. The 218 candidates including boundaries yield 204 scored windows: 8/3/3 distinct ambiguous windows excluded respectively. Detailed reasons overlap and must not be summed. There are no candidate-count discrepancies with the spike; its counts were explicitly before ambiguity/state exclusions. The December game's 55 scored windows all carry null field-goal attempts, offensive rebounds and total rebounds, with valid lineups/stints and the informational summary flag. Brooklyn includes two overtime transitions. Its adjacency attachment links opener bucket 449 to substitution bucket 453, one second later.
+All 8 residual buckets have an explicit mechanism and block span. The 218 candidates including boundaries yield 202 scored windows: 9/4/3 distinct ambiguous windows excluded respectively. Detailed reasons overlap and must not be summed. There are no candidate-count discrepancies with the spike; its counts were explicitly before ambiguity/state exclusions. The December game's 54 scored windows all carry null field-goal attempts, offensive rebounds and total rebounds, with valid lineups/stints and the informational summary flag. Brooklyn includes two overtime transitions. Its adjacency attachment links opener bucket 449 to substitution bucket 453, one second later.
 
 | Game | Constant timing Brier | Statistical timing Brier | Constant exit / entry Brier | Statistical exit / entry Brier |
 | --- | ---: | ---: | ---: | ---: |
-| Opener (retrospective diagnostic) | 0.22609 | 0.18433 | 0.17739 / 0.10293 | 0.19942 / 0.12128 |
-| Lakers | 0.22688 | 0.22426 | 0.18526 / 0.12736 | 0.20164 / 0.15005 |
-| Brooklyn | 0.23876 | 0.20263 | 0.17548 / 0.13607 | 0.20129 / 0.16963 |
+| Opener (retrospective diagnostic) | 0.22792 | 0.18570 | 0.17739 / 0.10293 | 0.19942 / 0.12128 |
+| Lakers | 0.22915 | 0.22814 | 0.18526 / 0.12736 | 0.20164 / 0.15005 |
+| Brooklyn | 0.23864 | 0.20219 | 0.17548 / 0.13607 | 0.20129 / 0.16963 |
 
 The statistical baseline improves timing on these three matched sets but loses on both conditional player-selection scores. This is a limitation of the simple rank model, not evidence of general predictive superiority. All comparisons use the same qualified windows. Marked stoppages over-represent fouls/timeouts and substitution opportunities; these results apply only to that restricted dataset.
 

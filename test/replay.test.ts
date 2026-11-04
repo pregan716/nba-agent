@@ -671,3 +671,32 @@ test("opening-clock substitutions are one net boundary history entry", async () 
   assert.deepEqual(boundary[0].players_out, ["f"]);
   assert.deepEqual(boundary[0].players_in, ["a"]);
 });
+
+test("live-ball events and non-opening whistles after an opener remain ambiguous", () => {
+  for (const type of [
+    "steal",
+    "block",
+    "turnover",
+    "foul",
+    "violation",
+    "ejection",
+  ]) {
+    const input = fixture();
+    input.events.splice(2, 0, {
+      ...input.events[1],
+      event_id: "later",
+      type,
+      subtype:
+        type === "foul"
+          ? "technical"
+          : type === "violation"
+            ? "delay-of-game"
+            : "bad pass",
+    });
+    input.events.forEach((e, i) => (e.canonical_sequence = i));
+    assert.ok(
+      buildDataset(input).windows[0].exclusions.includes("ambiguous_stoppage"),
+      type,
+    );
+  }
+});

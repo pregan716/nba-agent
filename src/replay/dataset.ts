@@ -373,13 +373,23 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
           markers.some((f) => f.type === "foul" && f.subtype === "offensive")
         ),
     );
-    if (independent.length > 1) w.exclusions.push("multiple_whistles");
     if (
-      b.some(
+      independent.length > 1 ||
+      rows.some(
+        (e) =>
+          e.canonical_sequence > marker.canonical_sequence &&
+          !markers.includes(e) &&
+          ["foul", "violation", "ejection"].includes(e.type),
+      )
+    )
+      w.exclusions.push("multiple_whistles");
+    if (
+      rows.some(
         (e) =>
           e.canonical_sequence > marker.canonical_sequence &&
           (e.type === "timeout" ||
-            e.type === "field_goal" ||
+            ["field_goal", "steal", "block"].includes(e.type) ||
+            (e.type === "turnover" && !opener(e)) ||
             e.type === "jump_ball" ||
             (e.type === "rebound" &&
               !opener(e) &&
