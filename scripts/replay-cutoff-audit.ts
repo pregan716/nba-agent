@@ -67,13 +67,11 @@ try {
       if (cut)
         moved.push({
           ...reference,
-          includedEvents: bucket
-            .slice(0, cut)
-            .map((e) => ({
-              sequence: e.canonical_sequence,
-              type: e.type,
-              eventId: e.event_id,
-            })),
+          includedEvents: bucket.slice(0, cut).map((e) => ({
+            sequence: e.canonical_sequence,
+            type: e.type,
+            eventId: e.event_id,
+          })),
           scoreChanged:
             bucket[0].home_score_before !== row.home_score_before ||
             bucket[0].away_score_before !== row.away_score_before,

@@ -1,0 +1,671 @@
+{
+  "release": {
+    "bucket": "sports-nba-data",
+    "key": "nba/releases/spo-839-full-v1-2025-26/manifest.json",
+    "sha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+    "bytes": 2386079
+  },
+  "from": "windows-v1:04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+  "to": "windows-v2:04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+  "codeRevision": "2f2ccf9874d6bb55af4c734952a68a86bbd03148",
+  "scope": "Celtics regular-season event prefixes only; not a season scoring run",
+  "games": 82,
+  "jumpBuckets": 163,
+  "movedCutoffs": 28,
+  "scoreChanges": 0,
+  "interruptedBuckets": 1,
+  "moved": [
+    {
+      "gameId": "0022500017",
+      "period": 3,
+      "clockMs": 630000,
+      "oldCutoff": 332,
+      "newCutoff": 334,
+      "jumpSequence": 334,
+      "includedEvents": [
+        {
+          "sequence": 332,
+          "type": "rebound",
+          "eventId": "cdn:0022500017:412"
+        },
+        {
+          "sequence": 333,
+          "type": "timeout",
+          "eventId": "cdn:0022500017:408"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500083",
+      "period": 1,
+      "clockMs": 542000,
+      "oldCutoff": 25,
+      "newCutoff": 26,
+      "jumpSequence": 28,
+      "includedEvents": [
+        {
+          "sequence": 25,
+          "type": "rebound",
+          "eventId": "cdn:0022500083:38"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500106",
+      "period": 1,
+      "clockMs": 82000,
+      "oldCutoff": 125,
+      "newCutoff": 126,
+      "jumpSequence": 126,
+      "includedEvents": [
+        {
+          "sequence": 125,
+          "type": "rebound",
+          "eventId": "cdn:0022500106:157"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500146",
+      "period": 3,
+      "clockMs": 658000,
+      "oldCutoff": 300,
+      "newCutoff": 304,
+      "jumpSequence": 304,
+      "includedEvents": [
+        {
+          "sequence": 300,
+          "type": "field_goal",
+          "eventId": "cdn:0022500146:394"
+        },
+        {
+          "sequence": 301,
+          "type": "block",
+          "eventId": "cdn:0022500146:395"
+        },
+        {
+          "sequence": 302,
+          "type": "rebound",
+          "eventId": "cdn:0022500146:396"
+        },
+        {
+          "sequence": 303,
+          "type": "timeout",
+          "eventId": "cdn:0022500146:361"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500158",
+      "period": 2,
+      "clockMs": 595000,
+      "oldCutoff": 151,
+      "newCutoff": 152,
+      "jumpSequence": 156,
+      "includedEvents": [
+        {
+          "sequence": 151,
+          "type": "rebound",
+          "eventId": "cdn:0022500158:184"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500174",
+      "period": 1,
+      "clockMs": 60000,
+      "oldCutoff": 135,
+      "newCutoff": 136,
+      "jumpSequence": 136,
+      "includedEvents": [
+        {
+          "sequence": 135,
+          "type": "rebound",
+          "eventId": "cdn:0022500174:170"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500174",
+      "period": 4,
+      "clockMs": 248000,
+      "oldCutoff": 507,
+      "newCutoff": 508,
+      "jumpSequence": 508,
+      "includedEvents": [
+        {
+          "sequence": 507,
+          "type": "rebound",
+          "eventId": "cdn:0022500174:621"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500250",
+      "period": 1,
+      "clockMs": 625000,
+      "oldCutoff": 14,
+      "newCutoff": 15,
+      "jumpSequence": 15,
+      "includedEvents": [
+        {
+          "sequence": 14,
+          "type": "rebound",
+          "eventId": "cdn:0022500250:25"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500277",
+      "period": 4,
+      "clockMs": 215000,
+      "oldCutoff": 485,
+      "newCutoff": 486,
+      "jumpSequence": 486,
+      "includedEvents": [
+        {
+          "sequence": 485,
+          "type": "rebound",
+          "eventId": "cdn:0022500277:607"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500293",
+      "period": 4,
+      "clockMs": 381000,
+      "oldCutoff": 463,
+      "newCutoff": 466,
+      "jumpSequence": 468,
+      "includedEvents": [
+        {
+          "sequence": 463,
+          "type": "field_goal",
+          "eventId": "cdn:0022500293:577"
+        },
+        {
+          "sequence": 464,
+          "type": "block",
+          "eventId": "cdn:0022500293:578"
+        },
+        {
+          "sequence": 465,
+          "type": "rebound",
+          "eventId": "cdn:0022500293:584"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500474",
+      "period": 2,
+      "clockMs": 114000,
+      "oldCutoff": 204,
+      "newCutoff": 206,
+      "jumpSequence": 206,
+      "includedEvents": [
+        {
+          "sequence": 204,
+          "type": "turnover",
+          "eventId": "cdn:0022500474:260"
+        },
+        {
+          "sequence": 205,
+          "type": "steal",
+          "eventId": "cdn:0022500474:261"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500520",
+      "period": 1,
+      "clockMs": 271000,
+      "oldCutoff": 61,
+      "newCutoff": 62,
+      "jumpSequence": 68,
+      "includedEvents": [
+        {
+          "sequence": 61,
+          "type": "rebound",
+          "eventId": "cdn:0022500520:82"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500532",
+      "period": 3,
+      "clockMs": 17000,
+      "oldCutoff": 386,
+      "newCutoff": 387,
+      "jumpSequence": 387,
+      "includedEvents": [
+        {
+          "sequence": 386,
+          "type": "rebound",
+          "eventId": "cdn:0022500532:490"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500580",
+      "period": 1,
+      "clockMs": 329000,
+      "oldCutoff": 67,
+      "newCutoff": 68,
+      "jumpSequence": 68,
+      "includedEvents": [
+        {
+          "sequence": 67,
+          "type": "rebound",
+          "eventId": "cdn:0022500580:87"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500637",
+      "period": 2,
+      "clockMs": 347000,
+      "oldCutoff": 199,
+      "newCutoff": 200,
+      "jumpSequence": 206,
+      "includedEvents": [
+        {
+          "sequence": 199,
+          "type": "rebound",
+          "eventId": "cdn:0022500637:254"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500689",
+      "period": 2,
+      "clockMs": 352000,
+      "oldCutoff": 212,
+      "newCutoff": 213,
+      "jumpSequence": 213,
+      "includedEvents": [
+        {
+          "sequence": 212,
+          "type": "rebound",
+          "eventId": "cdn:0022500689:269"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500799",
+      "period": 3,
+      "clockMs": 158000,
+      "oldCutoff": 374,
+      "newCutoff": 375,
+      "jumpSequence": 377,
+      "includedEvents": [
+        {
+          "sequence": 374,
+          "type": "timeout",
+          "eventId": "cdn:0022500799:466"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500880",
+      "period": 3,
+      "clockMs": 100000,
+      "oldCutoff": 384,
+      "newCutoff": 386,
+      "jumpSequence": 386,
+      "includedEvents": [
+        {
+          "sequence": 384,
+          "type": "turnover",
+          "eventId": "cdn:0022500880:522"
+        },
+        {
+          "sequence": 385,
+          "type": "steal",
+          "eventId": "cdn:0022500880:523"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500894",
+      "period": 1,
+      "clockMs": 258000,
+      "oldCutoff": 80,
+      "newCutoff": 81,
+      "jumpSequence": 81,
+      "includedEvents": [
+        {
+          "sequence": 80,
+          "type": "rebound",
+          "eventId": "cdn:0022500894:102"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500921",
+      "period": 1,
+      "clockMs": 484000,
+      "oldCutoff": 30,
+      "newCutoff": 31,
+      "jumpSequence": 31,
+      "includedEvents": [
+        {
+          "sequence": 30,
+          "type": "rebound",
+          "eventId": "cdn:0022500921:43"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500921",
+      "period": 4,
+      "clockMs": 451000,
+      "oldCutoff": 463,
+      "newCutoff": 464,
+      "jumpSequence": 470,
+      "includedEvents": [
+        {
+          "sequence": 463,
+          "type": "rebound",
+          "eventId": "cdn:0022500921:569"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022500942",
+      "period": 1,
+      "clockMs": 34200,
+      "oldCutoff": 123,
+      "newCutoff": 126,
+      "jumpSequence": 126,
+      "includedEvents": [
+        {
+          "sequence": 123,
+          "type": "timeout",
+          "eventId": "cdn:0022500942:159"
+        },
+        {
+          "sequence": 124,
+          "type": "field_goal",
+          "eventId": "cdn:0022500942:161"
+        },
+        {
+          "sequence": 125,
+          "type": "rebound",
+          "eventId": "cdn:0022500942:165"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022501019",
+      "period": 1,
+      "clockMs": 662000,
+      "oldCutoff": 10,
+      "newCutoff": 11,
+      "jumpSequence": 11,
+      "includedEvents": [
+        {
+          "sequence": 10,
+          "type": "rebound",
+          "eventId": "cdn:0022501019:19"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022501092",
+      "period": 4,
+      "clockMs": 491000,
+      "oldCutoff": 461,
+      "newCutoff": 465,
+      "jumpSequence": 473,
+      "includedEvents": [
+        {
+          "sequence": 461,
+          "type": "rebound",
+          "eventId": "cdn:0022501092:562"
+        },
+        {
+          "sequence": 462,
+          "type": "field_goal",
+          "eventId": "cdn:0022501092:563"
+        },
+        {
+          "sequence": 463,
+          "type": "block",
+          "eventId": "cdn:0022501092:564"
+        },
+        {
+          "sequence": 464,
+          "type": "rebound",
+          "eventId": "cdn:0022501092:576"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022501092",
+      "period": 4,
+      "clockMs": 249000,
+      "oldCutoff": 519,
+      "newCutoff": 520,
+      "jumpSequence": 520,
+      "includedEvents": [
+        {
+          "sequence": 519,
+          "type": "rebound",
+          "eventId": "cdn:0022501092:629"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022501132",
+      "period": 3,
+      "clockMs": 33300,
+      "oldCutoff": 385,
+      "newCutoff": 388,
+      "jumpSequence": 390,
+      "includedEvents": [
+        {
+          "sequence": 385,
+          "type": "field_goal",
+          "eventId": "cdn:0022501132:469"
+        },
+        {
+          "sequence": 386,
+          "type": "block",
+          "eventId": "cdn:0022501132:470"
+        },
+        {
+          "sequence": 387,
+          "type": "rebound",
+          "eventId": "cdn:0022501132:474"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022501168",
+      "period": 2,
+      "clockMs": 294000,
+      "oldCutoff": 210,
+      "newCutoff": 211,
+      "jumpSequence": 211,
+      "includedEvents": [
+        {
+          "sequence": 210,
+          "type": "rebound",
+          "eventId": "cdn:0022501168:255"
+        }
+      ],
+      "scoreChanged": false
+    },
+    {
+      "gameId": "0022501186",
+      "period": 4,
+      "clockMs": 25900,
+      "oldCutoff": 555,
+      "newCutoff": 556,
+      "jumpSequence": 556,
+      "includedEvents": [
+        {
+          "sequence": 555,
+          "type": "rebound",
+          "eventId": "cdn:0022501186:676"
+        }
+      ],
+      "scoreChanged": false
+    }
+  ],
+  "interrupted": [
+    {
+      "gameId": "0022500520",
+      "period": 2,
+      "clockMs": 295000,
+      "oldCutoff": 176,
+      "newCutoff": 176,
+      "jumpSequence": 181,
+      "events": [
+        {
+          "sequence": 176,
+          "type": "substitution",
+          "eventId": "cdn:0022500520:224"
+        },
+        {
+          "sequence": 177,
+          "type": "substitution",
+          "eventId": "cdn:0022500520:225"
+        },
+        {
+          "sequence": 178,
+          "type": "substitution",
+          "eventId": "cdn:0022500520:226"
+        },
+        {
+          "sequence": 179,
+          "type": "substitution",
+          "eventId": "cdn:0022500520:227"
+        },
+        {
+          "sequence": 180,
+          "type": "turnover",
+          "eventId": "cdn:0022500520:297"
+        },
+        {
+          "sequence": 181,
+          "type": "jump_ball",
+          "eventId": "cdn:0022500520:228"
+        },
+        {
+          "sequence": 182,
+          "type": "foul",
+          "eventId": "cdn:0022500520:231"
+        },
+        {
+          "sequence": 183,
+          "type": "timeout",
+          "eventId": "cdn:0022500520:233"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00000.parquet",
+      "sha256": "944f08147ed88711fb68046dd7245460b670697dbc004787a62d58e514b701a1"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00001.parquet",
+      "sha256": "58e9a1577ab8ac55b6899da0e482f207d057efd24f5b19b3a91910176cfad7bd"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00002.parquet",
+      "sha256": "a58f1569c3f3d30a5862e4ed13df8d3588ae119f988618519a261f9010a1079e"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00003.parquet",
+      "sha256": "961a5f1761e0768ce72db402e5fd36388375d22c5cae53ecc90c24ec29133709"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00004.parquet",
+      "sha256": "f69e1c4b6b01dad8bd81fd1c54b7225dc18af07348ed4d5aafb20e7359751607"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00005.parquet",
+      "sha256": "ec4c6846a42b413e1740b95efdb8f441f461667076efe0c6af09e4fedb23005b"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00006.parquet",
+      "sha256": "a2413aabcd605d1e983bb626b05dc84bbfc4008db4958eaca3b0261a403cd860"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00007.parquet",
+      "sha256": "ed25410624151baa25d76a44025504985f8c3ae5b0e740bf8979e73a30956b00"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00008.parquet",
+      "sha256": "ddb1cc3a50de28a516f29987ed1a2e2a1af1a7853bbcdf8874af9783b3e15c95"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00009.parquet",
+      "sha256": "546d2e70af175e87c23d9d8696361d8baecba5348ea50637de30435e65ec3eba"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00010.parquet",
+      "sha256": "d395fd99c54fa064c4fc125f52e1b80a97ca18696a28dbf84bbd605f2e97b120"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00011.parquet",
+      "sha256": "f7bdcfdad1cff9e1073f5a2614cf9f4f28006bf9f940a16f6086babcec64a189"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00012.parquet",
+      "sha256": "fe711562a15ecda39031abedf5e155faa5ebbb3fd8bf88fb7a1a8398b28c7c18"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00013.parquet",
+      "sha256": "69794dbcbba5038a6d7e6ec372c7445c1ac21c74cc65926c40f1fd9a38d2890e"
+    },
+    {
+      "bucket": "sports-nba-data",
+      "key": "nba/releases/spo-839-full-v1-2025-26/objects/864da2199a8aa798bc85aae565bf52a62d956e68d68d946fc0388759aecb1816/tables/events/season=2025-26/phase=regular_season/part-00014.parquet",
+      "sha256": "fd3e692a603e1076e78ba2893c92f68ae2a1be36df5768dfb9758c73d66ac391"
+    }
+  ]
+}
