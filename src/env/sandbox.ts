@@ -28,6 +28,7 @@ export class DockerSandbox {
   #closing?: Promise<void>;
   #closed = false;
   #busy = false;
+  #workspaceErrors = "";
   #dead = false;
   #allowance = 0;
   #result?: { resolve: (value: any) => void; reject: (error: Error) => void };
@@ -193,7 +194,7 @@ export class DockerSandbox {
     this.#result?.reject(error);
     this.#result = undefined;
   }
-  #message(message: any) {
+  async #message(message: any) {
     if (message.type === "ready") {
       this.#ready?.resolve();
       this.#ready = undefined;
@@ -212,7 +213,7 @@ export class DockerSandbox {
         else if (message.operation === "mkdir")
           value = this.#port.mkdir(message.path);
         else if (message.operation === "mutate")
-          value = this.#port.mutate(
+          value = await this.#port.mutate(
             message.operation_kind,
             message.path,
             Buffer.from(message.content ?? "", "base64"),
@@ -224,10 +225,23 @@ export class DockerSandbox {
           value: value ?? null,
         });
       } catch (error) {
+        if (
+          error instanceof SessionError &&
+          error.message.startsWith("Memory cap exceeded")
+        )
+          this.#workspaceErrors = (
+            this.#workspaceErrors +
+            "\n" +
+            error.message
+          ).slice(-8192);
         this.#send({
           type: "workspace_response",
           id: message.id,
           error: error instanceof SessionError ? error.code : "invalid_input",
+          message:
+            error instanceof SessionError
+              ? error.message
+              : "Workspace operation failed",
         });
       }
       return;
@@ -251,6 +265,7 @@ export class DockerSandbox {
     if (this.#closed || this.#dead || this.#busy)
       throw new SessionError("phase_refused", "Sandbox unavailable");
     this.#busy = true;
+    this.#workspaceErrors = "";
     this.#allowance = limits.computeSeconds;
     const cancel = () => {
       void this.close().catch(() => {});
@@ -286,10 +301,20 @@ export class DockerSandbox {
         throw Error("Invalid sandbox result");
       return {
         stdout: trim(message.stdout, limits.stdoutBytes),
-        stderr: trim(message.stderr, limits.stdoutBytes),
+        stderr: trim(
+          Buffer.concat([
+            Buffer.from(this.#workspaceErrors),
+            Buffer.from(message.stderr, "base64"),
+          ]).toString("base64"),
+          limits.stdoutBytes,
+        ),
         exitStatus: message.exitStatus,
         computeSeconds: message.computeSeconds,
-        truncated: !!message.truncated,
+        truncated:
+          !!message.truncated ||
+          Buffer.byteLength(this.#workspaceErrors) +
+            Buffer.from(message.stderr, "base64").length >
+            limits.stdoutBytes,
         limit: message.limit,
       };
     } finally {

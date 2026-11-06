@@ -307,6 +307,10 @@ export class MeteringProxy {
       output_config: { effort: budget.config.harness.loop.effort },
     };
   }
+  /** Trusted housekeeping only; never exposed on the analyst HTTP endpoint. */
+  countMemory(request: MessageCreateParamsNonStreaming, signal: AbortSignal) {
+    return this.provider.count(request, signal);
+  }
   async listen(): Promise<void> {
     await new Promise<void>((resolve) =>
       this.#server.listen(0, "127.0.0.1", resolve),

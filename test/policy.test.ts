@@ -179,7 +179,7 @@ test("freeze is atomic, idempotent, hash checked, cutoff enforced, and workspace
       workspace,
       new WorkspacePolicy(
         {
-          version: "fixture",
+          version: "memory-v1",
           horizon: "season",
           revision: "editable",
           process: "voluntary",
@@ -441,7 +441,7 @@ test("stateless policy workspace exposes only current package; legacy stateless 
   writeFileSync(join(workspace, "memory.txt"), "other game");
   try {
     const memory = {
-      version: "fixture",
+      version: "memory-v1",
       horizon: "stateless",
       revision: "editable",
       process: "voluntary",

@@ -1,3 +1,4 @@
+import { memoryV3Schema, isMemoryV3, validateMemory } from "../env/memory.js";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { Temporal } from "@js-temporal/polyfill";
@@ -26,13 +27,20 @@ export const configSchema = z.strictObject({
   host: z.enum(["local", "aws-ec2-ebs", "aws-fargate-efs"]),
   codeRevision: name,
   profile: z.strictObject({
-    memory: z.strictObject({
-      version: name,
-      horizon: z.enum(["stateless", "season", "window"]),
-      windowGames: z.number().int().min(1).max(82).optional(),
-      revision: z.enum(["editable", "append-only"]),
-      process: z.enum(["voluntary", "mandated-reflection"]),
-    }),
+    memory: z.union([
+      memoryV3Schema,
+      z.strictObject({
+        variant: z.never().optional(),
+        coachProfile: z.never().optional(),
+        bestPractices: z.never().optional(),
+        skills: z.never().optional(),
+        version: z.literal("memory-v1"),
+        horizon: z.enum(["stateless", "season", "window"]),
+        windowGames: z.number().int().min(1).max(82).optional(),
+        revision: z.enum(["editable", "append-only"]),
+        process: z.enum(["voluntary", "mandated-reflection"]),
+      }),
+    ]),
     dataSources: z
       .array(
         z.strictObject({ type: name, release: name, manifestSha256: hash }),
@@ -49,6 +57,12 @@ export const configSchema = z.strictObject({
     }),
   }),
   budget: z.strictObject({
+    memory: z
+      .strictObject({
+        tokenCap: z.literal(50000),
+        countProtocol: z.literal("analyst-count-snapshot-v1"),
+      })
+      .optional(),
     id: name,
     pilotApproved: z.boolean(),
     pregame: phaseBudget,
@@ -165,6 +179,13 @@ export function manifest(
   schedule: ScheduledGame[],
 ): Manifest {
   const c = configSchema.parse(config);
+  if (isMemoryV3(c.profile.memory)) {
+    validateMemory(c.profile.memory);
+    if (!c.budget.memory)
+      throw Error(
+        "V3 memory requires a pinned memory counting budget descriptor",
+      );
+  }
   if (
     (c.profile.memory.horizon === "window") !==
     (c.profile.memory.windowGames !== undefined)

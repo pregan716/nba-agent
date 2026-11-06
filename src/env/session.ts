@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { boundaryNames, auditBoundary } from "./memory-audit.js";
+import { isMemoryV3, validateMemory } from "./memory.js";
 import { resolve as resolvePolicyPath } from "node:path";
 import { policyHarness } from "../policy/replay.js";
 import { canonicalJson } from "./tools.js";
@@ -68,6 +71,7 @@ export class Session {
   #cutoff: string;
   #source: SessionSource;
   #closed = false;
+  #freezing = false;
   #workspace?: Workspace;
   #lifecycle: Lifecycle;
   #evidenceIndex?: Promise<EvidenceIndex>;
@@ -80,6 +84,7 @@ export class Session {
     workspacePath?: string,
     runRoot?: string,
     private policyTools?: PolicyTools,
+    private countMemory?: import("../runner/memory.js").MemoryCounter,
   ) {
     if (
       policyTools &&
@@ -94,6 +99,8 @@ export class Session {
         canonicalJson(policyHarness(policyTools.assembler))
     )
       throw Error("Policy tools harness mismatch");
+    if (isMemoryV3(config.profile.memory))
+      validateMemory(config.profile.memory);
     this.#config = deepFreeze(structuredClone(config));
     this.#game = deepFreeze(structuredClone(game));
     this.#phase = phase;
@@ -106,11 +113,35 @@ export class Session {
         workspacePath,
         new WorkspacePolicy(
           this.#config.profile.memory,
-          () => (this.#closed ? "closed" : this.#phase),
+          () =>
+            this.#closed ? "closed" : this.#freezing ? "commit" : this.#phase,
           !!policyTools,
+          game.gameId,
         ),
         runRoot!,
         game.gameId,
+        countMemory,
+        () => {
+          if (
+            !isMemoryV3(this.#config.profile.memory) ||
+            !this.policyTools ||
+            this.#closed
+          )
+            return undefined;
+          try {
+            const page = this.policyTools.readFeedback(this.#phase);
+            return {
+              gameId: page.gameId,
+              content: readFileSync(
+                resolvePolicyPath(runRoot!, "feedback", page.gameId + ".json"),
+              ),
+            };
+          } catch (error) {
+            if (error instanceof SessionError && error.code === "not_found")
+              return undefined;
+            throw error;
+          }
+        },
       );
     const configured = config.profile.dataSources.map((d) => ({
       source: d.type,
@@ -195,12 +226,14 @@ export class Session {
       cutoff: this.#cutoff,
       budget: structuredClone(budget),
       capabilities: [...this.#config.profile.capabilities.enabled].sort(),
-      memory: {
-        horizon,
-        revision,
-        process,
-        ...(windowGames === undefined ? {} : { window_games: windowGames }),
-      },
+      memory: isMemoryV3(this.#config.profile.memory)
+        ? structuredClone(this.#config.profile.memory)
+        : {
+            horizon: horizon!,
+            revision: revision!,
+            process: process!,
+            ...(windowGames === undefined ? {} : { window_games: windowGames }),
+          },
     };
   }
   async #evidence() {
@@ -593,6 +626,20 @@ export class Session {
           "capability_disabled",
           "Policy tools are not installed",
         );
+      if (
+        name === "freeze_package" &&
+        isMemoryV3(this.#config.profile.memory)
+      ) {
+        this.#freezing = true;
+        try {
+          const receipt = await this.policyTools.freeze(this.#phase, signal);
+          if ("packageHash" in receipt)
+            await this.transition("commit", this.#game.scheduledStart);
+          return receipt as ToolResult<N>;
+        } finally {
+          this.#freezing = false;
+        }
+      }
       return (
         name === "freeze_package"
           ? await this.policyTools.freeze(this.#phase, signal)
@@ -621,7 +668,7 @@ export class Session {
                 args.path!,
                 Buffer.from(args.content ?? "", "utf8"),
               );
-      return result as ToolResult<N>;
+      return (await result) as ToolResult<N>;
     }
     const methods = {
       search_evidence: this.search_evidence.bind(this),
@@ -727,6 +774,7 @@ export class Session {
   }
   async close() {
     this.#closed = true;
+    await this.#workspace?.idle();
   }
 }
 
@@ -751,6 +799,7 @@ export function sessionEnvironment(
       trusted.workspace,
       trusted.root,
       hooks.policy?.(context, trusted),
+      trusted.countMemory,
     );
     let sandbox: DockerSandbox | undefined;
     return {
@@ -758,6 +807,12 @@ export function sessionEnvironment(
         session.validatePackage(allowance, signal),
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
+      boundaryAudit: async () =>
+        auditBoundary(
+          trusted.workspace,
+          context.game.gameId,
+          await boundaryNames(source),
+        ),
       context: (budget) => session.context(budget),
       transition: (phase, cutoff) => session.transition(phase, cutoff),
       call: (name, input, signal) => {

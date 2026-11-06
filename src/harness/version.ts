@@ -75,6 +75,7 @@ export const PI_CONTRACT = {
 } as const;
 
 export interface HarnessConfigOptions {
+  memoryInstructions?: string;
   implementation?: "pi" | "homemade";
   memory: RunConfig["profile"]["memory"];
   effort: RunConfig["harness"]["loop"]["effort"];
@@ -113,7 +114,8 @@ export function harnessConfig(
         Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [`memory:${k}`, v]),
       ),
     },
-    memoryInstructions: memoryInstructions(options.memory),
+    memoryInstructions:
+      options.memoryInstructions ?? memoryInstructions(options.memory),
     toolDefinitions: JSON.parse(serializeToolDefinitions(TOOL_DEFINITIONS)),
     loop: {
       effort: options.effort,

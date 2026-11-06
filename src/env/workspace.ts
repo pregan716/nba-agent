@@ -1,3 +1,9 @@
+import { isMemoryV3, MEMORY_TOKEN_CAP } from "./memory.js";
+import {
+  retainedFiles,
+  textBytes,
+  type MemoryCounter,
+} from "../runner/memory.js";
 import { writeBlob } from "../runner/blobs.js";
 import {
   constants,
@@ -30,7 +36,21 @@ export class WorkspacePolicy {
     private memory: RunConfig["profile"]["memory"],
     private phase: () => Phase | "closed",
     readonly packagesEnabled = false,
+    private gameId?: string,
+    private countMemory?: MemoryCounter,
+    private feedback?: () => { gameId: string; content: Buffer } | undefined,
   ) {}
+  get v3() {
+    return isMemoryV3(this.memory);
+  }
+  visible(path: string) {
+    try {
+      this.authorize("list", false, path);
+      return true;
+    } catch {
+      return false;
+    }
+  }
   get stateless() {
     return this.memory.horizon === "stateless";
   }
@@ -42,6 +62,51 @@ export class WorkspacePolicy {
       );
     if (!["pregame", "postgame"].includes(this.phase()))
       throw new SessionError("phase_refused", "Workspace locked in this phase");
+    if (isMemoryV3(this.memory)) {
+      const memory = this.memory;
+      const read = operation === "read" || operation === "list";
+      const denied = () => {
+        throw new SessionError("not_found", "Workspace entry unavailable");
+      };
+      if (!path) {
+        if (read) return;
+        return denied();
+      }
+      if (path === "scratch" || path.startsWith("scratch/")) return;
+      if (path === "packages") {
+        if (operation === "list") return;
+        return denied();
+      }
+      if (path.startsWith("packages/")) {
+        if (!this.gameId || path.split("/")[1] !== this.gameId) return denied();
+        return;
+      }
+      if (path === "memory") {
+        if (read && (memory.coachProfile.read || memory.bestPractices.read))
+          return;
+        return denied();
+      }
+      const gate =
+        path === "memory/coach_profile.md" ||
+        path === "memory/coach" ||
+        path.startsWith("memory/coach/")
+          ? memory.coachProfile
+          : path === "memory/best_practices.md" ||
+              path === "memory/practices" ||
+              path.startsWith("memory/practices/")
+            ? memory.bestPractices
+            : path === "skills" || path.startsWith("skills/")
+              ? memory.skills
+              : undefined;
+      if (
+        !gate ||
+        !gate[
+          read ? "read" : exists || operation === "delete" ? "revise" : "create"
+        ]
+      )
+        return denied();
+      return;
+    }
     if (
       this.memory.horizon === "stateless" &&
       !(
@@ -85,24 +150,41 @@ export interface WorkspacePort {
     operation: WorkspaceChange["operation"],
     path: string,
     content?: Buffer,
-  ): { path: string; bytes: number };
+  ): { path: string; bytes: number } | Promise<{ path: string; bytes: number }>;
 }
 
 /** Trusted service. Never give the harness its directory or mount it directly writable.
  * P3f must mediate mount operations through this service, including binary writes.
- * Calls are synchronous and runner-serialized; no other writer may own the directory.
+ * Legacy calls are synchronous; v3 mutations serialize counting and commit.
+ * No other writer may own the directory.
  */
 export class Workspace {
   #root: string;
   #changes: WorkspaceChange[] = [];
+  #queue: Promise<unknown> = Promise.resolve();
   constructor(
     root: string,
     readonly policy: WorkspacePolicy,
     private runRoot: string,
     private gameId?: string,
+    private countMemory?: MemoryCounter,
+    private feedback?: () => { gameId: string; content: Buffer } | undefined,
   ) {
     this.#root = resolve(root);
     this.#ordinary(this.#root, true);
+    if (policy.v3) {
+      for (const path of [
+        "scratch",
+        "packages",
+        gameId ? `packages/${gameId}` : "",
+        "memory",
+        "memory/coach",
+        "memory/practices",
+        "skills",
+      ])
+        if (path && policy.visible(path))
+          mkdirSync(join(this.#root, path), { recursive: true, mode: 0o700 });
+    }
   }
   #ordinary(path: string, directory = false) {
     const stat = lstatSync(path);
@@ -174,8 +256,8 @@ export class Workspace {
       throw new SessionError("phase_refused", "Package is frozen");
   }
   authorize(operation: WorkspaceChange["operation"], path: string) {
-    this.#unlocked(path);
     this.policy.authorize(operation, false, path);
+    this.#unlocked(path);
     try {
       this.policy.authorize(operation, !!this.#exists(this.#path(path)), path);
     } catch (e) {
@@ -183,18 +265,54 @@ export class Workspace {
     }
   }
   list(path = "") {
+    const feedback =
+      this.policy.v3 &&
+      (!path || path === "feedback" || path.startsWith("feedback/"))
+        ? this.feedback?.()
+        : undefined;
+    if (
+      this.policy.v3 &&
+      (path === "feedback" || path.startsWith("feedback/"))
+    ) {
+      if (!feedback)
+        throw new SessionError("not_found", "Workspace entry unavailable");
+      if (path === "feedback")
+        return {
+          entries: [
+            {
+              path: `feedback/${feedback.gameId}`,
+              kind: "directory" as const,
+              bytes: null,
+            },
+          ],
+        };
+      if (path === `feedback/${feedback.gameId}`)
+        return {
+          entries: [
+            {
+              path: `${path}/trace.json`,
+              kind: "file" as const,
+              bytes: feedback.content.length,
+            },
+          ],
+        };
+      throw new SessionError("not_found", "Workspace entry unavailable");
+    }
     this.policy.authorize(
       "list",
       false,
-      path === "" && this.policy.packagesEnabled ? "packages" : path,
+      path === "" && this.policy.packagesEnabled && !this.policy.v3
+        ? "packages"
+        : path,
     );
     try {
       const target = this.#path(path, true);
       this.#ordinary(target, true);
       const entries: WorkspaceEntry[] = readdirSync(target)
-        .filter(
-          (name) =>
-            path !== "" || !this.policy.stateless || name === "packages",
+        .filter((name) =>
+          this.policy.v3
+            ? this.policy.visible(path ? `${path}/${name}` : name)
+            : path !== "" || !this.policy.stateless || name === "packages",
         )
         .filter(
           (name) => path !== "packages" || !this.gameId || name === this.gameId,
@@ -208,14 +326,16 @@ export class Workspace {
             bytes: stat.isFile() ? stat.size : null,
           };
         });
-      return { entries };
+      if (!path && feedback)
+        entries.push({ path: "feedback", kind: "directory", bytes: null });
+      return { entries: entries.sort((a, b) => a.path.localeCompare(b.path)) };
     } catch (e) {
       return this.#error(e);
     }
   }
   mkdir(path: string) {
-    this.#unlocked(path);
     this.policy.authorize("write", false, path);
+    this.#unlocked(path);
     try {
       const target = this.#path(path);
       mkdirSync(target, { recursive: true, mode: 0o700 });
@@ -225,6 +345,12 @@ export class Workspace {
     }
   }
   readBytes(path: string): Buffer {
+    if (this.policy.v3 && path.startsWith("feedback/")) {
+      const feedback = this.feedback?.();
+      if (feedback && path === `feedback/${feedback.gameId}/trace.json`)
+        return feedback.content;
+      throw new SessionError("not_found", "Workspace entry unavailable");
+    }
     this.policy.authorize("read", false, path);
     try {
       const target = this.#path(path);
@@ -251,14 +377,53 @@ export class Workspace {
     operation: WorkspaceChange["operation"],
     path: string,
     content = Buffer.alloc(0),
+  ):
+    { path: string; bytes: number } | Promise<{ path: string; bytes: number }> {
+    if (!this.policy.v3) return this.#mutate(operation, path, content);
+    // Serialize validation, counting and commit across tools and FUSE writers.
+    const work = this.#queue.then(async () => {
+      this.authorize(operation, path);
+      if (path.startsWith("memory/")) {
+        if (!this.countMemory)
+          throw Error("Analyst memory counter is not installed");
+        const files = retainedFiles(this.#root, (path) =>
+            this.policy.visible(path),
+          ),
+          current = await this.countMemory(files);
+        try {
+          if (operation === "delete") delete files[path];
+          else
+            files[path] =
+              (operation === "append" ? (files[path] ?? "") : "") +
+              textBytes(content);
+        } catch {
+          throw new SessionError("invalid_input", "Memory must be UTF-8 text");
+        }
+        const proposed = await this.countMemory(files);
+        if (proposed > MEMORY_TOKEN_CAP)
+          throw new SessionError(
+            "memory_mode_refused",
+            `Memory cap exceeded: current ${current} tokens; proposed ${proposed}; cap ${MEMORY_TOKEN_CAP}`,
+          );
+      }
+      // Phase and freeze state may have changed while the counter was in flight.
+      return this.#mutate(operation, path, content);
+    });
+    this.#queue = work.catch(() => {});
+    return work;
+  }
+  #mutate(
+    operation: WorkspaceChange["operation"],
+    path: string,
+    content = Buffer.alloc(0),
   ) {
     if (
       !["write", "append", "delete"].includes(operation) ||
       !Buffer.isBuffer(content)
     )
       throw invalid();
-    this.#unlocked(path);
     this.policy.authorize(operation, false, path);
+    this.#unlocked(path);
     try {
       const target = this.#path(path),
         existing = this.#exists(target);
@@ -302,6 +467,9 @@ export class Workspace {
     } catch (e) {
       return this.#error(e);
     }
+  }
+  async idle() {
+    await this.#queue;
   }
   changes(): WorkspaceChange[] {
     return structuredClone(this.#changes);

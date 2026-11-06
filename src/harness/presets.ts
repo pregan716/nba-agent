@@ -1,3 +1,5 @@
+import { isMemoryV3 } from "../env/memory.js";
+import { SYSTEM_PROMPT } from "./prompts.js";
 // Run-config presets for the launcher. Budget numbers are Open in the brief and
 // are set by the pilot procedure; the values here are deliberately generous
 // ceilings for the development-games pilot and are labelled as such. They are
@@ -97,9 +99,22 @@ export function presetConfig(options: PresetOptions): RunConfig {
       capabilities: { version: "capabilities-v1", enabled },
       modelRoles: { version: "roles-v1", analyst: "claude-opus-4-6" },
     },
-    budget: PILOT_BUDGET,
+    budget: {
+      ...PILOT_BUDGET,
+      ...(isMemoryV3(options.memory)
+        ? {
+            memory: {
+              tokenCap: 50000 as const,
+              countProtocol: "analyst-count-snapshot-v1" as const,
+            },
+          }
+        : {}),
+    },
     harness: harnessConfig({
       implementation: options.harness,
+      ...(isMemoryV3(options.memory)
+        ? { memoryInstructions: SYSTEM_PROMPT }
+        : {}),
       memory: options.memory,
       effort: options.effort ?? "high",
       thinking: "adaptive",

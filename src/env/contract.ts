@@ -163,12 +163,16 @@ export interface ContextResult {
   budget: BudgetRemaining;
   /** Capability groups enabled for this run (see TOOL_CAPABILITY). Tools whose group is absent are refused. */
   capabilities: string[];
-  memory: {
-    horizon: "stateless" | "season" | "window";
-    window_games?: number;
-    revision: "editable" | "append-only";
-    process: "voluntary" | "mandated-reflection";
-  };
+  memory:
+    | (import("./memory.js").MemoryPermissions & { window_games?: never })
+    | {
+        version?: never;
+        variant?: never;
+        horizon: "stateless" | "season" | "window";
+        window_games?: number;
+        revision: "editable" | "append-only";
+        process: "voluntary" | "mandated-reflection";
+      };
 }
 
 export type EvidenceSource = "posts" | "transcripts" | "lineups";
