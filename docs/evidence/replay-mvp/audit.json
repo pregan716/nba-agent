@@ -2,59 +2,59 @@
   "manifest": {
     "schemaVersion": 1,
     "kind": "replay-mvp",
-    "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+    "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
     "datasets": [
       {
         "gameId": "0022500049",
-        "inputHash": "36c14a74cb05ef523b52866134cb673cab8fb11c2747c2fbd9911ac7c2100c26"
+        "inputHash": "49fe994ff8b1dfba2f85ceeda8be95b6f86be1c54ad8c0886dcf0ce078bef9b1"
       },
       {
         "gameId": "0022500060",
-        "inputHash": "1d457d5fec1b6b65621ce9540a6f9a9446465792e34f9cb15c216ecd03307892"
+        "inputHash": "91b0b6015de0f665d358ea04e373034504fe9098198aff43f7d5b49589861a34"
       },
       {
         "gameId": "0022500083",
-        "inputHash": "e368d0503fc8e8d2fda3b4ddf2d8468f38ac97cf79bb4521bb32c6553e0563e1"
+        "inputHash": "6d71692138ca9d043fb2482a067f3378a0540b618f48cc88d64a436a146ead84"
       },
       {
         "gameId": "0022500193",
-        "inputHash": "5370b2279ffe67fadc0d3781277c74a079cde570ba67942ce848326d8419199a"
+        "inputHash": "6485760e830da8a284abf566972cad2c823ba859a12dbb11d271d5b740894149"
       },
       {
         "gameId": "0022500209",
-        "inputHash": "7dd220ff5a1cc3e8ed848e7bf08c99bed123e332aeacc90e13c7655ff00e0801"
+        "inputHash": "0ca96395c657a84fa5d6b2fa0858b6d18591f0c7fcb8194824b3fa6de16ea15d"
       },
       {
         "gameId": "0022500216",
-        "inputHash": "5f6430ede4b065d51cc939f202f839c679454d89a217adff8587b2139b6d3a54"
+        "inputHash": "f1d18fff95b0fb1a72040116e1b92572e16c83473e7098ad7913f98207675a06"
       },
       {
         "gameId": "0022500233",
-        "inputHash": "f93020c8dc5889a2c2cb832bebbfbb8aed4d2a87a28a2f1de3b7fa5946951d0a"
+        "inputHash": "c8b8400c7ebac62732bdcf79fa723c4eed071d25ac6806bdbd456a798687793d"
       },
       {
         "gameId": "0022500250",
-        "inputHash": "0a8d8f2cbcebca3fa7e8a4caf695535fb2a746e77fd9f2365bdd85aa50358c5e"
+        "inputHash": "7555b5e88f3138ee78216f0e8a6de9d1e2c0ea6eb6e56001bf4161fdfd4a7c71"
       },
       {
         "gameId": "0022500277",
-        "inputHash": "d749ec1b306b21524a4ea7868eb4f46c2b56935c006c41688ece17a92aaea186"
+        "inputHash": "bb86cd561d51882f63ebfe16cef35fe0714cf4264247bc5a282f940527f4e3d9"
       },
       {
         "gameId": "0022500293",
-        "inputHash": "54f9aa71e5507b1c816c7aa74c76cf0c36df88b3c6baca8bb5cfbfa148653c1c"
+        "inputHash": "d7ac94b6210b4053d4faedc6175fda325d1a243eb504e223c0a095ff439e85d6"
       },
       {
         "gameId": "0022500302",
-        "inputHash": "d1a1ad4c87805b39e05938ebe4caff5fa54319ad8538246df926e5a5b6278247"
+        "inputHash": "e013247f870869244102ec63c86fc1971c35d69ccd5f4fa583119dd8175f2e69"
       },
       {
         "gameId": "0022500338",
-        "inputHash": "b0daf07a7f5c5faf425083a4f27d26959e4c35c72c45e30a7a0e2cc6f0158a03"
+        "inputHash": "16923f086efb7b6224c9897af896b9ff02cdd498b1367f61a27ffbf264f3333e"
       },
       {
         "gameId": "0022500637",
-        "inputHash": "3cdaf58200bc1d3177647f3dc5ccba036a5289f0eda7a995c536b4c5b6b10f35"
+        "inputHash": "f4e376f8a2858b4875a444d978b205cc270eee69e94f915ddfbe7cec02d4e6a1"
       }
     ],
     "harness": {
@@ -65,7 +65,7 @@
     },
     "predictors": {
       "constant": {
-        "id": "constant-v1:03be1aca4f80eeee719e76cd062f424ebc698f036cb7da7106de7592fdf45cb1",
+        "id": "constant-v1:cf2d731f517223155fbed8054473b22aa2b77d708eb7b866e5a552eb79914f1f",
         "training": {
           "gameIds": [
             "0022500049",
@@ -80,16 +80,16 @@
             "0022500302"
           ],
           "inputHashes": [
-            "0a8d8f2cbcebca3fa7e8a4caf695535fb2a746e77fd9f2365bdd85aa50358c5e",
-            "1d457d5fec1b6b65621ce9540a6f9a9446465792e34f9cb15c216ecd03307892",
-            "36c14a74cb05ef523b52866134cb673cab8fb11c2747c2fbd9911ac7c2100c26",
-            "5370b2279ffe67fadc0d3781277c74a079cde570ba67942ce848326d8419199a",
-            "54f9aa71e5507b1c816c7aa74c76cf0c36df88b3c6baca8bb5cfbfa148653c1c",
-            "5f6430ede4b065d51cc939f202f839c679454d89a217adff8587b2139b6d3a54",
-            "7dd220ff5a1cc3e8ed848e7bf08c99bed123e332aeacc90e13c7655ff00e0801",
-            "d1a1ad4c87805b39e05938ebe4caff5fa54319ad8538246df926e5a5b6278247",
-            "d749ec1b306b21524a4ea7868eb4f46c2b56935c006c41688ece17a92aaea186",
-            "f93020c8dc5889a2c2cb832bebbfbb8aed4d2a87a28a2f1de3b7fa5946951d0a"
+            "0ca96395c657a84fa5d6b2fa0858b6d18591f0c7fcb8194824b3fa6de16ea15d",
+            "49fe994ff8b1dfba2f85ceeda8be95b6f86be1c54ad8c0886dcf0ce078bef9b1",
+            "6485760e830da8a284abf566972cad2c823ba859a12dbb11d271d5b740894149",
+            "7555b5e88f3138ee78216f0e8a6de9d1e2c0ea6eb6e56001bf4161fdfd4a7c71",
+            "91b0b6015de0f665d358ea04e373034504fe9098198aff43f7d5b49589861a34",
+            "bb86cd561d51882f63ebfe16cef35fe0714cf4264247bc5a282f940527f4e3d9",
+            "c8b8400c7ebac62732bdcf79fa723c4eed071d25ac6806bdbd456a798687793d",
+            "d7ac94b6210b4053d4faedc6175fda325d1a243eb504e223c0a095ff439e85d6",
+            "e013247f870869244102ec63c86fc1971c35d69ccd5f4fa583119dd8175f2e69",
+            "f1d18fff95b0fb1a72040116e1b92572e16c83473e7098ad7913f98207675a06"
           ],
           "windows": 596
         },
@@ -98,7 +98,7 @@
         }
       },
       "statistical": {
-        "id": "statistical-v1:c2897c0677e35521a0173569bcfcb9c1c488139e3ca2fb52375a6c7f295010ba",
+        "id": "statistical-v1:697566705ef1714c36caee6fd84797b4e75e6bdae85498fa8e4fa5a9ba609b8e",
         "training": {
           "gameIds": [
             "0022500049",
@@ -113,16 +113,16 @@
             "0022500302"
           ],
           "inputHashes": [
-            "0a8d8f2cbcebca3fa7e8a4caf695535fb2a746e77fd9f2365bdd85aa50358c5e",
-            "1d457d5fec1b6b65621ce9540a6f9a9446465792e34f9cb15c216ecd03307892",
-            "36c14a74cb05ef523b52866134cb673cab8fb11c2747c2fbd9911ac7c2100c26",
-            "5370b2279ffe67fadc0d3781277c74a079cde570ba67942ce848326d8419199a",
-            "54f9aa71e5507b1c816c7aa74c76cf0c36df88b3c6baca8bb5cfbfa148653c1c",
-            "5f6430ede4b065d51cc939f202f839c679454d89a217adff8587b2139b6d3a54",
-            "7dd220ff5a1cc3e8ed848e7bf08c99bed123e332aeacc90e13c7655ff00e0801",
-            "d1a1ad4c87805b39e05938ebe4caff5fa54319ad8538246df926e5a5b6278247",
-            "d749ec1b306b21524a4ea7868eb4f46c2b56935c006c41688ece17a92aaea186",
-            "f93020c8dc5889a2c2cb832bebbfbb8aed4d2a87a28a2f1de3b7fa5946951d0a"
+            "0ca96395c657a84fa5d6b2fa0858b6d18591f0c7fcb8194824b3fa6de16ea15d",
+            "49fe994ff8b1dfba2f85ceeda8be95b6f86be1c54ad8c0886dcf0ce078bef9b1",
+            "6485760e830da8a284abf566972cad2c823ba859a12dbb11d271d5b740894149",
+            "7555b5e88f3138ee78216f0e8a6de9d1e2c0ea6eb6e56001bf4161fdfd4a7c71",
+            "91b0b6015de0f665d358ea04e373034504fe9098198aff43f7d5b49589861a34",
+            "bb86cd561d51882f63ebfe16cef35fe0714cf4264247bc5a282f940527f4e3d9",
+            "c8b8400c7ebac62732bdcf79fa723c4eed071d25ac6806bdbd456a798687793d",
+            "d7ac94b6210b4053d4faedc6175fda325d1a243eb504e223c0a095ff439e85d6",
+            "e013247f870869244102ec63c86fc1971c35d69ccd5f4fa583119dd8175f2e69",
+            "f1d18fff95b0fb1a72040116e1b92572e16c83473e7098ad7913f98207675a06"
           ],
           "windows": 596
         },
@@ -148,7 +148,7 @@
         }
       }
     },
-    "codeRevision": "809508f06b1e170979e88a721fb5f9bbf6478dec"
+    "codeRevision": "140659c9d718e5c358af28b97a275a200d448e6c"
   },
   "training": [
     {
@@ -264,7 +264,7 @@
   "games": [
     {
       "gameId": "0022500083",
-      "inputHash": "e368d0503fc8e8d2fda3b4ddf2d8468f38ac97cf79bb4521bb32c6553e0563e1",
+      "inputHash": "6d71692138ca9d043fb2482a067f3378a0540b618f48cc88d64a436a146ead84",
       "evaluation": "development diagnostic; training occurs later",
       "diagnostics": {
         "candidates": 72,
@@ -277,7 +277,7 @@
       "ledger": [
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             77,
             84
@@ -287,7 +287,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             240,
             243
@@ -297,17 +297,17 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             378,
             379
           ],
           "reason": "unanchored_substitution",
-          "mechanism": "team_rebound_qualifier_unavailable_or_not_deadball"
+          "mechanism": "team_rebound_without_independent_stoppage"
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             93,
             99
@@ -317,7 +317,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             93,
             99
@@ -327,7 +327,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             93,
             99
@@ -337,7 +337,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             189,
             198
@@ -347,7 +347,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             189,
             198
@@ -357,7 +357,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             253,
             256
@@ -367,7 +367,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             253,
             256
@@ -377,7 +377,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             253,
             256
@@ -387,7 +387,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             310,
             312
@@ -397,7 +397,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             310,
             312
@@ -407,7 +407,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             389,
             392
@@ -417,7 +417,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             389,
             392
@@ -427,7 +427,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             389,
             392
@@ -437,7 +437,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             398,
             403
@@ -447,7 +447,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             398,
             403
@@ -457,7 +457,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             480,
             483
@@ -467,7 +467,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             480,
             483
@@ -477,7 +477,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             552,
             553
@@ -487,7 +487,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             552,
             553
@@ -497,7 +497,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             552,
             553
@@ -507,7 +507,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             554,
             557
@@ -517,7 +517,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             554,
             557
@@ -527,7 +527,7 @@
         },
         {
           "gameId": "0022500083",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             554,
             557
@@ -745,7 +745,7 @@
     },
     {
       "gameId": "0022500338",
-      "inputHash": "b0daf07a7f5c5faf425083a4f27d26959e4c35c72c45e30a7a0e2cc6f0158a03",
+      "inputHash": "16923f086efb7b6224c9897af896b9ff02cdd498b1367f61a27ffbf264f3333e",
       "evaluation": "post-warmup diagnostic",
       "diagnostics": {
         "candidates": 55,
@@ -758,7 +758,7 @@
       "ledger": [
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             446,
             449
@@ -768,17 +768,17 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             502,
             503
           ],
           "reason": "unanchored_substitution",
-          "mechanism": "team_rebound_qualifier_unavailable_or_not_deadball"
+          "mechanism": "team_rebound_without_independent_stoppage"
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             40,
             47
@@ -788,7 +788,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             40,
             47
@@ -798,7 +798,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             40,
             47
@@ -808,7 +808,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             82,
             93
@@ -818,7 +818,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             82,
             93
@@ -828,7 +828,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             265,
             270
@@ -838,7 +838,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             265,
             270
@@ -848,7 +848,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             295,
             299
@@ -858,7 +858,7 @@
         },
         {
           "gameId": "0022500338",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             295,
             299
@@ -1080,7 +1080,7 @@
     },
     {
       "gameId": "0022500637",
-      "inputHash": "3cdaf58200bc1d3177647f3dc5ccba036a5289f0eda7a995c536b4c5b6b10f35",
+      "inputHash": "f4e376f8a2858b4875a444d978b205cc270eee69e94f915ddfbe7cec02d4e6a1",
       "evaluation": "post-warmup diagnostic",
       "diagnostics": {
         "candidates": 80,
@@ -1093,7 +1093,7 @@
       "ledger": [
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             158,
             159
@@ -1103,17 +1103,17 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             419,
             422
           ],
           "reason": "unanchored_substitution",
-          "mechanism": "team_rebound_qualifier_unavailable_or_not_deadball"
+          "mechanism": "team_rebound_without_independent_stoppage"
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             465,
             468
@@ -1123,7 +1123,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             36,
             43
@@ -1133,7 +1133,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             36,
             43
@@ -1143,7 +1143,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             36,
             43
@@ -1153,7 +1153,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             236,
             237
@@ -1163,7 +1163,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             236,
             237
@@ -1173,7 +1173,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             236,
             237
@@ -1183,7 +1183,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             291,
             298
@@ -1193,7 +1193,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             291,
             298
@@ -1203,7 +1203,7 @@
         },
         {
           "gameId": "0022500637",
-          "releaseManifestSha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
           "span": [
             291,
             298
