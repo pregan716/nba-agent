@@ -1,3 +1,4 @@
+import { feedbackPage } from "../src/policy/feedback.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -136,6 +137,17 @@ test("independent candidate, observable prefix, and outcome held separately", ()
   assert.deepEqual(w.state!.celtics, five);
   assert.equal(w.state!.players[0].minutes, 2);
   assert.equal(w.state!.history.substitutions.length, 0);
+  const summary = (window: Window) =>
+    feedbackPage({
+      gameId: "game",
+      summary: {},
+      windows: [{ result: { window } }],
+    } as any).windows![0].stateSummary;
+  const beforeSummary = summary(w);
+  assert.equal(
+    beforeSummary!.players.find((p) => p.playerId === "a")!.minutes,
+    2,
+  );
   input.events[4].futureSecret = "PLANTED_FUTURE";
   input.events[4].home_score_after = 999;
   input.participants.push({
@@ -145,9 +157,46 @@ test("independent candidate, observable prefix, and outcome held separately", ()
     team_id: BOS,
   });
   assert.deepEqual(buildDataset(input).windows[0].state, w.state);
+  assert.deepEqual(summary(buildDataset(input).windows[0]), beforeSummary);
   assert.ok(!JSON.stringify(w.state).includes("PLANTED_FUTURE"));
   input.pregame.injuryReport.availableAt = input.game.scheduledStart;
   assert.throws(() => buildDataset(input), /strictly before/);
+});
+
+test("feedback home/away identity comes from game metadata even at a tied score", () => {
+  for (const home of [true, false]) {
+    const input = fixture();
+    if (!home) {
+      [input.game.homeTeamId, input.game.awayTeamId] = [
+        input.game.awayTeamId,
+        input.game.homeTeamId,
+      ];
+      for (const e of input.events) {
+        for (const suffix of [
+          "lineup_before",
+          "lineup_after",
+          "score_before",
+          "score_after",
+        ])
+          [e[`home_${suffix}`], e[`away_${suffix}`]] = [
+            e[`away_${suffix}`],
+            e[`home_${suffix}`],
+          ];
+      }
+    }
+    const dataset = buildDataset(input);
+    assert.equal(dataset.celticsHome, home);
+    const window = dataset.windows[0];
+    assert.deepEqual(window.exclusions, []);
+    const summary = feedbackPage({
+      gameId: dataset.gameId,
+      celticsHome: dataset.celticsHome,
+      summary: {},
+      windows: [{ result: { window } }],
+    } as any).windows![0].stateSummary!;
+    assert.equal(summary.homeScore, summary.awayScore);
+    assert.equal(summary.celticsHome, home);
+  }
 });
 
 test("retrospective jump ball snapshots first substitution; other late markers exclude", () => {

@@ -112,6 +112,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
   }
   const version = `${WINDOW_VERSION}:${input.release.sha256}`;
   const result: DecisionDataset = {
+    celticsHome: input.game.homeTeamId === BOS,
     version,
     windowVersion: WINDOW_VERSION,
     release: input.release,

@@ -42,8 +42,25 @@ export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
         ? {
             period: state.period,
             clockMs: state.clockMs,
+            celticsHome: trace.celticsHome ?? null,
+            homeScore: state.homeScore,
+            awayScore: state.awayScore,
+            margin: state.margin,
             celtics: state.celtics,
             eligibleBench: state.eligibleBench,
+            players: [
+              ...new Set([...state.celtics, ...state.eligibleBench]),
+            ].map((playerId) => {
+              const player = state.players?.find(
+                (p) => p.playerId === playerId,
+              );
+              return {
+                playerId,
+                personalFouls: player?.personalFouls ?? null,
+                minutes: player?.minutes ?? null,
+                currentStintMinutes: player?.currentStintMinutes ?? null,
+              };
+            }),
           }
         : null,
       diagnostics: preview(w.assembly?.assembly?.diagnostics),

@@ -127,6 +127,8 @@ export interface LedgerEntry {
   mechanism: string;
 }
 export interface DecisionDataset {
+  /** Static game metadata; absent in older cached datasets. */
+  celticsHome?: boolean;
   version: string;
   windowVersion: typeof WINDOW_VERSION;
   release: ObjectRef;
