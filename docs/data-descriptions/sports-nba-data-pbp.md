@@ -51,23 +51,23 @@ nba/
 
 Each folder under `releases/` is one immutable dataset version. The **current** play-by-play releases are:
 
-- `spo-771-full-v1-2024-25`: 1,394 inventory games
-- `spo-771-full-v1-2025-26`: 1,393 inventory games
+- `spo-839-full-v1-2024-25`: 1,394 inventory games
+- `spo-839-full-v1-2025-26`: 1,393 inventory games
 
-They are the accepted two-season backfill. Their remaining gaps (41 games) are listed in [season releases](season-releases.md#releases-that-close-the-remaining-fixable-gaps-spo-769771).
+They are the accepted two-season backfill, pinned in `config/datasets.json` since Nov 5, 2026. They add the feed's `qualifiers` array to `events` and `v_events_enriched` and apply the SPO-771 fixes to every game; `spo-771` had applied them to only the 576 games expected to change. Their remaining gaps (41 games) are unchanged and listed in [season releases](season-releases.md#releases-that-close-the-remaining-fixable-gaps-spo-769771); three non-Celtics 2025–26 games additionally have `summaries` marked `partial` for a plus-minus defect (upstream SPO-843).
 
 The other versions are kept for reproducibility. Don't use them for new work.
 
 | Versions | What they are |
 | --- | --- |
-| `spo-768-full-v1-*`, `spo-767-full-v1-*`, `spo-763-full-v1-2025-26`, `spo-761-full-v1-*` | Earlier full-season releases, each superseded by the next fix |
+| `spo-771-full-v1-*`, `spo-768-full-v1-*`, `spo-767-full-v1-*`, `spo-763-full-v1-2025-26`, `spo-761-full-v1-*` | Earlier full-season releases, each superseded by the next fix |
 | `spo-727-review-v2-*` | Season-assembly samples with one detailed game per season |
 | `spo-725-review-v1-*`, `spo-722-review-v1-*` | Early per-game and coverage-only review samples |
 
 Inside one release:
 
 ```text
-releases/spo-771-full-v1-2024-25/
+releases/spo-839-full-v1-2024-25/
 ├── manifest.json                       the commit point: written last, lists every file and its hash
 └── objects/<configuration-hash>/
     ├── tables/<table>/season=<season>/phase=<phase>/part-NNNNN.parquet
@@ -90,11 +90,11 @@ Don't read these files by hand. Fetch a release with the project's commands, whi
 ```sh
 doppler run --project sports-nba-data --config dev --no-fallback -- \
   uv run --locked --extra storage --extra publication nba-data release-fetch \
-  --dataset-version spo-771-full-v1-2024-25 --output data/release-fetch/spo-771-full-v1-2024-25 \
+  --dataset-version spo-839-full-v1-2024-25 --output data/release-fetch/spo-839-full-v1-2024-25 \
   --doppler-config dev
 
 uv run --locked --extra publication nba-data release-query \
-  --release data/release-fetch/spo-771-full-v1-2024-25 \
+  --release data/release-fetch/spo-839-full-v1-2024-25 \
   --sql "SELECT phase, count(*) FROM games GROUP BY phase"
 ```
 

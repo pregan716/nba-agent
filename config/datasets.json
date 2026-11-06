@@ -15,14 +15,14 @@
     },
     "pbp-2024-25": {
       "bucket": "sports-nba-data",
-      "key": "nba/releases/spo-771-full-v1-2024-25/manifest.json",
-      "sha256": "2c981aac2df783501bcbe111319be9190d01995729956b8137f50e6537843c5c",
+      "key": "nba/releases/spo-839-full-v1-2024-25/manifest.json",
+      "sha256": "449f99a1910ed1114815376acecfb7bc0c5ab834888d8f7d9bbdc577bac50a75",
       "bytes": 1945130
     },
     "pbp-2025-26": {
       "bucket": "sports-nba-data",
-      "key": "nba/releases/spo-771-full-v1-2025-26/manifest.json",
-      "sha256": "86ed2d06cb7d3db207760575822bb676dd89afbd6d523526cabfdc9c10aad474",
+      "key": "nba/releases/spo-839-full-v1-2025-26/manifest.json",
+      "sha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
       "bytes": 2386079
     },
     "injuries": {

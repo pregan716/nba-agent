@@ -1,0 +1,227 @@
+{
+  "deadball_team_rebound_buckets_with_no_other_opener": [
+    {
+      "celtics_substitution_rows": 0,
+      "clock_remaining_ms": 309000,
+      "contains_ejection": false,
+      "foul_subtypes": [
+        "technical"
+      ],
+      "game_id": "0022500174",
+      "period": 1,
+      "rows": [
+        "foul/technical",
+        "free_throw/1 of 1",
+        "rebound/offensive"
+      ],
+      "sequence_span": [
+        76,
+        78
+      ]
+    },
+    {
+      "celtics_substitution_rows": 0,
+      "clock_remaining_ms": 355000,
+      "contains_ejection": false,
+      "foul_subtypes": [
+        "technical"
+      ],
+      "game_id": "0022500250",
+      "period": 1,
+      "rows": [
+        "foul/technical",
+        "free_throw/1 of 1",
+        "rebound/offensive",
+        "substitution/out",
+        "substitution/in"
+      ],
+      "sequence_span": [
+        73,
+        77
+      ]
+    },
+    {
+      "celtics_substitution_rows": 0,
+      "clock_remaining_ms": 363000,
+      "contains_ejection": true,
+      "foul_subtypes": [
+        "technical"
+      ],
+      "game_id": "0022500728",
+      "period": 4,
+      "rows": [
+        "field_goal/Layup",
+        "block/None",
+        "rebound/defensive",
+        "foul/technical",
+        "free_throw/1 of 1",
+        "rebound/offensive",
+        "ejection/other",
+        "substitution/out",
+        "substitution/in"
+      ],
+      "sequence_span": [
+        484,
+        492
+      ]
+    },
+    {
+      "celtics_substitution_rows": 6,
+      "clock_remaining_ms": 218000,
+      "contains_ejection": true,
+      "foul_subtypes": [
+        "technical"
+      ],
+      "game_id": "0022500942",
+      "period": 2,
+      "rows": [
+        "foul/technical",
+        "foul/technical",
+        "ejection/other",
+        "free_throw/1 of 1",
+        "rebound/offensive",
+        "free_throw/1 of 1",
+        "substitution/out",
+        "substitution/out",
+        "substitution/out",
+        "substitution/in",
+        "substitution/in",
+        "substitution/in"
+      ],
+      "sequence_span": [
+        218,
+        229
+      ]
+    },
+    {
+      "celtics_substitution_rows": 0,
+      "clock_remaining_ms": 483000,
+      "contains_ejection": false,
+      "foul_subtypes": [
+        "technical"
+      ],
+      "game_id": "0022501222",
+      "period": 2,
+      "rows": [
+        "foul/technical",
+        "free_throw/1 of 1",
+        "rebound/offensive"
+      ],
+      "sequence_span": [
+        188,
+        190
+      ]
+    }
+  ],
+  "official_sample_qualifier_equality": {
+    "0022500083": {
+      "events": 586,
+      "qualifiers_equal_to_source": 586,
+      "source_actions": 586
+    },
+    "0022500338": {
+      "events": 533,
+      "qualifiers_equal_to_source": 533,
+      "source_actions": 533
+    },
+    "0022500637": {
+      "events": 677,
+      "qualifiers_equal_to_source": 677,
+      "source_actions": 677
+    }
+  },
+  "pin": {
+    "bucket": "sports-nba-data",
+    "bytes": 2386079,
+    "key": "nba/releases/spo-839-full-v1-2025-26/manifest.json",
+    "sha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b"
+  },
+  "qualifier_vocabulary_by_event_type": {
+    "administrative:fromturnover": 8,
+    "field_goal:2ndchance": 1957,
+    "field_goal:defensivegoaltending": 23,
+    "field_goal:fastbreak": 1459,
+    "field_goal:fromturnover": 1888,
+    "field_goal:pointsinthepaint": 6097,
+    "foul:1freethrow": 427,
+    "foul:2freethrow": 1326,
+    "foul:3freethrow": 65,
+    "foul:inpenalty": 647,
+    "foul:team": 2,
+    "free_throw:2ndchance": 509,
+    "free_throw:fastbreak": 336,
+    "free_throw:fromturnover": 429,
+    "rebound:deadball": 341,
+    "rebound:team": 1490,
+    "substitution:startperiod": 1610,
+    "timeout:mandatory": 648,
+    "timeout:team": 887,
+    "turnover:team": 117,
+    "violation:team": 25
+  },
+  "scope": "82 Celtics regular-season games, 2025-26; effective events only unless stated",
+  "team_rebounds_preceded_by": {
+    "deadball_team_rebound": {
+      "free_throw 1 of 1 missed": 11,
+      "free_throw 1 of 2 missed": 311,
+      "free_throw 1 of 3 missed": 8,
+      "free_throw 2 of 2 missed": 2,
+      "free_throw 2 of 3 missed": 9
+    },
+    "team_rebound_without_deadball": {
+      "administrative": 67,
+      "block": 205,
+      "field_goal DUNK missed": 2,
+      "field_goal Hook missed": 10,
+      "field_goal Jump Shot missed": 740,
+      "field_goal Layup missed": 107,
+      "free_throw 1 of 1 missed": 8,
+      "free_throw 2 of 2 missed": 10
+    }
+  },
+  "windows_v1_counts": {
+    "baseline_without_jump_ball_or_team_rebound": {
+      "adjacency_anchored_substitution_buckets": 5,
+      "candidate_inperiod_buckets": 4420,
+      "celtics_substitution_buckets": 1459,
+      "positive_candidates_after_adjacency": 1288,
+      "remainder_mechanisms": {
+        "delay_of_game_or_challenge": 2,
+        "jump_ball": 5,
+        "other_substitution_only": 7,
+        "player_rebound": 8,
+        "same_bucket_made_basket": 1,
+        "substitution_only_after_made_basket": 22,
+        "substitution_only_after_rebound": 21,
+        "team_rebound_qualifier_unavailable_or_not_deadball": 97,
+        "technical_foul_or_ejection": 7
+      },
+      "same_bucket_positive_candidates": 1284,
+      "substitution_share_after_adjacency": 0.2914027149321267,
+      "substitution_share_before_adjacency": 0.2904977375565611,
+      "unanchored_after_adjacency": 170,
+      "unanchored_before_adjacency": 175
+    },
+    "final_set_with_deadball_team_rebound_opener": {
+      "adjacency_anchored_substitution_buckets": 5,
+      "candidate_inperiod_buckets": 4581,
+      "celtics_substitution_buckets": 1459,
+      "positive_candidates_after_adjacency": 1300,
+      "remainder_mechanisms": {
+        "delay_of_game_or_challenge": 2,
+        "other_substitution_only": 7,
+        "player_rebound": 8,
+        "same_bucket_made_basket": 1,
+        "substitution_only_after_made_basket": 22,
+        "substitution_only_after_rebound": 21,
+        "team_rebound_qualifier_unavailable_or_not_deadball": 91,
+        "technical_foul_or_ejection": 6
+      },
+      "same_bucket_positive_candidates": 1296,
+      "substitution_share_after_adjacency": 0.2837808338790657,
+      "substitution_share_before_adjacency": 0.2829076620825147,
+      "unanchored_after_adjacency": 158,
+      "unanchored_before_adjacency": 163
+    }
+  }
+}
