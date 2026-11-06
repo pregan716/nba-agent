@@ -12,7 +12,7 @@ import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { canonicalJson } from "../env/tools.js";
 import { digest } from "../runner/config.js";
-import type { RecordStore } from "../runner/record.js";
+import type { RecordLog } from "../runner/record.js";
 import type { MeteringProxy } from "../runner/proxy.js";
 import {
   replay,
@@ -135,7 +135,7 @@ export async function assembleRequest(
 export async function replayPolicy(options: {
   dataset: DecisionDataset;
   predictorId: string;
-  record: RecordStore<ReplayManifest>;
+  record: RecordLog;
   proxy: MeteringProxy;
   assembler: Assembler;
   receipt: PackageReceipt | null;

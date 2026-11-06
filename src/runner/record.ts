@@ -214,3 +214,9 @@ export function diff(before: Snapshot, after: Snapshot) {
     ),
   };
 }
+
+/** Durable event surface shared by runner and scoped replay views. */
+export type RecordLog = Pick<
+  RecordStore<any>,
+  "root" | "events" | "append" | "verify"
+>;

@@ -37,3 +37,10 @@ jobs:
       - run: npx tsx scripts/assembler-build.ts
       - run: |
           ASSEMBLER_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/policy-sandbox.test.ts
+      - name: Offline chronological launcher and baselines
+        run: |
+          assembler_pin="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')"
+          npm run launch -- --scripted --memory=M0 --assembler-image="$assembler_pin"
+          npm run launch -- --scripted --memory=M3 --assembler-image="$assembler_pin"
+          npm run launch -- --scripted --memory=M3 --assembler-image="$assembler_pin"
+          npm run launch -- --scripted --mode=baselines --assembler-image="$assembler_pin"

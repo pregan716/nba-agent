@@ -287,6 +287,8 @@ export class Runner {
           await this.checkpoint();
         }
         this.record.append("game_end", game.gameId, {
+          ...(this.record.events("policy_game_end", game.gameId).at(-1)?.data ??
+            {}),
           development: game.development,
         });
         await this.checkpoint();

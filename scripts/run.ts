@@ -1,132 +1,243 @@
-import { memoryVariant, type MemoryPermissions } from "../src/env/memory.js";
-// Trusted launcher: the only place that holds the Anthropic key, opens the
-// corpus, and constructs the runner. The harness receives three handles.
-import { readFile } from "node:fs/promises";
+// Trusted launcher: provider credentials never enter the research process.
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { memoryVariant, type MemoryPermissions } from "../src/env/memory.js";
 import { DopplerStore } from "../src/data/store.js";
 import { openCorpus } from "../src/data/corpus.js";
 import { Identities } from "../src/data/identity.js";
 import { corpusSource } from "../src/env/source.js";
-import { sessionEnvironment } from "../src/env/session.js";
 import { manifest, type RunConfig } from "../src/runner/config.js";
 import {
   MeteringProxy,
   anthropicProvider,
-  type ModelProvider,
+  systemOneProvider,
 } from "../src/runner/proxy.js";
-import { Runner, type Harness } from "../src/runner/runner.js";
+import { RecordStore } from "../src/runner/record.js";
 import { piHarness } from "../src/harness/pi.js";
-import { analystHarness } from "../src/harness/loop.js";
 import { presetConfig } from "../src/harness/presets.js";
 import { probeForManifest } from "../src/harness/probe.js";
+import { currentCodeRevision } from "../src/harness/version.js";
+import { DockerAssembler } from "../src/policy/sandbox.js";
+import { policyHarness } from "../src/policy/replay.js";
+import { auditPregames, loadReplayInputs } from "../src/replay/load.js";
+import { buildDataset } from "../src/replay/dataset.js";
+import {
+  chronologicalRunner,
+  replayDescriptor,
+  runBaselines,
+  validateLaunch,
+} from "../src/launch/run.js";
+import {
+  chronologicalFixture,
+  scriptedAnalyst,
+  scriptedJev,
+} from "./fixtures/chronological.js";
 
 const arg = (name: string, fallback?: string) =>
   process.argv
     .find((a) => a.startsWith(`--${name}=`))
     ?.slice(name.length + 3) ?? fallback;
-const flag = (name: string) => process.argv.includes(`--${name}`);
-
-const mode = arg("mode", "analyst")!;
+// Retain provider keys in trusted memory, not in inherited subprocess environments.
+const providerKeys: Record<string, string | undefined> = {
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+  TYPESAFE_API_KEY: process.env.TYPESAFE_API_KEY,
+};
+delete process.env.ANTHROPIC_API_KEY;
+delete process.env.TYPESAFE_API_KEY;
+const scripted = process.argv.includes("--scripted");
+const purpose = arg("purpose", "fixture") as RunConfig["purpose"];
+const image = arg("assembler-image", "")!;
+validateLaunch(purpose, image);
+if (!image)
+  throw Error(
+    "Pass --assembler-image=<pinned digest> (npx tsx scripts/assembler-build.ts)",
+  );
 if (arg("revision") || arg("process"))
-  throw Error("V2 memory switches are not accepted; select --memory=M0..M4");
+  throw Error("V2 memory switches are refused; use --memory=M0..M4");
+if (arg("harness", "pi") !== "pi") throw Error("The v3 launcher runs Pi");
+const mode = arg("mode", "analyst");
+if (mode !== "analyst" && mode !== "baselines") throw Error("Unknown mode");
 const memory = memoryVariant(
   arg("memory", "M0") as MemoryPermissions["variant"],
 );
-const purpose = arg("purpose", "fixture") as "fixture" | "pilot";
-const runId = arg("run-id", `${mode}-${memory.variant}`)!;
-const replicateId = arg("replicate", "r1")!;
+const assembler = new DockerAssembler(image, {
+  wallSeconds: 15,
+  memoryBytes: 128 * 1024 * 1024,
+  outputBytes: 256000,
+});
 const root = resolve(arg("root", ".cache/runs")!);
-const probeFile = arg("probe");
-
-if (!flag("infrastructure-only"))
-  throw Error(
-    "The v2 task is not implemented. Use --infrastructure-only explicitly for unscored infrastructure diagnostics.",
-  );
-
-const store = new DopplerStore();
+const store = scripted ? null : new DopplerStore();
+const secret = (name: string) =>
+  providerKeys[name] ||
+  (() => {
+    throw Error(`${name} is required in the launcher process`);
+  })();
 try {
-  const corpus = await openCorpus(store, process.cwd(), ".cache/objects");
-  const ids = new Identities();
-  for (const m of JSON.parse(await readFile("config/identities.json", "utf8")))
-    ids.add(m);
-  const source = await corpusSource(corpus, ids);
-  const games = (await source.games()).filter(
-    (g) =>
-      g.data.season === "2025-26" &&
-      [g.data.home_team_id, g.data.away_team_id].includes("1610612738"),
-  );
-  if (mode !== "analyst") throw Error(`Unknown mode: ${mode}`);
-  const implementation = arg("harness", "pi");
-  if (implementation !== "pi" && implementation !== "homemade")
-    throw Error("Unknown harness");
+  const inputs = scripted
+    ? chronologicalFixture()
+    : await (async () => {
+        const corpus = await openCorpus(
+          store!,
+          process.cwd(),
+          ".cache/objects",
+        );
+        const mappings = JSON.parse(
+          readFileSync("config/identities.json", "utf8"),
+        );
+        const ids = new Identities();
+        for (const mapping of mappings) ids.add(mapping);
+        const source = await corpusSource(corpus, ids);
+        const schedule = (await source.games())
+          .filter(
+            (g) =>
+              g.data.season === "2025-26" &&
+              [g.data.home_team_id, g.data.away_team_id].includes("1610612738"),
+          )
+          .map((g) => ({
+            gameId: g.id,
+            scheduledStart: g.data.scheduled_tipoff as string,
+          }))
+          .sort((a, b) => a.scheduledStart.localeCompare(b.scheduledStart));
+        const datasets = (
+          await loadReplayInputs(
+            corpus,
+            await auditPregames(
+              corpus,
+              schedule.map((g) => g.gameId),
+              mappings,
+            ),
+          )
+        ).map(buildDataset);
+        return { source, schedule, datasets };
+      })();
+  const { source, schedule, datasets } = inputs;
   const config = presetConfig({
-    harness: implementation,
-    runId,
-    replicateId,
+    harness: "pi",
+    runId: arg(
+      "run-id",
+      `${scripted ? "scripted" : "fixture"}-${mode}-${memory.variant}`,
+    )!,
+    replicateId: arg("replicate", "r1")!,
     purpose,
     memory,
     dataSources: source.versions,
-    effort: arg("effort", "high") as RunConfig["harness"]["loop"]["effort"],
-    codeExecution: flag("code"),
-    contaminationProbe: probeFile
-      ? probeForManifest(JSON.parse(await readFile(probeFile, "utf8")))
+    codeExecution: !scripted,
+    contaminationProbe: arg("probe")
+      ? probeForManifest(JSON.parse(readFileSync(arg("probe")!, "utf8")))
       : null,
   });
-  const m = manifest(
-    config,
-    games.map((g) => ({
-      gameId: g.id,
-      scheduledStart: g.data.scheduled_tipoff,
-    })),
+  config.codeRevision = config.harness.codeRevision = currentCodeRevision();
+  config.budget.id = "development-limits-not-a-budget-profile";
+  config.harness.policy = policyHarness(assembler);
+  config.profile.modelRoles.jev = "jev-1.14.0";
+  config.replay = replayDescriptor(
+    datasets,
+    arg("jev-probe")
+      ? JSON.parse(readFileSync(arg("jev-probe")!, "utf8"))
+      : undefined,
   );
-  const provider: ModelProvider = anthropicProvider(
-    process.env.ANTHROPIC_API_KEY ??
-      (() => {
-        throw Error("ANTHROPIC_API_KEY is not set; run under doppler run");
-      })(),
+  config.replay.mode = mode === "baselines" ? "baselines" : "variant";
+  const proxy = new MeteringProxy(
+    scripted
+      ? scriptedAnalyst()
+      : mode === "baselines"
+        ? {
+            count: async () => 0,
+            create: async () => {
+              throw Error("No analyst in baselines");
+            },
+          }
+        : anthropicProvider(secret("ANTHROPIC_API_KEY")),
+    scripted ? scriptedJev : systemOneProvider(secret("TYPESAFE_API_KEY")),
   );
-  const harness: Harness = (config.harness.pi ? piHarness : analystHarness)({
-    model: config.profile.modelRoles.analyst,
-    process: memory.process,
-    onTurn: (e) =>
-      console.error(
-        JSON.stringify({
-          phase: e.phase,
-          turn: e.turn,
-          stop: e.stopReason,
-          tools: e.toolCalls,
-        }),
-      ),
-  });
-  const proxy = new MeteringProxy(provider);
   await proxy.listen();
-  const runner = new Runner(root, m, proxy, sessionEnvironment(config, source));
   try {
-    console.error(
-      JSON.stringify({
-        run: runId,
-        replicate: replicateId,
-        harnessVersion: m.harnessVersion,
-        games: m.games.length,
-        purpose,
-      }),
-    );
-    await runner.run(harness);
-    const ends = runner.record.events("phase_end");
-    const statuses: Record<string, number> = {};
-    for (const e of ends)
-      statuses[e.data.status] = (statuses[e.data.status] ?? 0) + 1;
-    console.log(
-      JSON.stringify({
-        root: runner.root,
-        phases: ends.length,
-        statuses,
-      }),
-    );
+    if (mode === "baselines") {
+      // Full-season baselines fit only the fixed warm-up games, never scored outcomes.
+      // Synthetic two-game fixtures use their first game for diagnostic training.
+      const trainingIds = new Set(
+        (scripted ? schedule.slice(0, 1) : schedule.slice(10, 20)).map(
+          (g) => g.gameId,
+        ),
+      );
+      const record = new RecordStore(
+        resolve(root, config.runId, config.replicateId),
+        manifest(config, schedule),
+      );
+      try {
+        await runBaselines({
+          config,
+          schedule,
+          datasets,
+          training: datasets.filter((d) => trainingIds.has(d.gameId)),
+          record,
+          assembler,
+          proxy,
+        });
+        if (
+          scripted &&
+          (record.events("replay_window").length !==
+            datasets.reduce((n, d) => n + d.windows.length, 0) * 3 ||
+            record.events("replay_window").some((e) => e.data.result.failure))
+        )
+          throw Error("Scripted baseline acceptance failed");
+        console.log(
+          JSON.stringify({
+            root: record.root,
+            mode,
+            windows: record.events("replay_window").length,
+          }),
+        );
+      } finally {
+        record.close();
+      }
+    } else {
+      const runner = chronologicalRunner({
+        root,
+        config,
+        source,
+        schedule,
+        datasets,
+        assembler,
+        proxy,
+      });
+      try {
+        await runner.run(
+          piHarness({ model: config.profile.modelRoles.analyst }),
+        );
+        if (
+          scripted &&
+          (runner.record.events("game_end").length !== 2 ||
+            runner.record.events("package_freeze").length !== 2 ||
+            runner.record.events("replay_completed").length !== 2 ||
+            runner.record
+              .events("game_end")
+              .some((e) => e.data.status !== "completed") ||
+            runner.record
+              .events("phase_end")
+              .some((e) => e.data.status !== "completed") ||
+            runner.record
+              .events("replay_window")
+              .some((e) => e.data.result.failure))
+        )
+          throw Error("Scripted chronological acceptance failed");
+        console.log(
+          JSON.stringify({
+            root: runner.root,
+            mode,
+            phases: runner.record
+              .events("phase_end")
+              .map((e) => ({ scope: e.scope, status: e.data.status })),
+            replays: runner.record.events("replay_completed").length,
+          }),
+        );
+      } finally {
+        runner.close();
+      }
+    }
   } finally {
-    runner.close();
     await proxy.close();
   }
 } finally {
-  store.close();
+  store?.close();
 }
