@@ -180,8 +180,8 @@ try {
       }
       record.verify();
     } finally {
+      // The proxy's HTTP endpoint is for the analyst; it was never opened here.
       record.close();
-      await proxy.close();
     }
     const output = {
       kind: "jev-contamination-probe-v2",

@@ -188,3 +188,36 @@ test("the pilot can be limited to the first development games", () => {
       /1 to 10/,
     );
 });
+
+test("the prompt describes the data, the trace file and the freeze lock", () => {
+  // Found in the first pilot game: the agent rediscovered these by trial each session.
+  for (const term of [
+    "nba_data.table(name, columns)",
+    "nba_data.query(sql)",
+    "nba_data.session()",
+    "canonical_sequence",
+    "clock_remaining_ms",
+    "home_lineup_before",
+    "player_stints",
+    "start_reason and end_reason",
+    "player_box_scores",
+    "player_profiles",
+    "player_reference",
+    "schedule (game_id, scheduled_start",
+    "/workspace/feedback/<game_id>/trace.json",
+    "result.window",
+    "assembly.assembly",
+  ])
+    assert.ok(RESEARCH_SYSTEM_PROMPT_V3.includes(term), term);
+  // The data reference names columns and tables, not what to conclude from them.
+  assert.doesNotMatch(RESEARCH_SYSTEM_PROMPT_V3, /typically|usually|tends to/);
+  for (const v of ["M1", "M2", "M3", "M4"] as const)
+    assert.match(
+      memoryPermissionInstructions(memoryVariant(v)),
+      /before you call freeze_package/,
+    );
+  assert.doesNotMatch(
+    memoryPermissionInstructions(memoryVariant("M0")),
+    /freeze_package/,
+  );
+});

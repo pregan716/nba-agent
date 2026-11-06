@@ -144,11 +144,34 @@ Players appear only as ids. ${BETWEEN_PERIODS_STATE_NOTE} The state never contai
 
 After each game the environment replays it with your frozen package and releases a trace the next morning. read_feedback returns, window by window: a summary of the state, your diagnostics, the request Jev received, Jev's answers and whether they were valid, the proposed action, the coach's actual decision, and the scores; and for the game, aggregate scores and failure counts. In a pregame session it returns the previous game's trace; in a postgame session, the trace of the game just played. Older traces are not available from the tool.
 
+The same trace is also a file in the workspace, feedback/<game_id>/trace.json (in code execution, /workspace/feedback/<game_id>/trace.json), available whenever read_feedback would return it. It is one JSON object of a megabyte or more, so load it in code rather than reading it into the conversation; read_feedback pages hold two windows each. Its top-level keys include gameId, summary and windows. Each entry of windows has result.window (id, kind, the full state, actual as {players_out, players_in} or null, and exclusions, which is empty for a scored window), result.raw (Jev's answers), result.validation, result.scores, and assembly.assembly (the jev_state, instructions, criteria and diagnostics your package returned for that window).
+
 # Evidence, time and budget
 
 The context tool gives the game, the phase, the cutoff and your remaining budget; call it first. Everything the tools return is filtered to the cutoff: in a pregame session nothing published at or after the scheduled start exists, including the game itself. Work from what the tools return. Do not rely on recollection of how this season, this team or its players turned out; you cannot verify it and it is not evidence here.
 
 The tools give you beat reporting, the head coach's media sessions, lineup announcements, injury reports, the schedule, and play-by-play, box scores, lineups and stints for completed games in 2024-25 and in this season so far, which you can also analyse with code. How you research, what you compute, how you organise the package and what you tell Jev are yours to decide.
+
+# Data reference
+
+This describes what is in the data, so that you do not have to discover it by trial. Everything is already filtered to the cutoff.
+
+In code execution, import nba_data. Game history is one SQLite database per completed game, for every NBA team in 2024-25 and in this season so far. nba_data.table(name, columns) loads a table across all of those games into one DataFrame; it takes several seconds, so pass a column list such as "game_id, period, kind" when you do not need every column. nba_data.query(sql) runs the SQL once per game and concatenates the rows, so SQL aggregates are per game. Each call to execute_code is a fresh process: nothing in memory carries over, but files under /scratch last for the session.
+
+Game tables and their main columns:
+
+- games: game_id, season, phase, home_team_id, away_team_id, scheduled_tipoff, home_score, away_score.
+- events: one row per play-by-play event. game_id, period, canonical_sequence (the order of events), clock_remaining_ms, kind (field_goal, free_throw, rebound, foul, turnover, violation, timeout, jump_ball, substitution, steal, block, period_start, period_end), subtype, team_id, description, home_score_before, home_score_after, away_score_before, away_score_after, and home_lineup_before, home_lineup_after, away_lineup_before, away_lineup_after (JSON arrays of five player ids). A substitution's players are the difference between the lineup before and after.
+- player_stints: one row per continuous stretch a player spent on the floor. game_id, team_id, player_id, period, start_clock_ms, end_clock_ms, duration_ms, start_reason and end_reason (period_start, substitution, period_end), cumulative_minutes_entry, cumulative_minutes_exit, personal_fouls_entry, personal_fouls_exit, game_clock_rest_ms, margin_before, margin_after.
+- lineup_stints: the same for a team's five (player_ids is a JSON array). matchup_stints: both fives together.
+- player_box_scores: game_id, team_id, player_id, minutes_seconds, points, rebounds, assists, personal_fouls and the other box-score counts. team_box_scores and team_period_scores are the team equivalents.
+- player_game_summary: per player and game, including starter, participation_status, minutes_by_period and first_entry_clock_ms_by_period. team_game_summary and possessions also exist.
+
+Clock columns are milliseconds remaining in the period. Tables may also carry record-keeping columns (dataset_version, transformation_version, raw_object_ids, availability fields and similar) that say nothing about the game.
+
+nba_data.session() returns a SQLite connection to the tables that are not per game: player_profiles (player_id, full_name, listed_position, opening_team_id and more), player_reference (player_id, full_name for every player), player_season_stats, player_2024_25_summary, player_career_summary, injuries, injury_team_snapshots, schedule (game_id, scheduled_start, venue, and home and away as JSON objects with team_id, abbreviation and name), evidence, posts, transcripts and lineups. These are not in the per-game databases, so nba_data.table does not find them.
+
+A code result is added to this conversation in full, and everything in the conversation is re-read on every later step, so print summaries rather than whole tables.
 
 Each session has a budget of model tokens, sandbox compute and tool calls. When it runs out the session ends, so leave room to validate and freeze. Each session starts with no conversation history.`;
 
@@ -180,7 +203,7 @@ export function memoryPermissionInstructions(
     return parts.join("\n\n");
   }
   parts.push(
-    "The following persist across games, and nothing else does. They are writable in pregame and postgame sessions and locked once the package is frozen. Anything in them was written by you in an earlier session.",
+    "The following persist across games, and nothing else does. They are writable in pregame and postgame sessions. In a pregame session they lock as soon as the package is frozen, so save anything you want to keep before you call freeze_package. Anything in them was written by you in an earlier session.",
   );
   if (coach)
     parts.push(

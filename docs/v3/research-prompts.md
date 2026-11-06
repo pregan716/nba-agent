@@ -129,6 +129,39 @@ recall. The 2024–25 group is a comparison, not a control for priors: it shows
 how the same statistics look for a season Jev could have been trained on. The
 probe is descriptive and cannot prove absence of contamination.
 
+## Revisions after the first pilot game
+
+The first live game (M3, `0022500083`, Nov 6, 2026) cost about $8.83, priced
+with the config's placeholder schedule. Reading its 105 model calls showed that
+about half worked around gaps in what the agent was told or given. Three were
+prompt gaps and are fixed here; the rest are environment fixes in SPO-857.
+
+- **Data reference.** The agent found table and column names by trial and error
+  (about 16 calls, repeated in postgame because each session starts with no
+  history). The system prompt now lists the per-game tables and their main
+  columns, the session tables, which helper reaches which, and how `nba_data`
+  behaves. It names columns and tables only. Giving it to every variant also
+  removes an unintended advantage: a variant with memory could save the schema,
+  while M0 would pay to rediscover it every game.
+- **Trace file.** `read_feedback` returns two windows per page; the agent paged
+  through 16 of 75 windows and reasoned from that sample. The prompt now says the
+  whole trace is a file at `feedback/<game_id>/trace.json`, gives its structure,
+  and says to load it in code because it is over a megabyte.
+- **Freeze lock.** The agent froze its package and then tried to save notes,
+  which was refused, so postgame repeated the pregame analysis. The memory
+  instructions now say to save before calling `freeze_package`.
+- The prompt also says that code output is added to the conversation and re-read
+  on every later step.
+
+Two unrelated fixes were needed for any live run to start: the Jev probe script
+closed a proxy endpoint it never opened, and the session source's dictionary
+guard still named the superseded `spo-771` transformation although the
+dictionary was synced for `spo-839` when those releases were pinned (PR #41).
+
+The prompt still describes the manifest with hand-computed hashes. SPO-857
+changes that and adds an edit tool and memory-usage reporting; the prompt will be
+updated to match when it merges.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the
