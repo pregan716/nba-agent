@@ -6,7 +6,7 @@ R3 connects a frozen Python package to the existing `windows-v2` replay, per-que
 
 The agent writes `packages/<game_id>/` through the workspace tools or mediated research filesystem. The package contains `assemble.py`, optional components, and `manifest.json`:
 
-Proposed for acceptance in SPO-857: the agent may omit `components`; the harness computes the hashes itself.
+Agreed (Nov 6, 2026, SPO-857): the agent may omit `components`; the harness computes the hashes itself.
 
 ```json
 {
@@ -125,10 +125,10 @@ Research code output is capped at 16,384 bytes across stdout and stderr in the p
 
 `query_game_history` defaults to column names without descriptions and rows without provenance columns. `include_metadata: true` restores both. Python `nba_data.table(..., include_metadata=True)` and `nba_data.query(..., include_metadata=True)` restore provenance columns; their default frames omit them. `quality_status` remains in the default view so partial or failed rows are identifiable; `issue_ids` remains opt-in. The shared provenance list is `sandbox/provenance-columns.json`. SQL still executes over the complete stored tables; filtering occurs on result columns. Empty and all-null shards retain their rows and null values without pandas concatenation warnings.
 
-Proposed for acceptance: `workspace_edit(path, old_text, new_text)` replaces exactly one literal occurrence in an existing UTF-8 file. Empty, absent or repeated matches are refused. It uses write permissions and the same phase checks, freeze lock and atomic memory-cap enforcement. Successful writes, appends, deletes and edits under `memory/` return `memoryUsage: {retainedTokens, cap}` using the existing analyst count protocol; v3 `context` returns the same usage. Skills and per-game artifacts are not included in retained memory usage.
+Agreed (Nov 6, 2026, SPO-857): `workspace_edit(path, old_text, new_text)` replaces exactly one literal occurrence in an existing UTF-8 file. Empty, absent or repeated matches are refused. It uses write permissions and the same phase checks, freeze lock and atomic memory-cap enforcement. Successful writes, appends, deletes and edits under `memory/` return `memoryUsage: {retainedTokens, cap}` using the existing analyst count protocol; v3 `context` returns the same usage. Skills and per-game artifacts are not included in retained memory usage.
 
 Feedback includes the game summary only on `cursor: 0`; later pages retain window details and pagination. The full forensic trace remains unchanged.
 
-Integration for SPO-855: prompts should describe the optional `components` map, the fallback validation states, `workspace_edit`, `include_metadata`, and `memoryUsage`. Prompt wording is outside SPO-857’s scope. The manifest and edit-tool proposals require user acceptance in the PR; they are not marked Agreed here.
+Integration for SPO-855: prompts should describe the optional `components` map, the fallback validation states, `workspace_edit`, `include_metadata`, and `memoryUsage`. Prompt wording is outside SPO-857’s scope. The user accepted the simplified manifest, edit tool and prior-season practice states on Nov 6, 2026; all three are Agreed.
 
-Proposed for user acceptance in SPO-857: using the retrospective 2024–25 box-score roster datasets for unscored analyst validation extends the Nov 6 agreement, which covered statistical-baseline training only. These samples retain the same unknown injury status and synthetic timestamp caveats. They never supply rosters or states for evaluated games.
+Agreed (Nov 6, 2026, SPO-857): using the retrospective 2024–25 box-score roster datasets for unscored analyst validation extends the Nov 6 agreement, which covered statistical-baseline training only. These samples retain the same unknown injury status and synthetic timestamp caveats. They never supply rosters or states for evaluated games.
