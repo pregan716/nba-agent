@@ -26,6 +26,7 @@ import {
   replayDescriptor,
   runBaselines,
   validateLaunch,
+  diagnosticSelection,
 } from "../src/launch/run.js";
 import {
   chronologicalFixture,
@@ -74,7 +75,10 @@ const secret = (name: string) =>
   })();
 try {
   const inputs = scripted
-    ? chronologicalFixture()
+    ? (() => {
+        const fixture = chronologicalFixture();
+        return { ...fixture, training: fixture.datasets.slice(0, 1) };
+      })()
     : await (async () => {
         const corpus = await openCorpus(
           store!,
@@ -98,24 +102,36 @@ try {
             scheduledStart: g.data.scheduled_tipoff as string,
           }))
           .sort((a, b) => a.scheduledStart.localeCompare(b.scheduledStart));
-        const datasets = (
+        const selection = diagnosticSelection(schedule, mode);
+        const loaded = (
           await loadReplayInputs(
             corpus,
             await auditPregames(
               corpus,
-              schedule.map((g) => g.gameId),
+              [...selection.evaluation, ...selection.training].map(
+                (g) => g.gameId,
+              ),
               mappings,
             ),
           )
         ).map(buildDataset);
-        return { source, schedule, datasets };
+        return {
+          source,
+          schedule,
+          datasets: loaded.filter((d) =>
+            selection.evaluation.some((g) => g.gameId === d.gameId),
+          ),
+          training: loaded.filter((d) =>
+            selection.training.some((g) => g.gameId === d.gameId),
+          ),
+        };
       })();
-  const { source, schedule, datasets } = inputs;
+  const { source, schedule, datasets, training } = inputs;
   const config = presetConfig({
     harness: "pi",
     runId: arg(
       "run-id",
-      `${scripted ? "scripted" : "fixture"}-${mode}-${memory.variant}`,
+      `${scripted ? "scripted" : "fixture"}-${mode}${mode === "analyst" ? `-${memory.variant}` : ""}`,
     )!,
     replicateId: arg("replicate", "r1")!,
     purpose,
@@ -153,13 +169,6 @@ try {
   await proxy.listen();
   try {
     if (mode === "baselines") {
-      // Full-season baselines fit only the fixed warm-up games, never scored outcomes.
-      // Synthetic two-game fixtures use their first game for diagnostic training.
-      const trainingIds = new Set(
-        (scripted ? schedule.slice(0, 1) : schedule.slice(10, 20)).map(
-          (g) => g.gameId,
-        ),
-      );
       const record = new RecordStore(
         resolve(root, config.runId, config.replicateId),
         manifest(config, schedule),
@@ -169,7 +178,7 @@ try {
           config,
           schedule,
           datasets,
-          training: datasets.filter((d) => trainingIds.has(d.gameId)),
+          training,
           record,
           assembler,
           proxy,

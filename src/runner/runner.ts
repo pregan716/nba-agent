@@ -250,6 +250,10 @@ export class Runner {
       // Retry publication before advancing after a previous sync failure.
       await this.checkpoint();
       for (const game of this.manifest.games) {
+        // Keep season indexes/tags intact while executing only the pinned selection.
+        const selected = this.manifest.config.replay?.datasets;
+        if (selected && !selected.some((d) => d.gameId === game.gameId))
+          continue;
         if (this.manifest.config.purpose === "pilot" && !game.development)
           continue;
         if (this.record.events("game_end", game.gameId).length) continue;

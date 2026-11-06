@@ -271,6 +271,18 @@ export function manifest(
           .toString(),
       ),
     }));
+  if (c.replay) {
+    const selected = c.replay.datasets.map((d) => d.gameId);
+    if (
+      new Set(selected).size !== selected.length ||
+      selected.some((id) => !games.some((g) => g.gameId === id))
+    )
+      throw Error("Replay selection contains duplicate or unknown games");
+    if (games.some((g) => g.split === "holdout" && selected.includes(g.gameId)))
+      throw Error(
+        "Holdout replay is refused; reveal requires a separate R6 path",
+      );
+  }
   for (let i = 1; i < games.length; i++)
     if (
       Temporal.Instant.compare(games[i].scheduledStart, games[i - 1].release) <=

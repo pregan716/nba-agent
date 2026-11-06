@@ -127,8 +127,6 @@ export function chronologicalRunner(options: {
   if (config.replay?.mode !== "variant")
     throw Error("Variant replay mode required");
   const m = manifest(config, schedule);
-  if (m.games.some((g) => !datasets.some((d) => d.gameId === g.gameId)))
-    throw Error("Missing game dataset");
   const tools = (
     game: Game,
     trusted: { root: string; workspace: string },
@@ -192,6 +190,8 @@ export function chronologicalRunner(options: {
         assembler,
         receipt,
         packagePath: join(service.packages.path(game.gameId), "package"),
+        // Replay is outside a research session's budget/abort lifetime. Process
+        // termination is the cancellation boundary; durable answers support resume.
         signal: new AbortController().signal,
         releaseAt: game.release,
         codeRevision: config.codeRevision,
@@ -239,8 +239,15 @@ export async function runBaselines(options: {
     throw Error("Baseline replay mode required");
   if (digest(config.harness.policy) !== digest(policyHarness(assembler)))
     throw Error("Assembler differs from baseline manifest");
-  const fitted = fitBaselines(training);
   const m = manifest(config, options.schedule);
+  if (
+    training.some(
+      (d) =>
+        !m.games.some((g) => g.gameId === d.gameId && g.split !== "holdout"),
+    )
+  )
+    throw Error("Baseline training contains an unknown or holdout game");
+  const fitted = fitBaselines(training);
   for (const dataset of datasets) {
     const predictors: ReplayManifest["predictors"] = Object.fromEntries(
       Object.entries(fitted).map(([name, b]) => [
@@ -267,9 +274,33 @@ export async function runBaselines(options: {
       assembler,
       receipt: null,
       packagePath: "",
+      // Replay is outside a research session's budget/abort lifetime. Process
+      // termination is the cancellation boundary; durable answers support resume.
       signal: new AbortController().signal,
       releaseAt: m.games.find((g) => g.gameId === dataset.gameId)!.release,
       codeRevision: config.codeRevision,
     });
   }
+}
+
+/** Corpus diagnostics retain the full season for stable split tags, but only load
+ * development evaluation inputs (plus warm-up training for baselines). */
+export function diagnosticSelection(
+  schedule: { gameId: string; scheduledStart: string }[],
+  mode: "analyst" | "baselines",
+) {
+  if (
+    schedule.length !== 82 ||
+    new Set(schedule.map((g) => g.gameId)).size !== 82
+  )
+    throw Error("Corpus diagnostics require the full 82-game season schedule");
+  const games = [...schedule].sort(
+    (a, b) =>
+      Date.parse(a.scheduledStart) - Date.parse(b.scheduledStart) ||
+      a.gameId.localeCompare(b.gameId),
+  );
+  return {
+    evaluation: games.slice(0, 10),
+    training: mode === "baselines" ? games.slice(10, 20) : [],
+  };
 }

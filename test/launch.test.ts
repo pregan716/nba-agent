@@ -21,6 +21,8 @@ import {
   chronologicalRunner,
   runBaselines,
   validateLaunch,
+  diagnosticSelection,
+  replayDescriptor,
 } from "../src/launch/run.js";
 import {
   scriptedAnalyst,
@@ -29,7 +31,7 @@ import {
 import { MeteringProxy } from "../src/runner/proxy.js";
 import { piHarness } from "../src/harness/pi.js";
 import { RecordStore } from "../src/runner/record.js";
-import { manifest } from "../src/runner/config.js";
+import { manifest, digest } from "../src/runner/config.js";
 import { scoreWindow } from "../src/replay/scoring.js";
 
 function clean(root: string) {
@@ -269,3 +271,134 @@ test(
     }
   },
 );
+
+test("corpus diagnostics keep season tags and never replay or train on holdout games", async () => {
+  const root = mkdtempSync(join(tmpdir(), "nba-launch-selection-"));
+  const data = fixtureLaunchConfig("M0");
+  const schedule = Array.from({ length: 82 }, (_, i) => ({
+    gameId: `season-${i + 1}`,
+    scheduledStart: new Date(Date.UTC(2025, 9, 22 + i * 2, 23)).toISOString(),
+  }));
+  const dataset = (gameId: string) => {
+    const d = structuredClone(data.datasets[0]);
+    d.gameId = gameId;
+    d.inputHash = digest(gameId);
+    for (const w of d.windows) {
+      w.gameId = gameId;
+      w.id = `${gameId}:${w.id}`;
+      if (w.state) w.state.gameId = gameId;
+    }
+    return d;
+  };
+  const selection = diagnosticSelection([...schedule].reverse(), "baselines");
+  assert.deepEqual(
+    selection.evaluation.map((g) => g.gameId),
+    schedule.slice(0, 10).map((g) => g.gameId),
+  );
+  assert.deepEqual(
+    selection.training.map((g) => g.gameId),
+    schedule.slice(10, 20).map((g) => g.gameId),
+  );
+  assert.equal(diagnosticSelection(schedule, "analyst").training.length, 0);
+  assert.throws(
+    () => diagnosticSelection(schedule.slice(70), "analyst"),
+    /full 82-game/,
+  );
+  const datasets = selection.evaluation.map((g) => dataset(g.gameId));
+  const training = selection.training.map((g) => dataset(g.gameId));
+  const baseGame = (await data.source.games())[0];
+  const source = {
+    ...data.source,
+    games: async () =>
+      schedule.map((g) => ({
+        ...baseGame,
+        id: g.gameId,
+        data: {
+          ...baseGame.data,
+          game_id: g.gameId,
+          scheduled_tipoff: g.scheduledStart,
+        },
+      })),
+  };
+  const config = structuredClone(data.config);
+  config.replay = replayDescriptor(datasets);
+  const m = manifest(config, schedule);
+  assert.equal(m.games.filter((g) => g.split === "holdout").length, 12);
+  assert.equal(m.games[70].gameId, "season-71");
+  const proxy = new MeteringProxy(scriptedAnalyst(), scriptedJev);
+  await proxy.listen();
+  const runner = chronologicalRunner({
+    root,
+    config,
+    schedule,
+    datasets,
+    source,
+    assembler: fixtureAssembler,
+    proxy,
+  });
+  try {
+    // No policy is frozen: diagnostic variant windows are explicitly invalid,
+    // but the evaluation selection is the same as with a successful analyst.
+    await runner.run(async () => {});
+    const assertSelection = (record: RecordStore) => {
+      const windows = record.events("replay_window");
+      assert.ok(windows.length > 0);
+      for (const event of windows)
+        assert.equal(
+          m.games.find((g) => g.gameId === event.data.result.window.gameId)
+            ?.split,
+          "development",
+        );
+    };
+    assertSelection(runner.record);
+    assert.equal(runner.record.events("game_end").length, 10);
+    assert.equal(runner.record.events("session_start").length, 20);
+    const baselineConfig = structuredClone(config);
+    baselineConfig.replay!.mode = "baselines";
+    const record = new RecordStore(
+      join(root, "baselines"),
+      manifest(baselineConfig, schedule),
+    );
+    try {
+      await runBaselines({
+        config: baselineConfig,
+        schedule,
+        datasets,
+        training,
+        record,
+        assembler: fixtureAssembler,
+        proxy,
+      });
+      assertSelection(record);
+      const before = record.events().length;
+      await assert.rejects(
+        runBaselines({
+          config: baselineConfig,
+          schedule,
+          datasets,
+          training: [dataset("season-71")],
+          record,
+          assembler: fixtureAssembler,
+          proxy,
+        }),
+        /holdout/,
+      );
+      assert.equal(record.events().length, before);
+    } finally {
+      record.close();
+    }
+    for (const mode of ["variant", "baselines"] as const) {
+      const forbidden = structuredClone(config);
+      forbidden.replay = replayDescriptor([dataset("season-71")]);
+      forbidden.replay.mode = mode;
+      assert.throws(
+        () => manifest(forbidden, schedule),
+        /Holdout replay is refused/,
+      );
+    }
+  } finally {
+    runner.close();
+    await proxy.close();
+    clean(root);
+  }
+});

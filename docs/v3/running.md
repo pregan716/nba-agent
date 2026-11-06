@@ -42,7 +42,13 @@ Docker digest. Token counting is synthetic in this offline fixture.
 
 Without `--scripted`, the trusted launcher opens the hash-verified corpus and
 canonical identity mappings, builds season pregame evidence with `auditPregames`,
-and builds each decision dataset from the pinned release with `buildDataset`.
+and builds selected decision datasets from the pinned release with `buildDataset`.
+Both corpus modes evaluate only development games 1–10. The full 82-game
+schedule remains in the manifest so split tags never shift when selecting games.
+Variant diagnostics load only those ten games; baseline diagnostics additionally
+load games 11–20 for fitting. Neither path loads holdout inputs. The manifest
+refuses holdout evaluation and the baseline runner refuses holdout training.
+There is no holdout override: a separate R6 reveal path must own that decision.
 The analyst uses `ANTHROPIC_API_KEY`; Jev uses `TYPESAFE_API_KEY`. Those secrets
 remain in the launcher process. Pi receives only its scoped proxy credential;
 assembly receives no provider credentials. Corpus access uses the existing
@@ -80,17 +86,26 @@ Run all three baselines over the same datasets/windows:
 npm run launch -- --scripted --mode=baselines --assembler-image=<assembler-digest>
 ```
 
-The default destination is `.cache/runs/scripted-baselines-M0/r1/`. Constant-rate
+The default destination is `.cache/runs/scripted-baselines/r1/`. Constant-rate
 and statistical predictors use the existing `fitBaselines`; generic Jev uses the
 same trusted replay and answer validation as variant runs. All write the same
 `replay_window` shape, with distinct predictor IDs, for later R6 comparisons.
 Repeated commands reuse recorded windows and Jev responses.
 
 For a pinned-corpus diagnostic, omit `--scripted`. Only `TYPESAFE_API_KEY` is
-needed for model calls in baseline mode; no analyst runs. Full-season baselines
-fit games 11–20, the fixed warm-up set, and record training IDs, hashes and
-parameters. Results on earlier development games are retrospective diagnostics,
-never evidence. The tiny synthetic fixture fits its first game solely to exercise
+needed for model calls in baseline mode; no analyst runs. Corpus baseline
+diagnostics evaluate only development games 1–10 and fit games 11–20, the fixed
+warm-up set. They record training IDs, hashes and parameters. Results on earlier
+development games are retrospective diagnostics, never evidence.
+
+**Proposed deviation for user decision:** the brief’s proposed statistical form
+fits on 2024–25 plus the warm-up games. This implementation uses only the ten
+2025–26 warm-up games, matching the existing replay-audit implementation; it does
+not load 2024–25 training datasets. This narrower training set is not an accepted
+brief amendment. Including 2024–25 remains the alternative for the user to
+decide. The constant-rate baseline continues to use the warm-up rate as specified.
+
+The tiny synthetic fixture fits its first game solely to exercise
 the interfaces; its outputs are not comparative results.
 
 ## Record and recovery
@@ -98,8 +113,10 @@ the interfaces; its outputs are not comparative results.
 `manifest.json` pins source manifests, memory permissions, model roles, harness
 settings and image descriptors, code revision, budget limits, decision-dataset
 hashes/versions, state schema and supplied probes. Games have development,
-warm-up, scored or holdout tags. Changing an input or code revision requires a
-new run ID; resume refuses a manifest mismatch.
+warm-up, scored or holdout tags; `replay.datasets` pins the evaluation selection.
+Only that selection executes, and holdout selection is refused in every mode.
+Changing an input or code revision requires a new run ID; resume refuses a
+manifest mismatch.
 
 `record.sqlite` is the append-only hash-chained record. Per-game `replay_manifest`
 events provide the R3 manifest view without creating a separate database. Thus
@@ -139,5 +156,6 @@ R3 expects a replay manifest while the chronological runner expects a run
 manifest. The scoped `replay_manifest` view reconciles those storage interfaces
 without changing either scoring or temporal-access rules. The merged Pi harness
 still uses infrastructure prompt constants; only fixture execution is exposed
-until R5b replaces them. No brief decision was changed, and `feedback.ts` is
+until R5b replaces them. The warm-up-only statistical training choice above is explicitly Proposed for
+user decision. No brief decision was changed, and `feedback.ts` is
 untouched so SPO-850 can proceed independently.
