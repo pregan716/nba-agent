@@ -174,20 +174,32 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
     (c) => c.game_id === input.game.gameId && c.product === "summaries",
   );
   const issues = input.issues.filter((i) => i.game_id === input.game.gameId);
+  const findings = issues.filter((i) => i.product === "summaries");
+  const parsedFindings = findings.map((i) => {
+    if (i.code !== "summary_field_limitations" || typeof i.message !== "string")
+      return null;
+    // Published format: view_name: statistic:status, statistic:status.
+    // Parse the entire finding, not just the state fields we happen to know.
+    const match = /^\s*[a-z][a-z0-9_]*:\s+(.+?)\s*$/.exec(i.message);
+    if (!match) return null;
+    const fields = match[1]
+      .split(",")
+      .map((item) => /^\s*([a-z][a-z0-9_]*):([a-z][a-z0-9_]*)\s*$/.exec(item));
+    return fields.every((field) => field !== null)
+      ? fields.map((field) => field![1])
+      : null;
+  });
+  const namedDefects =
+    parsedFindings.length > 0 &&
+    parsedFindings.every((fields) => fields !== null);
+  const affected = new Set(parsedFindings.flatMap((fields) => fields ?? []));
   const nullFields: BoxField[] =
     summary?.quality_status === "partial"
-      ? BOX_FIELDS.filter((f) =>
-          issues.some(
-            (i) =>
-              i.product === "summaries" &&
-              i.code === "summary_field_limitations" &&
-              new RegExp(`\\b${f}:`).test(i.message ?? ""),
-          ),
-        )
+      ? BOX_FIELDS.filter((field) => affected.has(field))
       : [];
   if (
     summary?.quality_status !== "valid" &&
-    !(summary?.quality_status === "partial" && nullFields.length)
+    !(summary?.quality_status === "partial" && namedDefects)
   )
     common.push("unqualified_summary");
   const stints = input.stints.filter((s) => s.game_id === input.game.gameId);

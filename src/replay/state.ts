@@ -330,8 +330,11 @@ export function buildState(
     margin: home ? homeScore - awayScore : awayScore - homeScore,
     stoppage: {
       kind,
-      timeoutTeam: last?.type === "timeout" ? (last.team_id ?? null) : null,
-      freeThrowsPending: pending,
+      timeoutTeam:
+        kind !== "jump_ball" && last?.type === "timeout"
+          ? (last.team_id ?? null)
+          : null,
+      freeThrowsPending: kind === "jump_ball" ? null : pending,
     },
     celtics: [...celtics].sort(),
     opponent: [...opponent].sort(),

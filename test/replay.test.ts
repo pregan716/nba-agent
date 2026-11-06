@@ -212,7 +212,7 @@ test("named partial summary nulls score; state failure still excludes", () => {
       product: "summaries",
       code: "summary_field_limitations",
       message:
-        "field_goals_attempted:mismatch, offensive_rebounds:mismatch, rebounds:mismatch",
+        "v_player_game_summary: field_goals_attempted:mismatch, offensive_rebounds:mismatch, rebounds:mismatch",
     },
   ];
   const w = buildDataset(input).windows[0];
@@ -735,4 +735,127 @@ test("team rebounds never open windows, including restored deadball qualifiers",
   assert.equal(dataset.diagnostics.positiveCandidates, 1);
   assert.deepEqual(dataset.windows[0].exclusions, []);
   assert.equal(dataset.windows[0].state!.stoppage.kind, "timeout");
+});
+
+test("named summary defects outside state-v1 leave windows scored without nulls or a summary flag", () => {
+  const input = fixture();
+  input.coverage.find((c) => c.product === "summaries")!.quality_status =
+    "partial";
+  input.issues = [
+    {
+      game_id: "game",
+      product: "summaries",
+      code: "summary_field_limitations",
+      message: "v_player_game_summary: plus_minus:mismatch",
+    },
+  ];
+  const w = buildDataset(input).windows[0];
+  assert.deepEqual(w.exclusions, []);
+  assert.ok(scoreWindow(w, prediction(0.2)).scores);
+  assert.ok(
+    w.state!.players.every((p) =>
+      Object.values(p.box).every((value) => value !== null),
+    ),
+  );
+  assert.ok(!w.state!.flags.includes("unqualified_running_box_score"));
+  input.issues.push({
+    ...input.issues[0],
+    message: "v_team_game_summary: points:mismatch, plus_minus:mismatch",
+  });
+  const mixed = buildDataset(input).windows[0];
+  assert.deepEqual(mixed.exclusions, []);
+  assert.ok(
+    mixed.state!.players.every(
+      (p) => p.box.points === null && p.box.rebounds === 0,
+    ),
+  );
+  assert.ok(mixed.state!.flags.includes("unqualified_running_box_score"));
+  input.events[1].away_lineup_after = null;
+  assert.ok(
+    buildDataset(input).windows[0].exclusions.includes("unknown_lineup"),
+  );
+});
+
+test("unparseable partial findings and failed summaries remain unqualified", () => {
+  for (const status of ["partial", "failed"])
+    for (const message of [
+      null,
+      "",
+      "No statistics reconciled",
+      "v_player_game_summary: ",
+      "v_player_game_summary: plus_minus:mismatch, unknown failure",
+      "v_player_game_summary: plus_minus:mismatch",
+    ]) {
+      if (
+        status === "partial" &&
+        message === "v_player_game_summary: plus_minus:mismatch"
+      )
+        continue;
+      const input = fixture();
+      input.coverage.find((c) => c.product === "summaries")!.quality_status =
+        status;
+      input.issues = [
+        {
+          game_id: "game",
+          product: "summaries",
+          code: "summary_field_limitations",
+          message,
+        },
+      ];
+      const w = buildDataset(input).windows[0];
+      assert.ok(
+        w.exclusions.includes("unqualified_summary"),
+        `${status}: ${message}`,
+      );
+      assert.equal(scoreWindow(w, prediction(0.2)).scores, null);
+    }
+  const input = fixture();
+  input.coverage.find((c) => c.product === "summaries")!.quality_status =
+    "partial";
+  assert.ok(
+    buildDataset(input).windows[0].exclusions.includes("unqualified_summary"),
+  );
+  input.issues = [
+    "v_player_game_summary: points:mismatch",
+    "Unparseable finding",
+  ].map((message) => ({
+    game_id: "game",
+    product: "summaries",
+    code: "summary_field_limitations",
+    message,
+  }));
+  assert.ok(
+    buildDataset(input).windows[0].exclusions.includes("unqualified_summary"),
+  );
+});
+
+test("jump-ball stoppage metadata does not inherit the preceding bucket", async () => {
+  const { buildState } = await import("../src/replay/state.js");
+  for (const prior of [
+    { type: "timeout" },
+    { type: "foul", description: "Shooting foul (2 FT)" },
+    { type: "free_throw", free_throw_number: 1, free_throw_total: 2 },
+  ]) {
+    const input = fixture();
+    Object.assign(input.events[1], prior, { clock_remaining_ms: 601000 });
+    const first = { ...input.events[2], type: "jump_ball" };
+    input.events[2] = first;
+    const { state, reasons } = buildState(
+      input,
+      input.events,
+      2,
+      1,
+      600000,
+      "jump_ball",
+      first,
+      true,
+      [],
+    );
+    assert.deepEqual(reasons, []);
+    assert.deepEqual(state!.stoppage, {
+      kind: "jump_ball",
+      timeoutTeam: null,
+      freeThrowsPending: null,
+    });
+  }
 });
