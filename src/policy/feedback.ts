@@ -10,7 +10,7 @@ const preview = (value: unknown) => {
   return { text: text.slice(0, 800), truncated: text.length > 800 };
 };
 /** Full forensic trace stays on disk; no tool result can expand with game length. */
-export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
+function readPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
   const { cursor = 0, offset = 0, window_id } = query;
   if (
     !Number.isSafeInteger(cursor) ||
@@ -75,7 +75,7 @@ export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
   });
   return {
     gameId: trace.gameId,
-    summary: trace.summary,
+    ...(cursor === 0 ? { summary: trace.summary } : {}),
     totalWindows: trace.windows.length,
     windows,
     nextCursor:
@@ -84,4 +84,19 @@ export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
         : null,
   };
 }
-export type FeedbackPage = ReturnType<typeof feedbackPage>;
+export function feedbackPage(
+  trace: PolicyTrace,
+  query?: FeedbackQuery & { window_id?: undefined },
+): Exclude<ReturnType<typeof readPage>, { windowId: string }>;
+export function feedbackPage(
+  trace: PolicyTrace,
+  query: FeedbackQuery & { window_id: string },
+): Extract<ReturnType<typeof readPage>, { windowId: string }>;
+export function feedbackPage(
+  trace: PolicyTrace,
+  query: FeedbackQuery,
+): ReturnType<typeof readPage>;
+export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
+  return readPage(trace, query);
+}
+export type FeedbackPage = ReturnType<typeof readPage>;

@@ -109,7 +109,7 @@ Status: Agreed in shape; Proposed in detail. Before the cutoff the research agen
 
 - **Components**: text files the assembler may select from. Instructions, examples, rotation expectations, player roles, matchup notes, exceptions. Free-form.
 - **Assembly code**: one Python entry point, `assemble(state) -> {jev_state, instructions, criteria, diagnostics}`, that reads the observable state, derives whatever features it wants, selects and orders components, and returns the `state` text Jev receives, the `instructions` text for each of the fixed questions, the per-option descriptions for the choice questions, and a diagnostics object naming the components used and the features computed. The question names, types and option keys are fixed by the environment (see the Jev contract); the agent controls everything Jev reads.
-- **Manifest**: component list with hashes, the state schema version it targets, and free-text notes.
+- **Manifest**: Proposed for acceptance in SPO-857: require only `stateVersion`, with optional free-text `notes`. The harness computes SHA-256 for every package file and records each in the frozen receipt. An optional `components` map must list every non-manifest file with matching hashes when supplied.
 
 Freezing is atomic and happens before the cutoff; the frozen package is what the replay uses, and a later write to the package directory for that game is refused. A package that fails to load, or whose entry point raises on the first window, is a failed session with status `invalid_package`; the game is replayed with no predictions and reported as such. The package directory for each game is retained for audit and is never automatically visible to the next game's research agent; what the agent may carry forward is governed by the memory permissions below.
 
@@ -305,7 +305,8 @@ Capability contracts, not final API names. Carried tools are implemented; new to
 | Query game history | Play-by-play, box scores, stints, lineups, summaries for completed games across both seasons; player reference | Carried |
 | Read schedule and injuries | Eligible injury reports as printed; schedule | Carried |
 | Execute code | Python in the research sandbox over the cutoff-filtered export, scratch, and the permitted workspace directories | Carried; mounts change with permissions |
-| Workspace list, read, write, append, delete | Enforce the directory permissions above and the memory budget | Carried; policy changes |
+| Workspace list, read, write, append, delete | Enforce the directory permissions above and the memory budget; memory mutations return retained token usage and cap | Carried; policy changes |
+| Workspace exact-string edit | `workspace_edit(path, old_text, new_text)` replaces exactly one literal occurrence; same permission, phase, freeze-lock and memory-cap rules as write | Proposed for acceptance in SPO-857 |
 | Freeze package | Validate and atomically freeze `packages/<game_id>/`; return a receipt | New |
 | Read feedback | The previous game's trace, and the current game's trace in postgame; nothing older | New |
 | Validate package locally | Run the assembler against a small set of sample states from eligible prior games and return the assembled requests and diagnostics, so the agent can test before freezing. Does not call Jev. Costs research compute. | New, Agreed (Nov 4, 2026) |
@@ -504,6 +505,7 @@ One decision is Open, by design. Everything proposed in the first draft's Open t
 | --- | --- | --- | --- |
 | Open | Budget numbers | Research budget | Set by the pilot procedure: development games on M3 at effort `high` with code execution on, caps at the 90th percentile, re-runs at a smaller and a larger pregame cap, recorded as budget profile v1. |
 | Proposed | Package detail: component layout, entry-point signature, manifest fields | The task, Policy package | R3 implements as written; the first hand-written package in gate 2 is the review. |
+| Proposed | Workspace exact-string edit tool | Tool surface | SPO-857 implements for user acceptance in its PR. |
 | Proposed | Trace fields | The task, Feedback trace | R3 implements as written; reviewed with the gate-2 trace. The compact summary fields `read_feedback` returns (SPO-850: home and away score, margin, home or away, and per-player fouls, minutes and current stint) were accepted Nov 6, 2026. |
 | Proposed | Player-selection normalization (scale by k) | Scoring, Player selection | R2 implements as written with a hand-computed fixture; alternatives are a brief change. |
 | Proposed | Invalid-answer fallbacks and the 5 % provider-failure flag | Scoring, Invalid outputs and failures | R2 implements as written with a scorer fixture for the per-question rule. |

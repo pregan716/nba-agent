@@ -31,7 +31,7 @@ export const PILOT_BUDGET: RunConfig["budget"] = {
   rollover: false,
   sandbox: {
     perCallSeconds: 120,
-    stdoutBytes: 256 * 1024,
+    stdoutBytes: 16 * 1024,
     cpu: 2,
     memoryBytes: 4 * 1024 * 1024 * 1024,
   },

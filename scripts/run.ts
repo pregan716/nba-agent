@@ -24,6 +24,7 @@ import {
   auditPregames,
   loadReplayInputs,
   loadPriorSeasonTraining,
+  priorValidationSamples,
 } from "../src/replay/load.js";
 import { buildDataset } from "../src/replay/dataset.js";
 import {
@@ -32,6 +33,7 @@ import {
   runBaselines,
   validateLaunch,
   diagnosticSelection,
+  validationSampleDescriptors,
 } from "../src/launch/run.js";
 import {
   chronologicalFixture,
@@ -98,7 +100,12 @@ try {
           w.gameId = training.gameId;
           if (w.state) w.state.gameId = training.gameId;
         }
-        return { ...fixture, training: [training], priorTraining: [] };
+        return {
+          ...fixture,
+          training: [training],
+          priorTraining: [],
+          validationSamples: [],
+        };
       })()
     : await (async () => {
         const corpus = await openCorpus(
@@ -141,6 +148,8 @@ try {
           schedule,
           priorTraining:
             mode === "baselines" ? await loadPriorSeasonTraining(corpus) : [],
+          validationSamples:
+            mode === "analyst" ? await priorValidationSamples(corpus) : [],
           datasets: loaded.filter((d) =>
             selection.evaluation.some((g) => g.gameId === d.gameId),
           ),
@@ -149,7 +158,14 @@ try {
           ),
         };
       })();
-  const { source, schedule, datasets, training, priorTraining } = inputs;
+  const {
+    source,
+    schedule,
+    datasets,
+    training,
+    priorTraining,
+    validationSamples,
+  } = inputs;
   const config = presetConfig({
     harness: "pi",
     promptSet,
@@ -176,6 +192,8 @@ try {
       ? JSON.parse(readFileSync(arg("jev-probe")!, "utf8"))
       : undefined,
   );
+  config.replay.validationSamples =
+    validationSampleDescriptors(validationSamples);
   config.replay.mode = mode === "baselines" ? "baselines" : "variant";
   const proxy = new MeteringProxy(
     scripted
@@ -227,6 +245,7 @@ try {
       }
     } else {
       const runner = chronologicalRunner({
+        validationSamples,
         root,
         config,
         source,

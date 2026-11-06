@@ -368,6 +368,8 @@ test("exhaustion and infrastructure failure remain distinct; code records enforc
       })) as any;
       assert.equal(Buffer.byteLength(result.stdout), 128);
       assert.equal(result.truncated, true);
+      assert.ok(Buffer.byteLength(result.stdout + result.stderr) <= 128);
+      assert.match(result.truncation_notice, /truncated to 128 bytes/);
     });
     const codes = s.runner.record.events("code_start");
     assert.equal(codes.length, 2);

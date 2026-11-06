@@ -299,20 +299,22 @@ export class DockerSandbox {
         ![null, "wall_clock", "compute", "memory"].includes(message.limit)
       )
         throw Error("Invalid sandbox result");
+      const stdout = trim(message.stdout, limits.stdoutBytes);
       return {
-        stdout: trim(message.stdout, limits.stdoutBytes),
+        stdout,
         stderr: trim(
           Buffer.concat([
             Buffer.from(this.#workspaceErrors),
             Buffer.from(message.stderr, "base64"),
           ]).toString("base64"),
-          limits.stdoutBytes,
+          limits.stdoutBytes - Buffer.byteLength(stdout),
         ),
         exitStatus: message.exitStatus,
         computeSeconds: message.computeSeconds,
         truncated:
           !!message.truncated ||
-          Buffer.byteLength(this.#workspaceErrors) +
+          Buffer.from(message.stdout, "base64").length +
+            Buffer.byteLength(this.#workspaceErrors) +
             Buffer.from(message.stderr, "base64").length >
             limits.stdoutBytes,
         limit: message.limit,

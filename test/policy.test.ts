@@ -195,6 +195,10 @@ test("freeze is atomic, idempotent, hash checked, cutoff enforced, and workspace
           w.mutate(operation, "packages/g/assemble.py", Buffer.from("changed")),
         /frozen/,
       );
+    assert.throws(
+      () => w.edit("packages/g/assemble.py", "return", "yield"),
+      /frozen/,
+    );
     assert.throws(() => w.authorize("write", "packages/g/new.py"), /frozen/);
     assert.throws(() => w.mkdir("packages/g/other"), /frozen/);
     assert.throws(() => w.read("packages/other/assemble.py"), /unavailable/);
@@ -886,6 +890,11 @@ test("feedback is paged and full window detail can be reconstructed without a la
   );
   assert.equal(page.windows!.length, 2);
   assert.equal(feedbackPage(trace, { cursor: 74 }).nextCursor, null);
+  assert.ok(page.summary);
+  assert.equal(
+    Object.hasOwn(feedbackPage(trace, { cursor: 2 }), "summary"),
+    false,
+  );
   assert.equal(
     feedbackPage({
       ...trace,
@@ -905,7 +914,10 @@ test("feedback is paged and full window detail can be reconstructed without a la
   let offset: number | null = 0,
     text = "";
   while (offset !== null) {
-    const detail = feedbackPage(trace, { window_id: "w0", offset });
+    const detail: { content: string; nextOffset: number | null } = feedbackPage(
+      trace,
+      { window_id: "w0", offset },
+    );
     assert(Buffer.byteLength(JSON.stringify(detail)) < 24000);
     text += detail.content;
     offset = detail.nextOffset!;
@@ -945,6 +957,100 @@ test("excessive Retry-After fails without retrying early", async () => {
     assert(record.events("jev_error").some((e) => e.data.retry === false));
   } finally {
     record.close();
+    remove(root);
+  }
+});
+
+test("minimal manifests are hashed by the harness and supplied hashes remain checked", async () => {
+  const root = temp(),
+    path = join(root, "draft");
+  source(path);
+  writeFileSync(
+    join(path, "manifest.json"),
+    JSON.stringify({ stateVersion: "state-v1", notes: "no manual hashing" }),
+  );
+  writeFileSync(join(path, "facts.json"), "{}");
+  try {
+    const packages = new PackageStore(join(root, "frozen"));
+    const receipt = await packages.freeze(
+      "g",
+      path,
+      () => "2025-01-01T00:00:00Z",
+      "2025-01-02T00:00:00Z",
+      assembler,
+      signal(),
+    );
+    assert.deepEqual(Object.keys(receipt.files).sort(), [
+      "assemble.py",
+      "facts.json",
+      "manifest.json",
+    ]);
+    for (const [name, hash] of Object.entries(receipt.files))
+      assert.equal(hash, sha256(readFileSync(join(path, name))));
+    writeFileSync(
+      join(path, "manifest.json"),
+      JSON.stringify({
+        stateVersion: "state-v1",
+        components: {
+          "assemble.py": "0".repeat(64),
+          "facts.json": sha256(Buffer.from("{}")),
+        },
+      }),
+    );
+    assert.throws(() => packageFiles(path), /hash/i);
+  } finally {
+    remove(root);
+  }
+});
+
+test("first-game validation uses only released prior-season fallback states", async () => {
+  const root = temp(),
+    workspace = join(root, "workspace");
+  source(join(workspace, "packages/g"));
+  const game = {
+    gameId: "g",
+    scheduledStart: "2025-10-22T23:00:00Z",
+    release: "2025-10-23T13:00:00Z",
+  };
+  const prior = {
+    gameId: "prior",
+    scheduledStart: "2024-10-22T23:00:00Z",
+    release: "2024-10-23T13:00:00Z",
+  };
+  const future = {
+    gameId: "future",
+    scheduledStart: "2025-10-24T23:00:00Z",
+    release: "2025-10-25T13:00:00Z",
+  };
+  let now = "2025-10-22T22:00:00Z";
+  const samples = [game, future, prior].map((g) => ({
+    ...g,
+    inputHash: "a".repeat(64),
+    state: { ...state, gameId: g.gameId },
+  }));
+  const service = new PolicyTools(
+    root,
+    workspace,
+    game,
+    [game],
+    assembler,
+    [],
+    () => now,
+    samples,
+  );
+  try {
+    const result = await service.validate("pregame", 10, signal());
+    assert.equal(result.error, null);
+    assert.deepEqual(
+      result.outputs.map((x: any) => x.gameId),
+      ["prior"],
+    );
+    now = "2024-10-23T12:59:59Z";
+    assert.deepEqual(
+      (await service.validate("pregame", 10, signal())).outputs,
+      [],
+    );
+  } finally {
     remove(root);
   }
 });

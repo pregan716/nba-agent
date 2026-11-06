@@ -977,3 +977,59 @@ print('gate checks passed')`,
     }
   },
 );
+
+dockerTest(
+  "nba_data lean defaults preserve values without all-NA concat warnings",
+  async () => {
+    const s = fixture();
+    const sandbox = new DockerSandbox(
+      s.f.config,
+      (dir, abort) => s.session.exportTo(dir, abort),
+      s.session.workspaceForSandbox(),
+      s.root,
+    );
+    try {
+      const result = await sandbox.execute(
+        `import nba_data, sqlite3, gzip, pathlib, warnings
+warnings.simplefilter('error', FutureWarning)
+root=pathlib.Path('/scratch/table-fixture')
+(root/'games').mkdir(parents=True)
+for i, values in enumerate([[], [(None, None, 'raw-a')], [(3, 1.5, 'raw-b')]]):
+ db=sqlite3.connect(':memory:')
+ db.execute('create table events (count INTEGER, value REAL, raw_object_ids TEXT)')
+ db.executemany('insert into events values (?,?,?)', values)
+ db.commit()
+ (root/'games'/f'{i}.sqlite.gz').write_bytes(gzip.compress(db.serialize()))
+ db.close()
+lean=nba_data.table('events', root=root)
+full=nba_data.table('events', root=root, include_metadata=True)
+assert list(lean.columns)==['count','value']
+assert len(lean)==2 and lean.iloc[1]['count']==3 and lean.iloc[1]['value']==1.5
+assert lean.iloc[0].isna().all()
+assert list(full.raw_object_ids)==['raw-a','raw-b']
+assert 'raw_object_ids' not in nba_data.query('select * from events', root=root).columns
+assert 'raw_object_ids' in nba_data.query('select * from events', root=root, include_metadata=True).columns
+assert nba_data.table('events', root=root, columns='count').shape==(2,1)
+assert nba_data.query('select * from events where count=99', root=root).empty
+print('lean-ok')`,
+        limits,
+        signal(),
+      );
+      assert.equal(result.exitStatus, 0, result.stderr);
+      assert.equal(result.stderr, "");
+      assert.equal(result.stdout.trim(), "lean-ok");
+      const loud = await sandbox.execute(
+        "import sys; print('x' * 20000); print('y' * 20000, file=sys.stderr)",
+        { ...limits, stdoutBytes: 16384 },
+        signal(),
+      );
+      assert.equal(loud.exitStatus, 0);
+      assert.equal(loud.truncated, true);
+      assert.ok(Buffer.byteLength(loud.stdout + loud.stderr) <= 16384);
+    } finally {
+      await sandbox.close();
+      await s.session.close();
+      s.clean();
+    }
+  },
+);

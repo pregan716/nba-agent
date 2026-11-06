@@ -497,6 +497,8 @@ for (const variant of ["M0", "M3", "M4"] as const)
         const context = await session.call("context", {}),
           game = context.game.game_id;
         assert.equal(context.memory.variant, variant);
+        assert.equal(context.memoryUsage.cap, 50000);
+        assert.ok(context.memoryUsage.retainedTokens >= 0);
         assert.deepEqual(
           (await session.call("workspace_list", { path: "scratch" })).entries,
           [],
@@ -872,6 +874,67 @@ test("a phase change during token counting refuses the pending write", async () 
     });
   } finally {
     release();
+    clean(root);
+  }
+});
+
+test("exact edits are atomic and memory mutations report retained usage", async () => {
+  const root = temp();
+  let phase: "pregame" | "commit" = "pregame";
+  const w = new Workspace(
+    root,
+    new WorkspacePolicy(memoryVariant("M3"), () => phase, true, "g"),
+    root,
+    "g",
+    count,
+  );
+  try {
+    const path = "memory/coach_profile.md";
+    const m0 = new Workspace(
+      root,
+      new WorkspacePolicy(memoryVariant("M0"), () => phase, true, "g"),
+      root,
+      "g",
+      count,
+    );
+    await assert.rejects(
+      Promise.resolve().then(() => m0.edit(path, "a", "b")),
+      { code: "not_found" },
+    );
+    assert.deepEqual(
+      (await w.mutate("write", path, Buffer.from("alpha beta"))).memoryUsage,
+      { retainedTokens: 10, cap: 50000 },
+    );
+    assert.deepEqual((await w.edit(path, "beta", "gamma")).memoryUsage, {
+      retainedTokens: 11,
+      cap: 50000,
+    });
+    assert.equal(w.read(path).content, "alpha gamma");
+    for (const old of ["", "missing", "a"])
+      await assert.rejects(
+        Promise.resolve().then(() => w.edit(path, old, "x")),
+      );
+    await assert.rejects(
+      Promise.resolve().then(() => w.edit(path, "gamma", "x".repeat(50000))),
+      /cap/,
+    );
+    assert.equal(w.read(path).content, "alpha gamma");
+    assert.deepEqual(await w.memoryUsage(), { retainedTokens: 11, cap: 50000 });
+    assert.deepEqual(
+      (await w.mutate("append", path, Buffer.from("!"))).memoryUsage,
+      { retainedTokens: 12, cap: 50000 },
+    );
+    phase = "commit";
+    await assert.rejects(
+      Promise.resolve().then(() => w.edit(path, "gamma", "beta")),
+      { code: "phase_refused" },
+    );
+    phase = "pregame";
+    assert.deepEqual((await w.mutate("delete", path)).memoryUsage, {
+      retainedTokens: 0,
+      cap: 50000,
+    });
+  } finally {
     clean(root);
   }
 });

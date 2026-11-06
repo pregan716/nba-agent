@@ -21,7 +21,12 @@ import {
 } from "node:fs";
 import { resolve, join, isAbsolute } from "node:path";
 import type { RunConfig } from "../runner/config.js";
-import { SessionError, type Phase, type WorkspaceEntry } from "./contract.js";
+import {
+  SessionError,
+  type Phase,
+  type WorkspaceEntry,
+  type WorkspaceMutationResult,
+} from "./contract.js";
 
 export type WorkspaceOperation =
   "list" | "read" | "write" | "append" | "delete";
@@ -377,12 +382,34 @@ export class Workspace {
     operation: WorkspaceChange["operation"],
     path: string,
     content = Buffer.alloc(0),
-  ):
-    { path: string; bytes: number } | Promise<{ path: string; bytes: number }> {
-    if (!this.policy.v3) return this.#mutate(operation, path, content);
+    edit?: { old_text: string; new_text: string },
+  ): WorkspaceMutationResult | Promise<WorkspaceMutationResult> {
+    const edited = () => {
+      if (!edit) return content;
+      this.authorize("write", path);
+      const text = textBytes(this.readBytes(path));
+      const at = text.indexOf(edit.old_text);
+      if (
+        !edit.old_text ||
+        at < 0 ||
+        text.indexOf(edit.old_text, at + 1) !== -1
+      )
+        throw new SessionError(
+          "invalid_input",
+          "Edit requires exactly one occurrence of old_text",
+        );
+      return Buffer.from(
+        text.slice(0, at) +
+          edit.new_text +
+          text.slice(at + edit.old_text.length),
+      );
+    };
+    if (!this.policy.v3) return this.#mutate(operation, path, edited());
     // Serialize validation, counting and commit across tools and FUSE writers.
     const work = this.#queue.then(async () => {
       this.authorize(operation, path);
+      content = edited();
+      let memoryUsage: { retainedTokens: number; cap: number } | undefined;
       if (path.startsWith("memory/")) {
         if (!this.countMemory)
           throw Error("Analyst memory counter is not installed");
@@ -400,6 +427,7 @@ export class Workspace {
           throw new SessionError("invalid_input", "Memory must be UTF-8 text");
         }
         const proposed = await this.countMemory(files);
+        memoryUsage = { retainedTokens: proposed, cap: MEMORY_TOKEN_CAP };
         if (proposed > MEMORY_TOKEN_CAP)
           throw new SessionError(
             "memory_mode_refused",
@@ -407,7 +435,30 @@ export class Workspace {
           );
       }
       // Phase and freeze state may have changed while the counter was in flight.
-      return this.#mutate(operation, path, content);
+      return {
+        ...this.#mutate(operation, path, content),
+        ...(memoryUsage ? { memoryUsage } : {}),
+      };
+    });
+    this.#queue = work.catch(() => {});
+    return work;
+  }
+  edit(path: string, old_text: string, new_text: string) {
+    return this.mutate("write", path, Buffer.alloc(0), { old_text, new_text });
+  }
+  async memoryUsage() {
+    const work = this.#queue.then(async () => {
+      const files = retainedFiles(this.#root, (path) =>
+        this.policy.visible(path),
+      );
+      if (!Object.keys(files).length)
+        return { retainedTokens: 0, cap: MEMORY_TOKEN_CAP };
+      if (!this.countMemory)
+        throw Error("Analyst memory counter is not installed");
+      return {
+        retainedTokens: await this.countMemory(files),
+        cap: MEMORY_TOKEN_CAP,
+      };
     });
     this.#queue = work.catch(() => {});
     return work;

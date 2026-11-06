@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { loadPriorSeasonTraining } from "../src/replay/load.js";
+import {
+  loadPriorSeasonTraining,
+  priorValidationSamples,
+} from "../src/replay/load.js";
 import { fitBaselines } from "../src/replay/baselines.js";
 import { replay } from "../src/replay/run.js";
 import { replayDescriptor } from "../src/launch/run.js";
@@ -97,6 +100,28 @@ test("prior loader reads only the prior Celtics regular season, preserves two ga
     },
   };
   const datasets = await loadPriorSeasonTraining(corpus);
+  const validation = structuredClone(datasets);
+  const window = chronologicalFixture().datasets[0].windows.find(
+    (w) => w.state && !w.exclusions.length,
+  )!;
+  validation[2].windows = [0, 1, 2, 3].map((i) => ({
+    ...structuredClone(window),
+    id: `sample-${i}`,
+    gameId: validation[2].gameId,
+    state: { ...window.state!, gameId: validation[2].gameId },
+  }));
+  const samples = await priorValidationSamples(corpus, validation);
+  assert.equal(samples.length, 3);
+  assert.deepEqual(samples, await priorValidationSamples(corpus, validation));
+  for (const sample of samples) {
+    assert.equal(sample.state.gameId, sample.gameId);
+    assert.ok(
+      validation
+        .find((d) => d.gameId === sample.gameId)!
+        .windows.some((w) => w.state === sample.state && !w.exclusions.length),
+    );
+    assert.ok(Date.parse(sample.release) > Date.parse(sample.scheduledStart));
+  }
   assert.deepEqual(
     datasets.map((d) => d.gameId),
     ids,

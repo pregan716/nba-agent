@@ -1,3 +1,4 @@
+import { releaseTime } from "../env/visibility.js";
 import { digest } from "../runner/config.js";
 import { buildDataset } from "./dataset.js";
 import { WINDOW_VERSION } from "./types.js";
@@ -287,4 +288,33 @@ export async function loadPriorSeasonTraining(
       },
     };
   });
+}
+
+/** Fixed first three qualified prior-season states, with release provenance. */
+export async function priorValidationSamples(
+  c: Corpus,
+  datasets?: DecisionDataset[],
+) {
+  const prior = datasets ?? (await loadPriorSeasonTraining(c));
+  const games = await c.priorPbp.games();
+  return prior
+    .flatMap((d) =>
+      d.windows.flatMap((w) =>
+        w.state && !w.exclusions.length
+          ? [
+              {
+                gameId: d.gameId,
+                inputHash: d.inputHash,
+                state: w.state,
+                scheduledStart: games.find((g) => g.id === d.gameId)!.data
+                  .scheduled_tipoff as string,
+                release: releaseTime(
+                  games.find((g) => g.id === d.gameId)!.data.scheduled_tipoff,
+                ),
+              },
+            ]
+          : [],
+      ),
+    )
+    .slice(0, 3);
 }

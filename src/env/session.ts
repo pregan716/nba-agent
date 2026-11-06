@@ -1,3 +1,4 @@
+import { PROVENANCE_COLUMNS } from "./export.js";
 import { readFileSync } from "node:fs";
 import { boundaryNames, auditBoundary } from "./memory-audit.js";
 import { isMemoryV3, validateMemory } from "./memory.js";
@@ -226,6 +227,9 @@ export class Session {
       cutoff: this.#cutoff,
       budget: structuredClone(budget),
       capabilities: [...this.#config.profile.capabilities.enabled].sort(),
+      ...(isMemoryV3(this.#config.profile.memory) && this.#workspace
+        ? { memoryUsage: await this.#workspace.memoryUsage() }
+        : {}),
       memory: isMemoryV3(this.#config.profile.memory)
         ? structuredClone(this.#config.profile.memory)
         : {
@@ -439,7 +443,11 @@ export class Session {
             Number(b.data.canonical_sequence ?? b.data.start_sequence ?? 0) ||
           a.id.localeCompare(b.id),
       );
-    const definitions = await this.#source.columns(input.table, input.season);
+    const definitions = (
+      await this.#source.columns(input.table, input.season)
+    ).filter(
+      (c) => input.include_metadata || !PROVENANCE_COLUMNS.includes(c.name),
+    );
     const rows = records.map((r) =>
       projectHistory(r, definitions, ref ? this.#cutoff : undefined),
     );
@@ -485,7 +493,9 @@ export class Session {
     const end = Math.min(rows.length, offset + (input.limit ?? 20));
     return {
       table: input.table,
-      columns,
+      columns: input.include_metadata
+        ? columns
+        : columns.map(({ name }) => ({ name })),
       rows: rows.slice(offset, end),
       total: rows.length,
       next_cursor:
@@ -656,18 +666,25 @@ export class Session {
           "capability_disabled",
           "Workspace is not installed",
         );
-      const args = input as { path?: string; content?: string };
+      const args = input as {
+        path?: string;
+        content?: string;
+        old_text?: string;
+        new_text?: string;
+      };
       const w = this.#workspace;
       const result =
         name === "workspace_list"
           ? w.list(args.path)
           : name === "workspace_read"
             ? w.read(args.path!)
-            : w.mutate(
-                name.slice(10) as "write" | "append" | "delete",
-                args.path!,
-                Buffer.from(args.content ?? "", "utf8"),
-              );
+            : name === "workspace_edit"
+              ? w.edit(args.path!, args.old_text!, args.new_text!)
+              : w.mutate(
+                  name.slice(10) as "write" | "append" | "delete",
+                  args.path!,
+                  Buffer.from(args.content ?? "", "utf8"),
+                );
       return (await result) as ToolResult<N>;
     }
     const methods = {

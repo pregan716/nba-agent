@@ -704,22 +704,24 @@ export class Runner {
                 result.computeSeconds < 0
               )
                 throw Error("Invalid compute meter");
-              const trim = (s: string) => {
-                let text = Buffer.from(s)
-                  .subarray(0, sandbox.stdoutBytes)
-                  .toString();
-                while (Buffer.byteLength(text) > sandbox.stdoutBytes)
-                  text = text.slice(0, -1);
+              const trim = (s: string, cap = sandbox.stdoutBytes) => {
+                let text = Buffer.from(s).subarray(0, cap).toString();
+                while (Buffer.byteLength(text) > cap) text = text.slice(0, -1);
                 return text;
               };
               const recorded = {
                 ...result,
                 stdout: trim(result.stdout),
-                stderr: trim(result.stderr),
+                stderr: trim(
+                  result.stderr,
+                  sandbox.stdoutBytes - Buffer.byteLength(trim(result.stdout)),
+                ),
                 truncated:
                   result.truncated ||
                   Buffer.byteLength(result.stdout) > sandbox.stdoutBytes ||
-                  Buffer.byteLength(result.stderr) > sandbox.stdoutBytes,
+                  Buffer.byteLength(result.stdout) +
+                    Buffer.byteLength(result.stderr) >
+                    sandbox.stdoutBytes,
               };
               this.record.append("code_result", scope, {
                 reservation,
@@ -733,6 +735,11 @@ export class Runner {
                 compute_seconds: recorded.computeSeconds,
                 truncated: recorded.truncated,
                 limit: recorded.limit,
+                ...(recorded.truncated
+                  ? {
+                      truncation_notice: `Code output truncated to ${sandbox.stdoutBytes} bytes across stdout and stderr; print a smaller summary or save results to a file.`,
+                    }
+                  : {}),
               };
             }
             return env.call(name, args ?? {}, controller.signal);

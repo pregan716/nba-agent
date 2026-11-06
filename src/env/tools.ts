@@ -61,14 +61,14 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "freeze_package",
     description:
-      "Validate and atomically freeze packages/<current game id>/ before cutoff. manifest.json lists every component SHA-256 including assemble.py and stateVersion state-v1. Returns an immutable receipt; identical re-freezes return the same receipt. Later writes through tools or code are refused.",
+      "Validate and atomically freeze packages/<current game id>/ before cutoff. manifest.json requires stateVersion state-v1 and may include notes. The harness computes every file SHA-256; optional components hashes must match if supplied. Returns an immutable receipt; identical re-freezes return the same receipt. Later writes through tools or code are refused.",
     input_schema: object({}),
     phases: ["pregame"],
   },
   {
     name: "validate_package",
     description:
-      "Test the current package against up to three observable states from eligible prior games. Returns assembled requests and diagnostics without calling Jev. Charges research compute; current and future games are never samples.",
+      "Test the current package against up to three observable states from eligible prior games; before any earlier run game is released, uses fixed, released 2024–25 states. Returns assembled requests and diagnostics without calling Jev. Charges research compute; current and future games are never samples.",
     input_schema: object({}),
     phases: ["pregame"],
   },
@@ -98,7 +98,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "context",
     description:
-      "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory permissions of this run. Call it first in every session and again whenever you need the budget.",
+      "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory permissions of this run. V3 sessions include memoryUsage (retainedTokens and cap). Call it first in every session and again whenever you need the budget.",
     input_schema: object({}),
     phases: ["pregame", "commit", "postgame"],
   },
@@ -167,9 +167,14 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "query_game_history",
-    description: `Query published play-by-play release tables for completed games, or the static player reference. Game tables: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions; filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game, including the game just played when you are in its postgame. Player-reference tables (player_profiles, player_reference, player_season_stats, player_2024_25_summary, player_career_summary, player_identity_exceptions) are the opening-night roster and career history through 2024-25, built before the season and available in every game; filter by player_id or team_id. Rows come with a column definition for every field. ${CUTOFF} A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.`,
+    description: `Query published play-by-play release tables for completed games, or the static player reference. Game tables: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions; filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game, including the game just played when you are in its postgame. Player-reference tables (player_profiles, player_reference, player_season_stats, player_2024_25_summary, player_career_summary, player_identity_exceptions) are the opening-night roster and career history through 2024-25, built before the season and available in every game; filter by player_id or team_id. By default rows omit provenance columns and columns contain names only. Set include_metadata=true for provenance columns and column descriptions. ${CUTOFF} A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.`,
     input_schema: object(
       {
+        include_metadata: {
+          type: "boolean",
+          description:
+            "Include provenance columns and column descriptions (default false).",
+        },
         table: {
           type: "string",
           enum: [...GAME_HISTORY_TABLES, ...PLAYER_REFERENCE_TABLES],
@@ -242,7 +247,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_write",
     description:
-      "Create or replace a workspace file with the given text. Refused during commit, outside the run's permitted paths, over the memory cap, and for an existing file when the run is append-only (write a new file instead).",
+      "Create or replace a workspace file with the given text. Refused during commit, outside the run's permitted paths, over the memory cap, and for an existing file when the run is append-only (write a new file instead). Memory mutations return memoryUsage (retainedTokens and cap).",
     input_schema: object(
       {
         path: id("File path relative to the workspace root."),
@@ -255,7 +260,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_append",
     description:
-      "Append text to a workspace file, creating it if needed. Allowed under both editable and append-only rights; refused during commit, outside the run's permitted paths, and over the memory cap.",
+      "Append text to a workspace file, creating it if needed. Allowed under both editable and append-only rights; refused during commit, outside the run's permitted paths, and over the memory cap. Memory mutations return memoryUsage (retainedTokens and cap).",
     input_schema: object(
       {
         path: id("File path relative to the workspace root."),
@@ -266,9 +271,23 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
     phases: ["pregame", "postgame"],
   },
   {
+    name: "workspace_edit",
+    description:
+      "Replace exactly one literal occurrence of old_text with new_text in an existing UTF-8 workspace file. Refuses empty old_text, zero or multiple matches. Uses the same permission, phase, freeze-lock and memory-cap rules as workspace_write. Memory mutations return memoryUsage (retainedTokens and cap).",
+    input_schema: object(
+      {
+        path: id("File path relative to workspace root."),
+        old_text: { type: "string", minLength: 1 },
+        new_text: { type: "string" },
+      },
+      ["path", "old_text", "new_text"],
+    ),
+    phases: ["pregame", "postgame"],
+  },
+  {
     name: "workspace_delete",
     description:
-      "Delete a workspace file. Refused during commit, outside the run's permitted paths, and always under append-only rights.",
+      "Delete a workspace file. Refused during commit, outside the run's permitted paths, and always under append-only rights. Memory mutations return memoryUsage (retainedTokens and cap).",
     input_schema: object(
       { path: id("File path relative to the workspace root.") },
       ["path"],
