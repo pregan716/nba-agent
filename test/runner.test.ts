@@ -280,7 +280,11 @@ test("runner preserves B workspace, resets A and hands harness only scoped handl
           "model",
           "session",
         ]);
-        assert.deepEqual(Object.keys(handles.session), ["call"]);
+        assert.deepEqual(Object.keys(handles.session), [
+          "call",
+          "onClose",
+          "recordHistory",
+        ]);
         const ctx = (await handles.session.call("context", {})) as any;
         if (ctx.phase === "postgame") {
           await handles.session.call("workspace_write", {
