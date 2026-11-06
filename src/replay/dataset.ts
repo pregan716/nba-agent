@@ -156,6 +156,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
         result.ledger.push({
           gameId: input.game.gameId,
           releaseManifestSha256: input.release.sha256,
+          datasetVersion: version,
           span: span(block),
           reason: "unanchored_substitution",
           mechanism: mechanism(b, previous),
@@ -311,6 +312,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
           "exit_reentry",
           "incomplete_opponent_batch",
           "unreconciled_substitution_batch",
+          "interrupted_jump_ball_substitutions",
         ].includes(r),
       )
     )
@@ -321,6 +323,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
       result.ledger.push({
         gameId: w.gameId,
         releaseManifestSha256: input.release.sha256,
+        datasetVersion: version,
         span: w.span,
         reason,
         mechanism: w.kind,
@@ -334,7 +337,9 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
     const markers = b.filter((e) => opener(e)),
       marker = markers.find((e) => e.type === "jump_ball") ?? markers[0],
       retrospective = marker.type === "jump_ball";
-    const snapshot = retrospective ? b[0] : marker,
+    const snapshot = retrospective
+        ? b.find((e) => e.type === "substitution" || e.type === "jump_ball")!
+        : marker,
       cutoff = snapshot.canonical_sequence + (retrospective ? 0 : 1);
     const { state, reasons } = buildState(
       input,
@@ -347,7 +352,10 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
       retrospective,
       nullFields,
     );
-    const blocks = substitutionBlocks(rows),
+    const outcomeRows = retrospective
+      ? rows.filter((e) => e.canonical_sequence >= cutoff)
+      : rows;
+    const blocks = substitutionBlocks(outcomeRows),
       own = blocks.filter((b) => ownSubs(b).length),
       actual = actionFor(own.flat(), input.participants);
     const w: Window = {
@@ -368,6 +376,17 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
       ownSubs(b).some((e) => e.canonical_sequence < marker.canonical_sequence)
     )
       w.exclusions.push("marker_after_decision");
+    if (
+      retrospective &&
+      snapshot.type === "substitution" &&
+      b.some(
+        (e) =>
+          e.canonical_sequence >= cutoff &&
+          e.canonical_sequence < marker.canonical_sequence &&
+          e.type !== "substitution",
+      )
+    )
+      w.exclusions.push("interrupted_jump_ball_substitutions");
     if (own.length > 1) w.exclusions.push("multiple_celtics_blocks");
     if (actual.players_in.some((p) => actual.players_out.includes(p)))
       w.exclusions.push("exit_reentry");

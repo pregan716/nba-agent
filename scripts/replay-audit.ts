@@ -1,5 +1,5 @@
 import { readFile, mkdir, writeFile, mkdtemp } from "node:fs/promises";
-import { execFileSync } from "node:child_process";
+import { auditCodeRevision } from "./lib/audit-revision.js";
 import { openCorpus } from "../src/data/corpus.js";
 import { DopplerStore } from "../src/data/store.js";
 import { auditPregames, loadReplayInputs } from "../src/replay/load.js";
@@ -9,6 +9,7 @@ import { replay, type ReplayManifest } from "../src/replay/run.js";
 import { RecordStore } from "../src/runner/record.js";
 import { summarize } from "../src/replay/scoring.js";
 import { BOS, REPLAY_VERSIONS } from "../src/replay/types.js";
+const codeRevision = auditCodeRevision();
 const raw = new DopplerStore();
 try {
   const c = await openCorpus(raw, process.cwd(), ".cache/objects");
@@ -41,15 +42,14 @@ try {
     schemaVersion: 1,
     kind: "replay-mvp",
     releaseManifestSha256: c.pbp.release.root.sha256,
+    datasetVersion: datasets[0].version,
     datasets: datasets.map((d) => ({
       gameId: d.gameId,
       inputHash: d.inputHash,
     })),
     harness: REPLAY_VERSIONS,
     predictors: parameters,
-    codeRevision: execFileSync("git", ["rev-parse", "HEAD"], {
-      encoding: "utf8",
-    }).trim(),
+    codeRevision,
   };
   await mkdir(".cache/replay", { recursive: true });
   const root = await mkdtemp(".cache/replay/audit-"),

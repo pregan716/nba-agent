@@ -150,7 +150,7 @@ test("independent candidate, observable prefix, and outcome held separately", ()
   assert.throws(() => buildDataset(input), /strictly before/);
 });
 
-test("retrospective jump ball snapshots bucket start; other late markers exclude", () => {
+test("retrospective jump ball snapshots first substitution; other late markers exclude", () => {
   const input = fixture();
   input.events[1].type = "rebound";
   input.events[1].description = "TEAM defensive REBOUND";
@@ -164,7 +164,7 @@ test("retrospective jump ball snapshots bucket start; other late markers exclude
   input.events.slice(1).forEach((e, i) => (e.canonical_sequence = 25 + i));
   let d = buildDataset(input);
   assert.equal(d.windows.length, 1);
-  assert.equal(d.windows[0].sequence, 25);
+  assert.equal(d.windows[0].sequence, 26);
   assert.deepEqual(d.windows[0].state!.celtics, five);
   assert.deepEqual(d.windows[0].exclusions, []);
   input.events[4].type = "timeout";
@@ -344,6 +344,7 @@ test("record keeps outcomes outside predictor, resumes, and verifies chain", asy
     schemaVersion: 1,
     kind: "replay-mvp",
     releaseManifestSha256: d.release.sha256,
+    datasetVersion: d.version,
     datasets: [{ gameId: d.gameId, inputHash: d.inputHash }],
     harness: REPLAY_VERSIONS,
     predictors: { fixture: { id: "fixture" }, failure: { id: "failure" } },
@@ -373,6 +374,18 @@ test("record keeps outcomes outside predictor, resumes, and verifies chain", asy
     );
     assert.equal(calls, 1);
     assert.ok(record.events("replay_window")[0].data.result.window.actual);
+    await assert.rejects(
+      replay(
+        { ...d, version: d.version.replace("windows-v2:", "windows-v1:") },
+        "fixture",
+        () => prediction(0.8),
+        record,
+      ),
+      /Dataset absent/,
+    );
+    for (const event of record.events())
+      assert.equal(event.data.datasetVersion, d.version);
+    assert.ok(d.version.startsWith("windows-v2:"));
     record.verify();
     record.close();
     const reopened = new RecordStore(dir, manifest);
@@ -394,12 +407,16 @@ test("audited jump prefixes: opener 25–28 and Brooklyn 199–206", async () =>
   ) as { bucketStart: number; input: ReplayInput }[];
   for (const { input, bucketStart } of fixtures) {
     const first = input.events.find(
-      (e) => e.canonical_sequence === bucketStart,
+      (e) =>
+        e.canonical_sequence >= bucketStart &&
+        ["substitution", "jump_ball"].includes(e.type),
     )!;
+    const cutoff = first.canonical_sequence;
+    assert.equal(cutoff, input.game.gameId === "0022500083" ? 26 : 200);
     const { state, reasons } = buildState(
       input,
       input.events,
-      bucketStart,
+      cutoff,
       first.period,
       first.clock_remaining_ms,
       "jump_ball",
@@ -411,13 +428,13 @@ test("audited jump prefixes: opener 25–28 and Brooklyn 199–206", async () =>
     assert.ok(state);
     const actual = actionFor(
       input.events.filter(
-        (e) => e.canonical_sequence >= bucketStart && e.type === "substitution",
+        (e) => e.canonical_sequence >= cutoff && e.type === "substitution",
       ),
       input.participants,
     );
     assert.equal(validateAction(actual, state).valid, true);
     assert.equal(
-      state.history.substitutions.some((s) => s.sequence >= bucketStart),
+      state.history.substitutions.some((s) => s.sequence >= cutoff),
       false,
     );
     const exit = input.game.gameId === "0022500083" ? "1629674" : "1630202",
@@ -427,7 +444,7 @@ test("audited jump prefixes: opener 25–28 and Brooklyn 199–206", async () =>
     assert.deepEqual(actual, { players_out: [exit], players_in: [entry] });
     const changed = structuredClone(input);
     for (const e of changed.events.filter(
-      (e) => e.canonical_sequence >= bucketStart,
+      (e) => e.canonical_sequence >= cutoff,
     )) {
       e.description = "PLANTED FUTURE RECOVERY";
       e.home_lineup_after = ["BAD"];
@@ -437,11 +454,11 @@ test("audited jump prefixes: opener 25–28 and Brooklyn 199–206", async () =>
       buildState(
         changed,
         changed.events,
-        bucketStart,
+        cutoff,
         first.period,
         first.clock_remaining_ms,
         "jump_ball",
-        changed.events.find((e) => e.canonical_sequence === bucketStart)!,
+        changed.events.find((e) => e.canonical_sequence === cutoff)!,
         true,
         [],
       ).state,
@@ -486,6 +503,7 @@ test("provider failures flag games above five percent; invalid package stops all
     schemaVersion: 1,
     kind: "replay-mvp",
     releaseManifestSha256: d.release.sha256,
+    datasetVersion: d.version,
     datasets: [{ gameId: d.gameId, inputHash: d.inputHash }],
     harness: REPLAY_VERSIONS,
     predictors: { fixture: { id: "fixture" }, failure: { id: "failure" } },
@@ -858,4 +876,171 @@ test("jump-ball stoppage metadata does not inherit the preceding bucket", async 
       freeThrowsPending: null,
     });
   }
+});
+
+function heldBallFixture(substitute: boolean): ReplayInput {
+  const input = fixture(),
+    original = input.events;
+  const shot = {
+    ...original[1],
+    event_id: "shot",
+    type: "field_goal",
+    subtype: "Jump Shot",
+    shot_result: "missed",
+    shot_value: 2,
+  };
+  const rebound = {
+    ...original[1],
+    event_id: "rebound",
+    type: "rebound",
+    subtype: "offensive",
+    rebound_type: "offensive",
+  };
+  const finalFive = substitute ? ["f", "b", "c", "d", "e"] : five;
+  const jump = {
+    ...original[1],
+    event_id: "jump",
+    type: "jump_ball",
+    subtype: "recovered",
+    home_lineup_before: finalFive,
+    home_lineup_after: finalFive,
+  };
+  const end = {
+    ...original[4],
+    home_lineup_before: finalFive,
+    home_lineup_after: finalFive,
+  };
+  input.events = [
+    original[0],
+    shot,
+    rebound,
+    ...(substitute ? [original[2], original[3]] : []),
+    jump,
+    end,
+  ];
+  input.events.forEach((e, i) => (e.canonical_sequence = i));
+  input.participants = [
+    ...(substitute ? input.participants : []),
+    { event_id: "shot", team_id: BOS, player_id: "a", role: "shooter" },
+    { event_id: "rebound", team_id: BOS, player_id: "b", role: "rebounder" },
+  ];
+  if (!substitute)
+    input.stints = input.stints
+      .filter((s) => s.player_id !== "f")
+      .map((s) => ({ ...s, duration_ms: 720000, end_clock_ms: 0 }));
+  for (const stint of input.stints) {
+    stint.end_sequence = input.events.at(-1)!.canonical_sequence;
+    if (stint.player_id === "f") stint.start_sequence = 4;
+  }
+  return input;
+}
+
+test("windows-v2 paired held-ball fixtures include observed play but exclude the decision", () => {
+  const positive = buildDataset(heldBallFixture(true));
+  const negative = buildDataset(heldBallFixture(false));
+  const a = positive.windows[0],
+    b = negative.windows[0];
+  assert.deepEqual(a.exclusions, []);
+  assert.deepEqual(b.exclusions, []);
+  assert.deepEqual(a.state, b.state);
+  assert.equal(a.sequence, 3);
+  assert.equal(
+    a.state!.players.find((p) => p.playerId === "a")!.box.field_goals_attempted,
+    1,
+  );
+  assert.equal(
+    a.state!.players.find((p) => p.playerId === "b")!.box.offensive_rebounds,
+    1,
+  );
+  assert.deepEqual(a.state!.history.substitutions, []);
+  assert.deepEqual(a.state!.celtics, five);
+  assert.deepEqual(a.actual, { players_out: ["a"], players_in: ["f"] });
+  assert.deepEqual(b.actual, { players_out: [], players_in: [] });
+  assert.equal(a.datasetVersion, `windows-v2:${positive.release.sha256}`);
+  const changed = heldBallFixture(true);
+  for (const e of changed.events.filter((e) => e.canonical_sequence >= 3)) {
+    e.description = "PLANTED FUTURE";
+    e.home_score_after = 99;
+  }
+  assert.deepEqual(buildDataset(changed).windows[0].state, a.state);
+});
+
+test("jump-ball cutoff precedes opponent substitutions even when Celtics do not substitute", () => {
+  const input = heldBallFixture(false),
+    jump = input.events[3];
+  const next = ["u", "w", "x", "y", "z"];
+  const out = {
+    ...jump,
+    type: "substitution",
+    event_id: "opponent-out",
+    team_id: "other",
+    away_lineup_before: opp,
+    away_lineup_after: opp,
+  };
+  const into = { ...out, event_id: "opponent-in", away_lineup_after: next };
+  input.events.splice(3, 0, out, into);
+  input.events.forEach((e, i) => {
+    e.canonical_sequence = i;
+    if (i >= 5) {
+      e.away_lineup_before = next;
+      e.away_lineup_after = next;
+    }
+  });
+  input.participants.push(
+    {
+      event_id: "opponent-out",
+      team_id: "other",
+      player_id: "v",
+      role: "sub_out",
+    },
+    {
+      event_id: "opponent-in",
+      team_id: "other",
+      player_id: "u",
+      role: "sub_in",
+    },
+  );
+  input.stints.find((s) => s.player_id === "v")!.duration_ms = 120000;
+  input.stints.push({
+    ...input.stints.find((s) => s.player_id === "v")!,
+    player_id: "u",
+    duration_ms: 600000,
+    start_sequence: 4,
+  });
+  const w = buildDataset(input).windows[0];
+  assert.deepEqual(w.exclusions, []);
+  assert.equal(w.sequence, 3);
+  assert.deepEqual(w.state!.opponent, opp);
+  assert.deepEqual(w.state!.history.substitutions, []);
+  assert.deepEqual(w.actual, { players_out: [], players_in: [] });
+  assert.deepEqual(
+    w.state,
+    buildDataset(heldBallFixture(false)).windows[0].state,
+  );
+});
+
+test("non-substitution rows between the first substitution and jump ball exclude the window", () => {
+  const input = heldBallFixture(true);
+  input.events.splice(5, 0, {
+    ...input.events[5],
+    type: "administrative",
+    event_id: "interruption",
+  });
+  input.events.forEach((e, i) => (e.canonical_sequence = i));
+  const d = buildDataset(input),
+    w = d.windows[0];
+  assert.deepEqual(w.exclusions, [
+    "ambiguous_stoppage",
+    "interrupted_jump_ball_substitutions",
+  ]);
+  assert.equal(scoreWindow(w, prediction(0.8)).scores, null);
+  assert.ok(
+    d.ledger.some(
+      (l) =>
+        l.reason === "interrupted_jump_ball_substitutions" &&
+        l.datasetVersion === d.version,
+    ),
+  );
+  assert.equal(d.diagnostics.candidates, 1);
+  assert.equal(d.diagnostics.positiveCandidates, 1);
 });

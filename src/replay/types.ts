@@ -2,7 +2,7 @@ import type { Row } from "../data/contracts.js";
 import type { ObjectRef } from "../data/store.js";
 
 export const BOS = "1610612738";
-export const WINDOW_VERSION = "windows-v1";
+export const WINDOW_VERSION = "windows-v2";
 export const STATE_VERSION = "state-v1";
 export const CONTRACT_VERSION = "prediction-v1";
 export const REPLAY_VERSIONS = {
@@ -118,6 +118,7 @@ export interface Window {
   adjacentSubstitutionBuckets: number;
 }
 export interface LedgerEntry {
+  datasetVersion: string;
   gameId: string;
   releaseManifestSha256: string;
   span: [number, number];
