@@ -99,6 +99,15 @@ export async function meteredJev(
           : Number.isFinite(seconds)
             ? Math.max(0, seconds * 1000)
             : Math.max(0, Date.parse(header) - Date.now());
+      if (Number.isFinite(ms) && ms > JEV_SETTINGS.maxRetryAfterMs) {
+        record.append("jev_error", scope, {
+          role: "jev",
+          attempt,
+          retry: false,
+          detail: "Retry-After exceeds 60-second wait cap",
+        });
+        throw error;
+      }
       await delay(Number.isFinite(ms) ? ms : 1000, undefined, { signal });
       continue;
     }

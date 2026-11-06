@@ -1,3 +1,5 @@
+import { AssemblerInfrastructureError } from "./errors.js";
+import { feedbackPage, type FeedbackQuery } from "./feedback.js";
 import { randomUUID } from "node:crypto";
 import { releaseTime } from "../env/visibility.js";
 import { join } from "node:path";
@@ -7,6 +9,10 @@ import {
   mkdirSync,
   writeFileSync,
   renameSync,
+  chmodSync,
+  readdirSync,
+  lstatSync,
+  rmSync,
 } from "node:fs";
 import type { Assembler } from "./sandbox.js";
 import { PackageStore } from "./package.js";
@@ -64,6 +70,8 @@ export class PolicyTools {
         signal,
       );
     } catch (e) {
+      signal.throwIfAborted();
+      if (e instanceof AssemblerInfrastructureError) throw e;
       return {
         status: "invalid_package" as const,
         reason: e instanceof Error ? e.message : "Invalid package",
@@ -129,14 +137,26 @@ export class PolicyTools {
         error: null,
       };
     } catch (e) {
+      signal.throwIfAborted();
+      if (e instanceof AssemblerInfrastructureError) throw e;
       return {
         outputs,
         computeSeconds: (performance.now() - start) / 1000,
         error: e instanceof Error ? e.message : "Validation failed",
       };
+    } finally {
+      const unlock = (path: string) => {
+        chmodSync(path, 0o700);
+        for (const name of readdirSync(path)) {
+          const child = join(path, name);
+          if (lstatSync(child).isDirectory()) unlock(child);
+        }
+      };
+      unlock(temporary.root);
+      rmSync(temporary.root, { recursive: true, force: true });
     }
   }
-  readFeedback(phase: Phase, gameId?: string) {
+  readFeedback(phase: Phase, gameId?: string, query: FeedbackQuery = {}) {
     if (!Number.isFinite(Date.parse(this.clock())))
       throw new SessionError("not_found", "Feedback unavailable");
     const ordered = [...this.schedule].sort(
@@ -161,7 +181,7 @@ export class PolicyTools {
     const trace = JSON.parse(readFileSync(path, "utf8")) as PolicyTrace;
     if (trace.gameId !== allowed.gameId || trace.releaseAt !== allowed.release)
       throw Error("Feedback identity mismatch");
-    return trace;
+    return feedbackPage(trace, query);
   }
   saveFeedback(trace: PolicyTrace) {
     const game = this.schedule.find((g) => g.gameId === trace.gameId);

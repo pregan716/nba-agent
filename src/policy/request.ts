@@ -1,3 +1,4 @@
+import { PackageExecutionError, UnsupportedDecisionState } from "./errors.js";
 import { z } from "zod";
 import { canonicalJson } from "../env/tools.js";
 import { COUNT_KEYS, type ObservableState } from "../replay/types.js";
@@ -7,6 +8,7 @@ export const JEV_SETTINGS = {
   model: JEV_MODEL,
   inputUsdPerMillion: 0.042,
   retries: 1,
+  maxRetryAfterMs: 60000,
   perQuestionTokens: 32000,
   contextGuard: "utf8-bytes-plus-1024-v1",
   requestTokens: 64000,
@@ -48,12 +50,18 @@ export function contextGuard(request: JevRequest) {
         1024 >
       JEV_SETTINGS.perQuestionTokens
     )
-      throw Error("Per-question context upper bound exceeds 32000 tokens");
+      throw new PackageExecutionError(
+        "Per-question context upper bound exceeds 32000 tokens",
+        true,
+      );
   if (
     Buffer.byteLength(canonicalJson(request)) + 4096 >
     JEV_SETTINGS.requestTokens
   )
-    throw Error("Request context upper bound exceeds 64000 tokens");
+    throw new PackageExecutionError(
+      "Request context upper bound exceeds 64000 tokens",
+      true,
+    );
 }
 export function buildJevRequest(
   raw: unknown,
@@ -66,9 +74,9 @@ export function buildJevRequest(
       JSON.stringify(Object.keys(a.criteria[q]).sort()) !==
       JSON.stringify([...keys[q]].sort())
     )
-      throw Error(`Assembler ${q} criteria keys differ`);
+      throw new PackageExecutionError(`Assembler ${q} criteria keys differ`);
     if (q !== "count" && (keys[q].length < 1 || keys[q].length > 255))
-      throw Error(`Unsupported ${q} option count`);
+      throw new UnsupportedDecisionState(`Unsupported ${q} option count`);
   }
   const request: JevRequest = {
     model: JEV_MODEL,

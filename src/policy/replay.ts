@@ -1,3 +1,5 @@
+import { ZodError } from "zod";
+import { PackageExecutionError } from "./errors.js";
 import { JevHttpError } from "../runner/jev.js";
 import {
   mkdirSync,
@@ -95,11 +97,22 @@ export async function assembleRequest(
     signal,
     AbortSignal.timeout(Math.ceil(assembler.limits.wallSeconds * 1000)),
   ]);
-  const a = await assembler.run(path, state, deadline),
-    b = await assembler.run(path, state, deadline);
+  const execute = async () => {
+    try {
+      return await assembler.run(path, state, deadline);
+    } catch (error) {
+      signal.throwIfAborted();
+      if (deadline.aborted)
+        throw new PackageExecutionError("Assembler wall-clock limit");
+      throw error;
+    }
+  };
+  const a = await execute(),
+    b = await execute();
+  signal.throwIfAborted();
   const assembly = assemblySchema.parse(a.value);
   if (canonicalJson(assembly) !== canonicalJson(assemblySchema.parse(b.value)))
-    throw Error("Nondeterministic assembler output");
+    throw new PackageExecutionError("Nondeterministic assembler output");
   const result = { assembly, request: buildJevRequest(assembly, state) };
   mkdirSync(cache, { recursive: true });
   const temporary = target + "." + randomUUID();
@@ -134,6 +147,7 @@ export async function replayPolicy(options: {
 }) {
   const { dataset, record, proxy, assembler, receipt, predictorId, signal } =
     options;
+  signal.throwIfAborted();
   const version = policyVersion(assembler, receipt, options.codeRevision);
   const manifest = record.events("manifest")[0].data;
   if (
@@ -153,6 +167,7 @@ export async function replayPolicy(options: {
     dataset,
     predictorId,
     async (state) => {
+      signal.throwIfAborted();
       const callScope = scope + ":" + digest(state);
       const saved = record.events("policy_prediction", callScope).at(-1);
       if (saved) {
@@ -193,9 +208,15 @@ export async function replayPolicy(options: {
             };
         record.append("policy_assembly", callScope, assembled);
       } catch (error) {
+        signal.throwIfAborted();
+        if (
+          !(error instanceof PackageExecutionError) &&
+          !(error instanceof ZodError)
+        )
+          throw error;
         const failure =
           attempted ||
-          (error instanceof Error && /context upper bound/.test(error.message))
+          (error instanceof PackageExecutionError && error.windowOnly)
             ? "assembler_error"
             : "invalid_package";
         const message =
@@ -210,6 +231,7 @@ export async function replayPolicy(options: {
           received?.modelValid && received?.usageValid
             ? received
             : await proxy.jev(assembled.request, record, callScope, signal);
+        signal.throwIfAborted();
         const answers = mapJevAnswers(response.response?.answers);
         record.append("policy_prediction", callScope, {
           answers: answers ?? null,
@@ -217,6 +239,7 @@ export async function replayPolicy(options: {
         });
         return answers;
       } catch (error) {
+        signal.throwIfAborted();
         const message =
           error instanceof Error ? error.message : "Provider failed";
         const failure =
@@ -231,6 +254,7 @@ export async function replayPolicy(options: {
     },
     record,
   );
+  signal.throwIfAborted();
   const windows = results.map((result) => {
     const callScope = scope + ":" + digest(result.window.state);
     return {

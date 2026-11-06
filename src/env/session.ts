@@ -1,3 +1,4 @@
+import { resolve as resolvePolicyPath } from "node:path";
 import { policyHarness } from "../policy/replay.js";
 import { canonicalJson } from "./tools.js";
 import type { PolicyTools } from "../policy/tools.js";
@@ -80,6 +81,13 @@ export class Session {
     runRoot?: string,
     private policyTools?: PolicyTools,
   ) {
+    if (
+      policyTools &&
+      (!runRoot ||
+        policyTools.packages.root !==
+          resolvePolicyPath(runRoot, "frozen-packages"))
+    )
+      throw Error("Policy package root differs from session run root");
     if (
       policyTools &&
       canonicalJson(config.harness.policy) !==
@@ -591,6 +599,7 @@ export class Session {
           : this.policyTools.readFeedback(
               this.#phase,
               (input as { game_id?: string }).game_id,
+              input as import("../policy/feedback.js").FeedbackQuery,
             )
       ) as ToolResult<N>;
     }

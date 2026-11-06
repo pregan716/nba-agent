@@ -75,8 +75,24 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "read_feedback",
     description:
-      "Read exactly the previous chronological game's released replay trace in pregame, or the current game's trace in postgame. Nothing older or unreleased is available.",
-    input_schema: object({ game_id: id("Optional allowed game id") }),
+      "Read bounded pages of the previous chronological game's released replay trace in pregame, or the current game's trace in postgame. Nothing older or unreleased is available.",
+    input_schema: object({
+      game_id: id("Optional allowed game id"),
+      cursor: {
+        type: "integer",
+        minimum: 0,
+        description: "Window page cursor; default 0, two windows per page.",
+      },
+      window_id: id(
+        "Optional window id for full forensic JSON in bounded chunks.",
+      ),
+      offset: {
+        type: "integer",
+        minimum: 0,
+        description:
+          "Character offset for window details; use returned nextOffset.",
+      },
+    }),
     phases: ["pregame", "postgame"],
   },
   {

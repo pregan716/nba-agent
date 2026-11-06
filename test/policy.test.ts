@@ -1,3 +1,4 @@
+import { PackageExecutionError } from "../src/policy/errors.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -328,6 +329,7 @@ test("feedback permits only previous pregame/current postgame after release, val
     assert.throws(() => service.readFeedback("postgame"), /unavailable/);
     const validated = await service.validate("pregame", 10, signal());
     assert.equal(validated.error, null);
+    assert.deepEqual(readdirSync(join(root, "local-validation")), []);
     assert.deepEqual(
       validated.outputs.map((r: any) => r.gameId),
       ["old", "previous"],
@@ -514,7 +516,7 @@ test("first assembler exception invalidates the game; later exception scores fal
           return { value: { loaded: true }, computeSeconds: 0 };
         runs++;
         if (scenario === "first" || (scenario === "later" && runs > 2))
-          throw Error("assembler raises");
+          throw new PackageExecutionError("assembler raises");
         const a = genericAssembly(s as ObservableState);
         if (scenario === "oversize") a.jev_state = "x".repeat(33000);
         return { value: a, computeSeconds: 0 };
@@ -609,6 +611,20 @@ test("session exposes policy tools under pinned harness and blocks writes after 
     [],
     () => new Date(Date.parse(f.game.scheduledStart) - 1).toISOString(),
   );
+  assert.throws(
+    () =>
+      new Session(
+        f.config,
+        f.game,
+        "pregame",
+        f.game.scheduledStart,
+        f.source,
+        workspace,
+        join(root, "wrong"),
+        tools,
+      ),
+    /root differs/,
+  );
   const session = new Session(
     f.config,
     f.game,
@@ -676,6 +692,185 @@ test("nondeterministic assembly is refused before any Jev request", async () => 
       /Nondeterministic/,
     );
   } finally {
+    remove(root);
+  }
+});
+
+test("cancelled assembly/Jev and Docker infrastructure failure leave replay resumable", async () => {
+  for (const mode of [
+    "assembly-abort",
+    "jev-abort",
+    "infrastructure",
+  ] as const) {
+    const root = temp(),
+      path = join(root, "draft");
+    source(path);
+    const store = new PackageStore(join(root, "frozen"));
+    const receipt = await store.freeze(
+      "g",
+      path,
+      () => "2025-01-01T00:00:00Z",
+      "2025-01-02T00:00:00Z",
+      assembler,
+      signal(),
+    );
+    const controller = new AbortController();
+    let interrupted = false,
+      calls = 0;
+    const run: Assembler = {
+      ...assembler,
+      run: async (p, s, abort, operation) => {
+        if (!interrupted && mode !== "jev-abort") {
+          interrupted = true;
+          if (mode === "assembly-abort") controller.abort();
+          throw Error("Docker interrupted");
+        }
+        return assembler.run(p, s, abort, operation);
+      },
+    };
+    const proxy = new MeteringProxy(analyst, {
+      create: async (r) => {
+        calls++;
+        if (!interrupted && mode === "jev-abort") {
+          interrupted = true;
+          controller.abort();
+          throw new DOMException("aborted", "AbortError");
+        }
+        return response(r);
+      },
+    });
+    const dataset = {
+      gameId: "g",
+      version: "windows-v2:release",
+      inputHash: "i",
+      release: { sha256: "release" },
+      windows: [1, 2].map((i) => ({
+        id: `w${i}`,
+        gameId: "g",
+        state: { ...state, clockMs: i },
+        actual: { players_out: ["a"], players_in: ["f"] },
+        exclusions: [],
+      })),
+      ledger: [],
+    } as unknown as DecisionDataset;
+    const record = new RecordStore<any>(join(root, "record"), {
+      releaseManifestSha256: "release",
+      datasetVersion: dataset.version,
+      datasets: [{ gameId: "g", inputHash: "i" }],
+      harness: { ...REPLAY_VERSIONS, policy: policyHarness(run) },
+      predictors: {
+        p: { id: "p", policy: policyVersion(run, receipt, "fixture") },
+      },
+    });
+    const options = {
+      dataset,
+      predictorId: "p",
+      record,
+      proxy,
+      assembler: run,
+      receipt,
+      packagePath: join(store.path("g"), "package"),
+      signal: controller.signal,
+      releaseAt: "2025-01-02T14:00:00Z",
+      codeRevision: "fixture",
+    };
+    try {
+      await assert.rejects(replayPolicy(options));
+      for (const kind of [
+        "policy_prediction",
+        "replay_window",
+        "policy_trace",
+        "replay_summary",
+      ])
+        assert.equal(record.events(kind).length, 0, `${mode}: ${kind}`);
+      const resumed = await replayPolicy({ ...options, signal: signal() });
+      assert.equal(resumed.windows.length, 2);
+      assert(resumed.windows.every((w) => w.result.failure === null));
+      assert.equal(calls, mode === "jev-abort" ? 3 : 2);
+    } finally {
+      record.close();
+      remove(root);
+    }
+  }
+});
+
+test("feedback is paged and full window detail can be reconstructed without a large tool result", async () => {
+  const { feedbackPage } = await import("../src/policy/feedback.js");
+  const window = {
+    result: {
+      window: {
+        id: "w",
+        state,
+        actual: { players_in: [], players_out: [] },
+        exclusions: [],
+      },
+      raw: {},
+      validation: {},
+      scores: null,
+      failure: null,
+    },
+    assembly: {
+      assembly: { jev_state: "x".repeat(100000), diagnostics: {} },
+      request: { state: "x".repeat(100000), questions: {} },
+    },
+    jev: [],
+  };
+  const trace = {
+    gameId: "g",
+    summary: { windows: 75 },
+    windows: Array.from({ length: 75 }, (_, i) => ({
+      ...window,
+      result: {
+        ...window.result,
+        window: { ...window.result.window, id: `w${i}` },
+      },
+    })),
+  } as any;
+  const page = feedbackPage(trace);
+  assert(Buffer.byteLength(JSON.stringify(page)) < 24000);
+  assert.equal(page.nextCursor, 2);
+  let offset: number | null = 0,
+    text = "";
+  while (offset !== null) {
+    const detail = feedbackPage(trace, { window_id: "w0", offset });
+    assert(Buffer.byteLength(JSON.stringify(detail)) < 24000);
+    text += detail.content;
+    offset = detail.nextOffset!;
+  }
+  assert.deepEqual(JSON.parse(text), trace.windows[0]);
+});
+
+test("empty bench is a window-level environment error, not invalid_package", () => {
+  const empty = { ...state, eligibleBench: [] };
+  assert.throws(
+    () => buildJevRequest(genericAssembly(empty), empty),
+    (e: any) => e instanceof PackageExecutionError && e.windowOnly,
+  );
+});
+
+test("excessive Retry-After fails without retrying early", async () => {
+  const root = temp(),
+    record = new RecordStore(root, { test: true });
+  let calls = 0;
+  const proxy = new MeteringProxy(analyst, {
+    create: async () => {
+      calls++;
+      throw new JevHttpError(429, { detail: "busy" }, "61");
+    },
+  });
+  try {
+    await assert.rejects(
+      proxy.jev(
+        buildJevRequest(genericAssembly(state), state),
+        record,
+        "cap",
+        signal(),
+      ),
+    );
+    assert.equal(calls, 1);
+    assert(record.events("jev_error").some((e) => e.data.retry === false));
+  } finally {
+    record.close();
     remove(root);
   }
 });

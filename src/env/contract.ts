@@ -412,8 +412,13 @@ export interface ToolContract {
     };
   };
   read_feedback: {
-    input: { game_id?: string };
-    result: import("../policy/replay.js").PolicyTrace;
+    input: {
+      game_id?: string;
+      cursor?: number;
+      window_id?: string;
+      offset?: number;
+    };
+    result: import("../policy/feedback.js").FeedbackPage;
   };
   context: { input: ContextInput; result: ContextResult };
   search_evidence: { input: SearchEvidenceInput; result: SearchEvidenceResult };

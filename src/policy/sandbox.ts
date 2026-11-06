@@ -1,3 +1,7 @@
+import {
+  AssemblerInfrastructureError,
+  PackageExecutionError,
+} from "./errors.js";
 import { spawn, execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { randomUUID } from "node:crypto";
@@ -75,14 +79,17 @@ export class DockerAssembler implements Assembler {
       this.image.replace(/^local@/, ""),
     ];
     let child: ReturnType<typeof spawn> | undefined;
+    let primaryError: unknown;
     try {
       await command("docker", args, {
         timeout: Math.ceil(this.limits.wallSeconds * 1000),
+        signal,
       });
       signal.throwIfAborted();
       const remaining =
         this.limits.wallSeconds * 1000 - (performance.now() - start);
-      if (remaining <= 0) throw Error("Assembler wall-clock limit");
+      if (remaining <= 0)
+        throw new PackageExecutionError("Assembler wall-clock limit");
       const value = await new Promise<unknown>((accept, reject) => {
         child = spawn("docker", ["start", "--attach", "--interactive", name], {
           stdio: ["pipe", "pipe", "pipe"],
@@ -90,51 +97,84 @@ export class DockerAssembler implements Assembler {
         let stdout = "",
           stderr = "",
           size = 0;
-        const fail = (message: string) => {
-          reject(Error(message));
+        const fail = (error: Error) => {
+          reject(error);
           child?.kill("SIGKILL");
         };
-        const abort = () => fail("Assembler aborted");
+        const abort = () => fail(signal.reason ?? Error("Assembler aborted"));
         signal.addEventListener("abort", abort, { once: true });
         const timer = setTimeout(
-          () => fail("Assembler wall-clock limit"),
+          () => fail(new PackageExecutionError("Assembler wall-clock limit")),
           remaining,
         );
-        child.on("error", () => fail("Assembler launch failed"));
+        child.on("error", () => fail(Error("Assembler launch failed")));
         child.stdout!.on("data", (b) => {
           size += b.length;
-          if (size > this.limits.outputBytes) fail("Assembler output limit");
+          if (size > this.limits.outputBytes)
+            fail(new PackageExecutionError("Assembler output limit"));
           else stdout += b.toString();
         });
         child.stderr!.on("data", (b) => {
           size += b.length;
-          if (size > this.limits.outputBytes) fail("Assembler output limit");
+          if (size > this.limits.outputBytes)
+            fail(new PackageExecutionError("Assembler output limit"));
           else stderr += b.toString();
         });
-        child.on("close", (code) => {
+        child.on("close", async (code) => {
           clearTimeout(timer);
           signal.removeEventListener("abort", abort);
-          if (code !== 0)
-            reject(
-              Error(`Assembler failed (${code}): ${stderr.slice(0, 1000)}`),
-            );
-          else
+          if (code !== 0) {
+            try {
+              const { stdout: details } = await command(
+                "docker",
+                ["inspect", name, "--format", "{{json .State}}"],
+                { timeout: 10000 },
+              );
+              const state = JSON.parse(details);
+              if (
+                !state.StartedAt ||
+                state.StartedAt.startsWith("0001-") ||
+                state.Error
+              )
+                throw Error("Assembler container launch failed");
+              reject(
+                new PackageExecutionError(
+                  `Assembler failed (${code}): ${stderr.slice(0, 1000)}`,
+                ),
+              );
+            } catch (error) {
+              reject(error);
+            }
+          } else
             try {
               accept(JSON.parse(stdout));
             } catch {
-              reject(Error("Invalid assembler JSON"));
+              reject(new PackageExecutionError("Invalid assembler JSON"));
             }
         });
         child.stdin!.on("error", () => {});
         child.stdin!.end(JSON.stringify({ mode, state }));
       });
       return { value, computeSeconds: (performance.now() - start) / 1000 };
+    } catch (error) {
+      primaryError =
+        signal.aborted || error instanceof PackageExecutionError
+          ? error
+          : new AssemblerInfrastructureError(
+              "Assembler infrastructure failure",
+              { cause: error },
+            );
+      throw primaryError;
     } finally {
       // Kill the container as well as the CLI on timeout/abort. No writable host mount.
       await command("docker", ["rm", "--force", name], {
         timeout: 10000,
       }).catch((e) => {
-        if (!String(e.stderr).includes("No such container")) throw e;
+        if (!String(e.stderr).includes("No such container")) {
+          if (primaryError instanceof Error)
+            Object.defineProperty(primaryError, "cleanupError", { value: e });
+          else throw e;
+        }
       });
     }
   }

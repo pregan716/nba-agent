@@ -25,3 +25,15 @@ jobs:
       - run: test -c /dev/fuse || sudo modprobe fuse
       - run: npm run sandbox:build
       - run: npm run test:sandbox
+  assembler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx tsx scripts/assembler-build.ts
+      - run: |
+          ASSEMBLER_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/policy-sandbox.test.ts
