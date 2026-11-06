@@ -81,6 +81,14 @@ export interface Environment {
     },
     signal: AbortSignal,
   ): Promise<CodeResult>;
+  validatePackage?(
+    allowance: number,
+    signal: AbortSignal,
+  ): Promise<{
+    outputs: unknown[];
+    computeSeconds: number;
+    error: string | null;
+  }>;
   workspace?: WorkspacePort;
   workspaceChanges?(): WorkspaceChange[];
   close(): Promise<void>;
@@ -430,8 +438,41 @@ export class Runner {
               new WorkspacePolicy(
                 this.manifest.config.profile.memory,
                 () => budget.stage,
-              ).authorize(name.slice(10) as WorkspaceOperation);
+                !!this.manifest.config.harness.policy,
+              ).authorize(
+                name.slice(10) as WorkspaceOperation,
+                false,
+                (args as { path?: string })?.path ||
+                  (name === "workspace_list" &&
+                  this.manifest.config.harness.policy
+                    ? "packages"
+                    : ""),
+              );
             budget.tool(name, args);
+            if (name === "validate_package") {
+              if (!env.validatePackage)
+                throw new SessionError(
+                  "capability_disabled",
+                  "Package validation unavailable",
+                );
+              const allowance = Math.min(
+                this.manifest.config.budget.sandbox.perCallSeconds,
+                budget.remaining().compute,
+              );
+              if (allowance <= 0) budget.block("compute");
+              const reservation = budget.reserve(0, allowance, "code");
+              const result = await env.validatePackage(
+                allowance,
+                controller.signal,
+              );
+              if (
+                !Number.isFinite(result.computeSeconds) ||
+                result.computeSeconds < 0
+              )
+                throw Error("Invalid validation meter");
+              budget.settle(reservation, 0, result.computeSeconds, result);
+              return result;
+            }
             if (name === "execute_code") {
               const program = (args as { program: string }).program;
               const sandbox = this.manifest.config.budget.sandbox;

@@ -1,0 +1,118 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  rmSync,
+  cpSync,
+  readdirSync,
+  lstatSync,
+  chmodSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { DockerAssembler } from "../src/policy/sandbox.js";
+import { PackageStore } from "../src/policy/package.js";
+import { assembleRequest } from "../src/policy/replay.js";
+import { sha256 } from "../src/data/store.js";
+import type { ObservableState } from "../src/replay/types.js";
+const image = process.env.ASSEMBLER_IMAGE;
+const signal = () => new AbortController().signal;
+function remove(path: string) {
+  function unlock(p: string) {
+    if (lstatSync(p).isDirectory()) {
+      chmodSync(p, 0o700);
+      for (const n of readdirSync(p)) unlock(join(p, n));
+    }
+  }
+  unlock(path);
+  rmSync(path, { recursive: true, force: true });
+}
+const limits = {
+  wallSeconds: 15,
+  memoryBytes: 128 * 1024 * 1024,
+  outputBytes: 128000,
+};
+test(
+  "real assembler: isolation, readonly package, fresh scratch, determinism and timeout",
+  { skip: !image },
+  async () => {
+    const root = mkdtempSync(join(tmpdir(), "assembler-gate-")),
+      p = join(root, "package");
+    mkdirSync(p);
+    writeFileSync(join(root, "future-secret"), "PLANTED_FUTURE_RECORD");
+    const sandbox = new DockerAssembler(image!, limits);
+    const previousKey = process.env.TYPESAFE_API_KEY;
+    process.env.TYPESAFE_API_KEY = "PLANTED_RUNNER_CREDENTIAL";
+    try {
+      writeFileSync(
+        join(p, "assemble.py"),
+        `import os, socket\ndef assemble(state):\n blocked = []\n for path in ['/workspace/future', '/data/session.sqlite', ${JSON.stringify(join(root, "future-secret"))}]:\n  try: open(path).read()\n  except OSError: blocked.append(path)\n try:\n  socket.create_connection(('1.1.1.1',443),0.1)\n  network = True\n except OSError: network = False\n try:\n  open('/package/changed','w').write('bad')\n  writable = True\n except OSError: writable = False\n fresh = not os.path.exists('/scratch/previous')\n open('/scratch/previous','w').write('ok')\n return {'blocked':len(blocked),'network':network,'writable':writable,'fresh':fresh,'credential':os.environ.get('TYPESAFE_API_KEY')}\n`,
+      );
+      const expected = {
+        blocked: 3,
+        network: false,
+        writable: false,
+        fresh: true,
+        credential: null,
+      };
+      assert.deepEqual((await sandbox.run(p, {}, signal())).value, expected);
+      assert.deepEqual((await sandbox.run(p, {}, signal())).value, expected);
+      writeFileSync(
+        join(p, "assemble.py"),
+        "def assemble(state):\n while True: pass\n",
+      );
+      await assert.rejects(
+        new DockerAssembler(image!, { ...limits, wallSeconds: 2 }).run(
+          p,
+          {},
+          signal(),
+        ),
+        /wall-clock/,
+      );
+      writeFileSync(
+        join(p, "assemble.py"),
+        "def assemble(state): return bytearray(1024*1024*1024)\n",
+      );
+      await assert.rejects(sandbox.run(p, {}, signal()), /Assembler failed/);
+      cpSync("examples/policy", p, { recursive: true });
+      const store = new PackageStore(join(root, "frozen"));
+      const receipt = await store.freeze(
+        "g",
+        p,
+        () => "2025-01-01T00:00:00Z",
+        "2025-01-02T00:00:00Z",
+        sandbox,
+        signal(),
+      );
+      const state = {
+        gameId: "g",
+        celtics: ["a", "b", "c", "d", "e"],
+        eligibleBench: ["f"],
+      } as ObservableState;
+      const a = await assembleRequest(
+        sandbox,
+        join(store.path("g"), "package"),
+        receipt,
+        state,
+        join(root, "cache"),
+        signal(),
+      );
+      const b = await assembleRequest(
+        sandbox,
+        join(store.path("g"), "package"),
+        receipt,
+        state,
+        join(root, "cache"),
+        signal(),
+      );
+      assert.deepEqual(a.request, b.request);
+      assert.equal(b.cacheHit, true);
+    } finally {
+      if (previousKey === undefined) delete process.env.TYPESAFE_API_KEY;
+      else process.env.TYPESAFE_API_KEY = previousKey;
+      remove(root);
+    }
+  },
+);

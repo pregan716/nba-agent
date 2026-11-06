@@ -26,6 +26,9 @@ export type Phase = "pregame" | "commit" | "postgame";
 
 export const TOOL_NAMES = [
   "context",
+  "freeze_package",
+  "validate_package",
+  "read_feedback",
   "search_evidence",
   "list_evidence",
   "fetch_evidence",
@@ -56,6 +59,9 @@ export const CAPABILITY_TOOLS = {
  */
 export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
   context: null,
+  freeze_package: null,
+  validate_package: "code_execution",
+  read_feedback: null,
   search_evidence: "search_and_fetch",
   list_evidence: "search_and_fetch",
   fetch_evidence: "search_and_fetch",
@@ -77,6 +83,9 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
  */
 export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
   context: ["pregame", "commit", "postgame"],
+  freeze_package: ["pregame"],
+  validate_package: ["pregame"],
+  read_feedback: ["pregame", "postgame"],
   search_evidence: ["pregame", "postgame"],
   list_evidence: ["pregame", "postgame"],
   fetch_evidence: ["pregame", "postgame"],
@@ -388,6 +397,24 @@ export interface WorkspaceMutationResult {
 // ---------------------------------------------------------------------------
 
 export interface ToolContract {
+  freeze_package: {
+    input: {};
+    result:
+      | import("../policy/package.js").PackageReceipt
+      | { status: "invalid_package"; reason: string };
+  };
+  validate_package: {
+    input: {};
+    result: {
+      outputs: unknown[];
+      computeSeconds: number;
+      error: string | null;
+    };
+  };
+  read_feedback: {
+    input: { game_id?: string };
+    result: import("../policy/replay.js").PolicyTrace;
+  };
   context: { input: ContextInput; result: ContextResult };
   search_evidence: { input: SearchEvidenceInput; result: SearchEvidenceResult };
   list_evidence: { input: ListEvidenceInput; result: SearchEvidenceResult };

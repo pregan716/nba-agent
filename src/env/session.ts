@@ -1,3 +1,6 @@
+import { policyHarness } from "../policy/replay.js";
+import { canonicalJson } from "./tools.js";
+import type { PolicyTools } from "../policy/tools.js";
 import { DockerSandbox } from "./sandbox.js";
 import {
   projectHistory,
@@ -75,7 +78,14 @@ export class Session {
     source: SessionSource,
     workspacePath?: string,
     runRoot?: string,
+    private policyTools?: PolicyTools,
   ) {
+    if (
+      policyTools &&
+      canonicalJson(config.harness.policy) !==
+        canonicalJson(policyHarness(policyTools.assembler))
+    )
+      throw Error("Policy tools harness mismatch");
     this.#config = deepFreeze(structuredClone(config));
     this.#game = deepFreeze(structuredClone(game));
     this.#phase = phase;
@@ -86,10 +96,13 @@ export class Session {
     if (workspacePath)
       this.#workspace = new Workspace(
         workspacePath,
-        new WorkspacePolicy(this.#config.profile.memory, () =>
-          this.#closed ? "closed" : this.#phase,
+        new WorkspacePolicy(
+          this.#config.profile.memory,
+          () => (this.#closed ? "closed" : this.#phase),
+          !!policyTools,
         ),
         runRoot!,
+        game.gameId,
       );
     const configured = config.profile.dataSources.map((d) => ({
       source: d.type,
@@ -566,6 +579,21 @@ export class Session {
     signal: AbortSignal,
   ): Promise<ToolResult<N>> {
     this.#check(name, input);
+    if (name === "freeze_package" || name === "read_feedback") {
+      if (!this.policyTools)
+        throw new SessionError(
+          "capability_disabled",
+          "Policy tools are not installed",
+        );
+      return (
+        name === "freeze_package"
+          ? await this.policyTools.freeze(this.#phase, signal)
+          : this.policyTools.readFeedback(
+              this.#phase,
+              (input as { game_id?: string }).game_id,
+            )
+      ) as ToolResult<N>;
+    }
     if (name.startsWith("workspace_")) {
       if (!this.#workspace)
         throw new SessionError(
@@ -600,6 +628,15 @@ export class Session {
         "Tool implementation is not installed",
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
+  }
+  async validatePackage(allowance: number, signal: AbortSignal) {
+    this.#check("validate_package", {});
+    if (!this.policyTools)
+      throw new SessionError(
+        "capability_disabled",
+        "Policy tools are not installed",
+      );
+    return this.policyTools.validate(this.#phase, allowance, signal);
   }
   async assertCodeAllowed(program: string) {
     this.#check("execute_code", { program });
@@ -688,7 +725,12 @@ export class Session {
 export function sessionEnvironment(
   config: RunConfig,
   source: SessionSource,
-  hooks: Partial<Pick<Environment, "execute">> = {},
+  hooks: Partial<Pick<Environment, "execute">> & {
+    policy?: (
+      context: Parameters<EnvironmentFactory>[0],
+      trusted: Parameters<EnvironmentFactory>[1],
+    ) => PolicyTools;
+  } = {},
 ): EnvironmentFactory {
   return async (context, trusted) => {
     const session = new Session(
@@ -699,9 +741,12 @@ export function sessionEnvironment(
       source,
       trusted.workspace,
       trusted.root,
+      hooks.policy?.(context, trusted),
     );
     let sandbox: DockerSandbox | undefined;
     return {
+      validatePackage: (allowance, signal) =>
+        session.validatePackage(allowance, signal),
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
       context: (budget) => session.context(budget),
