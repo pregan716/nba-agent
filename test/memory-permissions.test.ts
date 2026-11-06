@@ -325,6 +325,109 @@ test("boundary audit flags player, staff and game names without modifying any fi
   }
 });
 
+test("boundary audit scans literal and separator-normalized paths without editing files", () => {
+  const root = temp();
+  const paths = [
+    "skills/games/0022500083.json",
+    "memory/practices/jayson-tatum-minutes.md",
+    "skills/jayson_tatum/helper.py",
+    "skills/jayson.tatum.md",
+    "skills/Jayson Tatum.md",
+    "skills/joe-mazzulla.md",
+  ];
+  try {
+    for (const path of paths) {
+      mkdirSync(join(root, path, ".."), { recursive: true });
+      writeFileSync(join(root, path), "generic helper");
+    }
+    writeFileSync(join(root, "skills/notjayson-tatumish.md"), "generic helper");
+    const audit = auditBoundary(root, "current", {
+      players: ["Jayson Tatum"],
+      staff: ["Joe Mazzulla"],
+      gameIds: ["0022500083"],
+      sources: [],
+    });
+    assert.deepEqual(
+      audit.flags.map((f) => f.matchedText).sort(),
+      [...paths].sort(),
+    );
+    for (const flag of audit.flags) {
+      assert.equal(flag.source, "path");
+      assert.equal(flag.offset, 0);
+      assert.equal(flag.file, flag.matchedText);
+      assert.equal(flag.game, "current");
+      assert.equal(flag.queue, "human-review");
+    }
+    for (const path of paths)
+      assert.equal(readFileSync(join(root, path), "utf8"), "generic helper");
+  } finally {
+    clean(root);
+  }
+});
+
+for (const failure of ["harness", "environment", "audit"] as const)
+  test(`postgame ${failure} failure records an audit or explicit gap`, async () => {
+    const root = temp(),
+      f = fixture();
+    f.config.recovery = { maxSessionAttempts: 1 };
+    const proxy = new MeteringProxy(provider);
+    await proxy.listen();
+    const factory = sessionEnvironment(f.config, f.source);
+    const runner = new Runner(
+      root,
+      manifest(f.config, [f.game]),
+      proxy,
+      async (context, trusted) => {
+        if (context.phase === "postgame" && failure === "environment")
+          throw Error("fixture environment failure");
+        const env = await factory(context, trusted);
+        if (failure === "audit")
+          env.boundaryAudit = async () => {
+            throw Error("fixture audit failure");
+          };
+        return env;
+      },
+    );
+    try {
+      await runner.run(async ({ session }) => {
+        const context = await session.call("context", {});
+        await session.call("workspace_write", {
+          path: "memory/best_practices.md",
+          content: "Fixture Player",
+        });
+        if (context.phase === "postgame")
+          throw Error("fixture harness failure");
+      });
+      const end = runner.record.events("phase_end", "current:postgame")[0];
+      assert.equal(end.data.status, "infrastructure_failure");
+      if (failure === "harness") {
+        const audits = runner.record.events("boundary_audit", "current");
+        assert.equal(audits.length, 1);
+        assert.ok(
+          audits[0].data.flags.some(
+            (flag: any) => flag.matchedText === "Fixture Player",
+          ),
+        );
+        assert.equal(runner.record.events("boundary_audit_skipped").length, 0);
+      } else {
+        const skipped = runner.record.events(
+          "boundary_audit_skipped",
+          "current",
+        );
+        assert.equal(skipped.length, 1);
+        assert.equal(
+          skipped[0].data.reason,
+          failure === "audit" ? "audit_failed" : "environment_unavailable",
+        );
+        assert.equal(skipped[0].data.attempt, 1);
+      }
+    } finally {
+      runner.close();
+      await proxy.close();
+      clean(root);
+    }
+  });
+
 for (const variant of ["M0", "M3", "M4"] as const)
   test(`${variant} two games: reflection, previous feedback, memory persistence and checkpoint sizes`, async () => {
     const root = temp(),

@@ -61,6 +61,7 @@ export function auditBoundary(
     game: string;
     file: string;
     matchedText: string;
+    source: "path" | "content";
     offset: number;
     kind: string;
     queue: "human-review";
@@ -93,13 +94,28 @@ export function auditBoundary(
     });
     for (const term of terms) {
       const escaped = term.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      for (const match of text.matchAll(
-        new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "giu"),
-      ))
+      const pattern = `(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`;
+      const pathPattern = new RegExp(pattern, "iu");
+      if (
+        pathPattern.test(path) ||
+        (term.kind !== "game-id" &&
+          pathPattern.test(path.replace(/[-_.]/g, " ")))
+      )
+        flags.push({
+          game: gameId,
+          file: path,
+          matchedText: path,
+          source: "path",
+          offset: 0,
+          kind: term.kind,
+          queue: "human-review",
+        });
+      for (const match of text.matchAll(new RegExp(pattern, "giu")))
         flags.push({
           game: gameId,
           file: path,
           matchedText: match[0],
+          source: "content",
           offset: match.index!,
           kind: term.kind,
           queue: "human-review",

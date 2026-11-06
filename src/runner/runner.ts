@@ -833,14 +833,27 @@ export class Runner {
     }
     if (isMemoryV3(this.manifest.config.profile.memory)) {
       rmSync(join(this.workspace, "scratch"), { recursive: true, force: true });
-      if (phase === "postgame" && status !== "infrastructure_failure") {
+      if (phase === "postgame") {
         if (!environment?.boundaryAudit)
-          throw Error("V3 environment requires a boundary audit");
-        this.record.append(
-          "boundary_audit",
-          game.gameId,
-          await environment.boundaryAudit(),
-        );
+          this.record.append("boundary_audit_skipped", game.gameId, {
+            attempt,
+            status,
+            reason: "environment_unavailable",
+          });
+        else
+          try {
+            this.record.append(
+              "boundary_audit",
+              game.gameId,
+              await environment.boundaryAudit(),
+            );
+          } catch {
+            this.record.append("boundary_audit_skipped", game.gameId, {
+              attempt,
+              status,
+              reason: "audit_failed",
+            });
+          }
       }
     }
     const after = snapshot(this.root, this.workspace);

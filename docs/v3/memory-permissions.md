@@ -126,15 +126,23 @@ trace can be recognized after a crash before the `replay_completed` event,
 without invoking replay again. Frozen package contents and feedback are also
 backed by record blobs and can be restored when a checkpoint moves to a new root.
 
-After each completed/budget-limited postgame, `boundary_audit` scans the generic
-memory document, practices tree and skills tree. It records exact matched text,
-file, character offset, current game and a `human-review` queue label. It also
-records source hashes, the dictionary and scanned-file hashes. It never changes
+After each postgame attempt, including infrastructure failures, `boundary_audit`
+scans the generic memory document, practices tree and skills tree. It records exact matched text,
+file, character offset, current game and a `human-review` queue label. Both file
+contents and relative paths are checked. Name matching also checks paths with
+hyphens, underscores and dots replaced by spaces. Path flags record the entire
+relative path as matched text, `source: path` and offset zero; content flags use
+`source: content` and the matched substring offset. If the environment is
+unavailable or the audit fails, `boundary_audit_skipped` records the game,
+attempt, session status and reason so the gap remains visible. A successful audit
+also records source hashes, the dictionary and scanned-file hashes. It never changes
 or blocks a file. Player names combine the curated season roster and matching
 player-reference names; game IDs come from the pinned schedule. Matching is
 case-insensitive full-name/ID matching with Unicode word boundaries. It is a
 lightweight flagger, not semantic detection of disguised facts, encoded labels,
-misspellings or surname-only references. Human review remains necessary.
+misspellings or surname-only references. Surname-only references such as “Tatum”
+or “Brown” remain undetected, so the end-of-run human sample is especially
+important for those likely leaks.
 
 ## Integration and validation
 
