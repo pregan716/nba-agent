@@ -120,7 +120,7 @@ holdout training are refused before predictions. No current-season inputs outsid
 the selected development games and ten warm-up games are loaded for fitting.
 Results on earlier development games remain retrospective diagnostics, never evidence.
 
-**Proposed roster source for review (training only):** the prior-season loader
+**Agreed roster source (Nov 6, 2026; training only):** the prior-season loader
 uses every Celtics player listed in that game's pinned `player_box_scores`,
 including DNP rows, as its frozen roster. This is retrospective membership, not
 pregame availability evidence: it can omit an unlisted roster member or include
