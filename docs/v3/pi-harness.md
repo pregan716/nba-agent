@@ -51,15 +51,18 @@ The proxy still pins the model, effort and thinking and refuses hosted tools and
 external content. Real credentials remain with the trusted runner provider.
 
 Automatic retries, compaction and cache warming are disabled. The provider uses
-high thinking metadata, a 200,000-token context descriptor, the configured output
-limit and per-request timeout. `promptCache=none` removes all cache markers;
+high thinking metadata (`piRequestedThinkingLevel`), a 200,000-token context
+descriptor, the configured output limit and per-request timeout. `promptCache=none` removes all cache markers;
 otherwise Pi's short-lived Anthropic cache markers apply. Budget 429 errors abort
 the session explicitly (Pi reports unsuccessful HTTP calls as assistant errors).
 Tool budget errors also abort. Other tool infrastructure errors propagate to the
 runner rather than being silently treated as successful sessions.
 
 Completion waits for `agent_settled`. A maximum-turn safeguard bounds a broken
-loop; normal spending limits remain the runner's budget. Truncated tool calls are
+loop; normal spending limits remain the runner's budget. The parent backstop is
+`timeoutMs * (maxTurns + 1)`, capped at the maximum Node timer delay (about
+24.8 days). It is only a last-resort liveness guard; the runner's wall-clock
+budget is the effective session deadline. Truncated tool calls are
 not executed: Pi supplies matching error results for them, keeping history paired.
 The homemade loop's expanding-output truncation retries do not apply to Pi.
 
@@ -69,7 +72,11 @@ reported usage into `harness_history` in the existing hash-chained record, with 
 final settled snapshot. Proxy usage and charges remain authoritative. On runner
 closure, Pi is aborted and allowed up to five seconds to drain before forced
 termination; a hard kill can leave only the last available transcript snapshot,
-while proxy/tool events already recorded remain durable.
+while proxy/tool events already recorded remain durable. Harness completion and
+runner cleanup wait for the child's `close` event, not merely process exit or
+IPC disconnection. The worker also waits for a parent acknowledgement after the
+final snapshot is appended before disconnecting. A missing final snapshot or a
+recorder failure rejects completion; neither can silently become a successful run.
 
 ## Reproducibility and checks
 

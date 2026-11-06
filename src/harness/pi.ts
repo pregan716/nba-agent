@@ -30,6 +30,7 @@ export function piHarness(options: AnalystOptions): Harness {
       },
     );
     let failure: Error | undefined;
+    let finalHistoryRecorded = false;
     let stderr = "";
     worker.stderr?.on("data", (chunk) => {
       stderr = (stderr + chunk).slice(-8000);
@@ -44,8 +45,8 @@ export function piHarness(options: AnalystOptions): Harness {
     );
     let completed!: Promise<void>;
     session.onClose?.(async () => {
-      if (!worker.connected) return;
-      worker.send({ type: "abort" });
+      // Disconnection does not mean buffered history has been delivered.
+      if (worker.connected) worker.send({ type: "abort" });
       const killTimer = setTimeout(() => worker.kill(), 5000);
       try {
         await completed.catch(() => {});
@@ -55,7 +56,10 @@ export function piHarness(options: AnalystOptions): Harness {
     });
     try {
       completed = new Promise<void>((resolve, reject) => {
-        worker.on("error", reject);
+        worker.on("error", (error) => {
+          failure = error;
+          worker.kill();
+        });
         worker.on("message", async (message: any) => {
           if (message.type === "call") {
             try {
@@ -78,6 +82,10 @@ export function piHarness(options: AnalystOptions): Harness {
           } else if (message.type === "history") {
             try {
               session.recordHistory?.(message.history);
+              if (message.final) {
+                finalHistoryRecorded = true;
+                worker.send({ type: "history_recorded" });
+              }
             } catch (error) {
               failure = error as Error;
               worker.kill();
@@ -85,10 +93,14 @@ export function piHarness(options: AnalystOptions): Harness {
           } else if (message.type === "failure")
             failure = Error(message.message);
         });
-        worker.once("exit", (code) => {
+        // The final snapshot must be acknowledged before the worker exits.
+        // Also wait for stdio closure before allowing runner cleanup.
+        worker.once("close", (code) => {
           if (failure) reject(failure);
           else if (code !== 0)
             reject(Error(`Pi worker exited ${code}: ${stderr}`));
+          else if (!finalHistoryRecorded)
+            reject(Error("Pi exited without recording its final history"));
           else resolve();
         });
         worker.send({

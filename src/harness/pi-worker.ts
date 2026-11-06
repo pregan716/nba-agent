@@ -22,6 +22,7 @@ import { DEFAULT_LOOP, PI_CONTRACT } from "./version.js";
 import { SYSTEM_PROMPT, PHASE_PROMPTS } from "./prompts.js";
 
 let activeSession: AgentSession | undefined;
+let acknowledgeFinalHistory: (() => void) | undefined;
 let nextId = 0;
 const pending = new Map<
   number,
@@ -36,7 +37,9 @@ function call(name: string, args: unknown): Promise<any> {
   });
 }
 process.on("message", (message: any) => {
-  if (message.type === "abort") {
+  if (message.type === "history_recorded") {
+    acknowledgeFinalHistory?.();
+  } else if (message.type === "abort") {
     void activeSession?.abort();
   } else if (message.type === "result") {
     const waiter = pending.get(message.id)!;
@@ -236,9 +239,21 @@ async function run({ options, model, memoryInstructions, root }: any) {
     if (!stopped && last?.role === "assistant" && last.stopReason === "error")
       throw Error(last.errorMessage);
   } finally {
-    send({
-      type: "history",
-      history: { messages: session.messages, events, turns, settled, stopped },
+    // process.send queues large payloads; disconnect/exit must wait until the
+    // parent has durably appended the final snapshot, not merely queued bytes.
+    await new Promise<void>((resolve) => {
+      acknowledgeFinalHistory = resolve;
+      send({
+        type: "history",
+        final: true,
+        history: {
+          messages: session.messages,
+          events,
+          turns,
+          settled,
+          stopped,
+        },
+      });
     });
     session.dispose();
   }

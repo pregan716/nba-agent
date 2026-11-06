@@ -476,3 +476,50 @@ test("Pi propagates tool infrastructure failures instead of completing silently"
     result.errors.every((e) => e.includes("fixture infrastructure failure")),
   );
 });
+
+test("multi-MB Pi history is recorded before session closing events", async () => {
+  const f = configFor({ horizon: "stateless" });
+  const text = "large-history-".repeat(250_000);
+  const result = await run(
+    f.config,
+    scripted([() => [{ type: "text", text }]]),
+    piHarness({ model: "claude-opus-4-6" }),
+    f,
+  );
+  assert.deepEqual(result.errors, []);
+  const snapshots = result.events.filter((e) => e.kind === "harness_history");
+  const final = snapshots.at(-1)!;
+  assert.equal(final?.data.history.settled, true);
+  assert.equal(final.data.history.messages.at(-1).content[0].text, text);
+  const closing = result.events.find((e) => e.kind === "session_end")!;
+  assert.ok(snapshots.every((e) => e.seq < closing.seq));
+});
+
+test("late recorder failure rejects Pi completion for a large final snapshot", async () => {
+  const f = configFor({ horizon: "stateless" });
+  const result = await run(
+    f.config,
+    scripted([() => [{ type: "text", text: "x".repeat(3_000_000) }]]),
+    async (handles) => {
+      await piHarness({ model: "claude-opus-4-6" })({
+        ...handles,
+        session: {
+          ...handles.session,
+          recordHistory: (history: any) => {
+            if (history.settled)
+              throw Error("fixture final snapshot write failed");
+            handles.session.recordHistory?.(history);
+          },
+        },
+      });
+    },
+    f,
+  );
+  assert.equal(result.ends[0].status, "infrastructure_failure");
+  assert.ok(result.errors.length > 0);
+  assert.ok(
+    result.errors.every((error) =>
+      error.includes("fixture final snapshot write failed"),
+    ),
+  );
+});

@@ -69,7 +69,7 @@ export const PI_CONTRACT = {
     retry: false,
     cacheWarming: false,
     truncation: "pi-paired-error-results",
-    thinkingLevel: "high",
+    piRequestedThinkingLevel: "high",
     contextWindow: 200000,
   },
 } as const;
