@@ -50,10 +50,10 @@ file count. Freeze locks the research workspace, including memory, and postgame
 opens the permitted memory again. The R3 frozen-package root assertion and
 per-package freeze lock remain in force.
 
-## Proposed details requiring user review
+## Accepted implementation decisions
 
-These three choices are implemented defaults for review, **not agreed amendments**
-to the brief.
+The user accepted these three choices on November 6, 2026 (SPO-851 / PR #48).
+They are Agreed and recorded in the v3 implementation brief.
 
 1. **Token counting: `analyst-count-snapshot-v1`.** The trusted metering proxy
    calls the analyst provider's existing `count` operation, which uses
@@ -63,7 +63,7 @@ to the brief.
    files. Its returned input count is compared with 50,000. This includes file
    names, JSON escaping and message framing, so it is deliberately more
    conservative than counting raw document text alone; empty memory is zero.
-   This is a proposed measurement convention, not a claim that API framing is
+   This is the accepted measurement convention, not a claim that API framing is
    part of the brief's definition of retained text.
 
    Anthropic documents that the endpoint uses the selected model's tokenizer,
@@ -84,7 +84,7 @@ to the brief.
    Tests use an explicitly synthetic character-count provider; no test count is
    presented as an actual analyst-tokenizer result.
 
-2. **Staff dictionary.** Proposed source: the official NBA-hosted
+2. **Staff dictionary.** Accepted source: the official NBA-hosted
    [2025–26 Denver Nuggets media guide](https://cdn.nba.com/teams/uploads/sites/1610612743/2025/10/2025-26-Denver-Nuggets-Media-Guide.pdf),
    PDF page 376, Boston Celtics coaching-staff listing. The curated names, source
    URL, page and full-PDF SHA-256 are pinned in

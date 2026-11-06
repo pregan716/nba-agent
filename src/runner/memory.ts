@@ -61,7 +61,7 @@ export function memoryRequest(files: MemoryFiles) {
     ],
   };
 }
-/** Proposed counting protocol: pinned analyst count endpoint, no inference/budget charge.
+/** Accepted counting protocol (Nov 6, 2026): pinned analyst count endpoint, no inference/budget charge.
  * The first recorded result for identical bytes is authoritative on resume. */
 export function recordedMemoryCounter(
   record: RecordStore,

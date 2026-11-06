@@ -273,9 +273,15 @@ A gated directory that is off for a run does not exist from the agent's point of
 
 Status: Agreed (Nov 4, 2026), including the audit method. The best-practices document and skills must stay coach-agnostic. The agent may not use them as a disguised coach profile or embed team-specific historical labels in a generic skill. Boundaries are light and auditable, not a schema: a reviewer reading `best_practices.md` should find no Celtics player names, no Celtics-specific rotation facts, and no game-specific records. The audit is a per-game automated check (Celtics player and staff names and game ids against `memory/best_practices.md`, `memory/practices/` and `skills/`, flagged to a human queue, never auto-edited) plus an end-of-run human sample of ten reads per generic file. A confirmed breach is reported as a confound on that variant, never corrected after the fact.
 
+Staff dictionary scope: Agreed (Nov 6, 2026, SPO-851). Use the pinned Celtics head-coach and assistant-coach list from the official NBA-hosted 2025–26 Denver Nuggets media guide, PDF page 376, including the `D.J. MacLeay` punctuation alias. Source hash and names are in `config/celtics-staff-2025-26.json`. This is coaching-staff coverage only, not exhaustive front-office, medical or other non-coaching staff coverage.
+
 ### Memory budget
 
 Status: Agreed (Nov 4, 2026). The total retained text in `memory/` is capped at 50,000 tokens, measured with the analyst model's tokenizer, for every variant that has any memory gate on, measured at each checkpoint and reported per game. A write that would exceed the cap is refused with the current size named. Executable skill size and skill runtime cost are accounted separately and reported, not capped in the first stage.
+
+Counting method: Agreed (Nov 6, 2026, SPO-851). `analyst-count-snapshot-v1` uses the trusted proxy’s analyst-model token-count endpoint on a path-sorted JSON snapshot of retained memory. Paths, JSON escaping and message framing count toward the cap; empty memory is zero. Counting charges no research tokens or compute, but elapsed time consumes the session wall budget. Record the exact request and first returned count for deterministic reuse; counting failures refuse writes. See [memory permissions](v3/memory-permissions.md) for the pinned protocol.
+
+V2 retirement: Agreed (Nov 6, 2026, SPO-851). Preserve `memory-v1` for historical fixtures and manifest audit only; reject it for pilot/scored execution. Require explicit v3 variants, with no mapping from old horizon/revision/process settings.
 
 ## Replay lifecycle and environment tool surface
 
