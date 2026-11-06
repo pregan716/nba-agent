@@ -11,6 +11,7 @@ import {
   unlinkSync,
   writeFileSync,
   fsyncSync,
+  existsSync,
 } from "node:fs";
 import { resolve, join, isAbsolute } from "node:path";
 import type { RunConfig } from "../runner/config.js";
@@ -28,8 +29,12 @@ export class WorkspacePolicy {
   constructor(
     private memory: RunConfig["profile"]["memory"],
     private phase: () => Phase | "closed",
+    readonly packagesEnabled = false,
   ) {}
-  authorize(operation: WorkspaceOperation, exists = false) {
+  get stateless() {
+    return this.memory.horizon === "stateless";
+  }
+  authorize(operation: WorkspaceOperation, exists = false, path = "") {
     if (!["list", "read", "write", "append", "delete"].includes(operation))
       throw new SessionError(
         "invalid_input",
@@ -37,12 +42,22 @@ export class WorkspacePolicy {
       );
     if (!["pregame", "postgame"].includes(this.phase()))
       throw new SessionError("phase_refused", "Workspace locked in this phase");
-    if (this.memory.horizon === "stateless")
+    if (
+      this.memory.horizon === "stateless" &&
+      !(
+        this.packagesEnabled &&
+        (path === "packages" || path.startsWith("packages/"))
+      )
+    )
       throw new SessionError(
         "memory_mode_refused",
         "Stateless workspace tools disabled",
       );
     if (
+      !(
+        this.packagesEnabled &&
+        (path === "packages" || path.startsWith("packages/"))
+      ) &&
       this.memory.revision === "append-only" &&
       (operation === "delete" || (operation === "write" && exists))
     )
@@ -84,6 +99,7 @@ export class Workspace {
     root: string,
     readonly policy: WorkspacePolicy,
     private runRoot: string,
+    private gameId?: string,
   ) {
     this.#root = resolve(root);
     this.#ordinary(this.#root, true);
@@ -111,6 +127,12 @@ export class Workspace {
       path.split("/").some((p) => !p || p === "." || p === "..")
     )
       throw invalid();
+    if (
+      this.gameId &&
+      path.startsWith("packages/") &&
+      path.split("/")[1] !== this.gameId
+    )
+      throw new SessionError("not_found", "Package unavailable");
     this.#ordinary(this.#root, true);
     const parts = path.split("/");
     let current = this.#root;
@@ -140,20 +162,43 @@ export class Workspace {
     // Do not expose the host path from filesystem errors.
     throw invalid();
   }
+  #unlocked(path: string) {
+    const parts = path.split("/");
+    if (
+      parts[0] === "packages" &&
+      parts[1] &&
+      existsSync(
+        join(this.runRoot, "frozen-packages", parts[1], "receipt.json"),
+      )
+    )
+      throw new SessionError("phase_refused", "Package is frozen");
+  }
   authorize(operation: WorkspaceChange["operation"], path: string) {
-    this.policy.authorize(operation);
+    this.#unlocked(path);
+    this.policy.authorize(operation, false, path);
     try {
-      this.policy.authorize(operation, !!this.#exists(this.#path(path)));
+      this.policy.authorize(operation, !!this.#exists(this.#path(path)), path);
     } catch (e) {
       this.#error(e);
     }
   }
   list(path = "") {
-    this.policy.authorize("list");
+    this.policy.authorize(
+      "list",
+      false,
+      path === "" && this.policy.packagesEnabled ? "packages" : path,
+    );
     try {
       const target = this.#path(path, true);
       this.#ordinary(target, true);
       const entries: WorkspaceEntry[] = readdirSync(target)
+        .filter(
+          (name) =>
+            path !== "" || !this.policy.stateless || name === "packages",
+        )
+        .filter(
+          (name) => path !== "packages" || !this.gameId || name === this.gameId,
+        )
         .sort()
         .map((name) => {
           const stat = this.#ordinary(join(target, name));
@@ -169,7 +214,8 @@ export class Workspace {
     }
   }
   mkdir(path: string) {
-    this.policy.authorize("write");
+    this.#unlocked(path);
+    this.policy.authorize("write", false, path);
     try {
       const target = this.#path(path);
       mkdirSync(target, { recursive: true, mode: 0o700 });
@@ -179,7 +225,7 @@ export class Workspace {
     }
   }
   readBytes(path: string): Buffer {
-    this.policy.authorize("read");
+    this.policy.authorize("read", false, path);
     try {
       const target = this.#path(path);
       const fd = openSync(
@@ -211,11 +257,12 @@ export class Workspace {
       !Buffer.isBuffer(content)
     )
       throw invalid();
-    this.policy.authorize(operation);
+    this.#unlocked(path);
+    this.policy.authorize(operation, false, path);
     try {
       const target = this.#path(path),
         existing = this.#exists(target);
-      this.policy.authorize(operation, !!existing);
+      this.policy.authorize(operation, !!existing, path);
       if (existing && !existing.isFile()) throw invalid();
       // Persist journal bytes before mutating; failed operations may leave an
       // unreferenced blob, but successful operations never reference missing data.

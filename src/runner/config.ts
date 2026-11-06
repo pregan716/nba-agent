@@ -45,6 +45,7 @@ export const configSchema = z.strictObject({
     modelRoles: z.strictObject({
       version: name,
       analyst: z.literal("claude-opus-4-6"),
+      jev: z.literal("jev-1.14.0").optional(),
     }),
   }),
   budget: z.strictObject({
@@ -101,6 +102,19 @@ export const configSchema = z.strictObject({
     accessMethod: z.literal("anthropic-sdk-via-metering-proxy"),
     sdkVersion: name,
     sandboxImage: z.string().regex(/@sha256:[a-f0-9]{64}$/),
+    policy: z
+      .strictObject({
+        api: z.literal("assemble-v1"),
+        assemblerImage: z.string().regex(/@sha256:[a-f0-9]{64}$/),
+        limits: z.strictObject({
+          wallSeconds: positive,
+          memoryBytes: integer,
+          outputBytes: integer,
+        }),
+        jev: z.unknown(),
+        determinism: z.literal("double-run-and-content-cache-v1"),
+      })
+      .optional(),
     codeRevision: name,
   }),
   policy: z.strictObject({

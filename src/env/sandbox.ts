@@ -65,7 +65,9 @@ export class DockerSandbox {
     this.#abort.signal.throwIfAborted();
     this.#limits = limits;
     const persistent =
-      this.config.profile.memory.horizon !== "stateless" && !!this.#port;
+      (this.config.profile.memory.horizon !== "stateless" ||
+        !!this.config.harness.policy) &&
+      !!this.#port;
     const args = [
       "create",
       "--interactive",

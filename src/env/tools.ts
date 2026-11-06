@@ -59,6 +59,43 @@ const CUTOFF =
 
 export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
+    name: "freeze_package",
+    description:
+      "Validate and atomically freeze packages/<current game id>/ before cutoff. manifest.json lists every component SHA-256 including assemble.py and stateVersion state-v1. Returns an immutable receipt; identical re-freezes return the same receipt. Later writes through tools or code are refused.",
+    input_schema: object({}),
+    phases: ["pregame"],
+  },
+  {
+    name: "validate_package",
+    description:
+      "Test the current package against up to three observable states from eligible prior games. Returns assembled requests and diagnostics without calling Jev. Charges research compute; current and future games are never samples.",
+    input_schema: object({}),
+    phases: ["pregame"],
+  },
+  {
+    name: "read_feedback",
+    description:
+      "Read bounded pages of the previous chronological game's released replay trace in pregame, or the current game's trace in postgame. Nothing older or unreleased is available.",
+    input_schema: object({
+      game_id: id("Optional allowed game id"),
+      cursor: {
+        type: "integer",
+        minimum: 0,
+        description: "Window page cursor; default 0, two windows per page.",
+      },
+      window_id: id(
+        "Optional window id for full forensic JSON in bounded chunks.",
+      ),
+      offset: {
+        type: "integer",
+        minimum: 0,
+        description:
+          "Character offset for window details; use returned nextOffset.",
+      },
+    }),
+    phases: ["pregame", "postgame"],
+  },
+  {
     name: "context",
     description:
       "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory mode of this run. Call it first in every session and again whenever you need the budget.",

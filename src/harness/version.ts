@@ -47,6 +47,7 @@ export interface HarnessConfigOptions {
   effort: RunConfig["harness"]["loop"]["effort"];
   thinking: RunConfig["harness"]["loop"]["thinking"];
   sandboxImage: string;
+  policy?: RunConfig["harness"]["policy"];
   codeRevision?: string;
   loop?: Partial<LoopParameters>;
 }
@@ -87,6 +88,7 @@ export function harnessConfig(
     accessMethod: "anthropic-sdk-via-metering-proxy",
     sdkVersion: SDK_VERSION,
     sandboxImage: options.sandboxImage,
+    ...(options.policy ? { policy: options.policy } : {}),
     codeRevision: options.codeRevision ?? currentCodeRevision(),
   };
 }

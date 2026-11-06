@@ -15,9 +15,14 @@ export interface ReplayManifest {
   releaseManifestSha256: string;
   datasetVersion: string;
   datasets: { gameId: string; inputHash: string }[];
-  harness: typeof REPLAY_VERSIONS;
+  harness: typeof REPLAY_VERSIONS & {
+    policy?: ReturnType<typeof import("../policy/replay.js").policyHarness>;
+  };
   predictors: Record<string, { id: string; [key: string]: unknown }>;
   codeRevision: string;
+  jevContaminationProbe?: Awaited<
+    ReturnType<typeof import("../policy/probe.js").probeJev>
+  >;
 }
 export class PredictorFailure extends Error {
   constructor(
@@ -41,8 +46,9 @@ export async function replay(
   record: RecordStore<ReplayManifest>,
 ): Promise<WindowResult[]> {
   const manifest = record.events("manifest")[0].data as ReplayManifest;
+  const { policy: _policy, ...baseHarness } = manifest.harness;
   if (
-    digest(manifest.harness) !== digest(REPLAY_VERSIONS) ||
+    digest(baseHarness) !== digest(REPLAY_VERSIONS) ||
     !Object.values(manifest.predictors).some((p) => p.id === predictorId)
   )
     throw Error("Predictor or harness absent from replay manifest");
