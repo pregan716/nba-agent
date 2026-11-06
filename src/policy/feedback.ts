@@ -42,8 +42,27 @@ export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
         ? {
             period: state.period,
             clockMs: state.clockMs,
+            homeScore: state.homeScore,
+            awayScore: state.awayScore,
+            margin: state.margin,
             celtics: state.celtics,
             eligibleBench: state.eligibleBench,
+            players: [
+              ...new Set([...state.celtics, ...state.eligibleBench]),
+            ].map((playerId) => {
+              const player = state.players?.find(
+                (p) => p.playerId === playerId,
+              );
+              return {
+                playerId,
+                personalFouls: player?.personalFouls ?? null,
+                minutes: player?.minutes ?? null,
+                currentStintMinutes: player?.currentStintMinutes ?? null,
+              };
+            }),
+            // state-v1 has timeout events, not a remaining-timeout balance.
+            // Do not infer one or consult later game data in this projection.
+            timeoutsRemaining: null,
           }
         : null,
       diagnostics: preview(w.assembly?.assembly?.diagnostics),

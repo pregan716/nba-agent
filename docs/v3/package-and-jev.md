@@ -66,6 +66,31 @@ The API documentation does not expose a tokenizer/count endpoint. The implementa
 
 `replayPolicy` plugs into the existing frozen-state `Predictor` interface. It records assembly diagnostics and measured wall time, request, raw responses, usage, validation, derived action, actual decision and per-window scores. The trace contains all candidates, including exclusions and failures, plus package/harness identity, aggregate scores, invalid-answer reasons, latency and spend. Saved predictions and received valid responses are reused after a crash; uncertain in-flight calls remain visible as attempts rather than invented usage. A committed full trace is published atomically outside the workspace. `read_feedback` returns compact pages of two window summaries, with bounded previews of diagnostics/questions/answers/validation. `cursor` advances through windows. `window_id` requests the complete forensic window JSON in chunks of 4,096 characters; `offset`/`nextOffset` support reconstruction. Full request state and raw responses remain available on demand without putting a whole game's trace into one model message.
 
+### Proposed compact state-summary fields (SPO-850)
+
+The following field selection is **Proposed for user review, not Agreed**. Each
+window summary retains `period`, `clockMs`, `celtics` and `eligibleBench`, and adds:
+
+- `homeScore`, `awayScore` and `margin` (Celtics points minus opponent points).
+- `players`: one entry per unique on-court or eligible bench player, in that
+  order, containing `playerId`, `personalFouls`, `minutes` (total minutes played
+  so far) and `currentStintMinutes`. These are copied without rounding from the
+  window's observable state. Unavailable players and opponents are excluded;
+  missing player measurements are `null`, never invented zeroes.
+- `timeoutsRemaining: null`: `state-v1` supplies historical timeout events but
+  no remaining-timeout balance. The summary does not infer one from event counts
+  or consult later events. A future state-schema field would need an explicit
+  projection change before this value could be populated.
+
+This is a projection of `window.state` only, not the assembled Jev state, actual
+outcome or final box score. The same projection is used for previous-game and
+postgame feedback. Pages still contain at most two windows; full forensic detail
+remains available in the existing 4,096-character chunks. Tests cover the enriched
+page with five on-court and fifteen eligible bench players under 24,000 bytes,
+null states, unchanged detail reconstruction and invariance when later game
+scores/fouls change. No state schema, score, release rule or frozen trace is
+rewritten by this presentation change.
+
 `PolicyTools` takes the trusted chronological schedule, current game, logical clock, and prior sample states. `read_feedback` returns exactly the immediate previous game in pregame or current game in postgame, only at/after its next-morning 9 a.m. Eastern release. Explicitly asking for an older/current/future game outside that rule returns the same unavailable error. The schedule's release times are validated. The agent cannot set the clock, supply a trace path, or nominate its own validation states.
 
 `validate_package` snapshots the draft separately and assembles at most three sample states from games released by the logical clock and strictly before current tip. It returns requests and diagnostics, never invokes Jev, and is charged against research compute through the runner's reservation/settlement path. The meter conservatively charges elapsed assembly/setup wall time; limits abort validation and preserve the error in the result. Tests plant current and future samples and confirm they are ignored. Temporary validation snapshots are unlocked and removed in `finally`. Session creation asserts that the policy package store shares the workspace freeze-lock root.

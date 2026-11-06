@@ -1,3 +1,4 @@
+import { feedbackPage } from "../src/policy/feedback.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -136,6 +137,17 @@ test("independent candidate, observable prefix, and outcome held separately", ()
   assert.deepEqual(w.state!.celtics, five);
   assert.equal(w.state!.players[0].minutes, 2);
   assert.equal(w.state!.history.substitutions.length, 0);
+  const summary = (window: Window) =>
+    feedbackPage({
+      gameId: "game",
+      summary: {},
+      windows: [{ result: { window } }],
+    } as any).windows![0].stateSummary;
+  const beforeSummary = summary(w);
+  assert.equal(
+    beforeSummary!.players.find((p) => p.playerId === "a")!.minutes,
+    2,
+  );
   input.events[4].futureSecret = "PLANTED_FUTURE";
   input.events[4].home_score_after = 999;
   input.participants.push({
@@ -145,6 +157,7 @@ test("independent candidate, observable prefix, and outcome held separately", ()
     team_id: BOS,
   });
   assert.deepEqual(buildDataset(input).windows[0].state, w.state);
+  assert.deepEqual(summary(buildDataset(input).windows[0]), beforeSummary);
   assert.ok(!JSON.stringify(w.state).includes("PLANTED_FUTURE"));
   input.pregame.injuryReport.availableAt = input.game.scheduledStart;
   assert.throws(() => buildDataset(input), /strictly before/);

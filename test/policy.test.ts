@@ -796,22 +796,51 @@ test("cancelled assembly/Jev and Docker infrastructure failure leave replay resu
 
 test("feedback is paged and full window detail can be reconstructed without a large tool result", async () => {
   const { feedbackPage } = await import("../src/policy/feedback.js");
+  const summaryState = {
+    ...state,
+    period: 3,
+    clockMs: 300000,
+    homeScore: 70,
+    awayScore: 74,
+    margin: -4,
+    eligibleBench: Array.from({ length: 15 }, (_, i) => `bench-${i}`),
+    players: [
+      ...state.celtics,
+      ...Array.from({ length: 15 }, (_, i) => `bench-${i}`),
+      "unavailable",
+      "opponent",
+    ].map((playerId, i) => ({
+      playerId,
+      personalFouls: i % 6,
+      minutes: i + 0.123456789,
+      currentStintMinutes: i < 5 ? 3.5 : 0,
+      restMs: 99999,
+      box: { points: 999 },
+    })),
+    history: { substitutions: [], timeouts: [{ sequence: 3, teamId: "BOS" }] },
+  };
   const window = {
     result: {
       window: {
         id: "w",
-        state,
+        state: summaryState,
         actual: { players_in: [], players_out: [] },
         exclusions: [],
       },
-      raw: {},
-      validation: {},
+      raw: { text: "界".repeat(1000) },
+      validation: { text: "界".repeat(1000) },
       scores: null,
       failure: null,
     },
     assembly: {
-      assembly: { jev_state: "x".repeat(100000), diagnostics: {} },
-      request: { state: "x".repeat(100000), questions: {} },
+      assembly: {
+        jev_state: "x".repeat(100000),
+        diagnostics: { text: "界".repeat(1000) },
+      },
+      request: {
+        state: "x".repeat(100000),
+        questions: { text: "界".repeat(1000) },
+      },
     },
     jev: [],
   };
@@ -829,6 +858,40 @@ test("feedback is paged and full window detail can be reconstructed without a la
   const page = feedbackPage(trace);
   assert(Buffer.byteLength(JSON.stringify(page)) < 24000);
   assert.equal(page.nextCursor, 2);
+  const summary = page.windows![0].stateSummary!;
+  assert.equal(summary.homeScore, 70);
+  assert.equal(summary.awayScore, 74);
+  assert.equal(summary.margin, -4);
+  assert.equal(summary.timeoutsRemaining, null);
+  assert.deepEqual(
+    summary.players,
+    summaryState.players
+      .slice(0, 20)
+      .map(({ playerId, personalFouls, minutes, currentStintMinutes }) => ({
+        playerId,
+        personalFouls,
+        minutes,
+        currentStintMinutes,
+      })),
+  );
+  assert.equal(page.windows!.length, 2);
+  assert.equal(feedbackPage(trace, { cursor: 74 }).nextCursor, null);
+  assert.equal(
+    feedbackPage({
+      ...trace,
+      windows: [
+        {
+          ...window,
+          result: {
+            ...window.result,
+            window: { ...window.result.window, state: null },
+          },
+        },
+      ],
+    }).windows![0].stateSummary,
+    null,
+  );
+  const before = JSON.stringify(trace);
   let offset: number | null = 0,
     text = "";
   while (offset !== null) {
@@ -838,6 +901,7 @@ test("feedback is paged and full window detail can be reconstructed without a la
     offset = detail.nextOffset!;
   }
   assert.deepEqual(JSON.parse(text), trace.windows[0]);
+  assert.equal(JSON.stringify(trace), before);
 });
 
 test("empty bench is a window-level environment error, not invalid_package", () => {
