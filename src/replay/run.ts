@@ -45,6 +45,8 @@ export async function replay(
   predict: Predictor,
   record: RecordLog,
 ): Promise<WindowResult[]> {
+  if (dataset.trainingOnly)
+    throw Error("Training-only roster cannot be replayed for evaluation");
   const manifest = record.events("manifest")[0].data as ReplayManifest;
   const { policy: _policy, ...baseHarness } = manifest.harness;
   if (

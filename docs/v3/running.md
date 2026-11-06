@@ -46,7 +46,7 @@ and builds selected decision datasets from the pinned release with `buildDataset
 Both corpus modes evaluate only development games 1–10. The full 82-game
 schedule remains in the manifest so split tags never shift when selecting games.
 Variant diagnostics load only those ten games; baseline diagnostics additionally
-load games 11–20 for fitting. Neither path loads holdout inputs. The manifest
+load games 11–20 and the 2024–25 Celtics regular season for fitting. Neither path loads holdout inputs. The manifest
 refuses holdout evaluation and the baseline runner refuses holdout training.
 There is no holdout override: a separate R6 reveal path must own that decision.
 The analyst uses `ANTHROPIC_API_KEY`; Jev uses `TYPESAFE_API_KEY`. Those secrets
@@ -110,19 +110,36 @@ Repeated commands reuse recorded windows and Jev responses.
 
 For a pinned-corpus diagnostic, omit `--scripted`. Only `TYPESAFE_API_KEY` is
 needed for model calls in baseline mode; no analyst runs. Corpus baseline
-diagnostics evaluate only development games 1–10 and fit games 11–20, the fixed
-warm-up set. They record training IDs, hashes and parameters. Results on earlier
-development games are retrospective diagnostics, never evidence.
+diagnostics evaluate only development games 1–10. Accepted Nov 6, 2026 (SPO-856):
+the statistical predictor fits on all 82 Celtics regular-season games in the
+pinned 2024–25 release plus games 11–20 of 2025–26. The constant-rate baseline
+continues to fit only the warm-up substitution rate. The replay audit command
+uses the same training sets. Training game IDs, input hashes, roster policy and
+fitted parameters are recorded per predictor. Training/evaluation overlap and
+holdout training are refused before predictions. No current-season inputs outside
+the selected development games and ten warm-up games are loaded for fitting.
+Results on earlier development games remain retrospective diagnostics, never evidence.
 
-**Proposed deviation for user decision:** the brief’s proposed statistical form
-fits on 2024–25 plus the warm-up games. This implementation uses only the ten
-2025–26 warm-up games, matching the existing replay-audit implementation; it does
-not load 2024–25 training datasets. This narrower training set is not an accepted
-brief amendment. Including 2024–25 remains the alternative for the user to
-decide. The constant-rate baseline continues to use the warm-up rate as specified.
+**Proposed roster source for review (training only):** the prior-season loader
+uses every Celtics player listed in that game's pinned `player_box_scores`,
+including DNP rows, as its frozen roster. This is retrospective membership, not
+pregame availability evidence: it can omit an unlisted roster member or include
+an inactive player. Injury status remains unknown; no announced starters are
+inferred. Synthetic timestamps one millisecond before tip are used solely to
+adapt that roster to the existing state-builder input shape, not as publication
+claims. The `same-game-box-score-v1` policy is included in input hashes and
+`trainingOnly` metadata, and both replay selection and execution reject those
+datasets. This approximation must never be used for an evaluated game. The
+2025–26 loader continues to require dated curated membership and pre-tip reports.
 
-The tiny synthetic fixture fits its first game solely to exercise
-the interfaces; its outputs are not comparative results.
+The two pinned prior-season gaps (`0022400061`, `0022400230`) are retained in
+training provenance with zero windows and an explicit coverage-gap ledger entry.
+No events or windows are fabricated. Local verification of the pinned input
+produced 4,384 candidate windows and 3,997 qualified windows across the other 80
+games; these are data coverage counts, not experimental results.
+
+The tiny synthetic fixture uses a separate synthetic training game solely to
+exercise the interfaces; its outputs are not comparative results.
 
 ## Record and recovery
 

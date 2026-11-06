@@ -20,7 +20,11 @@ import { probeForManifest } from "../src/harness/probe.js";
 import { currentCodeRevision } from "../src/harness/version.js";
 import { DockerAssembler } from "../src/policy/sandbox.js";
 import { policyHarness } from "../src/policy/replay.js";
-import { auditPregames, loadReplayInputs } from "../src/replay/load.js";
+import {
+  auditPregames,
+  loadReplayInputs,
+  loadPriorSeasonTraining,
+} from "../src/replay/load.js";
 import { buildDataset } from "../src/replay/dataset.js";
 import {
   chronologicalRunner,
@@ -88,7 +92,13 @@ try {
   const inputs = scripted
     ? (() => {
         const fixture = chronologicalFixture();
-        return { ...fixture, training: fixture.datasets.slice(0, 1) };
+        const training = structuredClone(fixture.datasets[0]);
+        training.gameId = "training-fixture";
+        for (const w of training.windows) {
+          w.gameId = training.gameId;
+          if (w.state) w.state.gameId = training.gameId;
+        }
+        return { ...fixture, training: [training], priorTraining: [] };
       })()
     : await (async () => {
         const corpus = await openCorpus(
@@ -129,6 +139,8 @@ try {
         return {
           source,
           schedule,
+          priorTraining:
+            mode === "baselines" ? await loadPriorSeasonTraining(corpus) : [],
           datasets: loaded.filter((d) =>
             selection.evaluation.some((g) => g.gameId === d.gameId),
           ),
@@ -137,7 +149,7 @@ try {
           ),
         };
       })();
-  const { source, schedule, datasets, training } = inputs;
+  const { source, schedule, datasets, training, priorTraining } = inputs;
   const config = presetConfig({
     harness: "pi",
     promptSet,
@@ -191,6 +203,7 @@ try {
           schedule,
           datasets,
           training,
+          priorTraining,
           record,
           assembler,
           proxy,

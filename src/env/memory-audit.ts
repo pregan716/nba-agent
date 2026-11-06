@@ -46,6 +46,7 @@ export async function boundaryNames(
         path: "config/celtics-staff-2025-26.json",
         sha256: createHash("sha256").update(staffBytes).digest("hex"),
         source: staff.source,
+        additionalSources: staff.additionalSources ?? [],
         status: staff.status,
         acceptedAt: staff.acceptedAt,
       },

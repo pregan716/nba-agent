@@ -534,3 +534,67 @@ test("sensitivity reports the five largest game influences and incomplete cost i
     remove(root);
   }
 });
+
+test("marginal loss reductions use signed extra dollars and hours, with undefined zero/unknown deltas", () => {
+  const root = temp();
+  try {
+    fixture(join(root, "left"), { p: 0.25 });
+    fixture(join(root, "right"), { p: 0.5 });
+    const left = evaluated(join(root, "left")),
+      right = evaluated(join(root, "right"));
+    const compare = () => {
+      const c = compareRuns(left, right, { resamples: 20, seed: 1 });
+      assert.equal(c.status, "compared");
+      if (c.status !== "compared") throw Error();
+      return c;
+    };
+    assert.equal(
+      compare().scores.timingBrier.marginal.lossReductionPerExtraUsd,
+      null,
+    );
+    assert.equal(
+      compare().scores.timingBrier.marginal.lossReductionPerExtraHour,
+      null,
+    );
+    for (const g of right.games) {
+      g.cost.totalUsd! += 1;
+      g.cost.recordedSeconds! += 1800;
+    }
+    const s = compare().scores.timingBrier;
+    close(s.marginal.lossReduction, 0.3125);
+    close(s.marginal.lossReductionPerExtraUsd, 0.15625);
+    close(s.marginal.lossReductionPerExtraHour, 0.3125);
+    assert.equal(s.cost.deltaUsd, 2);
+    assert.equal(s.cost.deltaRecordedSeconds, 3600);
+    assert.ok(
+      s.sensitivity.every((s) => s.marginal.lossReductionPerExtraUsd !== null),
+    );
+    for (const g of right.games) {
+      g.cost.totalUsd! -= 2;
+      g.cost.recordedSeconds = 0;
+    }
+    close(
+      compare().scores.timingBrier.marginal.lossReductionPerExtraUsd,
+      -0.15625,
+    );
+    for (const g of right.games) {
+      g.cost.totalUsd = null;
+      g.cost.recordedSeconds = null;
+    }
+    for (const s of Object.values(compare().scores)) {
+      assert.equal(s.marginal.lossReductionPerExtraUsd, null);
+      assert.equal(s.marginal.lossReductionPerExtraHour, null);
+    }
+    const report = buildReport(
+      [
+        { label: "left", path: join(root, "left") },
+        { label: "right", path: join(root, "right") },
+      ],
+      { resamples: 20, seed: 1 },
+    );
+    assert.match(markdown(report), /lossReductionPerExtraUsd/);
+    assert.match(markdown(report), /null means undefined/);
+  } finally {
+    remove(root);
+  }
+});

@@ -304,7 +304,8 @@ test("boundary audit flags player, staff and game names without modifying any fi
   mkdirSync(join(root, "memory"));
   mkdirSync(join(root, "skills"));
   const texts = {
-    "memory/best_practices.md": "Ask Fixture Player and Joe Mazzulla.",
+    "memory/best_practices.md":
+      "Ask Fixture Player, Joe Mazzulla and Brad Stevens.",
     "skills/learn.py": "# prior game",
   };
   for (const [path, text] of Object.entries(texts))
@@ -312,7 +313,12 @@ test("boundary audit flags player, staff and game names without modifying any fi
   try {
     const names = await boundaryNames(f.source),
       audit = auditBoundary(root, "current", names);
-    for (const match of ["Fixture Player", "Joe Mazzulla", "prior"])
+    for (const match of [
+      "Fixture Player",
+      "Joe Mazzulla",
+      "Brad Stevens",
+      "prior",
+    ])
       assert.ok(
         audit.flags.some(
           (f) => f.matchedText === match && f.queue === "human-review",

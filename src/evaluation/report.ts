@@ -187,6 +187,7 @@ export function markdown(report: EvaluationReport) {
         continue;
       }
       out.push(
+        "Marginal metrics use (left loss − right loss) / (right cost − left cost); time is converted to hours. Zero or unknown deltas are undefined. Negative deltas describe savings, not added spend.",
         `Matched windows: ${c.matchedWindows}; matched games: ${c.matchedGames}; dropped: ${c.dropped.count}.`,
         json(c.dropped),
         "\n| Primary loss | Left | Right | Difference | 90% interval | Left USD / seconds | Right USD / seconds | Left loss/USD / loss/second | Right loss/USD / loss/second |",
@@ -196,6 +197,10 @@ export function markdown(report: EvaluationReport) {
         const s = c.scores[metric];
         out.push(
           `| ${metric} | ${number(s.left)} | ${number(s.right)} | ${number(s.difference)} | ${s.interval90.map(number).join(" to ")} | ${number(s.cost.left.totalUsd)} / ${number(s.cost.left.recordedSeconds)} | ${number(s.cost.right.totalUsd)} / ${number(s.cost.right.recordedSeconds)} | ${number(s.efficiency.left.scorePerUsd)} / ${number(s.efficiency.left.scorePerRecordedSecond)} | ${number(s.efficiency.right.scorePerUsd)} / ${number(s.efficiency.right.scorePerRecordedSecond)} |`,
+        );
+        out.push(
+          `\n${metric} marginal cost/time (null means undefined):`,
+          json(s.marginal),
         );
         out.push(
           `\n${metric} sensitivity (five largest leave-one-game-out shifts):`,

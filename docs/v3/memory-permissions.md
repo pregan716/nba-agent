@@ -90,9 +90,14 @@ They are Agreed and recorded in the v3 implementation brief.
    URL, page and full-PDF SHA-256 are pinned in
    `config/celtics-staff-2025-26.json`. `D.J. MacLeay` is an additional punctuation
    alias for the source's `DJ MacLeay`. This covers the head coach and eight
-   assistants; it does **not** claim exhaustive coverage of front-office,
-   medical, scouting or other non-coaching staff. Expanding that scope needs a
-   further pinned source. These inputs are audit-only and never agent evidence.
+   assistants. Accepted Nov 6, 2026 (SPO-856): additionally flag **Brad Stevens**,
+   president of basketball operations, from the official NBA-hosted
+   [2025–26 Oklahoma City Thunder media guide](https://cdn.nba.com/teams/uploads/sites/1610612760/2025/10/Thunder-Media-Guide-2025-26_WEB.pdf),
+   PDF page 83 (printed page 164). That second source's full-file SHA-256,
+   retrieval timestamp and exact name are in `additionalSources` and propagated
+   into the audit record. No other names were added. This does **not** claim
+   exhaustive front-office, medical or scouting coverage; further expansion
+   requires user agreement. These inputs are audit-only and never agent evidence.
 
 3. **V2 retirement.** Keep `memory-v1` as a distinct historical fixture shape,
    with its original behavior and manifest hashing. The runner rejects it for

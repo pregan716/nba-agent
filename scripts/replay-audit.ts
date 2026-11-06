@@ -2,7 +2,11 @@ import { readFile, mkdir, writeFile, mkdtemp } from "node:fs/promises";
 import { auditCodeRevision } from "./lib/audit-revision.js";
 import { openCorpus } from "../src/data/corpus.js";
 import { DopplerStore } from "../src/data/store.js";
-import { auditPregames, loadReplayInputs } from "../src/replay/load.js";
+import {
+  auditPregames,
+  loadReplayInputs,
+  loadPriorSeasonTraining,
+} from "../src/replay/load.js";
 import { buildDataset } from "../src/replay/dataset.js";
 import { fitBaselines } from "../src/replay/baselines.js";
 import { replay, type ReplayManifest } from "../src/replay/run.js";
@@ -31,7 +35,10 @@ try {
   const datasets = inputs.map(buildDataset),
     training = datasets.filter((d) => trainingIds.includes(d.gameId)),
     audited = auditIds.map((id) => datasets.find((d) => d.gameId === id)!);
-  const baselines = fitBaselines(training),
+  const priorTraining = await loadPriorSeasonTraining(c);
+  if (training.some((d) => auditIds.includes(d.gameId)))
+    throw Error("Audit overlaps training");
+  const baselines = fitBaselines(training, [...priorTraining, ...training]),
     parameters = Object.fromEntries(
       Object.entries(baselines).map(([k, b]) => [
         k,
@@ -81,7 +88,8 @@ try {
       JSON.stringify(
         {
           manifest,
-          training: training.map((d) => ({
+          training: [...priorTraining, ...training].map((d) => ({
+            trainingOnly: d.trainingOnly ?? null,
             gameId: d.gameId,
             windows: d.windows.length,
             qualified: d.windows.filter((w) => !w.exclusions.length).length,

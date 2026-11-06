@@ -1,8 +1,8 @@
 {
-  "version": "celtics-staff-audit-v1",
+  "version": "celtics-staff-audit-v2",
   "status": "Agreed",
   "acceptedAt": "2026-11-06",
-  "scope": "Head coach and assistant coaches listed in the 2025-26 Denver Nuggets official media guide; not a claim of exhaustive non-coaching staff coverage. Audit-only, not analyst-visible evidence.",
+  "scope": "Head coach and assistant coaches from the pinned Denver media guide, plus Brad Stevens (president of basketball operations) from the pinned Oklahoma City media guide. No broader non-coaching staff coverage. Audit-only, not analyst-visible evidence.",
   "source": {
     "url": "https://cdn.nba.com/teams/uploads/sites/1610612743/2025/10/2025-26-Denver-Nuggets-Media-Guide.pdf",
     "section": "Boston Celtics coaching staff",
@@ -20,6 +20,20 @@
     "Matt Reynolds",
     "Ross McMains",
     "Tyler Lashbrook",
-    "Craig Luschenat"
+    "Craig Luschenat",
+    "Brad Stevens"
+  ],
+  "additionalSources": [
+    {
+      "url": "https://cdn.nba.com/teams/uploads/sites/1610612760/2025/10/Thunder-Media-Guide-2025-26_WEB.pdf",
+      "section": "Boston Celtics directory, President of Basketball Operations",
+      "pdfPage": 83,
+      "printedPage": 164,
+      "sha256": "9982e8d4a9935739c5201a02af4f1b01aced3a09cb3bc9f124fdbdef6010f971",
+      "retrievedAt": "2026-11-06T18:47:30.150481+00:00",
+      "names": [
+        "Brad Stevens"
+      ]
+    }
   ]
 }
