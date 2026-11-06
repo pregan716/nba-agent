@@ -700,3 +700,39 @@ test("live-ball events and non-opening whistles after an opener remain ambiguous
     );
   }
 });
+
+test("team rebounds never open windows, including restored deadball qualifiers", () => {
+  for (const qualifiers of [undefined, [], ["team"], ["team", "deadball"]]) {
+    const input = fixture();
+    Object.assign(input.events[1], {
+      type: "rebound",
+      subtype: "offensive",
+      description: "TEAM offensive REBOUND",
+      qualifiers,
+    });
+    const dataset = buildDataset(input);
+    assert.equal(dataset.windows.length, 0);
+    assert.equal(dataset.diagnostics.candidates, 0);
+    assert.equal(dataset.diagnostics.unanchoredBuckets, 1);
+    assert.equal(dataset.ledger[0].reason, "unanchored_substitution");
+    assert.equal(
+      dataset.ledger[0].mechanism,
+      "team_rebound_without_independent_stoppage",
+    );
+  }
+  const input = fixture();
+  input.events.splice(2, 0, {
+    ...input.events[1],
+    event_id: "rebound",
+    type: "rebound",
+    subtype: "offensive",
+    description: "TEAM offensive REBOUND",
+    qualifiers: ["team", "deadball"],
+  });
+  input.events.forEach((e, i) => (e.canonical_sequence = i));
+  const dataset = buildDataset(input);
+  assert.equal(dataset.diagnostics.candidates, 1);
+  assert.equal(dataset.diagnostics.positiveCandidates, 1);
+  assert.deepEqual(dataset.windows[0].exclusions, []);
+  assert.equal(dataset.windows[0].state!.stoppage.kind, "timeout");
+});

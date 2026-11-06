@@ -43,13 +43,8 @@ export function opener(e: Row): string | null {
     return "violation";
   if (e.type === "jump_ball" && e.clock_remaining_ms !== opening(e.period))
     return "jump_ball";
-  // Only canonical qualifiers; TEAM descriptions are never an opener proxy.
-  if (
-    e.type === "rebound" &&
-    e.qualifiers?.includes("team") &&
-    e.qualifiers?.includes("deadball")
-  )
-    return "deadball_team_rebound";
+  // Team rebounds never open a window: even deadball denotes free-throw context,
+  // not independent evidence of a substitution-eligible stoppage.
   return null;
 }
 const opening = (period: number) => (period <= 4 ? 720000 : 300000);
@@ -67,7 +62,7 @@ function mechanism(b: Row[], previous: Row[]) {
   if (b.some((e) => ["violation", "timeout"].includes(e.type)))
     return "delay_of_game_or_challenge";
   if (b.some((e) => e.type === "rebound" && e.description?.startsWith("TEAM ")))
-    return "team_rebound_qualifier_unavailable_or_not_deadball";
+    return "team_rebound_without_independent_stoppage";
   if (b.every((e) => e.type === "substitution")) {
     const p = previous.at(-1);
     return p?.type === "field_goal" && p.shot_result === "made"
