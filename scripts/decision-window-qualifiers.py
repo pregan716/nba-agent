@@ -88,12 +88,27 @@ def main():
                     rows=[f"{e['type']}/{e.get('subtype')}" for e in bucket]))
             i = j
 
-    without = analysis.opener_counts(export['tables']['events'], include_new=False)
-    with_new = analysis.opener_counts(export['tables']['events'])
+    all_events = export['tables']['events']
+    modes = (
+        ('baseline_without_jump_ball_or_team_rebound', analysis.opener_counts(all_events, include_new=False)),
+        ('windows_v1_jump_ball_on_team_rebound_off', analysis.opener_counts(all_events, team_rebound=False)),
+        ('hypothetical_with_deadball_team_rebound_opener', analysis.opener_counts(all_events)),
+    )
     counts = {}
-    for name, r in (('baseline_without_jump_ball_or_team_rebound', without), ('final_set_with_deadball_team_rebound_opener', with_new)):
+    for name, r in modes:
         counts[name] = {k: v for k, v in r.items() if not isinstance(v, (list, dict))}
         counts[name]['remainder_mechanisms'] = r['remainder_mechanisms']
+    adopted, hypothetical = counts[modes[1][0]], counts[modes[2][0]]
+    delta = {k: hypothetical[k] - adopted[k] for k in (
+        'candidate_inperiod_buckets', 'same_bucket_positive_candidates', 'positive_candidates_after_adjacency',
+        'adjacency_anchored_substitution_buckets', 'unanchored_after_adjacency')}
+    # Every deadball-only bucket is a new candidate; the only anchored one is the bucket with substitution rows.
+    assert delta['candidate_inperiod_buckets'] == len(sole_opener_buckets), delta
+    anchored = sum(1 for b in sole_opener_buckets if b['celtics_substitution_rows'])
+    assert delta['same_bucket_positive_candidates'] == anchored == -delta['unanchored_after_adjacency'], delta
+    assert delta['adjacency_anchored_substitution_buckets'] == 0, delta
+    assert delta['positive_candidates_after_adjacency'] == anchored, delta
+    counts['delta_hypothetical_minus_windows_v1'] = delta
 
     official = {}
     for game_id in analysis.SAMPLE:
@@ -111,12 +126,12 @@ def main():
         qualifier_vocabulary_by_event_type=dict(sorted(vocabulary.items())),
         team_rebounds_preceded_by={k: dict(v.most_common()) for k, v in preceded.items()},
         deadball_team_rebound_buckets_with_no_other_opener=sole_opener_buckets,
-        windows_v1_counts=counts,
+        opener_set_counts=counts,
         official_sample_qualifier_equality=official,
     )
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / '2025-26-qualifiers-spo839.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
-    print(json.dumps({k: result[k] for k in ('team_rebounds_preceded_by', 'windows_v1_counts', 'official_sample_qualifier_equality')}, indent=2))
+    print(json.dumps({k: result[k] for k in ('team_rebounds_preceded_by', 'opener_set_counts', 'official_sample_qualifier_equality')}, indent=2))
     print('deadball-only buckets:', len(sole_opener_buckets))
 
 

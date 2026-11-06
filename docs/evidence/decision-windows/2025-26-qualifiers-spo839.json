@@ -130,6 +130,79 @@
       "source_actions": 677
     }
   },
+  "opener_set_counts": {
+    "baseline_without_jump_ball_or_team_rebound": {
+      "adjacency_anchored_substitution_buckets": 5,
+      "candidate_inperiod_buckets": 4420,
+      "celtics_substitution_buckets": 1459,
+      "positive_candidates_after_adjacency": 1288,
+      "remainder_mechanisms": {
+        "delay_of_game_or_challenge": 2,
+        "jump_ball": 5,
+        "other_substitution_only": 7,
+        "player_rebound": 8,
+        "same_bucket_made_basket": 1,
+        "substitution_only_after_made_basket": 22,
+        "substitution_only_after_rebound": 21,
+        "team_rebound_qualifier_unavailable_or_not_deadball": 97,
+        "technical_foul_or_ejection": 7
+      },
+      "same_bucket_positive_candidates": 1284,
+      "substitution_share_after_adjacency": 0.2914027149321267,
+      "substitution_share_before_adjacency": 0.2904977375565611,
+      "unanchored_after_adjacency": 170,
+      "unanchored_before_adjacency": 175
+    },
+    "delta_hypothetical_minus_windows_v1": {
+      "adjacency_anchored_substitution_buckets": 0,
+      "candidate_inperiod_buckets": 5,
+      "positive_candidates_after_adjacency": 1,
+      "same_bucket_positive_candidates": 1,
+      "unanchored_after_adjacency": -1
+    },
+    "hypothetical_with_deadball_team_rebound_opener": {
+      "adjacency_anchored_substitution_buckets": 5,
+      "candidate_inperiod_buckets": 4581,
+      "celtics_substitution_buckets": 1459,
+      "positive_candidates_after_adjacency": 1300,
+      "remainder_mechanisms": {
+        "delay_of_game_or_challenge": 2,
+        "other_substitution_only": 7,
+        "player_rebound": 8,
+        "same_bucket_made_basket": 1,
+        "substitution_only_after_made_basket": 22,
+        "substitution_only_after_rebound": 21,
+        "team_rebound_qualifier_unavailable_or_not_deadball": 91,
+        "technical_foul_or_ejection": 6
+      },
+      "same_bucket_positive_candidates": 1296,
+      "substitution_share_after_adjacency": 0.2837808338790657,
+      "substitution_share_before_adjacency": 0.2829076620825147,
+      "unanchored_after_adjacency": 158,
+      "unanchored_before_adjacency": 163
+    },
+    "windows_v1_jump_ball_on_team_rebound_off": {
+      "adjacency_anchored_substitution_buckets": 5,
+      "candidate_inperiod_buckets": 4576,
+      "celtics_substitution_buckets": 1459,
+      "positive_candidates_after_adjacency": 1299,
+      "remainder_mechanisms": {
+        "delay_of_game_or_challenge": 2,
+        "other_substitution_only": 7,
+        "player_rebound": 8,
+        "same_bucket_made_basket": 1,
+        "substitution_only_after_made_basket": 22,
+        "substitution_only_after_rebound": 21,
+        "team_rebound_qualifier_unavailable_or_not_deadball": 91,
+        "technical_foul_or_ejection": 7
+      },
+      "same_bucket_positive_candidates": 1295,
+      "substitution_share_after_adjacency": 0.2838723776223776,
+      "substitution_share_before_adjacency": 0.2829982517482518,
+      "unanchored_after_adjacency": 159,
+      "unanchored_before_adjacency": 164
+    }
+  },
   "pin": {
     "bucket": "sports-nba-data",
     "bytes": 2386079,
@@ -177,51 +250,6 @@
       "field_goal Layup missed": 107,
       "free_throw 1 of 1 missed": 8,
       "free_throw 2 of 2 missed": 10
-    }
-  },
-  "windows_v1_counts": {
-    "baseline_without_jump_ball_or_team_rebound": {
-      "adjacency_anchored_substitution_buckets": 5,
-      "candidate_inperiod_buckets": 4420,
-      "celtics_substitution_buckets": 1459,
-      "positive_candidates_after_adjacency": 1288,
-      "remainder_mechanisms": {
-        "delay_of_game_or_challenge": 2,
-        "jump_ball": 5,
-        "other_substitution_only": 7,
-        "player_rebound": 8,
-        "same_bucket_made_basket": 1,
-        "substitution_only_after_made_basket": 22,
-        "substitution_only_after_rebound": 21,
-        "team_rebound_qualifier_unavailable_or_not_deadball": 97,
-        "technical_foul_or_ejection": 7
-      },
-      "same_bucket_positive_candidates": 1284,
-      "substitution_share_after_adjacency": 0.2914027149321267,
-      "substitution_share_before_adjacency": 0.2904977375565611,
-      "unanchored_after_adjacency": 170,
-      "unanchored_before_adjacency": 175
-    },
-    "final_set_with_deadball_team_rebound_opener": {
-      "adjacency_anchored_substitution_buckets": 5,
-      "candidate_inperiod_buckets": 4581,
-      "celtics_substitution_buckets": 1459,
-      "positive_candidates_after_adjacency": 1300,
-      "remainder_mechanisms": {
-        "delay_of_game_or_challenge": 2,
-        "other_substitution_only": 7,
-        "player_rebound": 8,
-        "same_bucket_made_basket": 1,
-        "substitution_only_after_made_basket": 22,
-        "substitution_only_after_rebound": 21,
-        "team_rebound_qualifier_unavailable_or_not_deadball": 91,
-        "technical_foul_or_ejection": 6
-      },
-      "same_bucket_positive_candidates": 1296,
-      "substitution_share_after_adjacency": 0.2837808338790657,
-      "substitution_share_before_adjacency": 0.2829076620825147,
-      "unanchored_after_adjacency": 158,
-      "unanchored_before_adjacency": 163
     }
   }
 }
