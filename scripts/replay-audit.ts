@@ -41,6 +41,7 @@ try {
     schemaVersion: 1,
     kind: "replay-mvp",
     releaseManifestSha256: c.pbp.release.root.sha256,
+    datasetVersion: datasets[0].version,
     datasets: datasets.map((d) => ({
       gameId: d.gameId,
       inputHash: d.inputHash,

@@ -13,6 +13,7 @@ export interface ReplayManifest {
   schemaVersion: 1;
   kind: "replay-mvp";
   releaseManifestSha256: string;
+  datasetVersion: string;
   datasets: { gameId: string; inputHash: string }[];
   harness: typeof REPLAY_VERSIONS;
   predictors: Record<string, { id: string; [key: string]: unknown }>;
@@ -47,6 +48,7 @@ export async function replay(
     throw Error("Predictor or harness absent from replay manifest");
   if (
     manifest.releaseManifestSha256 !== dataset.release.sha256 ||
+    manifest.datasetVersion !== dataset.version ||
     !manifest.datasets.some(
       (d) => d.gameId === dataset.gameId && d.inputHash === dataset.inputHash,
     )
@@ -90,16 +92,19 @@ export async function replay(
     results.push(result);
     record.append("replay_window", scope, {
       releaseManifestSha256: dataset.release.sha256,
+      datasetVersion: dataset.version,
       result,
     });
   }
   if (!record.events("replay_summary", scope).length) {
     record.append("replay_ledger", scope, {
       releaseManifestSha256: dataset.release.sha256,
+      datasetVersion: dataset.version,
       entries: dataset.ledger,
     });
     record.append("replay_summary", scope, {
       releaseManifestSha256: dataset.release.sha256,
+      datasetVersion: dataset.version,
       summary: summarize(results),
     });
   }
