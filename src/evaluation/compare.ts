@@ -106,6 +106,39 @@ function efficiency(value: number | null, cost: ReturnType<typeof spending>) {
         : null,
   };
 }
+/** Right-minus-left cost; improvement is left-minus-right loss. Signed ratios
+ * remain meaningful when the right side is cheaper; zero/unknown is undefined. */
+function marginal(
+  left: number | null,
+  right: number | null,
+  leftCost: ReturnType<typeof spending>,
+  rightCost: ReturnType<typeof spending>,
+) {
+  const reduction = left !== null && right !== null ? left - right : null;
+  const deltaUsd =
+    leftCost.totalUsd !== null && rightCost.totalUsd !== null
+      ? rightCost.totalUsd - leftCost.totalUsd
+      : null;
+  const deltaRecordedSeconds =
+    leftCost.recordedSeconds !== null && rightCost.recordedSeconds !== null
+      ? rightCost.recordedSeconds - leftCost.recordedSeconds
+      : null;
+  return {
+    lossReduction: reduction,
+    deltaUsd,
+    deltaRecordedSeconds,
+    lossReductionPerExtraUsd:
+      reduction !== null && deltaUsd !== null && deltaUsd !== 0
+        ? reduction / deltaUsd
+        : null,
+    lossReductionPerExtraHour:
+      reduction !== null &&
+      deltaRecordedSeconds !== null &&
+      deltaRecordedSeconds !== 0
+        ? (reduction * 3600) / deltaRecordedSeconds
+        : null,
+  };
+}
 export function compareRuns(
   a: EvaluatedRun,
   b: EvaluatedRun,
@@ -259,6 +292,7 @@ export function compareRuns(
             difference: d,
             change: d !== null && difference !== null ? d - difference : null,
             cost: { left: lc, right: rc },
+            marginal: marginal(ll, rr, lc, rc),
             efficiency: { left: efficiency(ll, lc), right: efficiency(rr, rc) },
           };
         })
@@ -278,6 +312,7 @@ export function compareRuns(
           validResamples: ordered.length,
           undefinedResamples: options.resamples - ordered.length,
           cost,
+          marginal: marginal(l, r, leftCost, rightCost),
           efficiency: {
             left: efficiency(l, leftCost),
             right: efficiency(r, rightCost),

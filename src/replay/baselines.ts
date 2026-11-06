@@ -8,7 +8,16 @@ import {
 } from "./types.js";
 export interface Baseline {
   id: string;
-  training: { gameIds: string[]; inputHashes: string[]; windows: number };
+  training: {
+    gameIds: string[];
+    inputHashes: string[];
+    windows: number;
+    datasets?: {
+      gameId: string;
+      inputHash: string;
+      trainingOnly: DecisionDataset["trainingOnly"] | null;
+    }[];
+  };
   parameters: unknown;
   predict: (state: ObservableState) => Prediction;
 }
@@ -35,18 +44,39 @@ function ranked(keys: string[], weight: (id: string) => number) {
     sorted.map((id, i) => [id, (keys.length - i) / total]),
   );
 }
-export function fitBaselines(datasets: DecisionDataset[]): {
+export function fitBaselines(
+  warmupDatasets: DecisionDataset[],
+  statisticalDatasets = warmupDatasets,
+): {
   constant: Baseline;
   statistical: Baseline;
 } {
-  const windows = datasets
+  const constant =
+    statisticalDatasets !== warmupDatasets
+      ? fitBaselines(warmupDatasets).constant
+      : null;
+  const inputs = [...statisticalDatasets].sort((a, b) =>
+    a.gameId.localeCompare(b.gameId),
+  );
+  const windows = inputs
     .flatMap((d) => d.windows)
     .filter((w) => !w.exclusions.length && w.state && w.actual);
   if (!windows.length) throw Error("No qualified training windows");
   const training = {
-    gameIds: datasets.map((d) => d.gameId).sort(),
-    inputHashes: datasets.map((d) => d.inputHash).sort(),
+    gameIds: inputs.map((d) => d.gameId).sort(),
+    inputHashes: inputs.map((d) => d.inputHash).sort(),
     windows: windows.length,
+    // Preserve the constant baseline's existing descriptor/id. Extra provenance
+    // is needed only for the statistical fit with retrospective training inputs.
+    ...(inputs.some((d) => d.trainingOnly)
+      ? {
+          datasets: inputs.map((d) => ({
+            gameId: d.gameId,
+            inputHash: d.inputHash,
+            trainingOnly: d.trainingOnly ?? null,
+          })),
+        }
+      : {}),
   };
   const rate =
     windows.filter((w) => w.actual!.players_in.length > 0).length /
@@ -80,7 +110,7 @@ export function fitBaselines(datasets: DecisionDataset[]): {
       weights[j] -= 0.1 * (gradient[j] + (j ? 0.01 * weights[j] : 0));
   }
   return {
-    constant: {
+    constant: constant ?? {
       id: `constant-v1:${digest({ training, rate })}`,
       training,
       parameters: { rate },

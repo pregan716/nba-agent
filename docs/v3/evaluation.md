@@ -217,6 +217,20 @@ spending can lower a ratio without improving the loss, so they are not a causal
 return-on-investment measure. Full-run cost is reported separately from the
 headline/matched-game cost.
 
+### Marginal loss reduction (Agreed Nov 6, 2026, SPO-856)
+
+Every matched baseline/variant comparison and leave-one-game-out result also
+reports `lossReduction = left loss - right loss`, `deltaUsd = right USD - left USD`,
+and `deltaRecordedSeconds = right seconds - left seconds`. The new metrics are
+`lossReductionPerExtraUsd = lossReduction / deltaUsd` and
+`lossReductionPerExtraHour = lossReduction * 3600 / deltaRecordedSeconds`.
+Each ratio is undefined (`null` in JSON and the Markdown detail) when its own
+delta is zero or unknown, or the loss is undefined. A negative delta represents
+savings and retains its sign; a positive ratio alone does not imply a better
+model (a worse, cheaper model also gives a positive ratio). Read the raw loss
+and cost/time differences alongside it. Existing loss/unit ratios and raw deltas
+remain. Hours use recorded work time, with the same coverage limits above.
+
 ## Learning diagnostic slots
 
 For each variant with any memory gate on, list each game's session workspace

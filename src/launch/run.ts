@@ -47,6 +47,8 @@ export function replayDescriptor(
   datasets: DecisionDataset[],
   jevContaminationProbe?: unknown,
 ): NonNullable<RunConfig["replay"]> {
+  if (datasets.some((d) => d.trainingOnly))
+    throw Error("Training-only datasets cannot be selected for replay");
   return {
     mode: "variant",
     versions: REPLAY_VERSIONS,
@@ -225,6 +227,7 @@ export async function runBaselines(options: {
   config: RunConfig;
   datasets: DecisionDataset[];
   training: DecisionDataset[];
+  priorTraining?: DecisionDataset[];
   schedule: { gameId: string; scheduledStart: string }[];
   record: RecordLog;
   assembler: Assembler;
@@ -247,14 +250,50 @@ export async function runBaselines(options: {
   if (digest(config.harness.policy) !== digest(policyHarness(assembler)))
     throw Error("Assembler differs from baseline manifest");
   const m = manifest(config, options.schedule);
+  const priorTraining = options.priorTraining ?? [];
+  const allTraining = [...training, ...priorTraining];
+  if (
+    new Set(allTraining.map((d) => d.gameId)).size !== allTraining.length ||
+    allTraining.some((d) => datasets.some((e) => e.gameId === d.gameId))
+  )
+    throw Error(
+      "Baseline training overlaps evaluation or contains duplicate games",
+    );
   if (
     training.some(
       (d) =>
-        !m.games.some((g) => g.gameId === d.gameId && g.split !== "holdout"),
+        d.trainingOnly ||
+        m.games.some((g) => g.gameId === d.gameId && g.split === "holdout") ||
+        ((config.purpose !== "fixture" || m.games.length === 82) &&
+          !m.games.some((g) => g.gameId === d.gameId && g.split === "warm-up")),
     )
   )
-    throw Error("Baseline training contains an unknown or holdout game");
-  const fitted = fitBaselines(training);
+    throw Error(
+      "Baseline training must use warm-up games, never holdout games",
+    );
+  if (
+    priorTraining.some(
+      (d) =>
+        d.trainingOnly?.season !== "2024-25" ||
+        d.trainingOnly.rosterPolicy !== "same-game-box-score-v1" ||
+        m.games.some((g) => g.gameId === d.gameId) ||
+        !config.profile.dataSources.some(
+          (s) =>
+            s.type === "pbp-2024-25" && s.manifestSha256 === d.release.sha256,
+        ),
+    )
+  )
+    throw Error(
+      "Prior training must use the pinned training-only 2024-25 datasets",
+    );
+  if (
+    config.purpose !== "fixture" &&
+    (training.length !== 10 || priorTraining.length !== 82)
+  )
+    throw Error(
+      "Baseline training requires ten warm-up and 82 prior-season games",
+    );
+  const fitted = fitBaselines(training, allTraining);
   for (const dataset of datasets) {
     const predictors: ReplayManifest["predictors"] = Object.fromEntries(
       Object.entries(fitted).map(([name, b]) => [

@@ -152,7 +152,7 @@ for (const variant of ["M0", "M3"] as const)
           record,
           assembler: fixtureAssembler,
           proxy,
-          training: data.datasets.slice(0, 1),
+          training: [{ ...data.datasets[0], gameId: "training-fixture" }],
         });
         const expected = runner.record
           .events("replay_window")
@@ -176,7 +176,7 @@ for (const variant of ["M0", "M3"] as const)
           record,
           assembler: fixtureAssembler,
           proxy,
-          training: data.datasets.slice(0, 1),
+          training: [{ ...data.datasets[0], gameId: "training-fixture" }],
         });
         assert.equal(record.events().length, before);
       } finally {
@@ -370,6 +370,18 @@ test("corpus diagnostics keep season tags and never replay or train on holdout g
     assert.equal(runner.record.events("session_start").length, 20);
     const baselineConfig = structuredClone(config);
     baselineConfig.replay!.mode = "baselines";
+    const prior = {
+      ...dataset("prior-training"),
+      trainingOnly: {
+        season: "2024-25",
+        rosterPolicy: "same-game-box-score-v1",
+      } as const,
+    };
+    baselineConfig.profile.dataSources.push({
+      type: "pbp-2024-25",
+      release: "fixture-prior",
+      manifestSha256: prior.release.sha256,
+    });
     const record = new RecordStore(
       join(root, "baselines"),
       manifest(baselineConfig, schedule),
@@ -380,12 +392,42 @@ test("corpus diagnostics keep season tags and never replay or train on holdout g
         schedule,
         datasets,
         training,
+        priorTraining: [prior],
         record,
         assembler: fixtureAssembler,
         proxy,
       });
       assertSelection(record);
+      const predictors = record.events("replay_manifest")[0].data.predictors;
+      assert.equal(predictors.constant.training.gameIds.length, 10);
+      assert.equal(predictors.statistical.training.gameIds.length, 11);
+      assert.ok(
+        predictors.statistical.training.gameIds.includes("prior-training"),
+      );
+      assert.ok(
+        !predictors.constant.training.gameIds.includes("prior-training"),
+      );
+      assert.ok(
+        predictors.statistical.training.gameIds.every(
+          (id: string) => !datasets.some((d) => d.gameId === id),
+        ),
+      );
       const before = record.events().length;
+      for (const id of ["season-1", "season-21"]) {
+        await assert.rejects(
+          runBaselines({
+            config: baselineConfig,
+            schedule,
+            datasets,
+            training: [dataset(id)],
+            record,
+            assembler: fixtureAssembler,
+            proxy,
+          }),
+          /overlaps|warm-up/,
+        );
+        assert.equal(record.events().length, before);
+      }
       await assert.rejects(
         runBaselines({
           config: baselineConfig,

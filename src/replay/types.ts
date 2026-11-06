@@ -126,7 +126,13 @@ export interface LedgerEntry {
   reason: string;
   mechanism: string;
 }
+export interface TrainingOnly {
+  season: "2024-25";
+  rosterPolicy: "same-game-box-score-v1";
+}
 export interface DecisionDataset {
+  /** Retrospective roster approximation: forbidden as an evaluation input. */
+  trainingOnly?: TrainingOnly;
   /** Static game metadata; absent in older cached datasets. */
   celticsHome?: boolean;
   version: string;
