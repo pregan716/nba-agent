@@ -250,6 +250,10 @@ export class Runner {
       // Retry publication before advancing after a previous sync failure.
       await this.checkpoint();
       for (const game of this.manifest.games) {
+        // Keep season indexes/tags intact while executing only the pinned selection.
+        const selected = this.manifest.config.replay?.datasets;
+        if (selected && !selected.some((d) => d.gameId === game.gameId))
+          continue;
         if (this.manifest.config.purpose === "pilot" && !game.development)
           continue;
         if (this.record.events("game_end", game.gameId).length) continue;
@@ -287,6 +291,8 @@ export class Runner {
           await this.checkpoint();
         }
         this.record.append("game_end", game.gameId, {
+          ...(this.record.events("policy_game_end", game.gameId).at(-1)?.data ??
+            {}),
           development: game.development,
         });
         await this.checkpoint();

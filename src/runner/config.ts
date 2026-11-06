@@ -137,6 +137,28 @@ export const configSchema = z.strictObject({
     developmentGames: z.literal(10),
     release: z.literal("next-morning-09:00-America/New_York"),
   }),
+  replay: z
+    .strictObject({
+      mode: z.enum(["variant", "baselines"]),
+      versions: z.strictObject({
+        implementation: name,
+        windows: name,
+        state: name,
+        prediction: name,
+      }),
+      datasets: z
+        .array(
+          z.strictObject({
+            gameId: id,
+            inputHash: hash,
+            version: name,
+            releaseManifestSha256: hash,
+          }),
+        )
+        .min(1),
+      jevContaminationProbe: z.unknown().optional(),
+    })
+    .optional(),
   contaminationProbe: z
     .strictObject({
       model: z.literal("claude-opus-4-6"),
@@ -155,6 +177,7 @@ export interface ScheduledGame {
 export type Game = ScheduledGame & {
   index: number;
   development: boolean;
+  split?: "development" | "warm-up" | "scored" | "holdout";
   release: string;
 };
 export type Phase = "pregame" | "commit" | "postgame";
@@ -229,6 +252,18 @@ export function manifest(
       ...g,
       index,
       development: index < 10,
+      ...(c.replay
+        ? {
+            split:
+              index < 10
+                ? ("development" as const)
+                : index < 20
+                  ? ("warm-up" as const)
+                  : index < 70
+                    ? ("scored" as const)
+                    : ("holdout" as const),
+          }
+        : {}),
       release: nextMorning(
         Temporal.Instant.from(g.scheduledStart)
           .toZonedDateTimeISO("America/New_York")
@@ -236,6 +271,18 @@ export function manifest(
           .toString(),
       ),
     }));
+  if (c.replay) {
+    const selected = c.replay.datasets.map((d) => d.gameId);
+    if (
+      new Set(selected).size !== selected.length ||
+      selected.some((id) => !games.some((g) => g.gameId === id))
+    )
+      throw Error("Replay selection contains duplicate or unknown games");
+    if (games.some((g) => g.split === "holdout" && selected.includes(g.gameId)))
+      throw Error(
+        "Holdout replay is refused; reveal requires a separate R6 path",
+      );
+  }
   for (let i = 1; i < games.length; i++)
     if (
       Temporal.Instant.compare(games[i].scheduledStart, games[i - 1].release) <=

@@ -1,6 +1,6 @@
 import { meteredJev, type JevProvider } from "./jev.js";
 import type { JevRequest } from "../policy/request.js";
-import type { RecordStore } from "./record.js";
+import type { RecordLog } from "./record.js";
 export { systemOneProvider } from "./jev.js";
 import { retryModel, modelError } from "./retry.js";
 import { VERSION } from "@anthropic-ai/sdk/version";
@@ -247,7 +247,7 @@ export class MeteringProxy {
   /** Trusted replay-only role. Analyst session credentials never authorize System One. */
   jev(
     request: JevRequest,
-    record: RecordStore<any>,
+    record: RecordLog,
     scope: string,
     signal: AbortSignal,
   ) {

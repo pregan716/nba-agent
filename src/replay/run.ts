@@ -1,4 +1,4 @@
-import { RecordStore } from "../runner/record.js";
+import type { RecordLog } from "../runner/record.js";
 import { digest } from "../runner/config.js";
 import { scoreWindow, summarize } from "./scoring.js";
 import { REPLAY_VERSIONS } from "./types.js";
@@ -43,7 +43,7 @@ export async function replay(
   dataset: DecisionDataset,
   predictorId: string,
   predict: Predictor,
-  record: RecordStore<ReplayManifest>,
+  record: RecordLog,
 ): Promise<WindowResult[]> {
   const manifest = record.events("manifest")[0].data as ReplayManifest;
   const { policy: _policy, ...baseHarness } = manifest.harness;

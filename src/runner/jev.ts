@@ -1,5 +1,5 @@
 import { setTimeout as delay } from "node:timers/promises";
-import type { RecordStore } from "./record.js";
+import type { RecordLog } from "./record.js";
 import {
   JEV_MODEL,
   JEV_SETTINGS,
@@ -52,7 +52,7 @@ export function systemOneProvider(apiKey: string): JevProvider {
 export async function meteredJev(
   provider: JevProvider,
   request: JevRequest,
-  record: RecordStore<any>,
+  record: RecordLog,
   scope: string,
   signal: AbortSignal,
 ) {
