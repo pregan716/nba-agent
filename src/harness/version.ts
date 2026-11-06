@@ -12,7 +12,11 @@ import {
   PHASE_PROMPTS,
   SYSTEM_PROMPT,
   memoryInstructions,
+  memoryPermissionInstructions,
+  promptTexts,
+  type PromptSet,
 } from "./prompts.js";
+import { isMemoryV3, memoryVariant } from "../env/memory.js";
 
 export interface LoopParameters {
   /** `max_tokens` per model call before the proxy clamps it to the remaining allowance. */
@@ -77,6 +81,9 @@ export const PI_CONTRACT = {
 export interface HarnessConfigOptions {
   memoryInstructions?: string;
   implementation?: "pi" | "homemade";
+  /** Which prompt texts the harness runs with. `research-v3` requires a v3
+   * memory profile and supplies its permission instructions. */
+  promptSet?: PromptSet;
   memory: RunConfig["profile"]["memory"];
   effort: RunConfig["harness"]["loop"]["effort"];
   thinking: RunConfig["harness"]["loop"]["thinking"];
@@ -101,21 +108,48 @@ export function harnessConfig(
   options: HarnessConfigOptions,
 ): RunConfig["harness"] {
   const loop = { ...DEFAULT_LOOP, ...options.loop };
+  const research = options.promptSet === "research-v3";
+  if (research && !isMemoryV3(options.memory))
+    throw Error("The research-v3 prompt set requires v3 memory permissions");
+  const texts = promptTexts(research ? "research-v3" : "infrastructure");
   return {
-    identity:
-      options.implementation === "pi"
+    identity: research
+      ? options.implementation === "pi"
+        ? "pi-research-v3"
+        : "replay-research-v3"
+      : options.implementation === "pi"
         ? "pi-infrastructure-v3"
         : "replay-infrastructure-v2",
     ...(options.implementation === "pi" ? { pi: PI_CONTRACT } : {}),
-    prompts: {
-      system: SYSTEM_PROMPT,
-      ...PHASE_PROMPTS,
-      ...Object.fromEntries(
-        Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [`memory:${k}`, v]),
-      ),
-    },
+    prompts: research
+      ? {
+          system: texts.system,
+          pregame: texts.pregame,
+          postgame: texts.postgame,
+          // Every variant's text is hashed, so a wording change to any of them
+          // is a new harness version for all variants.
+          ...Object.fromEntries(
+            (["M0", "M1", "M2", "M3", "M4"] as const).map((v) => [
+              `memory:${v}`,
+              memoryPermissionInstructions(memoryVariant(v)),
+            ]),
+          ),
+        }
+      : {
+          system: SYSTEM_PROMPT,
+          ...PHASE_PROMPTS,
+          ...Object.fromEntries(
+            Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [
+              `memory:${k}`,
+              v,
+            ]),
+          ),
+        },
     memoryInstructions:
-      options.memoryInstructions ?? memoryInstructions(options.memory),
+      options.memoryInstructions ??
+      (research && isMemoryV3(options.memory)
+        ? memoryPermissionInstructions(options.memory)
+        : memoryInstructions(options.memory)),
     toolDefinitions: JSON.parse(serializeToolDefinitions(TOOL_DEFINITIONS)),
     loop: {
       effort: options.effort,

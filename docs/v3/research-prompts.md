@@ -1,0 +1,113 @@
+# Research prompts, memory instructions and probes (SPO-855 / R5b)
+
+This page records the v3 prompt set as built. The pilot and its write-up
+(`docs/v3/pilot.md`) follow in the same issue.
+
+## Prompt set `research-v3`
+
+The texts live in `src/harness/prompts.ts`:
+
+- `RESEARCH_SYSTEM_PROMPT_V3`: the task, what a decision window is, the four
+  fixed Jev questions and the derived action, the scores, what Jev is and is not,
+  the package contract, the `state-v1` fields, feedback, and the evidence, time
+  and budget rules.
+- `RESEARCH_PHASE_PROMPTS_V3.pregame`: prepare and freeze this game's package.
+- `RESEARCH_PHASE_PROMPTS_V3.postgame`: the trace is available; nothing is required.
+- `memoryPermissionInstructions(memory)`: one text per variant M0 to M4.
+
+The brief's "Guard against unnecessary process" governs the wording. The texts
+state contracts and rules. They give no research checklist, feature list, profile
+schema or basketball conclusion, and a test asserts that they contain no Celtics
+player name or surname and not the head coach's name.
+
+Things the prompt states because the agent cannot discover them otherwise:
+
+- Jev reads only the assembled request, keeps nothing between windows, and does
+  not know who a player id is unless the text says so.
+- The assembler has the Python standard library only, no data and no workspace,
+  so everything it needs must be inside the package.
+- The byte limits of the Agreed context guard, stated as round numbers below the
+  real thresholds (30,976 bytes for the state plus one question; 59,904 for the
+  whole request).
+- `validate_package` has no sample states before the first game.
+- An unfrozen package, or one that fails on the first window, leaves the whole
+  game unscored.
+- Recollection of the season is not evidence. This is an instruction, not a
+  control; the contamination probes are the measurement.
+
+Dataset facts in the prompt ("50 to 70 windows", "a minority" end in a
+substitution) describe the task, as the brief's Sizes paragraph does. Rates the
+agent could learn from the data are left for it to compute.
+
+### Memory-permission instructions
+
+Every variant is told about `packages/<game_id>/`, `scratch/`, the `/workspace`
+mount and that the previous trace is read through `read_feedback` and not kept.
+Beyond that:
+
+| Variant | Told about                                                                       | Cap stated |
+| ------- | -------------------------------------------------------------------------------- | ---------- |
+| M0      | Nothing persists; no memory directory                                            | No         |
+| M1      | `memory/coach_profile.md`, `memory/coach/`                                       | Yes        |
+| M2      | `memory/best_practices.md`, `memory/practices/` and the coach-agnostic rule      | Yes        |
+| M3      | Both of the above                                                                | Yes        |
+| M4      | Both, plus `skills/` (at `/workspace/skills`) under the same coach-agnostic rule | Yes        |
+
+A gated-off directory is described only as absent. The coach-agnostic rule is
+the brief's content boundary, and the text says it is audited. A test checks
+each variant's text against `memoryVariant`.
+
+### Tool descriptions
+
+Six tool descriptions still described v2 memory modes ("in a stateless run these
+tools are refused"), which is false for M0 under v3: packages and scratch are
+writable. They now refer to the run's permitted paths. Tool definitions are part
+of the harness version, so this changes it for every configuration.
+
+## Harness version and launch rules
+
+`harnessConfig({ promptSet: "research-v3" })` gives identity `pi-research-v3`,
+stores the system and phase texts and all five variants' instruction texts under
+`harness.prompts`, and sets `memoryInstructions` to the run's own variant. Any
+wording change therefore changes the manifest hash for every variant. The
+harnesses select texts through `promptTexts(promptSet)`; fixtures keep the
+infrastructure texts and their existing identities.
+
+`validateLaunch` now lets a `pilot` start when the harness identity is
+`pi-research-v3`. `scored` remains refused until a budget profile is approved.
+
+## Contamination probes
+
+**Analyst.** `scripts/contamination-probe.ts` is the carried no-tools probe. One
+item was added on the Celtics' 2025–26 rotation and substitution patterns, and a
+player who left the team in the 2025 offseason was dropped from the list of
+named players.
+
+**Jev.** `scripts/jev-probe.ts` builds 246 typed true/false statements from the
+pinned releases and sends them with an empty state in batches of 40:
+
+| Group                | Facts | What it asks                                                             |
+| -------------------- | ----: | ------------------------------------------------------------------------ |
+| `result:2025-26`     |    82 | The Celtics won, or lost, a named game in the replay season              |
+| `appearance:2025-26` |    82 | A named roster player played, or did not play, in a named game           |
+| `result:2024-25`     |    82 | The same result statements for the prior season, as the comparison group |
+
+Two design points keep base rates from passing as recall. Whether a statement
+says "won" or "lost" (or "played" or "did not play") is set by a hash of the fact
+id, never by the outcome, so about half of each group is true whatever the
+team's record. Appearance facts use only roster players who played in between
+20 % and 80 % of the games they were eligible for, one per game, chosen by a hash
+of the game id.
+
+The stored record reports accuracy, Brier score and discrimination (mean
+probability on true statements minus on false ones) per group, against chance
+values of 0.5, 0.25 and 0. Discrimination well above zero on the 2025–26 groups
+would indicate recall of replay-window outcomes. The 2024–25 group shows what
+recall looks like if Jev has it for a season it could have been trained on. The
+probe is descriptive and cannot prove absence of contamination.
+
+## Not in this change
+
+No live model call was made. The probes, the pilot, the double replay and the
+proposed budget profile are the next step and need the user's approval of the
+spend first.

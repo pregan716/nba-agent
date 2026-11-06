@@ -21,18 +21,25 @@ import { replay, type ReplayManifest } from "../replay/run.js";
 import { fitBaselines } from "../replay/baselines.js";
 import { REPLAY_VERSIONS, type DecisionDataset } from "../replay/types.js";
 
-/** Until R5b provides and wires approved v3 prompts, no experimental run starts. */
+/** Pilot and scored runs use the v3 research prompts (SPO-855). Scored runs stay
+ * refused here until the pilot's budget profile is approved, which is the
+ * brief's one Open decision; the manifest also requires it. */
 export function validateLaunch(
   purpose: RunConfig["purpose"],
   assemblerImage: string,
+  harnessIdentity?: string,
 ) {
   if (purpose === "scored" && assemblerImage.startsWith("local@"))
     throw Error(
       "Scored runs require a published assembler digest; local@ is refused",
     );
-  if (purpose !== "fixture")
+  if (purpose !== "fixture" && harnessIdentity !== "pi-research-v3")
     throw Error(
-      "Pilot/scored runs require a v3 prompt set and memory instructions from R5b; only fixture runs are available",
+      "Pilot/scored runs require the research-v3 prompt set under the Pi harness",
+    );
+  if (purpose === "scored")
+    throw Error(
+      "Scored runs require an approved research budget profile; none is approved yet",
     );
 }
 
@@ -111,7 +118,7 @@ export function chronologicalRunner(options: {
 }) {
   const { root, config, source, datasets, schedule, assembler, proxy } =
     options;
-  validateLaunch(config.purpose, assembler.image);
+  validateLaunch(config.purpose, assembler.image, config.harness.identity);
   if (
     digest(config.replay?.versions) !== digest(REPLAY_VERSIONS) ||
     config.profile.modelRoles.jev !== "jev-1.14.0"
@@ -224,7 +231,7 @@ export async function runBaselines(options: {
   proxy: MeteringProxy;
 }) {
   const { config, datasets, training, record, assembler, proxy } = options;
-  validateLaunch(config.purpose, assembler.image);
+  validateLaunch(config.purpose, assembler.image, config.harness.identity);
   if (
     digest(config.replay?.versions) !== digest(REPLAY_VERSIONS) ||
     config.profile.modelRoles.jev !== "jev-1.14.0"
@@ -288,7 +295,11 @@ export async function runBaselines(options: {
 export function diagnosticSelection(
   schedule: { gameId: string; scheduledStart: string }[],
   mode: "analyst" | "baselines",
+  /** Evaluate only the first `limit` development games (1 to 10). */
+  limit = 10,
 ) {
+  if (!Number.isInteger(limit) || limit < 1 || limit > 10)
+    throw Error("Game limit must be 1 to 10 development games");
   if (
     schedule.length !== 82 ||
     new Set(schedule.map((g) => g.gameId)).size !== 82
@@ -300,7 +311,7 @@ export function diagnosticSelection(
       a.gameId.localeCompare(b.gameId),
   );
   return {
-    evaluation: games.slice(0, 10),
+    evaluation: games.slice(0, limit),
     training: mode === "baselines" ? games.slice(10, 20) : [],
   };
 }

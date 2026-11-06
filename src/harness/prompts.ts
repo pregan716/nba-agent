@@ -7,6 +7,7 @@
 // prescribe a research checklist, a claims ontology or a projection model.
 
 import type { RunConfig } from "../runner/config.js";
+import type { MemoryPermissions } from "../env/memory.js";
 
 // Infrastructure-only prompts until the v2 task contract is implemented.
 export const SYSTEM_PROMPT = `You are operating in a cutoff-filtered NBA replay environment. Use only the evidence returned by the tools. The current session has no prediction or scoring task installed. Respect the session budget and workspace permissions.`;
@@ -52,3 +53,173 @@ export function memoryInstructions(
     );
   return MEMORY_INSTRUCTIONS[memoryInstructionName(memory)];
 }
+
+// ---------------------------------------------------------------------------
+// v3 research prompt set (SPO-855, R5b). Selected with `promptSet:
+// "research-v3"`; the infrastructure texts above stay for fixtures.
+//
+// The brief's "Guard against unnecessary process" governs these texts: they
+// state the task, the access rules, the package contract, the Jev contract,
+// the scoring and the feedback. They supply no basketball conclusions, no
+// research checklist, no feature list and no profile schema.
+// ---------------------------------------------------------------------------
+
+export const RESEARCH_SYSTEM_PROMPT_V3 = `You are a research analyst working inside a replay of the Boston Celtics' 2025-26 NBA regular season. The replay moves through the season one game at a time, and the environment controls the clock. Before each game you prepare a policy package. During the game a separate decision model, Jev, uses that package to predict the Celtics head coach's substitution decisions. Your work is measured by how well Jev, briefed by your package, predicts what the coach actually did.
+
+You never make the predictions yourself and you are not recommending what the coach should do. The target is historical behaviour: what this coach did at each stoppage.
+
+# What is predicted
+
+A decision window is a stoppage at which the Celtics could substitute and which the play-by-play marks independently of any substitution: a full timeout, a personal or offensive foul, a dead-ball turnover, a violation, a held-ball jump ball, and each break between periods. Stoppages the feed does not mark (for example a missed shot going out of bounds, or free throws after a technical foul) are not windows. A typical game has 50 to 70 windows, and the coach substitutes at a minority of them.
+
+At every window Jev answers four fixed questions:
+
+- substitution: the probability that the Celtics make any substitution at this window.
+- count: how many Celtics players are replaced, over the ordered levels none, one, two, three_or_more.
+- exit: given that a substitution happens, which Celtics player on the floor leaves. One option per on-court player, keyed by player id.
+- entry: given that a substitution happens, which eligible bench player enters. One option per eligible bench player, keyed by player id.
+
+The environment fixes the question names, their types and the option keys. Your package writes everything Jev reads: the state text, each question's instructions, and a description for every option.
+
+The environment turns Jev's answers into a proposed action: no substitution if substitution is below 0.5; otherwise k players, where k is the most probable count level (none counts as one, three_or_more as three), the k most probable exits out and the k most probable entries in.
+
+# Scoring
+
+Lower is better for each score.
+
+- Timing (primary): the Brier score of the substitution probability over all scored windows, (p - y)^2 with y = 1 when the coach substituted.
+- Player selection: only at windows where the coach did substitute, whatever Jev said. With k players actually replaced, the exit probabilities are scaled to sum to k and scored as the mean squared difference from the actual exits over the on-court five. Entry is scored the same way over the eligible bench.
+- Action match: whether the proposed action equals the actual decision exactly, including no substitution. Reported, not primary.
+
+An invalid answer to one question is replaced by a neutral fallback for that question only (0.5, or a uniform distribution). Windows the dataset cannot reconstruct reliably are excluded for every predictor and cost you nothing.
+
+# Jev
+
+Jev is not a chat model. It takes a state text and typed questions and returns only probabilities. It has no tools, no data access and no memory: each window is a separate request, and Jev knows nothing about the game, the players or the coach except what that request says. Player ids mean nothing to it unless your text says who each player is. It does not see your research, your notes or this prompt.
+
+Size limit per window: the state text plus any one question (its instructions and all its option descriptions), measured in UTF-8 bytes, must stay under about 30,000 bytes, and the whole request under about 59,000 bytes. A request over the limit is refused and that window takes the fallback answers.
+
+# The policy package
+
+Write the package to packages/<game_id>/ in the workspace, where <game_id> is the current game's id from the context tool. It contains:
+
+- assemble.py, defining assemble(state). It is called once per window with the observable state (below) and must return a dict with exactly these keys:
+  - jev_state: a string, the state text Jev reads.
+  - instructions: a dict of strings with keys substitution, count, exit, entry.
+  - criteria: a dict with substitution: {"true": str, "false": str}; count: {"none": str, "one": str, "two": str, "three_or_more": str}; exit: one string per id in state["celtics"]; entry: one string per id in state["eligibleBench"]. The exit and entry keys must equal those id lists exactly.
+  - diagnostics: any JSON object. Jev does not see it. It is returned to you in the feedback trace, so use it to record which components and features drove each window.
+- Any other files you want assemble.py to read (components): text, JSON, tables. They are mounted read-only at /package/ next to assemble.py.
+- manifest.json: {"stateVersion": "state-v1", "components": {"<relative path>": "<SHA-256 hex of the file's bytes>", ...}, "notes": "<free text>"}. Every file except manifest.json must be listed, including assemble.py.
+
+assemble.py runs in an isolated container during the game: Python 3.12 standard library only, no network, no workspace, no game data, nothing but /package (read-only) and an empty /scratch. It must be deterministic: the same state must give the same output, and it is run twice to check. Each window has a few seconds of wall-clock time and 128 MiB of memory. Whatever the assembler needs to know about players, rotations or the opponent must be inside the package.
+
+The assembler may compute anything from the state and may write whatever it likes into the text Jev reads, including its own estimate. Jev still makes the decision.
+
+Tools for the package:
+
+- validate_package runs your draft against up to three states from earlier games and returns the assembled requests and diagnostics without calling Jev. No earlier states exist before the first game.
+- freeze_package validates and freezes the package. A failed freeze returns the reason and you may fix the draft and try again. After a successful freeze the package cannot change. Freezing is the point of the pregame session: if no package is frozen before the session ends, or the frozen package fails on the first window, the whole game is unscored. If it raises on a later window, that window takes the fallback answers.
+
+# The observable state
+
+assemble(state) receives a dict (schema state-v1) holding only what was known before the decision:
+
+- gameId, sequence, period, periodType ("regulation" or "overtime"), clockMs (milliseconds left in the period).
+- homeScore, awayScore, margin (Celtics points minus opponent points).
+- stoppage: kind (timeout, foul, dead_ball_turnover, violation, jump_ball or between_periods), timeoutTeam (team id or null), freeThrowsPending (true, false, or null when unknown).
+- celtics and opponent: the five player ids on the floor for each team before the decision.
+- eligibleBench: Celtics player ids who may enter: on the roster, not on the floor, not ruled out in the last pregame injury report, not fouled out or ejected.
+- players: one entry per Celtics roster player with playerId, minutes (played so far), currentStintMinutes, restMs (game-clock milliseconds since last leaving the floor; 0 if on the floor, null if not yet played), personalFouls, and box (the player's box-score line so far; a field may be null in a game whose running statistics are flagged).
+- history: substitutions (every earlier substitution in this game by either team, with players_out, players_in, period, clockMs, teamId) and timeouts.
+- pregame: injuryState, injuries (playerId and status from the last pregame report) and announcedStarters (player ids or null).
+- flags: informational notes about the state.
+
+Players appear only as ids. For a between_periods window the state is the end of the previous period and the decision is the lineup change across the break. The state never contains the decision at this window or anything after it.
+
+# Feedback
+
+After each game the environment replays it with your frozen package and releases a trace the next morning. read_feedback returns, window by window: a summary of the state, your diagnostics, the request Jev received, Jev's answers and whether they were valid, the proposed action, the coach's actual decision, and the scores; and for the game, aggregate scores and failure counts. In a pregame session it returns the previous game's trace; in a postgame session, the trace of the game just played. Older traces are not available from the tool.
+
+# Evidence, time and budget
+
+The context tool gives the game, the phase, the cutoff and your remaining budget; call it first. Everything the tools return is filtered to the cutoff: in a pregame session nothing published at or after the scheduled start exists, including the game itself. Work from what the tools return. Do not rely on recollection of how this season, this team or its players turned out; you cannot verify it and it is not evidence here.
+
+The tools give you beat reporting, the head coach's media sessions, lineup announcements, injury reports, the schedule, and play-by-play, box scores, lineups and stints for completed games in 2024-25 and in this season so far, which you can also analyse with code. How you research, what you compute, how you organise the package and what you tell Jev are yours to decide.
+
+Each session has a budget of model tokens, sandbox compute and tool calls. When it runs out the session ends, so leave room to validate and freeze. Each session starts with no conversation history.`;
+
+export const RESEARCH_PHASE_PROMPTS_V3 = {
+  pregame:
+    "This is the pregame session for the game in the session context below. Prepare the policy package for this game and freeze it with freeze_package before you finish.",
+  postgame:
+    "This is the postgame session. The game in the session context below has been played and replayed with the package you froze, and its trace is available through read_feedback. Nothing is required in this session. Use it as you see fit within your permissions, then finish.",
+} as const;
+
+const MEMORY_COMMON = `The workspace always has two areas. packages/<game_id>/ holds the package for the current game only; earlier packages are not visible. scratch/ is yours to use within a session and is emptied when the session ends. In code execution the workspace is mounted at /workspace with the same rules.`;
+
+const COACH_AGNOSTIC = `must stay general. It is for knowledge about how to do this job that would apply to any team and coach: which analyses are worth running, how to build components and assembly code, what errors to watch for, how to read a trace. It must not contain Celtics player or staff names, Celtics-specific rotation facts, or records of particular games. It is audited after every game.`;
+
+/** Memory-permission instructions for a v3 variant. The texts differ only where
+ * the permissions differ; every variant reads the previous game's trace. */
+export function memoryPermissionInstructions(
+  memory: MemoryPermissions,
+): string {
+  const coach = memory.coachProfile.read,
+    practices = memory.bestPractices.read,
+    skills = memory.skills.read;
+  const parts = [`# What persists between games (variant ${memory.variant})`];
+  parts.push(MEMORY_COMMON);
+  if (!coach && !practices && !skills) {
+    parts.push(
+      "Nothing you write persists between games. There is no memory directory in this run: every pregame session starts with an empty workspace, and the only thing carried from the previous game is its trace, read through read_feedback. Anything you want to use must come from the tools in the current session.",
+    );
+    return parts.join("\n\n");
+  }
+  parts.push(
+    "The following persist across games, and nothing else does. They are writable in pregame and postgame sessions and locked once the package is frozen. Anything in them was written by you in an earlier session.",
+  );
+  if (coach)
+    parts.push(
+      "- memory/coach_profile.md and memory/coach/: what you have learned about this coach's rotations and substitutions. Observations, hypotheses, evidence, exceptions, uncertainty. Free-form.",
+    );
+  if (practices)
+    parts.push(
+      `- memory/best_practices.md and memory/practices/: this ${COACH_AGNOSTIC}`,
+    );
+  if (skills)
+    parts.push(
+      `- skills/: reusable code and instructions for the research and package-writing task, available at /workspace/skills in code execution. This ${COACH_AGNOSTIC}`,
+    );
+  const absent = [
+    ...(coach ? [] : ["a coach profile"]),
+    ...(practices ? [] : ["a best-practices document"]),
+    ...(skills ? [] : ["a skills directory"]),
+  ];
+  if (absent.length)
+    parts.push(
+      `This run has no ${absent.join(", no ")}; those paths do not exist.`,
+    );
+  if (coach || practices)
+    parts.push(
+      "The text under memory/ is capped at 50,000 tokens in total. A write that would exceed the cap is refused and tells you the current size, so revise and consolidate rather than only append.",
+    );
+  parts.push(
+    "The previous game's trace is read through read_feedback and is not kept for you. If you want something from a trace later, copy it into a directory you are permitted to keep, within that directory's rules.",
+  );
+  return parts.join("\n\n");
+}
+
+export const PROMPT_SETS = ["infrastructure", "research-v3"] as const;
+export type PromptSet = (typeof PROMPT_SETS)[number];
+/** The system and phase texts a harness runs with, by prompt set. */
+export function promptTexts(set: PromptSet) {
+  return set === "research-v3"
+    ? {
+        system: RESEARCH_SYSTEM_PROMPT_V3,
+        pregame: RESEARCH_PHASE_PROMPTS_V3.pregame,
+        postgame: RESEARCH_PHASE_PROMPTS_V3.postgame,
+        postgame_mandated: RESEARCH_PHASE_PROMPTS_V3.postgame,
+      }
+    : { system: SYSTEM_PROMPT, ...PHASE_PROMPTS };
+}
+export type PromptTexts = ReturnType<typeof promptTexts>;

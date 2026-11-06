@@ -21,7 +21,11 @@ import { sessionEnvironment } from "../src/env/session.js";
 import { fixtureCorpus } from "./fixtures/session/corpus.js";
 import { piHarness } from "../src/harness/pi.js";
 import { harnessConfig } from "../src/harness/version.js";
-import { SYSTEM_PROMPT } from "../src/harness/prompts.js";
+import {
+  SYSTEM_PROMPT,
+  RESEARCH_SYSTEM_PROMPT_V3,
+  RESEARCH_PHASE_PROMPTS_V3,
+} from "../src/harness/prompts.js";
 
 type Request = MessageCreateParamsNonStreaming;
 // Content blocks are loosely typed here so the script does not track SDK block shape churn.
@@ -530,4 +534,21 @@ test("late recorder failure rejects Pi completion for a large final snapshot", a
       error.includes("fixture final snapshot write failed"),
     ),
   );
+});
+
+test("Pi runs the research-v3 system and phase prompts when selected", async () => {
+  const f = configFor({ horizon: "stateless" });
+  const seen: Request[] = [];
+  const result = await run(
+    f.config,
+    scripted([() => [{ type: "text", text: "done" }]], seen),
+    piHarness({ model: "claude-opus-4-6", promptSet: "research-v3" }),
+    f,
+  );
+  assert.deepEqual(result.errors, []);
+  assert.equal(
+    (seen[0].system as any[])[0].text,
+    `${RESEARCH_SYSTEM_PROMPT_V3}\n\n${f.config.harness.memoryInstructions}`,
+  );
+  assert.ok(textOf(seen[0]).startsWith(RESEARCH_PHASE_PROMPTS_V3.pregame));
 });

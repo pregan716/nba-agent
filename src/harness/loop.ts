@@ -25,7 +25,7 @@ import {
 } from "../env/contract.js";
 import { messagesApiTools } from "../env/tools.js";
 import type { Harness, HarnessHandles } from "../runner/runner.js";
-import { PHASE_PROMPTS, SYSTEM_PROMPT } from "./prompts.js";
+import { promptTexts, type PromptSet } from "./prompts.js";
 import { DEFAULT_LOOP, type LoopParameters } from "./version.js";
 
 export interface AnalystOptions {
@@ -34,6 +34,8 @@ export interface AnalystOptions {
   loop?: Partial<LoopParameters>;
   /** Mandated reflection (configuration C) uses the mandated postgame prompt. */
   process?: "voluntary" | "mandated-reflection";
+  /** Prompt texts to run with; must match the run config's harness prompts. */
+  promptSet?: PromptSet;
   /** Optional observer for tests and diagnostics; never alters behaviour. */
   onTurn?: (event: {
     phase: Phase;
@@ -116,17 +118,18 @@ export function analystHarness(options: AnalystOptions): Harness {
     let context = await session.call("context", {});
     const phase = context.phase;
     const tools: Tool[] = messagesApiTools(offeredTools(context)) as Tool[];
-    const system = `${SYSTEM_PROMPT}\n\n${memoryInstructions}`;
+    const texts = promptTexts(options.promptSet ?? "infrastructure");
+    const system = `${texts.system}\n\n${memoryInstructions}`;
     const opening: string[] = [];
     if (phase === "postgame") {
       opening.push(
         options.process === "mandated-reflection"
-          ? PHASE_PROMPTS.postgame_mandated
-          : PHASE_PROMPTS.postgame,
+          ? texts.postgame_mandated
+          : texts.postgame,
       );
       opening.push(`Session context:\n${text(context)}`);
     } else {
-      opening.push(PHASE_PROMPTS.pregame);
+      opening.push(texts.pregame);
       opening.push(`Session context:\n${text(context)}`);
     }
     const messages: MessageParam[] = [

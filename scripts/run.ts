@@ -15,6 +15,7 @@ import {
 import { RecordStore } from "../src/runner/record.js";
 import { piHarness } from "../src/harness/pi.js";
 import { presetConfig } from "../src/harness/presets.js";
+import { PROMPT_SETS, type PromptSet } from "../src/harness/prompts.js";
 import { probeForManifest } from "../src/harness/probe.js";
 import { currentCodeRevision } from "../src/harness/version.js";
 import { DockerAssembler } from "../src/policy/sandbox.js";
@@ -48,7 +49,17 @@ delete process.env.TYPESAFE_API_KEY;
 const scripted = process.argv.includes("--scripted");
 const purpose = arg("purpose", "fixture") as RunConfig["purpose"];
 const image = arg("assembler-image", "")!;
-validateLaunch(purpose, image);
+const promptSet = arg(
+  "prompts",
+  purpose === "fixture" ? "infrastructure" : "research-v3",
+) as PromptSet;
+if (!PROMPT_SETS.includes(promptSet)) throw Error("Unknown prompt set");
+validateLaunch(
+  purpose,
+  image,
+  promptSet === "research-v3" ? "pi-research-v3" : "pi-infrastructure-v3",
+);
+const gameLimit = Number(arg("games", "10"));
 if (!image)
   throw Error(
     "Pass --assembler-image=<pinned digest> (npx tsx scripts/assembler-build.ts)",
@@ -102,7 +113,7 @@ try {
             scheduledStart: g.data.scheduled_tipoff as string,
           }))
           .sort((a, b) => a.scheduledStart.localeCompare(b.scheduledStart));
-        const selection = diagnosticSelection(schedule, mode);
+        const selection = diagnosticSelection(schedule, mode, gameLimit);
         const loaded = (
           await loadReplayInputs(
             corpus,
@@ -129,6 +140,7 @@ try {
   const { source, schedule, datasets, training } = inputs;
   const config = presetConfig({
     harness: "pi",
+    promptSet,
     runId: arg(
       "run-id",
       `${scripted ? "scripted" : "fixture"}-${mode}${mode === "analyst" ? `-${memory.variant}` : ""}`,
@@ -212,7 +224,7 @@ try {
       });
       try {
         await runner.run(
-          piHarness({ model: config.profile.modelRoles.analyst }),
+          piHarness({ model: config.profile.modelRoles.analyst, promptSet }),
         );
         if (
           scripted &&

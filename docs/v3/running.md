@@ -60,23 +60,39 @@ npm run sandbox:build
 npm run launch -- --purpose=fixture --memory=M3 --run-id=corpus-diagnostic --assembler-image=<assembler-digest>
 ```
 
-This is infrastructure-only diagnostic work using the existing placeholder
-prompts. It can incur provider costs, and the placeholder does not instruct an
+This is infrastructure-only diagnostic work using the placeholder
+prompts (the fixture default). It can incur provider costs, and the placeholder does not instruct an
 analyst to produce a research policy. A pregame with no frozen package is recorded
 as `invalid_package`, never silently evaluated as generic Jev. The scripted
 command above is the useful no-LLM acceptance path for this issue.
 
-`--infrastructure-only` is no longer required. **Pilot and scored launches are
-refused until R5b supplies and wires a v3 prompt set and memory-instruction text.**
-There is deliberately no flag that marks the placeholder as approved. A scored
-launch also refuses a `local@` assembler image. This issue does not enable scored
-execution, select the Open budget numbers, or remove the runner's development-only
-pilot filter, approved-budget, probe, persistent-host or checkpoint-sink checks.
-Existing development ceilings are labelled `development-limits-not-a-budget-profile`
-and `pilotApproved: false`; they are not an accepted research budget profile.
+## Pilot runs (SPO-855)
+
+`--purpose=pilot` runs the v3 research prompts (`research-v3`) under Pi on the
+development games only, with the per-variant memory-permission instructions. It
+makes live Anthropic and Jev calls and costs money; get the spend approved first.
+
+```sh
+doppler run --project nba-agent --config prd -- npm run launch -- \
+  --purpose=pilot --memory=M3 --games=10 --run-id=pilot-m3 \
+  --assembler-image=<assembler-digest> \
+  --probe=<analyst-probe.json> --jev-probe=<jev-probe.json>
+```
+
+`--games=N` (1 to 10) limits a run to the first N development games.
+`--prompts=research-v3|infrastructure` overrides the default, which is
+`research-v3` for pilots and `infrastructure` for fixtures; a fixture run may
+select `research-v3` for a smoke test. A pilot refuses the infrastructure
+prompts. **Scored launches are refused** until a research budget profile is
+approved (the brief's one Open decision); they also refuse a `local@` assembler
+image and keep the manifest's probe, persistent-host and checkpoint-sink checks.
+Development ceilings are labelled `development-limits-not-a-budget-profile` with
+`pilotApproved: false`; they are not an accepted budget profile. See
+[research-prompts.md](research-prompts.md) for the prompt set and the probes.
 
 Optional `--probe=<analyst-probe.json>` and `--jev-probe=<jev-probe.json>` preserve
-existing probe records in the manifest. This command does not generate probes.
+existing probe records in the manifest. This command does not generate probes;
+`scripts/contamination-probe.ts` and `scripts/jev-probe.ts` do.
 
 ## Baselines
 
@@ -154,8 +170,7 @@ commands additionally exercise the real Docker assembler. Run `npm test`,
 
 R3 expects a replay manifest while the chronological runner expects a run
 manifest. The scoped `replay_manifest` view reconciles those storage interfaces
-without changing either scoring or temporal-access rules. The merged Pi harness
-still uses infrastructure prompt constants; only fixture execution is exposed
-until R5b replaces them. The warm-up-only statistical training choice above is explicitly Proposed for
+without changing either scoring or temporal-access rules. Fixture runs keep the infrastructure prompt constants by default; SPO-855 adds
+the research prompt set for pilots. The warm-up-only statistical training choice above is explicitly Proposed for
 user decision. No brief decision was changed, and `feedback.ts` is
 untouched so SPO-850 can proceed independently.
