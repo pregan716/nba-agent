@@ -124,7 +124,7 @@ try {
     }
   }
   const counts = summarizeProbeGroups(
-    facts.map((f) => ({ group: f.group, truth: f.truth, probability: null })),
+    facts.map((f) => ({ ...f, probability: null })),
   );
   if (dryRun) {
     console.log(
@@ -197,12 +197,14 @@ try {
         id: r.id,
         group: r.group,
         question: r.question,
+        positive: r.positive,
+        subject: r.subject,
         truth: r.truth,
         probability: r.probability,
         source: r.source,
       })),
       interpretation:
-        "Descriptive. Discrimination well above zero on 2025-26 facts would indicate recall of replay-window outcomes; 2024-25 is the comparison group.",
+        "Descriptive. Positive discrimination can come from recall of outcomes or from ordinary inference from team and player priors, and does not by itself distinguish them. baseRateReference is what an outcome-blind predictor that knows only the realized rate scores; beyondBaseRate is observed minus that reference. The reference does not cover opponent-strength, home-court or schedule priors, so a positive excess is a reason to look closer, not proof of recall. 2024-25 is a comparison group, not a control for priors.",
     };
     mkdirSync(".cache", { recursive: true });
     const file = `.cache/jev-probe-${executedAt.replace(/[:.]/g, "-")}.json`;

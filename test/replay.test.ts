@@ -1,3 +1,7 @@
+import {
+  BETWEEN_PERIODS_STATE_NOTE,
+  RESEARCH_SYSTEM_PROMPT_V3,
+} from "../src/harness/prompts.js";
 import { feedbackPage } from "../src/policy/feedback.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -537,6 +541,28 @@ test("period boundary uses prior five and new clock, not next five", () => {
   assert.deepEqual(w.state!.celtics, ["b", "c", "d", "e", "f"]);
   assert.deepEqual(w.actual, { players_out: ["f"], players_in: ["a"] });
   assert.equal(d.windows.filter((w) => w.kind === "between_periods").length, 1);
+  // The research prompt describes this contract to the agent; hold its wording
+  // against the fixture so the two cannot drift apart.
+  assert.equal(w.state!.stoppage.kind, "between_periods");
+  assert.ok(RESEARCH_SYSTEM_PROMPT_V3.includes(BETWEEN_PERIODS_STATE_NOTE));
+  assert.match(
+    BETWEEN_PERIODS_STATE_NOTE,
+    /period and clockMs are those of the period about to start/,
+  );
+  assert.ok(BETWEEN_PERIODS_STATE_NOTE.includes(String(w.state!.clockMs)));
+  assert.match(
+    BETWEEN_PERIODS_STATE_NOTE,
+    /celtics and opponent are the fives that finished that period/,
+  );
+  assert.match(
+    BETWEEN_PERIODS_STATE_NOTE,
+    /opening five is never in the state/,
+  );
+  assert.ok(!w.state!.celtics.includes("a"));
+  assert.doesNotMatch(
+    RESEARCH_SYSTEM_PROMPT_V3,
+    /state is the end of the previous period/,
+  );
 });
 
 test("provider failures flag games above five percent; invalid package stops all calls", async () => {

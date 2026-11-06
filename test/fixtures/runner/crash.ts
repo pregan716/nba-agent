@@ -49,7 +49,8 @@ try {
     if (ctx.phase !== "postgame") {
       await session.call("workspace_write", {
         path: "notes.txt",
-        content: process.argv[3] === "resume" ? "recovered memory" : "partial memory",
+        content:
+          process.argv[3] === "resume" ? "recovered memory" : "partial memory",
       });
       if (process.argv[3] !== "resume") process.kill(process.pid, "SIGKILL");
     } else

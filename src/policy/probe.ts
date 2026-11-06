@@ -8,6 +8,10 @@ export interface ProbeFact {
   source: string;
   /** Optional reporting group, e.g. `result:2025-26`. Never sent to Jev. */
   group?: string;
+  /** Whether the statement asserts the positive outcome (won, played). Reporting only. */
+  positive?: boolean;
+  /** What the statement is about, for per-subject base rates (a player id). Reporting only. */
+  subject?: string;
 }
 /** Truth and provenance remain outside the request. No evidence, tools or coaching state. */
 export async function probeJev(

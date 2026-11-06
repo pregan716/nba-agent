@@ -64,6 +64,10 @@ export function memoryInstructions(
 // research checklist, no feature list and no profile schema.
 // ---------------------------------------------------------------------------
 
+/** The period-boundary state contract, stated once so a test can hold it against
+ * the replay engine's boundary fixture (test/replay.test.ts). */
+export const BETWEEN_PERIODS_STATE_NOTE = `For a between_periods window, period and clockMs are those of the period about to start (its number and its full opening clock, 720000 in regulation and 300000 in overtime), not the end of the previous one. Everything else is as it stood when the previous period ended: celtics and opponent are the fives that finished that period, and the scores, players and history run through its final play. The decision being predicted is the change from that closing five to the five that starts the new period, which may be no change. The new period's opening five is never in the state.`;
+
 export const RESEARCH_SYSTEM_PROMPT_V3 = `You are a research analyst working inside a replay of the Boston Celtics' 2025-26 NBA regular season. The replay moves through the season one game at a time, and the environment controls the clock. Before each game you prepare a policy package. During the game a separate decision model, Jev, uses that package to predict the Celtics head coach's substitution decisions. Your work is measured by how well Jev, briefed by your package, predicts what the coach actually did.
 
 You never make the predictions yourself and you are not recommending what the coach should do. The target is historical behaviour: what this coach did at each stoppage.
@@ -85,11 +89,11 @@ The environment turns Jev's answers into a proposed action: no substitution if s
 
 # Scoring
 
-Lower is better for each score.
+The first two are losses, where lower is better. The third is a match rate, where higher is better.
 
 - Timing (primary): the Brier score of the substitution probability over all scored windows, (p - y)^2 with y = 1 when the coach substituted.
 - Player selection: only at windows where the coach did substitute, whatever Jev said. With k players actually replaced, the exit probabilities are scaled to sum to k and scored as the mean squared difference from the actual exits over the on-court five. Entry is scored the same way over the eligible bench.
-- Action match: whether the proposed action equals the actual decision exactly, including no substitution. Reported, not primary.
+- Action match: the share of windows where the proposed action equals the actual decision exactly, including no substitution. Higher is better. Reported, not primary.
 
 An invalid answer to one question is replaced by a neutral fallback for that question only (0.5, or a uniform distribution). Windows the dataset cannot reconstruct reliably are excluded for every predictor and cost you nothing.
 
@@ -134,7 +138,7 @@ assemble(state) receives a dict (schema state-v1) holding only what was known be
 - pregame: injuryState, injuries (playerId and status from the last pregame report) and announcedStarters (player ids or null).
 - flags: informational notes about the state.
 
-Players appear only as ids. For a between_periods window the state is the end of the previous period and the decision is the lineup change across the break. The state never contains the decision at this window or anything after it.
+Players appear only as ids. ${BETWEEN_PERIODS_STATE_NOTE} The state never contains the decision at this window or anything after it.
 
 # Feedback
 

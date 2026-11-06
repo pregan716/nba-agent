@@ -32,6 +32,10 @@ Things the prompt states because the agent cannot discover them otherwise:
 - `validate_package` has no sample states before the first game.
 - An unfrozen package, or one that fails on the first window, leaves the whole
   game unscored.
+- The period-boundary state: `period` and `clockMs` are the new period's, while
+  the lineups, scores and history are the previous period's closing ones. This
+  sentence is the exported constant `BETWEEN_PERIODS_STATE_NOTE`, and the replay
+  engine's boundary fixture test holds its wording against the built state.
 - Recollection of the season is not evidence. This is an instruction, not a
   control; the contamination probes are the measurement.
 
@@ -92,18 +96,37 @@ pinned releases and sends them with an empty state in batches of 40:
 | `appearance:2025-26` |    82 | A named roster player played, or did not play, in a named game           |
 | `result:2024-25`     |    82 | The same result statements for the prior season, as the comparison group |
 
-Two design points keep base rates from passing as recall. Whether a statement
-says "won" or "lost" (or "played" or "did not play") is set by a hash of the fact
-id, never by the outcome, so about half of each group is true whatever the
-team's record. Appearance facts use only roster players who played in between
-20 % and 80 % of the games they were eligible for, one per game, chosen by a hash
-of the game id.
+Whether a statement says "won" or "lost" (or "played" or "did not play") is set
+by a hash of the fact id, never by the outcome, so about half of each group is
+true whatever the team's record. Appearance facts use only roster players who
+played in between 20 % and 80 % of the games they were eligible for, one per game,
+chosen by a hash of the game id.
 
-The stored record reports accuracy, Brier score and discrimination (mean
-probability on true statements minus on false ones) per group, against chance
-values of 0.5, 0.25 and 0. Discrimination well above zero on the 2025–26 groups
-would indicate recall of replay-window outcomes. The 2024–25 group shows what
-recall looks like if Jev has it for a season it could have been trained on. The
+**This balancing does not remove priors.** A model that knows only that the team
+is good can put 0.75 on every "won" statement and 0.25 on every "lost" one. On a
+team that wins 75 % of its games it then scores accuracy 0.75, Brier 0.1875 and
+discrimination 0.25 without knowing a single result. The same holds for a player
+who usually plays. Positive discrimination can therefore come from recall of
+outcomes or from ordinary inference from team and player priors, and it does not
+by itself distinguish them.
+
+The stored record reports, per group:
+
+- The observed accuracy, Brier score and discrimination (mean probability on true
+  statements minus on false ones). Uninformed chance is 0.5, 0.25 and 0.
+- `baseRateReference`: what an outcome-blind predictor scores if it knows only the
+  realized rate of the positive outcome in the group and answers that rate for a
+  positive statement and one minus it for a negative one.
+- `beyondBaseRate`: observed minus that reference.
+- For appearance facts, `subjectRateReference` and `beyondSubjectRate`: the same
+  with each player's own realized rate.
+
+The references use realized rates, which no model could know exactly in advance,
+so they are generous. They do not cover opponent-strength, home-court or
+schedule priors. A result at or below the reference is consistent with priors
+alone. A result clearly beyond it is a reason to look closer, not proof of
+recall. The 2024–25 group is a comparison, not a control for priors: it shows
+how the same statistics look for a season Jev could have been trained on. The
 probe is descriptive and cannot prove absence of contamination.
 
 ## Not in this change
