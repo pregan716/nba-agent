@@ -367,6 +367,7 @@ Primary key: `dataset_version`, `game_id`, `event_id`
 | `original_type` | string | yes | Source event type. |
 | `original_subtype` | string | yes | Source subtype. |
 | `description` | string | yes | Unmodified event description. |
+| `qualifiers` | strings | no | Unmodified source qualifiers, preserving order and duplicates; empty when absent, never null. Observed CDN vocabulary: team, deadball, pointsinthepaint, 2freethrow, 1freethrow, 3freethrow, startperiod, inpenalty, mandatory, fromturnover, 2ndchance, fastbreak. Vocabulary is extensible. In the three archived CDN sample games, deadball on a team rebound marks a placeholder after a missed non-final free throw; the ball stays dead for the next attempt. Team rebounds after missed field goals carry team without deadball, whether or not play stopped. Neither qualifier alone identifies an out-of-bounds stoppage; this observation is not a season-wide guarantee. |
 | `type` | string | no | Normalized event type; unknown/administrative events retained. |
 | `subtype` | string | yes | Normalized subtype. |
 | `team_id` | string | yes | Acting team where identifiable. Reference: `teams.team_id` (same release). |
@@ -799,6 +800,7 @@ Primary key: `dataset_version`, `game_id`, `event_id`
 | `original_type` | string | yes | Source event type. |
 | `original_subtype` | string | yes | Source subtype. |
 | `description` | string | yes | Unmodified event description. |
+| `qualifiers` | strings | no | Unmodified source qualifiers, preserving order and duplicates; empty when absent, never null. Observed CDN vocabulary: team, deadball, pointsinthepaint, 2freethrow, 1freethrow, 3freethrow, startperiod, inpenalty, mandatory, fromturnover, 2ndchance, fastbreak. Vocabulary is extensible. In the three archived CDN sample games, deadball on a team rebound marks a placeholder after a missed non-final free throw; the ball stays dead for the next attempt. Team rebounds after missed field goals carry team without deadball, whether or not play stopped. Neither qualifier alone identifies an out-of-bounds stoppage; this observation is not a season-wide guarantee. |
 | `type` | string | no | Normalized event type; unknown/administrative events retained. |
 | `subtype` | string | yes | Normalized subtype. |
 | `team_id` | string | yes | Acting team where identifiable. Reference: `teams.team_id` (same release). |
