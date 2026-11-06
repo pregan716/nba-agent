@@ -497,6 +497,7 @@ for (const variant of ["M0", "M3", "M4"] as const)
         const context = await session.call("context", {}),
           game = context.game.game_id;
         assert.equal(context.memory.variant, variant);
+        assert.ok(context.memoryUsage);
         assert.equal(context.memoryUsage.cap, 50000);
         assert.ok(context.memoryUsage.retainedTokens >= 0);
         assert.deepEqual(

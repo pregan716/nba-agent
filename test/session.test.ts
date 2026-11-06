@@ -579,11 +579,15 @@ test("evidence index is deterministic under input order and future edits, cached
 test("history defaults to lean rows and names; metadata opt-in preserves descriptions", async () => {
   const f = fixtureCorpus();
   for (const r of f.history["prior:events"])
-    r.data.raw_object_ids = ["source-a"];
+    Object.assign(r.data, {
+      raw_object_ids: ["source-a"],
+      quality_status: "partial",
+    });
   const columns = f.source.columns.bind(f.source);
   f.source.columns = async (...args) => [
     ...(await columns(...args)),
     { name: "raw_object_ids", description: "Source object IDs" },
+    { name: "quality_status", description: "Row validity" },
   ];
   const session = create(f);
   const lean = await session.query_game_history({
@@ -601,6 +605,7 @@ test("history defaults to lean rows and names; metadata opt-in preserves descrip
   assert.ok(!lean.columns.some((c) => c.name === "raw_object_ids"));
   assert.ok(full.columns.some((c) => c.name === "raw_object_ids"));
   assert.ok(lean.rows.length > 0);
+  assert.ok(lean.rows.every((r) => r.quality_status === "partial"));
   assert.ok(lean.rows.every((r) => !Object.hasOwn(r, "raw_object_ids")));
   assert.ok(
     full.rows.every((r) => r.raw_object_ids === JSON.stringify(["source-a"])),

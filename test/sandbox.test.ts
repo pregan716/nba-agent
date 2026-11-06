@@ -994,18 +994,19 @@ dockerTest(
 warnings.simplefilter('error', FutureWarning)
 root=pathlib.Path('/scratch/table-fixture')
 (root/'games').mkdir(parents=True)
-for i, values in enumerate([[], [(None, None, 'raw-a')], [(3, 1.5, 'raw-b')]]):
+for i, values in enumerate([[], [(None, None, 'raw-a', 'partial')], [(3, 1.5, 'raw-b', 'valid')]]):
  db=sqlite3.connect(':memory:')
- db.execute('create table events (count INTEGER, value REAL, raw_object_ids TEXT)')
- db.executemany('insert into events values (?,?,?)', values)
+ db.execute('create table events (count INTEGER, value REAL, raw_object_ids TEXT, quality_status TEXT)')
+ db.executemany('insert into events values (?,?,?,?)', values)
  db.commit()
  (root/'games'/f'{i}.sqlite.gz').write_bytes(gzip.compress(db.serialize()))
  db.close()
 lean=nba_data.table('events', root=root)
 full=nba_data.table('events', root=root, include_metadata=True)
-assert list(lean.columns)==['count','value']
+assert list(lean.columns)==['count','value','quality_status']
 assert len(lean)==2 and lean.iloc[1]['count']==3 and lean.iloc[1]['value']==1.5
-assert lean.iloc[0].isna().all()
+assert lean.iloc[0][['count','value']].isna().all()
+assert list(lean.quality_status)==['partial','valid']
 assert list(full.raw_object_ids)==['raw-a','raw-b']
 assert 'raw_object_ids' not in nba_data.query('select * from events', root=root).columns
 assert 'raw_object_ids' in nba_data.query('select * from events', root=root, include_metadata=True).columns
@@ -1019,11 +1020,13 @@ print('lean-ok')`,
       assert.equal(result.stderr, "");
       assert.equal(result.stdout.trim(), "lean-ok");
       const loud = await sandbox.execute(
-        "import sys; print('x' * 20000); print('y' * 20000, file=sys.stderr)",
+        "import sys; print('x' * 20000); print('y' * 20000, file=sys.stderr); raise ValueError('visible failure')",
         { ...limits, stdoutBytes: 16384 },
         signal(),
       );
-      assert.equal(loud.exitStatus, 0);
+      assert.notEqual(loud.exitStatus, 0);
+      assert.match(loud.stderr, /ValueError: visible failure\n$/);
+      assert.ok(Buffer.byteLength(loud.stderr) <= 4096);
       assert.equal(loud.truncated, true);
       assert.ok(Buffer.byteLength(loud.stdout + loud.stderr) <= 16384);
     } finally {

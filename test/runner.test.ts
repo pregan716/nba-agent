@@ -1360,3 +1360,36 @@ test("session cancellation still interrupts an in-flight model call", async () =
   controller.abort(new Error("session wall clock"));
   await assert.rejects(pending, /session wall clock/);
 });
+
+test("runner preserves stderr tail after oversized output", async () => {
+  const config = fixtureConfig();
+  config.budget.sandbox.stdoutBytes = 16384;
+  const s = await setup(
+    config,
+    provider,
+    async (...args) => ({
+      ...(await environment(...args)),
+      execute: async () => ({
+        stdout: "x".repeat(20000),
+        stderr: "y".repeat(20000) + "\nValueError: visible failure\n",
+        exitStatus: 1,
+        computeSeconds: 0.1,
+        truncated: false,
+        limit: null,
+      }),
+    }),
+    [games[0]],
+  );
+  try {
+    await s.runner.run(async ({ session }) => {
+      if ((await session.call("context", {})).phase !== "pregame") return;
+      const result = await session.call("execute_code", { program: "fixture" });
+      assert.match(result.stderr, /ValueError: visible failure\n$/);
+      assert.ok(Buffer.byteLength(result.stdout + result.stderr) <= 16384);
+      assert.equal(result.truncated, true);
+      assert.equal(result.exit_status, 1);
+    });
+  } finally {
+    await s.close();
+  }
+});

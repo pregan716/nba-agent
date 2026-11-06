@@ -104,14 +104,31 @@ test("prior loader reads only the prior Celtics regular season, preserves two ga
   const window = chronologicalFixture().datasets[0].windows.find(
     (w) => w.state && !w.exclusions.length,
   )!;
-  validation[2].windows = [0, 1, 2, 3].map((i) => ({
-    ...structuredClone(window),
-    id: `sample-${i}`,
-    gameId: validation[2].gameId,
-    state: { ...window.state!, gameId: validation[2].gameId },
-  }));
+  for (const d of validation) d.windows = [];
+  for (const d of validation.slice(2, 5)) {
+    d.windows = [1, 2, 4].map((period) => ({
+      ...structuredClone(window),
+      id: `${d.gameId}-${period}`,
+      gameId: d.gameId,
+      state: {
+        ...window.state!,
+        gameId: d.gameId,
+        period,
+        clockMs: period === 1 ? 600_000 : 120_000,
+      },
+    }));
+  }
   const samples = await priorValidationSamples(corpus, validation);
   assert.equal(samples.length, 3);
+  assert.equal(new Set(samples.map((s) => s.gameId)).size, 3);
+  assert.deepEqual(
+    samples.map((s) => s.state.period),
+    [1, 2, 4],
+  );
+  assert.deepEqual(
+    samples,
+    await priorValidationSamples(corpus, [...validation].reverse()),
+  );
   assert.deepEqual(samples, await priorValidationSamples(corpus, validation));
   for (const sample of samples) {
     assert.equal(sample.state.gameId, sample.gameId);

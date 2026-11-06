@@ -311,6 +311,8 @@ Capability contracts, not final API names. Carried tools are implemented; new to
 | Read feedback | The previous game's trace, and the current game's trace in postgame; nothing older | New |
 | Validate package locally | Run the assembler against a small set of sample states from eligible prior games and return the assembled requests and diagnostics, so the agent can test before freezing. Does not call Jev. Costs research compute. | New, Agreed (Nov 4, 2026) |
 
+Proposed for acceptance in SPO-857: when no earlier run game is released, local package validation may expose up to three fixed, released 2024–25 states from the retrospective box-score roster datasets. This extends the baseline-training-only roster agreement to unscored analyst validation, retaining its injury-status and synthetic-timestamp caveats; it never applies to an evaluated game.
+
 ### Code execution sandboxes
 
 Two sandboxes, both per-session Docker containers from pinned images on the harness host, no network, image digests in the harness version. Agreed, carried in form.
@@ -505,6 +507,7 @@ One decision is Open, by design. Everything proposed in the first draft's Open t
 | --- | --- | --- | --- |
 | Open | Budget numbers | Research budget | Set by the pilot procedure: development games on M3 at effort `high` with code execution on, caps at the 90th percentile, re-runs at a smaller and a larger pregame cap, recorded as budget profile v1. |
 | Proposed | Package detail: component layout, entry-point signature, manifest fields | The task, Policy package | R3 implements as written; the first hand-written package in gate 2 is the review. |
+| Proposed | Prior-season roster source for unscored analyst validation | Tool surface | SPO-857 extends the baseline-training-only agreement; requires user acceptance in its PR. |
 | Proposed | Workspace exact-string edit tool | Tool surface | SPO-857 implements for user acceptance in its PR. |
 | Proposed | Trace fields | The task, Feedback trace | R3 implements as written; reviewed with the gate-2 trace. The compact summary fields `read_feedback` returns (SPO-850: home and away score, margin, home or away, and per-player fouls, minutes and current stint) were accepted Nov 6, 2026. |
 | Proposed | Player-selection normalization (scale by k) | Scoring, Player selection | R2 implements as written with a hand-computed fixture; alternatives are a brief change. |
