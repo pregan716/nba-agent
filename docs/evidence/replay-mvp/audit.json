@@ -1,0 +1,1423 @@
+{
+  "manifest": {
+    "schemaVersion": 1,
+    "kind": "replay-mvp",
+    "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+    "datasets": [
+      {
+        "gameId": "0022500049",
+        "inputHash": "49fe994ff8b1dfba2f85ceeda8be95b6f86be1c54ad8c0886dcf0ce078bef9b1"
+      },
+      {
+        "gameId": "0022500060",
+        "inputHash": "91b0b6015de0f665d358ea04e373034504fe9098198aff43f7d5b49589861a34"
+      },
+      {
+        "gameId": "0022500083",
+        "inputHash": "6d71692138ca9d043fb2482a067f3378a0540b618f48cc88d64a436a146ead84"
+      },
+      {
+        "gameId": "0022500193",
+        "inputHash": "6485760e830da8a284abf566972cad2c823ba859a12dbb11d271d5b740894149"
+      },
+      {
+        "gameId": "0022500209",
+        "inputHash": "0ca96395c657a84fa5d6b2fa0858b6d18591f0c7fcb8194824b3fa6de16ea15d"
+      },
+      {
+        "gameId": "0022500216",
+        "inputHash": "f1d18fff95b0fb1a72040116e1b92572e16c83473e7098ad7913f98207675a06"
+      },
+      {
+        "gameId": "0022500233",
+        "inputHash": "c8b8400c7ebac62732bdcf79fa723c4eed071d25ac6806bdbd456a798687793d"
+      },
+      {
+        "gameId": "0022500250",
+        "inputHash": "7555b5e88f3138ee78216f0e8a6de9d1e2c0ea6eb6e56001bf4161fdfd4a7c71"
+      },
+      {
+        "gameId": "0022500277",
+        "inputHash": "bb86cd561d51882f63ebfe16cef35fe0714cf4264247bc5a282f940527f4e3d9"
+      },
+      {
+        "gameId": "0022500293",
+        "inputHash": "d7ac94b6210b4053d4faedc6175fda325d1a243eb504e223c0a095ff439e85d6"
+      },
+      {
+        "gameId": "0022500302",
+        "inputHash": "e013247f870869244102ec63c86fc1971c35d69ccd5f4fa583119dd8175f2e69"
+      },
+      {
+        "gameId": "0022500338",
+        "inputHash": "16923f086efb7b6224c9897af896b9ff02cdd498b1367f61a27ffbf264f3333e"
+      },
+      {
+        "gameId": "0022500637",
+        "inputHash": "f4e376f8a2858b4875a444d978b205cc270eee69e94f915ddfbe7cec02d4e6a1"
+      }
+    ],
+    "harness": {
+      "implementation": "replay-mvp-v1",
+      "windows": "windows-v1",
+      "state": "state-v1",
+      "prediction": "prediction-v1"
+    },
+    "predictors": {
+      "constant": {
+        "id": "constant-v1:cf2d731f517223155fbed8054473b22aa2b77d708eb7b866e5a552eb79914f1f",
+        "training": {
+          "gameIds": [
+            "0022500049",
+            "0022500060",
+            "0022500193",
+            "0022500209",
+            "0022500216",
+            "0022500233",
+            "0022500250",
+            "0022500277",
+            "0022500293",
+            "0022500302"
+          ],
+          "inputHashes": [
+            "0ca96395c657a84fa5d6b2fa0858b6d18591f0c7fcb8194824b3fa6de16ea15d",
+            "49fe994ff8b1dfba2f85ceeda8be95b6f86be1c54ad8c0886dcf0ce078bef9b1",
+            "6485760e830da8a284abf566972cad2c823ba859a12dbb11d271d5b740894149",
+            "7555b5e88f3138ee78216f0e8a6de9d1e2c0ea6eb6e56001bf4161fdfd4a7c71",
+            "91b0b6015de0f665d358ea04e373034504fe9098198aff43f7d5b49589861a34",
+            "bb86cd561d51882f63ebfe16cef35fe0714cf4264247bc5a282f940527f4e3d9",
+            "c8b8400c7ebac62732bdcf79fa723c4eed071d25ac6806bdbd456a798687793d",
+            "d7ac94b6210b4053d4faedc6175fda325d1a243eb504e223c0a095ff439e85d6",
+            "e013247f870869244102ec63c86fc1971c35d69ccd5f4fa583119dd8175f2e69",
+            "f1d18fff95b0fb1a72040116e1b92572e16c83473e7098ad7913f98207675a06"
+          ],
+          "windows": 596
+        },
+        "parameters": {
+          "rate": 0.3187919463087248
+        }
+      },
+      "statistical": {
+        "id": "statistical-v1:697566705ef1714c36caee6fd84797b4e75e6bdae85498fa8e4fa5a9ba609b8e",
+        "training": {
+          "gameIds": [
+            "0022500049",
+            "0022500060",
+            "0022500193",
+            "0022500209",
+            "0022500216",
+            "0022500233",
+            "0022500250",
+            "0022500277",
+            "0022500293",
+            "0022500302"
+          ],
+          "inputHashes": [
+            "0ca96395c657a84fa5d6b2fa0858b6d18591f0c7fcb8194824b3fa6de16ea15d",
+            "49fe994ff8b1dfba2f85ceeda8be95b6f86be1c54ad8c0886dcf0ce078bef9b1",
+            "6485760e830da8a284abf566972cad2c823ba859a12dbb11d271d5b740894149",
+            "7555b5e88f3138ee78216f0e8a6de9d1e2c0ea6eb6e56001bf4161fdfd4a7c71",
+            "91b0b6015de0f665d358ea04e373034504fe9098198aff43f7d5b49589861a34",
+            "bb86cd561d51882f63ebfe16cef35fe0714cf4264247bc5a282f940527f4e3d9",
+            "c8b8400c7ebac62732bdcf79fa723c4eed071d25ac6806bdbd456a798687793d",
+            "d7ac94b6210b4053d4faedc6175fda325d1a243eb504e223c0a095ff439e85d6",
+            "e013247f870869244102ec63c86fc1971c35d69ccd5f4fa583119dd8175f2e69",
+            "f1d18fff95b0fb1a72040116e1b92572e16c83473e7098ad7913f98207675a06"
+          ],
+          "windows": 596
+        },
+        "parameters": {
+          "weights": [
+            -1.4234051576358024,
+            0.7565323812381226,
+            -0.3887346030385936,
+            -0.11528481171853378,
+            0.6909617085521321,
+            0.7756257709218151,
+            0.0628999500279956
+          ],
+          "counts": {
+            "none": 0.6812080536912751,
+            "one": 0.20134228187919462,
+            "two": 0.08892617449664429,
+            "three_or_more": 0.028523489932885907
+          },
+          "iterations": 500,
+          "learningRate": 0.1,
+          "l2": 0.01
+        }
+      }
+    },
+    "codeRevision": "fb5276f1d461c2d9e7a2fe13d043bde156dbcc7f"
+  },
+  "training": [
+    {
+      "gameId": "0022500049",
+      "windows": 63,
+      "qualified": 57,
+      "excluded": {
+        "ambiguous_equal_clock_run": 6,
+        "ambiguous_stoppage": 6,
+        "multiple_whistles": 2
+      }
+    },
+    {
+      "gameId": "0022500060",
+      "windows": 69,
+      "qualified": 63,
+      "excluded": {
+        "actual:illegal_five": 1,
+        "actual:ineligible_exit": 1,
+        "ambiguous_equal_clock_run": 5,
+        "ambiguous_stoppage": 6,
+        "exit_reentry": 1,
+        "multiple_celtics_blocks": 1,
+        "multiple_whistles": 4
+      }
+    },
+    {
+      "gameId": "0022500193",
+      "windows": 76,
+      "qualified": 72,
+      "excluded": {
+        "actual:ineligible_entry": 1,
+        "ambiguous_equal_clock_run": 2,
+        "ambiguous_stoppage": 4,
+        "exit_reentry": 1,
+        "multiple_whistles": 2,
+        "unreconciled_substitution_batch": 1
+      }
+    },
+    {
+      "gameId": "0022500209",
+      "windows": 62,
+      "qualified": 57,
+      "excluded": {
+        "ambiguous_equal_clock_run": 4,
+        "ambiguous_stoppage": 5,
+        "multiple_whistles": 5
+      }
+    },
+    {
+      "gameId": "0022500216",
+      "windows": 54,
+      "qualified": 49,
+      "excluded": {
+        "ambiguous_equal_clock_run": 5,
+        "ambiguous_stoppage": 5,
+        "multiple_celtics_blocks": 1,
+        "multiple_whistles": 3
+      }
+    },
+    {
+      "gameId": "0022500233",
+      "windows": 65,
+      "qualified": 63,
+      "excluded": {
+        "ambiguous_equal_clock_run": 2,
+        "ambiguous_stoppage": 2,
+        "multiple_whistles": 1
+      }
+    },
+    {
+      "gameId": "0022500250",
+      "windows": 69,
+      "qualified": 64,
+      "excluded": {
+        "ambiguous_equal_clock_run": 3,
+        "ambiguous_stoppage": 5,
+        "multiple_whistles": 5
+      }
+    },
+    {
+      "gameId": "0022500277",
+      "windows": 55,
+      "qualified": 49,
+      "excluded": {
+        "ambiguous_equal_clock_run": 6,
+        "ambiguous_stoppage": 6,
+        "multiple_whistles": 4
+      }
+    },
+    {
+      "gameId": "0022500293",
+      "windows": 64,
+      "qualified": 59,
+      "excluded": {
+        "ambiguous_equal_clock_run": 5,
+        "ambiguous_stoppage": 5,
+        "multiple_whistles": 2
+      }
+    },
+    {
+      "gameId": "0022500302",
+      "windows": 66,
+      "qualified": 63,
+      "excluded": {
+        "ambiguous_equal_clock_run": 2,
+        "ambiguous_stoppage": 3,
+        "multiple_celtics_blocks": 1,
+        "multiple_whistles": 3
+      }
+    }
+  ],
+  "games": [
+    {
+      "gameId": "0022500083",
+      "inputHash": "6d71692138ca9d043fb2482a067f3378a0540b618f48cc88d64a436a146ead84",
+      "evaluation": "development diagnostic; training occurs later",
+      "diagnostics": {
+        "candidates": 72,
+        "positiveCandidates": 23,
+        "celticsSubstitutionBuckets": 26,
+        "adjacencyBuckets": 0,
+        "unanchoredBuckets": 3
+      },
+      "boundaries": 3,
+      "ledger": [
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            77,
+            84
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "player_rebound"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            240,
+            243
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "substitution_only_after_made_basket"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            378,
+            379
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "team_rebound_without_independent_stoppage"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            93,
+            99
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            93,
+            99
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            93,
+            99
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            189,
+            198
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            189,
+            198
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            253,
+            256
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            253,
+            256
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            253,
+            256
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            310,
+            312
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            310,
+            312
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            389,
+            392
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            389,
+            392
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            389,
+            392
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            398,
+            403
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            398,
+            403
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            480,
+            483
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            480,
+            483
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            552,
+            553
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            552,
+            553
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            552,
+            553
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            554,
+            557
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            554,
+            557
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500083",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            554,
+            557
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        }
+      ],
+      "scores": {
+        "constant": {
+          "windows": 75,
+          "eligible": 66,
+          "scored": 66,
+          "actualSubstitutions": 23,
+          "excluded": {
+            "ambiguous_equal_clock_run": 7,
+            "ambiguous_stoppage": 9,
+            "multiple_whistles": 7
+          },
+          "informational": {},
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingBrier": 0.2279248273009816,
+          "timingLogLoss": 0.6485021894507182,
+          "clipped": 0,
+          "precision": null,
+          "recall": 0,
+          "exitBrier": 0.1773913043478262,
+          "entryBrier": 0.10292849443047065,
+          "exitTop1": 0.17391304347826086,
+          "entryTop1": 0.13043478260869565,
+          "exitTopK": 0.08695652173913043,
+          "entryTopK": 0.13043478260869565,
+          "exactAction": 0.6515151515151515,
+          "partialOverlap": 0,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 66,
+              "predicted": 0.3187919463087248,
+              "observed": 0.3484848484848485
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "statistical": {
+          "windows": 75,
+          "eligible": 66,
+          "scored": 66,
+          "actualSubstitutions": 23,
+          "excluded": {
+            "ambiguous_equal_clock_run": 7,
+            "ambiguous_stoppage": 9,
+            "multiple_whistles": 7
+          },
+          "informational": {},
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingBrier": 0.18569984887070443,
+          "timingLogLoss": 0.5546456919665206,
+          "clipped": 0,
+          "precision": 1,
+          "recall": 0.17391304347826086,
+          "exitBrier": 0.19942028985507249,
+          "entryBrier": 0.12127839661436499,
+          "exitTop1": 0.13043478260869565,
+          "entryTop1": 0,
+          "exitTopK": 0.043478260869565216,
+          "entryTopK": 0,
+          "exactAction": 0.6515151515151515,
+          "partialOverlap": 0,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 12,
+              "predicted": 0.18117108969265808,
+              "observed": 0.08333333333333333
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 23,
+              "predicted": 0.25148011767824713,
+              "observed": 0.21739130434782608
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 15,
+              "predicted": 0.34185621803071264,
+              "observed": 0.3333333333333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 12,
+              "predicted": 0.45041558744898946,
+              "observed": 0.6666666666666666
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 2,
+              "predicted": 0.5484380459267034,
+              "observed": 1
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 2,
+              "predicted": 0.6600677990127506,
+              "observed": 1
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "gameId": "0022500338",
+      "inputHash": "16923f086efb7b6224c9897af896b9ff02cdd498b1367f61a27ffbf264f3333e",
+      "evaluation": "post-warmup diagnostic",
+      "diagnostics": {
+        "candidates": 55,
+        "positiveCandidates": 17,
+        "celticsSubstitutionBuckets": 19,
+        "adjacencyBuckets": 0,
+        "unanchoredBuckets": 2
+      },
+      "boundaries": 3,
+      "ledger": [
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            446,
+            449
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "player_rebound"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            502,
+            503
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "team_rebound_without_independent_stoppage"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            40,
+            47
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            40,
+            47
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            40,
+            47
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            82,
+            93
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            82,
+            93
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            265,
+            270
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            265,
+            270
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            295,
+            299
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500338",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            295,
+            299
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        }
+      ],
+      "scores": {
+        "constant": {
+          "windows": 58,
+          "eligible": 54,
+          "scored": 54,
+          "actualSubstitutions": 19,
+          "excluded": {
+            "ambiguous_equal_clock_run": 3,
+            "ambiguous_stoppage": 4,
+            "multiple_whistles": 2
+          },
+          "informational": {
+            "unqualified_running_box_score": 54
+          },
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingBrier": 0.22914508355479488,
+          "timingLogLoss": 0.651058853044796,
+          "clipped": 0,
+          "precision": null,
+          "recall": 0,
+          "exitBrier": 0.1852631578947369,
+          "entryBrier": 0.12735542560103963,
+          "exitTop1": 0.21052631578947367,
+          "entryTop1": 0.15789473684210525,
+          "exitTopK": 0.15789473684210525,
+          "entryTopK": 0.10526315789473684,
+          "exactAction": 0.6481481481481481,
+          "partialOverlap": 0,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 54,
+              "predicted": 0.3187919463087248,
+              "observed": 0.35185185185185186
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "statistical": {
+          "windows": 58,
+          "eligible": 54,
+          "scored": 54,
+          "actualSubstitutions": 19,
+          "excluded": {
+            "ambiguous_equal_clock_run": 3,
+            "ambiguous_stoppage": 4,
+            "multiple_whistles": 2
+          },
+          "informational": {
+            "unqualified_running_box_score": 54
+          },
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingBrier": 0.22814493537919306,
+          "timingLogLoss": 0.6502856943509514,
+          "clipped": 0,
+          "precision": 0.5,
+          "recall": 0.10526315789473684,
+          "exitBrier": 0.2016374269005848,
+          "entryBrier": 0.15005414771496645,
+          "exitTop1": 0.3684210526315789,
+          "entryTop1": 0,
+          "exitTopK": 0.21052631578947367,
+          "entryTopK": 0,
+          "exactAction": 0.6111111111111112,
+          "partialOverlap": 0.022675736961451247,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 23,
+              "predicted": 0.16458730906563393,
+              "observed": 0.21739130434782608
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 16,
+              "predicted": 0.2496490367174347,
+              "observed": 0.5
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 10,
+              "predicted": 0.3548991345320333,
+              "observed": 0.4
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 1,
+              "predicted": 0.40893866340258467,
+              "observed": 0
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 4,
+              "predicted": 0.5516217091389902,
+              "observed": 0.5
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "gameId": "0022500637",
+      "inputHash": "f4e376f8a2858b4875a444d978b205cc270eee69e94f915ddfbe7cec02d4e6a1",
+      "evaluation": "post-warmup diagnostic",
+      "diagnostics": {
+        "candidates": 80,
+        "positiveCandidates": 28,
+        "celticsSubstitutionBuckets": 31,
+        "adjacencyBuckets": 1,
+        "unanchoredBuckets": 3
+      },
+      "boundaries": 5,
+      "ledger": [
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            158,
+            159
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "substitution_only_after_made_basket"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            419,
+            422
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "team_rebound_without_independent_stoppage"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            465,
+            468
+          ],
+          "reason": "unanchored_substitution",
+          "mechanism": "other_substitution_only"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            36,
+            43
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            36,
+            43
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            36,
+            43
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            236,
+            237
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            236,
+            237
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            236,
+            237
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            291,
+            298
+          ],
+          "reason": "ambiguous_equal_clock_run",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            291,
+            298
+          ],
+          "reason": "ambiguous_stoppage",
+          "mechanism": "in_period"
+        },
+        {
+          "gameId": "0022500637",
+          "releaseManifestSha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+          "span": [
+            291,
+            298
+          ],
+          "reason": "multiple_whistles",
+          "mechanism": "in_period"
+        }
+      ],
+      "scores": {
+        "constant": {
+          "windows": 85,
+          "eligible": 82,
+          "scored": 82,
+          "actualSubstitutions": 31,
+          "excluded": {
+            "ambiguous_equal_clock_run": 3,
+            "ambiguous_stoppage": 3,
+            "multiple_whistles": 3
+          },
+          "informational": {},
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingBrier": 0.23863927245641545,
+          "timingLogLoss": 0.6709509429596983,
+          "clipped": 0,
+          "precision": null,
+          "recall": 0,
+          "exitBrier": 0.17548387096774204,
+          "entryBrier": 0.13606927986248266,
+          "exitTop1": 0.06451612903225806,
+          "entryTop1": 0.03225806451612903,
+          "exitTopK": 0.03225806451612903,
+          "entryTopK": 0.03225806451612903,
+          "exactAction": 0.6219512195121951,
+          "partialOverlap": 0,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 82,
+              "predicted": 0.3187919463087248,
+              "observed": 0.3780487804878049
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "statistical": {
+          "windows": 85,
+          "eligible": 82,
+          "scored": 82,
+          "actualSubstitutions": 31,
+          "excluded": {
+            "ambiguous_equal_clock_run": 3,
+            "ambiguous_stoppage": 3,
+            "multiple_whistles": 3
+          },
+          "informational": {},
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingBrier": 0.20218930984598996,
+          "timingLogLoss": 0.5896532333786512,
+          "clipped": 0,
+          "precision": 0.8,
+          "recall": 0.25806451612903225,
+          "exitBrier": 0.2012903225806452,
+          "entryBrier": 0.1696268561187916,
+          "exitTop1": 0.12903225806451613,
+          "entryTop1": 0,
+          "exitTopK": 0.0967741935483871,
+          "entryTopK": 0,
+          "exactAction": 0.5975609756097561,
+          "partialOverlap": 0.024531024531024532,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 8,
+              "predicted": 0.1819583709970885,
+              "observed": 0
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 24,
+              "predicted": 0.23661631547259013,
+              "observed": 0.25
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 20,
+              "predicted": 0.35200982640962825,
+              "observed": 0.4
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 20,
+              "predicted": 0.44398246295980276,
+              "observed": 0.45
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 4,
+              "predicted": 0.5396747645620344,
+              "observed": 0.75
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 6,
+              "predicted": 0.663270990892974,
+              "observed": 0.8333333333333334
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
