@@ -132,8 +132,10 @@ export async function corpusSource(
   });
   for (const adapter of [corpus.pbp, corpus.priorPbp]) {
     if (
+      // The dictionary in config/dictionaries/ was synced with upstream for the
+      // spo-839 releases when they were pinned (PR #41).
       adapter.release.manifest.release.transformation_version !==
-      "6695e0b18ce83046602f0c016623414af8a95add"
+      "4e4eb5494cf482c393dda0d5c280c16614fd4467"
     )
       throw Error(
         "PBP dictionary must be reviewed for this transformation version",
