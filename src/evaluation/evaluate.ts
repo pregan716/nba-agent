@@ -428,7 +428,9 @@ export function evaluateRecord(
         variant,
         source: record.source,
         descriptors: {
-          profile: m.config?.profile ?? { baseline: predictor },
+          profile: variant
+            ? m.config?.profile
+            : { ...m.config?.profile, memory: null, baseline: predictor },
           budget: m.config?.budget ?? null,
           harnessVersion: m.harnessVersion ?? hash(m.harness),
           harness: m.config?.harness ?? m.harness,

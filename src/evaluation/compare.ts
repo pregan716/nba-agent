@@ -70,7 +70,12 @@ export function compatibility(a: EvaluatedRun, b: EvaluatedRun) {
     ]),
   ]
     .sort()
+    // Baselines are predictors, not points on the memory axis.
+    .filter(
+      (k) => k !== "baseline" && (k !== "memory" || (a.variant && b.variant)),
+    )
     .filter((k) => canonical(x.profile?.[k]) !== canonical(y.profile?.[k]));
+  if (a.predictor !== b.predictor) axes.push("predictor");
   if (flags.includes("harness_version_differs")) axes.push("harnessVersion");
   if (flags.includes("budget_profile_differs")) axes.push("budget");
   return { reasons, flags, differingAxes: axes };

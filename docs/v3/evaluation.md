@@ -70,6 +70,12 @@ code revisions and differing top-level profile axes are printed. Refused pairs
 remain visible in the report with their reasons; other report streams can still
 be inspected.
 
+Baseline profiles retain the launch descriptors but use `memory: null` and an
+explicit `baseline` predictor ID. They are not memory variants. Comparisons name
+the `predictor` axis whenever predictor IDs differ; the `memory` axis is compared
+only between two agent variants. The baseline label is represented by the
+predictor axis, not a separate profile axis.
+
 ## Game tags and claim limits
 
 Indexes 0–9 are development (games 1–10), 10–19 warm-up, 20–69 scored and 70–81

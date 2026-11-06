@@ -44,6 +44,7 @@ const baseline = (p: number): Prediction => ({
   entry: { type: "choice", probabilities: { f: 1 / 3, g: 1 / 3, h: 1 / 3 } },
 });
 interface Options {
+  memoryVariant?: "M0" | "M3";
   interruptedJev?: boolean;
   games?: number;
   probabilities?: number[];
@@ -83,7 +84,10 @@ function fixture(root: string, options: Options = {}) {
     replicateId: options.replicate ?? "r1",
     purpose: "fixture",
     codeRevision: "fixture-only",
-    profile: { memory: memoryVariant("M3"), modelRoles: { jev: jev.model } },
+    profile: {
+      memory: memoryVariant(options.memoryVariant ?? "M3"),
+      modelRoles: { jev: jev.model },
+    },
     budget: { id: options.budget ?? "fixture", price: { id: "fixture-only" } },
     harness: { policy: { jev }, identity: "fixture" },
     replay: {
@@ -270,6 +274,45 @@ test("comparison refuses dataset/state/Jev mismatches and flags harness/budget c
     const changed = structuredClone(a);
     changed.descriptors.games[0].gameId = "other";
     assert.ok(compareRuns(a, changed).reasons.includes("game_list_mismatch"));
+  } finally {
+    remove(root);
+  }
+});
+test("baseline profiles and comparison axes distinguish predictors from memory variants", () => {
+  const root = temp();
+  try {
+    fixture(join(root, "m3"));
+    fixture(join(root, "m0"), { memoryVariant: "M0" });
+    const m3 = evaluated(join(root, "m3"));
+    const m0 = evaluated(join(root, "m0"));
+    const options = { resamples: 10, seed: 0 };
+    assert.deepEqual(compareRuns(m3, m0, options).differingAxes, ["memory"]);
+    const baselines = ["constant", "statistical", "generic-jev"].map(
+      (predictor) => {
+        const path = join(root, predictor);
+        fixture(path, { predictor, memoryVariant: "M0" });
+        const run = evaluated(path);
+        assert.equal(run.descriptors.profile.memory, null);
+        assert.equal(run.descriptors.profile.baseline, predictor);
+        assert.deepEqual(
+          run.descriptors.profile.modelRoles,
+          m0.descriptors.profile.modelRoles,
+        );
+        for (const [left, right] of [
+          [m3, run],
+          [run, m3],
+        ]) {
+          const comparison = compareRuns(left, right, options);
+          assert.equal(comparison.status, "compared");
+          assert.deepEqual(comparison.differingAxes, ["predictor"]);
+        }
+        return run;
+      },
+    );
+    assert.deepEqual(
+      compareRuns(baselines[0], baselines[1], options).differingAxes,
+      ["predictor"],
+    );
   } finally {
     remove(root);
   }
