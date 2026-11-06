@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "team": { "teamId": "1610612738", "name": "Boston Celtics" },
+  "season": "2025-26",
+  "purpose": "Curated, dated Celtics roster moves for the 2025-26 regular season (SPO-845). The roster for a game is the opening roster plus every interval below that contains the scheduled tip.",
+  "rules": {
+    "membership": "A player is on the roster for a game when scheduled tip falls in [availableFrom, availableUntil) of one of his intervals. A null availableUntil is open-ended.",
+    "defaultAvailability": "The official feed carries a date and no time. A move is available at the end of its official date in America/New_York (05:00Z in standard time, 04:00Z in daylight time).",
+    "timestampedException": "Where a game tips on the official date, a timestamped secondary source may establish an earlier time. The source states no time zone, so its clock time is read as US Pacific, the latest mainland zone, which gives the latest possible instant. Every use is listed under boundaryCases.",
+    "tenDayContracts": "A 10-day contract is treated as running through the tenth calendar day in America/New_York, counting the signing date as day one. Each end date below is corroborated by a secondary source or by the next official signing.",
+    "neverUsed": "The replayed game's own box score or events. Box-score membership from already released games is a cross-check only (scripts/roster-crosscheck.py)."
+  },
+  "sources": {
+    "official": {
+      "id": "official",
+      "description": "NBA player-movement feed, Celtics rows kept verbatim",
+      "path": "docs/evidence/roster/nba-player-movement-celtics-2025-26.json",
+      "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+      "fullDownloadSha256": "c681dbb159f7426a5c9b6dc688b668730eea062cbd7235f4ec2699bf50f2aae8",
+      "retrievedAt": "2026-11-06T03:35:15Z"
+    },
+    "openingRoster": {
+      "id": "openingRoster",
+      "description": "Pinned player reference, opening_team_id = 1610612738, cutoff 2025-10-21T23:29:59Z",
+      "pin": "players",
+      "manifestSha256": "7d9e7802344e90852d55eee4895b305a24a4f59e46fd18d87915b17ecfd8837f"
+    },
+    "hr-boucher-trade": {
+      "id": "hr-boucher-trade",
+      "url": "https://www.hoopsrumors.com/2026/02/celtics-to-trade-chris-boucher-to-jazz.html",
+      "pageTimestamp": "February 5, 2026 3:38 pm (no zone shown)",
+      "quote": "The Celtics acquired two-way player John Tonje from Utah in order to complete the deal, tweets Adam Himmelsbach of The Boston Globe."
+    },
+    "maine-banton-tonje": {
+      "id": "maine-banton-tonje",
+      "url": "https://maine.gleague.nba.com/news/banton-tonje-021926",
+      "pageTimestamp": "February 19, 2026 (no time of day shown)",
+      "quote": "The Boston Celtics announced today that the team has signed forward Dalano Banton and Celtics two-way guard John Tonje to 10-day contracts. [...] The 24-year-old was acquired by Boston via trade with Utah Feb. 5."
+    },
+    "hr-banton-10day": {
+      "id": "hr-banton-10day",
+      "url": "https://www.hoopsrumors.com/2026/02/celtics-to-sign-dalano-banton-to-10-day-contract.html",
+      "pageTimestamp": "February 19, 2026 2:52 pm (no zone shown)",
+      "quote": "2:52 pm: Banton has officially signed a 10-day contract with the Celtics, the team announced today in a press release."
+    },
+    "hr-tonje-10day": {
+      "id": "hr-tonje-10day",
+      "url": "https://www.hoopsrumors.com/2026/02/celtics-signing-john-tonje-to-10-day-deal.html",
+      "pageTimestamp": "February 19, 2026 2:53 pm (no zone shown)",
+      "quote": "2:53 pm: The Celtics have officially announced Tonje's 10-day contract."
+    },
+    "hr-tonje-twoway": {
+      "id": "hr-tonje-twoway",
+      "url": "https://www.hoopsrumors.com/2026/03/celtics-sign-john-tonje-to-two-way-contract.html",
+      "pageTimestamp": "March 1, 2026 9:12 am (no zone shown)",
+      "quote": "The 24-year-old's 10-day deal expired overnight, but the Celtics quickly re-signed him to another two-way contract."
+    },
+    "hr-bassey-first": {
+      "id": "hr-bassey-first",
+      "url": "https://www.hoopsrumors.com/2026/03/celtics-signing-charles-bassey-to-10-day-contract.html",
+      "pageTimestamp": "March 15, 2026 1:21 pm (no zone shown)",
+      "quote": "March 15: Bassey has officially signed his 10-day contract with the Celtics, according to the team."
+    },
+    "hr-bassey-second": {
+      "id": "hr-bassey-second",
+      "url": "https://www.hoopsrumors.com/2026/03/celtics-to-re-sign-charles-bassey.html",
+      "pageTimestamp": "March 25, 2026 12:00 pm (no zone shown)",
+      "quote": "12:00 pm: Bassey's new 10-day contract is now official, per NBA.com's transaction log. [The deal] will run through April 3."
+    }
+  },
+  "openingRoster": [
+    { "playerId": "1627759", "name": "Jaylen Brown" },
+    { "playerId": "1628369", "name": "Jayson Tatum" },
+    { "playerId": "1628401", "name": "Derrick White" },
+    { "playerId": "1628449", "name": "Chris Boucher" },
+    { "playerId": "1629014", "name": "Anfernee Simons" },
+    { "playerId": "1629674", "name": "Neemias Queta" },
+    { "playerId": "1630202", "name": "Payton Pritchard" },
+    { "playerId": "1630214", "name": "Xavier Tillman" },
+    { "playerId": "1630568", "name": "Luka Garza" },
+    { "playerId": "1630573", "name": "Sam Hauser" },
+    { "playerId": "1631169", "name": "Josh Minott" },
+    { "playerId": "1631199", "name": "Ron Harper Jr." },
+    { "playerId": "1631248", "name": "Baylor Scheierman" },
+    { "playerId": "1641775", "name": "Jordan Walsh" },
+    { "playerId": "1642864", "name": "Hugo González" },
+    { "playerId": "1642873", "name": "Amari Williams" },
+    { "playerId": "1642917", "name": "Max Shulga" }
+  ],
+  "openingAvailableFrom": "2025-10-21T23:29:59Z",
+  "events": [
+    {
+      "id": "2026-02-05-simons-vucevic",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "out": ["1629014"],
+      "in": ["202696"],
+      "description": "Anfernee Simons to Chicago; Nikola Vučević from Chicago.",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": ["official"]
+    },
+    {
+      "id": "2026-02-05-boucher-tonje",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "out": ["1628449"],
+      "in": ["1642910"],
+      "description": "Chris Boucher to Utah; two-way guard John Tonje from Utah.",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": ["official", "hr-boucher-trade", "maine-banton-tonje"],
+      "note": "The official feed records Boucher's departure but has no row for Tonje's arrival. His arrival rests on the two secondary sources and is consistent with the feed's later 'Boston Celtics re-signed guard John Tonje' row."
+    },
+    {
+      "id": "2026-02-05-minott",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "out": ["1631169"],
+      "in": [],
+      "description": "Josh Minott to Brooklyn.",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": ["official"]
+    },
+    {
+      "id": "2026-02-05-tillman",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "out": ["1630214"],
+      "in": [],
+      "description": "Xavier Tillman to Charlotte.",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": ["official"]
+    },
+    {
+      "id": "2026-02-19-banton-10day",
+      "officialDate": "2026-02-19",
+      "kind": "ten_day_signing",
+      "out": [],
+      "in": ["1630625"],
+      "description": "Dalano Banton signed to a 10-day contract, running through February 28.",
+      "availableAt": "2026-02-19T22:52:00Z",
+      "basis": "timestampedException",
+      "sources": ["official", "hr-banton-10day", "maine-banton-tonje"]
+    },
+    {
+      "id": "2026-02-28-banton-10day-expiry",
+      "officialDate": "2026-02-28",
+      "kind": "ten_day_expiry",
+      "out": ["1630625"],
+      "in": [],
+      "description": "Banton's 10-day contract expired after its tenth day.",
+      "availableAt": "2026-03-01T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": ["official", "hr-tonje-twoway"],
+      "note": "Banton and Tonje signed identical 10-day contracts on the same day; the Tonje source states that his expired overnight into March 1. The feed has no expiry rows."
+    },
+    {
+      "id": "2026-02-28-tonje-10day-expiry",
+      "officialDate": "2026-02-28",
+      "kind": "ten_day_expiry",
+      "out": ["1642910"],
+      "in": [],
+      "description": "Tonje's 10-day contract, converted from his two-way deal on February 19, expired overnight.",
+      "availableAt": "2026-03-01T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": ["official", "hr-tonje-10day", "hr-tonje-twoway"]
+    },
+    {
+      "id": "2026-03-01-tonje-twoway",
+      "officialDate": "2026-03-01",
+      "kind": "two_way_signing",
+      "out": [],
+      "in": ["1642910"],
+      "description": "John Tonje re-signed to a two-way contract.",
+      "availableAt": "2026-03-01T17:12:00Z",
+      "basis": "timestampedException",
+      "sources": ["official", "hr-tonje-twoway"]
+    },
+    {
+      "id": "2026-03-15-bassey-10day",
+      "officialDate": "2026-03-15",
+      "kind": "ten_day_signing",
+      "out": [],
+      "in": ["1629646"],
+      "description": "Charles Bassey signed to a 10-day contract, running through March 24.",
+      "availableAt": "2026-03-16T04:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": ["official", "hr-bassey-first"]
+    },
+    {
+      "id": "2026-03-24-bassey-10day-expiry",
+      "officialDate": "2026-03-24",
+      "kind": "ten_day_expiry",
+      "out": ["1629646"],
+      "in": [],
+      "description": "Bassey's first 10-day contract expired after its tenth day.",
+      "availableAt": "2026-03-25T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": ["official", "hr-bassey-second"]
+    },
+    {
+      "id": "2026-03-25-bassey-second-10day",
+      "officialDate": "2026-03-25",
+      "kind": "ten_day_signing",
+      "out": [],
+      "in": ["1629646"],
+      "description": "Charles Bassey signed to a second 10-day contract, running through April 3.",
+      "availableAt": "2026-03-25T19:00:00Z",
+      "basis": "timestampedException",
+      "sources": ["official", "hr-bassey-second"]
+    },
+    {
+      "id": "2026-04-03-bassey-second-10day-expiry",
+      "officialDate": "2026-04-03",
+      "kind": "ten_day_expiry",
+      "out": ["1629646"],
+      "in": [],
+      "description": "Bassey's second 10-day contract expired after April 3.",
+      "availableAt": "2026-04-04T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": ["official", "hr-bassey-second"],
+      "note": "Corroborated by the feed: Golden State signed Bassey on April 5."
+    },
+    {
+      "id": "2026-04-11-banton-rest-of-season",
+      "officialDate": "2026-04-11",
+      "kind": "signing",
+      "out": [],
+      "in": ["1630625"],
+      "description": "Dalano Banton signed to a rest-of-season contract.",
+      "availableAt": "2026-04-12T04:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": ["official"]
+    }
+  ],
+  "noMembershipChange": [
+    { "officialDate": "2026-02-05", "playerId": "1642873", "description": "Amari Williams re-signed from a two-way to a rest-of-season contract." },
+    { "officialDate": "2026-02-19", "playerId": "1642910", "description": "John Tonje's two-way contract converted to a 10-day contract." },
+    { "officialDate": "2026-03-15", "playerId": "1642917", "description": "Max Shulga re-signed from a two-way to a rest-of-season contract." },
+    { "officialDate": "2026-04-04", "playerId": "1631199", "description": "Ron Harper Jr. re-signed from a two-way to a rest-of-season contract." }
+  ],
+  "players": [
+    { "playerId": "202696", "name": "Nikola Vučević" },
+    { "playerId": "1642910", "name": "John Tonje" },
+    { "playerId": "1630625", "name": "Dalano Banton" },
+    { "playerId": "1629646", "name": "Charles Bassey" }
+  ],
+  "boundaryCases": [
+    {
+      "gameId": "0022500799",
+      "scheduledTip": "2026-02-20T03:00:00Z",
+      "eventId": "2026-02-19-banton-10day",
+      "issue": "Tip is on the official signing date in Eastern time, so the default end-of-day rule would exclude Banton.",
+      "resolution": "The secondary source reports the signing official at 2:52 pm on February 19. Read as Pacific time that is 22:52Z, more than four hours before tip. Banton is on the roster for this game. He did not play."
+    },
+    {
+      "gameId": "0022500874",
+      "scheduledTip": "2026-03-02T01:00:00Z",
+      "eventId": "2026-03-01-tonje-twoway",
+      "issue": "Tip is on the official signing date in Eastern time, and Tonje's 10-day contract had expired overnight.",
+      "resolution": "The secondary source reports the two-way signing at 9:12 am on March 1. Read as Pacific time that is 17:12Z, almost eight hours before tip. Tonje is on the roster for this game."
+    },
+    {
+      "gameId": "0022501054",
+      "scheduledTip": "2026-03-25T23:30:00Z",
+      "eventId": "2026-03-25-bassey-second-10day",
+      "issue": "Tip is on the official signing date in Eastern time, and Bassey's first 10-day contract had expired the night before.",
+      "resolution": "The secondary source reports the new contract official in the NBA transaction log at 12:00 pm on March 25. Read as Pacific time that is 19:00Z, four and a half hours before tip. Bassey is on the roster for this game."
+    }
+  ]
+}
