@@ -1,0 +1,12 @@
+{
+  "curated": {
+    "path": "config/celtics-transactions-2025-26.json",
+    "sha256": "a53773a8d880da7a62ad525e2743738e36be64a8de2c5999e1444be74152ab89",
+    "bytes": 13498
+  },
+  "official": {
+    "path": "docs/evidence/roster/nba-player-movement-celtics-2025-26.json",
+    "sha256": "cc41ee064170bf505fc6c98c181176404d7985ad25b32da0ef3e66151dc25ac4",
+    "bytes": 17429
+  }
+}
