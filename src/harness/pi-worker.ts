@@ -19,7 +19,7 @@ import { TOOL_NAMES, type ContextResult } from "../env/contract.js";
 import { TOOL_DEFINITIONS } from "../env/tools.js";
 import { offeredTools } from "./loop.js";
 import { DEFAULT_LOOP, PI_CONTRACT } from "./version.js";
-import { SYSTEM_PROMPT, PHASE_PROMPTS } from "./prompts.js";
+import { promptTexts } from "./prompts.js";
 
 let activeSession: AgentSession | undefined;
 let acknowledgeFinalHistory: (() => void) | undefined;
@@ -64,7 +64,8 @@ async function run({ options, model, memoryInstructions, root }: any) {
   const loop = { ...DEFAULT_LOOP, ...options.loop };
   const context: ContextResult = await call("context", {});
   const names = offeredTools(context);
-  const system = `${SYSTEM_PROMPT}\n\n${memoryInstructions}`;
+  const texts = promptTexts(options.promptSet ?? "infrastructure");
+  const system = `${texts.system}\n\n${memoryInstructions}`;
   const cwd = join(root, "cwd"),
     agentDir = join(root, "agent");
   await mkdir(cwd);
@@ -227,9 +228,9 @@ async function run({ options, model, memoryInstructions, root }: any) {
     const phasePrompt =
       context.phase === "postgame"
         ? options.process === "mandated-reflection"
-          ? PHASE_PROMPTS.postgame_mandated
-          : PHASE_PROMPTS.postgame
-        : PHASE_PROMPTS.pregame;
+          ? texts.postgame_mandated
+          : texts.postgame
+        : texts.pregame;
     await session.prompt(
       `${phasePrompt}\n\nSession context:\n${JSON.stringify(context)}`,
     );

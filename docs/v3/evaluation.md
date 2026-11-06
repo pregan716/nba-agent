@@ -20,7 +20,7 @@ stream. Add replicate records with distinct labels. Outputs contain full
 precision numbers in JSON; Markdown tables round display values only.
 
 `--resamples=10000 --seed=8542026` overrides the bootstrap settings. The defaults
-(10,000 draws and seed 8,542,026) are **Proposed for user review**. Both are recorded
+(10,000 draws and seed 8,542,026) were accepted by the user on Nov 6, 2026. Both are recorded
 in the report. Resamples must be 1–100,000 and the seed an unsigned 32-bit integer.
 The report is deterministic for the same records, labels, paths and settings.
 

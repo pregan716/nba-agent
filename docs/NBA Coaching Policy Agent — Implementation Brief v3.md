@@ -191,7 +191,7 @@ Exact match: `proposed_action` equals the actual decision including the no-subst
 
 ### Comparison between variants
 
-Compare on matched windows only: identical decision dataset, identical Jev. Windows within a game are correlated, so the game is the unit of uncertainty. Agreed, carried: a paired bootstrap over games, reporting the 90 % interval on each primary score difference, sensitivity to the five most influential games, and within-variant replicate spread where replicates exist. Report cost and time next to every difference, as score per unit cost and per unit time.
+Compare on matched windows only: identical decision dataset, identical Jev. Windows within a game are correlated, so the game is the unit of uncertainty. Agreed, carried: a paired bootstrap over games, reporting the 90 % interval on each primary score difference, sensitivity to the five most influential games, and within-variant replicate spread where replicates exist. Report cost and time next to every difference, as score per unit cost and per unit time. Bootstrap settings, Agreed (Nov 6, 2026, SPO-854): 10,000 paired game resamples, seed 8542026, Mulberry32, 5th and 95th percentile endpoints; both are recorded in every report. Also Agreed the same day: the report adds the reduction in each primary loss per extra dollar and per extra hour against the matched comparison, undefined when the cost difference is zero or unknown (SPO-856 implements it).
 
 Learning curves: each primary score by game index for every variant on the same games. The M0 curve on the same games is the control for schedule and opponent difficulty, not a variant's own early games.
 
@@ -463,7 +463,7 @@ Carried in intent. For every variant with a memory gate on, collect reviewed exa
 
 ### Contamination
 
-Carried, Agreed. Before any scored run, probe each pinned model for outcomes in the replay window and store the result in the manifest. The analyst probe is the v2 no-tools probe. The Jev probe is the typed-question probe described in the Jev contract, since Jev takes no free-form prompt and TypeSafe publishes no cutoff. The user accepted Jev with that disclosure gap on Nov 4, 2026, on the grounds that Jev reads only the assembled state and the trace records it; the probe result is reported with every run so a reader can weigh it.
+Carried, Agreed. Before any scored run, probe each pinned model for outcomes in the replay window and store the result in the manifest. The analyst probe is the v2 no-tools probe. SPO-855 adds one item to it, on the Celtics' 2025–26 rotation and substitution patterns, since that is what this experiment predicts. The Jev probe is the typed-question probe described in the Jev contract, since Jev takes no free-form prompt and TypeSafe publishes no cutoff. The user accepted Jev with that disclosure gap on Nov 4, 2026, on the grounds that Jev reads only the assembled state and the trace records it; the probe result is reported with every run so a reader can weigh it.
 
 ## Resolved decisions
 
@@ -504,7 +504,7 @@ One decision is Open, by design. Everything proposed in the first draft's Open t
 | --- | --- | --- | --- |
 | Open | Budget numbers | Research budget | Set by the pilot procedure: development games on M3 at effort `high` with code execution on, caps at the 90th percentile, re-runs at a smaller and a larger pregame cap, recorded as budget profile v1. |
 | Proposed | Package detail: component layout, entry-point signature, manifest fields | The task, Policy package | R3 implements as written; the first hand-written package in gate 2 is the review. |
-| Proposed | Trace fields | The task, Feedback trace | R3 implements as written; reviewed with the gate-2 trace. |
+| Proposed | Trace fields | The task, Feedback trace | R3 implements as written; reviewed with the gate-2 trace. The compact summary fields `read_feedback` returns (SPO-850: home and away score, margin, home or away, and per-player fouls, minutes and current stint) were accepted Nov 6, 2026. |
 | Proposed | Player-selection normalization (scale by k) | Scoring, Player selection | R2 implements as written with a hand-computed fixture; alternatives are a brief change. |
 | Proposed | Invalid-answer fallbacks and the 5 % provider-failure flag | Scoring, Invalid outputs and failures | R2 implements as written with a scorer fixture for the per-question rule. |
 | Proposed | Statistical predictor form | Scoring, Baselines | R2 fixes the model and documents it. |
@@ -538,20 +538,22 @@ Complete (SPO-835). Prop-task code removed, v2 docs archived, entry points rewri
 - Inputs: R2; the package contract; the Jev contract.
 - Outputs: `freeze_package` and its validation; the assembler sandbox image and per-window execution; the System One provider in the metering proxy and the `jev` role; Jev request construction, validation and the derived-action rule; the generic-Jev baseline; the trace builder; `read_feedback`; the local-validation tool; the Jev typed-question contamination probe.
 - Acceptance: a frozen package cannot be modified; the assembler cannot reach the network, the workspace or the host; the same package and state yield the same request; every Jev request and answer is in the record with the versioned model id and token usage; a request over the per-question limit is refused; the trace contains no window after the released game.
-- Status: to be filed after R2.
+- Status: merged as SPO-841 (PR #46). The feedback summary fields were added by SPO-850 (PR #50) and accepted Nov 6, 2026.
 
 ### R4 Memory permissions and reflection
 
 - Inputs: the directory permission model; the memory cap; the content-boundary check.
 - Outputs: permission-gated workspace policy per variant; mounts that follow permissions; the memory size meter and cap; the automated boundary check and its human queue; the postgame reflection session; configuration schema supporting every named memory value without implementing second-stage representations.
 - Acceptance: a gated-off directory is unlistable, unreadable, unwritable and unmounted; a write over the cap is refused with the size; the check flags a planted player name in `best_practices.md`; M0 retains nothing between games while still reading the previous trace.
-- Status: to be filed after R3.
+- Status: merged as SPO-851 (PR #48).
 
 ### R5 Pi harness, prompts and pilot
 
 - Inputs: R3, R4; the harness contract; the research-budget procedure.
 - Outputs: the Pi harness implementation (in-memory sessions, built-in tools off, environment tools as extension tools, `tool_call` refusal of unknown tools, prompt override, proxy-only model access, history copied to the record); the v3 system and phase prompts and memory-permission instructions; the analyst and Jev contamination probes; the development-games pilot on M3 including the double replay; budget profile v1 proposed.
 - Acceptance: the isolation gate tests pass against the Pi harness; a run with a real provider key in the harness environment is impossible by construction; Pi's own storage directories are untouched after a run; changing any prompt, Pi's version or a tool definition changes the harness version; the probes are stored; the pilot observation is written up as a pilot, not evidence.
+
+- Status: the Pi harness is merged as SPO-840 (PR #47). SPO-855 adds the `research-v3` prompt set, the per-variant memory-permission instructions and the larger Jev probe, and lets `pilot` runs start; `scored` runs stay refused until budget profile v1 is approved. The pilot and its write-up follow in the same issue.
 
 ### R6 Evaluators and reporting
 

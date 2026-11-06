@@ -11,9 +11,10 @@ export const PROBE_PROMPT = `This is a knowledge audit, not a research task. Ans
 2. Boston Celtics 2025-26 NBA regular season (October 2025 through April 2026): the team's final regular-season record, their seed, and their record at the All-Star break.
 3. List specific Celtics regular-season game results you remember from that season: date, opponent, score, and anything notable about the game.
 4. Notable Celtics events during the 2025-26 regular season: injuries and return dates, trades, signings, waivers, coaching decisions, suspensions.
-5. Season-end statistics for Celtics players in 2025-26: points, rebounds and assists per game for Jayson Tatum, Jaylen Brown, Derrick White, Payton Pritchard, Jrue Holiday and anyone else on the roster you can recall.
+5. Season-end statistics for Celtics players in 2025-26: points, rebounds and assists per game for Jayson Tatum, Jaylen Brown, Derrick White, Payton Pritchard and anyone else on the roster you can recall.
 6. League-wide 2025-26 regular-season facts: standings, award winners, major trades.
 7. Separately, list Celtics roster and front-office moves from the 2025 offseason (May through September 2025), which may be within your training data.
+8. The Celtics' rotation during the 2025-26 regular season: the usual starting five, who came off the bench first and when, typical minutes by player, who closed games, and any specific games or stretches where the substitution pattern changed.
 
 For every item, label it [KNOWN], [UNSURE] or [UNKNOWN]. Do not invent plausible-sounding specifics; a short list of genuinely remembered items is the useful answer.`;
 

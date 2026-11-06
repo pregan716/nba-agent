@@ -6,6 +6,12 @@ export interface ProbeFact {
   question: string;
   truth: boolean;
   source: string;
+  /** Optional reporting group, e.g. `result:2025-26`. Never sent to Jev. */
+  group?: string;
+  /** Whether the statement asserts the positive outcome (won, played). Reporting only. */
+  positive?: boolean;
+  /** What the statement is about, for per-subject base rates (a player id). Reporting only. */
+  subject?: string;
 }
 /** Truth and provenance remain outside the request. No evidence, tools or coaching state. */
 export async function probeJev(
@@ -13,6 +19,8 @@ export async function probeJev(
   proxy: MeteringProxy,
   record: RecordStore<any>,
   signal: AbortSignal,
+  /** Record scope; distinct per request when a probe is sent in batches. */
+  scope = "jev-contamination-probe",
 ) {
   if (!facts.length || new Set(facts.map((f) => f.id)).size !== facts.length)
     throw Error("Invalid Jev probe facts");
@@ -33,12 +41,7 @@ export async function probeJev(
       ]),
     ),
   };
-  const response = await proxy.jev(
-    request,
-    record,
-    "jev-contamination-probe",
-    signal,
-  );
+  const response = await proxy.jev(request, record, scope, signal);
   const answers = response.response?.answers;
   const results = facts.map((f) => {
     const a = answers?.[f.id],
@@ -84,6 +87,6 @@ export async function probeJev(
     interpretation:
       "Descriptive contamination diagnostic; small samples cannot establish absence of memorization.",
   };
-  record.append("jev_contamination_probe", "run", result);
+  record.append("jev_contamination_probe", scope, result);
   return result;
 }

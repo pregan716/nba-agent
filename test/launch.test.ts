@@ -91,17 +91,32 @@ function verify(record: RecordStore, variant: "M0" | "M3") {
   record.verify();
 }
 
-test("launcher refuses pilot/scored until R5b, and local scored assembler images", () => {
+test("launcher requires research-v3 prompts for pilots and still refuses scored runs", () => {
+  const registry = "registry@sha256:" + "a".repeat(64);
   assert.throws(
     () => validateLaunch("pilot", fixtureAssembler.image),
-    /v3 prompt set/,
+    /research-v3 prompt set/,
   );
   assert.throws(
-    () => validateLaunch("scored", "registry@sha256:" + "a".repeat(64)),
-    /v3 prompt set/,
+    () =>
+      validateLaunch("pilot", fixtureAssembler.image, "pi-infrastructure-v3"),
+    /research-v3 prompt set/,
+  );
+  assert.doesNotThrow(() =>
+    validateLaunch("pilot", fixtureAssembler.image, "pi-research-v3"),
+  );
+  assert.doesNotThrow(() => validateLaunch("fixture", fixtureAssembler.image));
+  assert.throws(
+    () => validateLaunch("scored", registry, "pi-research-v3"),
+    /approved research budget profile/,
   );
   assert.throws(
-    () => validateLaunch("scored", "local@sha256:" + "a".repeat(64)),
+    () =>
+      validateLaunch(
+        "scored",
+        "local@sha256:" + "a".repeat(64),
+        "pi-research-v3",
+      ),
     /local@/,
   );
 });

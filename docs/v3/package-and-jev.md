@@ -66,9 +66,9 @@ The API documentation does not expose a tokenizer/count endpoint. The implementa
 
 `replayPolicy` plugs into the existing frozen-state `Predictor` interface. It records assembly diagnostics and measured wall time, request, raw responses, usage, validation, derived action, actual decision and per-window scores. The trace contains all candidates, including exclusions and failures, plus package/harness identity, aggregate scores, invalid-answer reasons, latency and spend. Saved predictions and received valid responses are reused after a crash; uncertain in-flight calls remain visible as attempts rather than invented usage. A committed full trace is published atomically outside the workspace. `read_feedback` returns compact pages of two window summaries, with bounded previews of diagnostics/questions/answers/validation. `cursor` advances through windows. `window_id` requests the complete forensic window JSON in chunks of 4,096 characters; `offset`/`nextOffset` support reconstruction. Full request state and raw responses remain available on demand without putting a whole game's trace into one model message.
 
-### Proposed compact state-summary fields (SPO-850)
+### Compact state-summary fields (SPO-850)
 
-The following field selection is **Proposed for user review, not Agreed**. Each
+The user accepted this field selection on Nov 6, 2026. Each
 window summary retains `period`, `clockMs`, `celtics` and `eligibleBench`, and adds:
 
 - `celticsHome`, `homeScore`, `awayScore` and `margin` (Celtics points minus

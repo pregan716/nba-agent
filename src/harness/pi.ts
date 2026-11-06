@@ -108,6 +108,7 @@ export function piHarness(options: AnalystOptions): Harness {
           options: {
             model: options.model,
             process: options.process,
+            promptSet: options.promptSet,
             loop: options.loop,
           },
           model,

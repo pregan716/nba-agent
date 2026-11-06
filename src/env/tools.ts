@@ -98,7 +98,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "context",
     description:
-      "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory mode of this run. Call it first in every session and again whenever you need the budget.",
+      "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory permissions of this run. Call it first in every session and again whenever you need the budget.",
     input_schema: object({}),
     phases: ["pregame", "commit", "postgame"],
   },
@@ -214,7 +214,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "execute_code",
     description:
-      "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (schedule, references, injuries and evidence), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace when the run has one (same rules as the workspace tools). No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
+      "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (schedule, references, injuries and evidence), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace (same rules as the workspace tools). No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
     input_schema: object({ program: { type: "string", minLength: 1 } }, [
       "program",
     ]),
@@ -223,7 +223,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_list",
     description:
-      "List files and directories in your workspace under a path (default: the root). The workspace is the only thing that persists between games in a persistent run; in a stateless run it is empty at every game and these tools are refused.",
+      "List files and directories in your workspace under a path (default: the root). Which paths exist and which persist between games is set by the run's memory permissions, stated in your instructions; a path outside them is refused as not found.",
     input_schema: object({
       path: id("Directory relative to the workspace root."),
     }),
@@ -242,7 +242,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_write",
     description:
-      "Create or replace a workspace file with the given text. Refused during commit, in stateless runs, and for an existing file when the run is append-only (write a new file instead).",
+      "Create or replace a workspace file with the given text. Refused during commit, outside the run's permitted paths, over the memory cap, and for an existing file when the run is append-only (write a new file instead).",
     input_schema: object(
       {
         path: id("File path relative to the workspace root."),
@@ -255,7 +255,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_append",
     description:
-      "Append text to a workspace file, creating it if needed. Allowed under both editable and append-only rights; refused during commit and in stateless runs.",
+      "Append text to a workspace file, creating it if needed. Allowed under both editable and append-only rights; refused during commit, outside the run's permitted paths, and over the memory cap.",
     input_schema: object(
       {
         path: id("File path relative to the workspace root."),
@@ -268,7 +268,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "workspace_delete",
     description:
-      "Delete a workspace file. Refused during commit, in stateless runs, and always under append-only rights.",
+      "Delete a workspace file. Refused during commit, outside the run's permitted paths, and always under append-only rights.",
     input_schema: object(
       { path: id("File path relative to the workspace root.") },
       ["path"],
