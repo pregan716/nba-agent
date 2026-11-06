@@ -854,3 +854,126 @@ dockerTest(
     }
   },
 );
+
+dockerTest(
+  "v3 M0-M3 gates are identical through workspace tools and the research mount",
+  async () => {
+    const { memoryVariant } = await import("../src/env/memory.js");
+    for (const variant of ["M0", "M1", "M2", "M3"] as const) {
+      const s = fixture(),
+        memory = memoryVariant(variant);
+      s.f.config.profile.memory = memory;
+      s.f.config.budget.memory = {
+        tokenCap: 50000,
+        countProtocol: "analyst-count-snapshot-v1",
+      };
+      const workspace = join(s.root, "workspace");
+      for (const path of [
+        "memory/coach_profile.md",
+        "memory/coach/a",
+        "memory/best_practices.md",
+        "memory/practices/a",
+        "skills/a",
+        "packages/old/a",
+      ]) {
+        mkdirSync(join(workspace, path, ".."), { recursive: true });
+        writeFileSync(join(workspace, path), "planted");
+      }
+      const session = new Session(
+        s.f.config,
+        s.f.game,
+        "pregame",
+        s.f.game.scheduledStart,
+        s.f.source,
+        workspace,
+        s.root,
+        undefined,
+        async (files) =>
+          Object.values(files).reduce((n, text) => n + text.length, 0),
+      );
+      const sandbox = new DockerSandbox(
+        s.f.config,
+        (directory, abort) => session.exportTo(directory, abort),
+        session.workspaceForSandbox(),
+        s.root,
+      );
+      try {
+        const allowed = [
+          ...(memory.coachProfile.read
+            ? ["memory/coach_profile.md", "memory/coach/a"]
+            : []),
+          ...(memory.bestPractices.read
+            ? ["memory/best_practices.md", "memory/practices/a"]
+            : []),
+        ];
+        const result = await sandbox.execute(
+          `import os, json
+allowed = ${JSON.stringify(allowed)}
+paths = ['memory/coach_profile.md','memory/coach/a','memory/best_practices.md','memory/practices/a','skills/a','packages/old/a']
+for path in paths:
+    full = '/workspace/' + path
+    if path in allowed:
+        assert open(full).read() == 'planted'
+    else:
+        assert not os.path.exists(full), path
+        for mode in ['r','w','a']:
+            try:
+                with open(full,mode) as f:
+                    if mode != 'r': f.write('bad')
+            except OSError: pass
+            else: raise AssertionError(path + ':' + mode)
+assert ('memory' in os.listdir('/workspace')) == bool(allowed)
+assert 'skills' not in os.listdir('/workspace')
+open('/workspace/scratch/session.txt','w').write('scratch')
+open('/workspace/packages/current/a','w').write('current')
+print('gate checks passed')`,
+          limits,
+          signal(),
+        );
+        assert.equal(result.exitStatus, 0, result.stderr);
+        assert.match(result.stdout, /gate checks passed/);
+        assert.equal(
+          (
+            await session.call(
+              "workspace_read",
+              { path: "scratch/session.txt" },
+              signal(),
+            )
+          ).content,
+          "scratch",
+        );
+        if (variant === "M3") {
+          await session.call(
+            "workspace_write",
+            { path: "memory/coach_profile.md", content: "x".repeat(49979) },
+            signal(),
+          ); // three remaining planted files: 21 tokens
+          const result = await sandbox.execute(
+            "with open('/workspace/memory/coach_profile.md','a') as f: f.write('x')",
+            limits,
+            signal(),
+          );
+          assert.match(
+            result.stderr,
+            /current 50000 tokens; proposed 50001; cap 50000/,
+          );
+          assert.equal(
+            (
+              await session.call(
+                "workspace_read",
+                { path: "memory/coach_profile.md" },
+                signal(),
+              )
+            ).bytes,
+            49979,
+          );
+        }
+      } finally {
+        await sandbox.close();
+        await session.close();
+        await s.session.close();
+        s.clean();
+      }
+    }
+  },
+);

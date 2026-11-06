@@ -149,9 +149,9 @@ export const environment: EnvironmentFactory = async (
         budget,
         capabilities: [...context.capabilities].sort(),
         memory: {
-          horizon: context.memory.horizon,
-          revision: context.memory.revision,
-          process: context.memory.process,
+          horizon: context.memory.horizon!,
+          revision: context.memory.revision!,
+          process: context.memory.process!,
         },
       };
     },

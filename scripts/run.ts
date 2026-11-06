@@ -1,3 +1,4 @@
+import { memoryVariant, type MemoryPermissions } from "../src/env/memory.js";
 // Trusted launcher: the only place that holds the Anthropic key, opens the
 // corpus, and constructs the runner. The harness receives three handles.
 import { readFile } from "node:fs/promises";
@@ -26,14 +27,13 @@ const arg = (name: string, fallback?: string) =>
 const flag = (name: string) => process.argv.includes(`--${name}`);
 
 const mode = arg("mode", "analyst")!;
-const memory: RunConfig["profile"]["memory"] = {
-  version: "memory-v1",
-  horizon: arg("memory", "stateless") as "stateless" | "season",
-  revision: arg("revision", "editable") as "editable" | "append-only",
-  process: arg("process", "voluntary") as "voluntary" | "mandated-reflection",
-};
+if (arg("revision") || arg("process"))
+  throw Error("V2 memory switches are not accepted; select --memory=M0..M4");
+const memory = memoryVariant(
+  arg("memory", "M0") as MemoryPermissions["variant"],
+);
 const purpose = arg("purpose", "fixture") as "fixture" | "pilot";
-const runId = arg("run-id", `${mode}-${memory.horizon}`)!;
+const runId = arg("run-id", `${mode}-${memory.variant}`)!;
 const replicateId = arg("replicate", "r1")!;
 const root = resolve(arg("root", ".cache/runs")!);
 const probeFile = arg("probe");

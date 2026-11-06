@@ -46,5 +46,9 @@ export function memoryInstructionName(
 export function memoryInstructions(
   memory: RunConfig["profile"]["memory"],
 ): string {
+  if (memory.version === "memory-permissions-v1")
+    throw Error(
+      "V3 memory instructions must be supplied by R5b or an explicit fixture",
+    );
   return MEMORY_INSTRUCTIONS[memoryInstructionName(memory)];
 }

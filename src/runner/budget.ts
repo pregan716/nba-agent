@@ -84,7 +84,11 @@ export class Budget {
     return this.record.events(kind, this.scope).filter((e) => e.seq > since);
   }
   get stage(): Phase {
-    return this.phase;
+    return this.phase === "pregame" &&
+      this.config.profile.memory.version === "memory-permissions-v1" &&
+      this.record.events("package_freeze", this.scope.split(":")[0]).length
+      ? "commit"
+      : this.phase;
   }
   totals() {
     const events = this.events();

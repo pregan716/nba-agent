@@ -1,0 +1,24 @@
+{
+  "version": "celtics-staff-audit-v1",
+  "status": "Proposed",
+  "scope": "Head coach and assistant coaches listed in the 2025-26 Denver Nuggets official media guide; not a claim of exhaustive non-coaching staff coverage. Audit-only, not analyst-visible evidence.",
+  "source": {
+    "url": "https://cdn.nba.com/teams/uploads/sites/1610612743/2025/10/2025-26-Denver-Nuggets-Media-Guide.pdf",
+    "section": "Boston Celtics coaching staff",
+    "pdfPage": 376,
+    "sha256": "59f5e565ae57f46f3b76ec5749d9e6a9959cded6024c7d0409da19403782b00a",
+    "retrievedAt": "2026-11-06"
+  },
+  "names": [
+    "Joe Mazzulla",
+    "Sam Cassell",
+    "Tony Dobbins",
+    "DJ MacLeay",
+    "D.J. MacLeay",
+    "Amile Jefferson",
+    "Matt Reynolds",
+    "Ross McMains",
+    "Tyler Lashbrook",
+    "Craig Luschenat"
+  ]
+}

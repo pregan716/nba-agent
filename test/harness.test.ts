@@ -142,11 +142,19 @@ async function run(
   }
 }
 function configFor(
-  memory: Partial<RunConfig["profile"]["memory"]> = {},
+  memory: Partial<
+    Extract<RunConfig["profile"]["memory"], { version: "memory-v1" }>
+  > = {},
   harness: Partial<Parameters<typeof harnessConfig>[0]> = {},
 ) {
   const f = fixtureCorpus();
-  f.config.profile.memory = { ...f.config.profile.memory, ...memory };
+  f.config.profile.memory = {
+    ...(f.config.profile.memory as Extract<
+      RunConfig["profile"]["memory"],
+      { version: "memory-v1" }
+    >),
+    ...memory,
+  };
   f.config.harness = harnessConfig({
     memory: f.config.profile.memory,
     effort: "high",
@@ -280,7 +288,10 @@ test("offeredTools follows phase, capability groups and memory horizon", () => {
   assert.ok(pre.includes("context"));
   const stateless = offeredTools({
     ...base,
-    memory: { ...base.memory, horizon: "stateless" },
+    memory: {
+      ...(base.memory as Extract<ContextResult["memory"], { horizon: string }>),
+      horizon: "stateless",
+    },
   });
   assert.ok(!stateless.some((t) => t.startsWith("workspace_")));
   const post = offeredTools({ ...base, phase: "postgame" });
