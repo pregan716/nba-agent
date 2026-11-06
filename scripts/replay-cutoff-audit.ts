@@ -1,12 +1,15 @@
 // Source-only audit of the windows-v1 -> windows-v2 prefix change. No roster or
 // availability assumptions, predictors, or season scoring are involved.
+// Bucketing and cutoff rules intentionally stay independent of the engine so this
+// roster-free inventory can cross-check its results against dataset.ts.
 import { readFile, mkdir, writeFile } from "node:fs/promises";
-import { execFileSync } from "node:child_process";
+import { auditCodeRevision } from "./lib/audit-revision.js";
 import { DopplerStore, VerifiedStore } from "../src/data/store.js";
 import { Release } from "../src/data/release.js";
 import { PlayByPlayAdapter } from "../src/data/adapters.js";
 import type { Row } from "../src/data/contracts.js";
 import { BOS, WINDOW_VERSION } from "../src/replay/types.js";
+const codeRevision = auditCodeRevision();
 const raw = new DopplerStore();
 try {
   const pins = JSON.parse(await readFile("config/datasets.json", "utf8"));
@@ -101,9 +104,7 @@ try {
     release: release.root,
     from: `windows-v1:${release.root.sha256}`,
     to: `${WINDOW_VERSION}:${release.root.sha256}`,
-    codeRevision: execFileSync("git", ["rev-parse", "HEAD"], {
-      encoding: "utf8",
-    }).trim(),
+    codeRevision,
     scope:
       "Celtics regular-season event prefixes only; not a season scoring run",
     games: observedGames,
