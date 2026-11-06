@@ -163,6 +163,42 @@ test("independent candidate, observable prefix, and outcome held separately", ()
   assert.throws(() => buildDataset(input), /strictly before/);
 });
 
+test("feedback home/away identity comes from game metadata even at a tied score", () => {
+  for (const home of [true, false]) {
+    const input = fixture();
+    if (!home) {
+      [input.game.homeTeamId, input.game.awayTeamId] = [
+        input.game.awayTeamId,
+        input.game.homeTeamId,
+      ];
+      for (const e of input.events) {
+        for (const suffix of [
+          "lineup_before",
+          "lineup_after",
+          "score_before",
+          "score_after",
+        ])
+          [e[`home_${suffix}`], e[`away_${suffix}`]] = [
+            e[`away_${suffix}`],
+            e[`home_${suffix}`],
+          ];
+      }
+    }
+    const dataset = buildDataset(input);
+    assert.equal(dataset.celticsHome, home);
+    const window = dataset.windows[0];
+    assert.deepEqual(window.exclusions, []);
+    const summary = feedbackPage({
+      gameId: dataset.gameId,
+      celticsHome: dataset.celticsHome,
+      summary: {},
+      windows: [{ result: { window } }],
+    } as any).windows![0].stateSummary!;
+    assert.equal(summary.homeScore, summary.awayScore);
+    assert.equal(summary.celticsHome, home);
+  }
+});
+
 test("retrospective jump ball snapshots first substitution; other late markers exclude", () => {
   const input = fixture();
   input.events[1].type = "rebound";

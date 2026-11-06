@@ -268,6 +268,7 @@ export async function replayPolicy(options: {
   const responses = windows.flatMap((w) => w.jev);
   const trace = {
     gameId: dataset.gameId,
+    celticsHome: dataset.celticsHome ?? null,
     datasetVersion: dataset.version,
     inputHash: dataset.inputHash,
     releaseAt: options.releaseAt,

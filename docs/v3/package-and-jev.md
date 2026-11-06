@@ -71,25 +71,30 @@ The API documentation does not expose a tokenizer/count endpoint. The implementa
 The following field selection is **Proposed for user review, not Agreed**. Each
 window summary retains `period`, `clockMs`, `celtics` and `eligibleBench`, and adds:
 
-- `homeScore`, `awayScore` and `margin` (Celtics points minus opponent points).
+- `celticsHome`, `homeScore`, `awayScore` and `margin` (Celtics points minus
+  opponent points). `celticsHome` comes from the pinned game's home-team ID,
+  carried as static dataset/trace metadata. It is `true` for Boston at home and
+  `false` away, including tied scores. Older datasets/traces without that metadata
+  return `null`; the side is never inferred from score or margin.
 - `players`: one entry per unique on-court or eligible bench player, in that
   order, containing `playerId`, `personalFouls`, `minutes` (total minutes played
   so far) and `currentStintMinutes`. These are copied without rounding from the
   window's observable state. Unavailable players and opponents are excluded;
   missing player measurements are `null`, never invented zeroes.
-- `timeoutsRemaining: null`: `state-v1` supplies historical timeout events but
-  no remaining-timeout balance. The summary does not infer one from event counts
-  or consult later events. A future state-schema field would need an explicit
-  projection change before this value could be populated.
 
-This is a projection of `window.state` only, not the assembled Jev state, actual
-outcome or final box score. The same projection is used for previous-game and
+Timeouts remaining is omitted until the observable state supplies that data;
+`state-v1` contains historical timeout events but no remaining-timeout balance.
+
+Scores and player measurements project `window.state`; home/away identity is
+static pregame metadata. Neither uses assembled Jev state, actual outcomes or
+final box scores. The same projection is used for previous-game and
 postgame feedback. Pages still contain at most two windows; full forensic detail
 remains available in the existing 4,096-character chunks. Tests cover the enriched
 page with five on-court and fifteen eligible bench players under 24,000 bytes,
 null states, unchanged detail reconstruction and invariance when later game
-scores/fouls change. No state schema, score, release rule or frozen trace is
-rewritten by this presentation change.
+scores/fouls change. The observable-state schema, scores and release rules are
+unchanged. New traces include the static side metadata; existing frozen traces
+are not rewritten.
 
 `PolicyTools` takes the trusted chronological schedule, current game, logical clock, and prior sample states. `read_feedback` returns exactly the immediate previous game in pregame or current game in postgame, only at/after its next-morning 9 a.m. Eastern release. Explicitly asking for an older/current/future game outside that rule returns the same unavailable error. The schedule's release times are validated. The agent cannot set the clock, supply a trace path, or nominate its own validation states.
 

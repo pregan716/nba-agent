@@ -42,6 +42,7 @@ export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
         ? {
             period: state.period,
             clockMs: state.clockMs,
+            celticsHome: trace.celticsHome ?? null,
             homeScore: state.homeScore,
             awayScore: state.awayScore,
             margin: state.margin,
@@ -60,9 +61,6 @@ export function feedbackPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
                 currentStintMinutes: player?.currentStintMinutes ?? null,
               };
             }),
-            // state-v1 has timeout events, not a remaining-timeout balance.
-            // Do not infer one or consult later game data in this projection.
-            timeoutsRemaining: null,
           }
         : null,
       diagnostics: preview(w.assembly?.assembly?.diagnostics),

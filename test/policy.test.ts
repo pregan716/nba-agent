@@ -357,6 +357,7 @@ test("policy replay scores per-question fallback and resumes without another pro
     },
   });
   const dataset = {
+    celticsHome: false,
     gameId: "g",
     version: "windows-v2:release",
     inputHash: "input",
@@ -398,6 +399,7 @@ test("policy replay scores per-question fallback and resumes without another pro
   };
   try {
     const trace = await replayPolicy(options);
+    assert.equal(trace.celticsHome, false);
     assert.equal(
       trace.windows[0].result.validation?.questions.entry.valid,
       false,
@@ -846,6 +848,7 @@ test("feedback is paged and full window detail can be reconstructed without a la
   };
   const trace = {
     gameId: "g",
+    celticsHome: true,
     summary: { windows: 75 },
     windows: Array.from({ length: 75 }, (_, i) => ({
       ...window,
@@ -862,7 +865,14 @@ test("feedback is paged and full window detail can be reconstructed without a la
   assert.equal(summary.homeScore, 70);
   assert.equal(summary.awayScore, 74);
   assert.equal(summary.margin, -4);
-  assert.equal(summary.timeoutsRemaining, null);
+  assert.equal(summary.celticsHome, true);
+  assert.equal(Object.hasOwn(summary, "timeoutsRemaining"), false);
+  const legacy = { ...trace };
+  delete legacy.celticsHome;
+  assert.equal(
+    feedbackPage(legacy).windows![0].stateSummary!.celticsHome,
+    null,
+  );
   assert.deepEqual(
     summary.players,
     summaryState.players
