@@ -221,3 +221,20 @@ test("the prompt describes the data, the trace file and the freeze lock", () => 
     /freeze_package/,
   );
 });
+
+test("the prompt matches the SPO-857 environment", () => {
+  const p = RESEARCH_SYSTEM_PROMPT_V3;
+  // The manifest no longer carries hashes; the first game spent six calls on them.
+  assert.doesNotMatch(p, /SHA-256/);
+  assert.match(p, /Do not compute or list file hashes/);
+  assert.match(p, /workspace_edit/);
+  assert.match(p, /2024-25 instead/);
+  assert.match(p, /include_metadata=true/);
+  assert.match(p, /16,000 bytes/);
+  assert.match(p, /first page only/);
+  for (const v of ["M1", "M2", "M3"] as const) {
+    const m = memoryPermissionInstructions(memoryVariant(v));
+    assert.match(m, /tokens currently retained against the cap/);
+    assert.match(m, /workspace_edit/);
+  }
+});

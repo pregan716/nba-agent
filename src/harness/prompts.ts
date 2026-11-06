@@ -113,7 +113,7 @@ Write the package to packages/<game_id>/ in the workspace, where <game_id> is th
   - criteria: a dict with substitution: {"true": str, "false": str}; count: {"none": str, "one": str, "two": str, "three_or_more": str}; exit: one string per id in state["celtics"]; entry: one string per id in state["eligibleBench"]. The exit and entry keys must equal those id lists exactly.
   - diagnostics: any JSON object. Jev does not see it. It is returned to you in the feedback trace, so use it to record which components and features drove each window.
 - Any other files you want assemble.py to read (components): text, JSON, tables. They are mounted read-only at /package/ next to assemble.py.
-- manifest.json: {"stateVersion": "state-v1", "components": {"<relative path>": "<SHA-256 hex of the file's bytes>", ...}, "notes": "<free text>"}. Every file except manifest.json must be listed, including assemble.py.
+- manifest.json: {"stateVersion": "state-v1", "notes": "<free text, optional>"}. That is all it needs; the environment hashes every file in the directory itself when the package is validated or frozen. Do not compute or list file hashes.
 
 assemble.py runs in an isolated container during the game: Python 3.12 standard library only, no network, no workspace, no game data, nothing but /package (read-only) and an empty /scratch. It must be deterministic: the same state must give the same output, and it is run twice to check. Each window has a few seconds of wall-clock time and 128 MiB of memory. Whatever the assembler needs to know about players, rotations or the opponent must be inside the package.
 
@@ -121,7 +121,8 @@ The assembler may compute anything from the state and may write whatever it like
 
 Tools for the package:
 
-- validate_package runs your draft against up to three states from earlier games and returns the assembled requests and diagnostics without calling Jev. No earlier states exist before the first game.
+- workspace_write creates or replaces a file; workspace_edit replaces one exact passage in an existing file, so a small fix to assemble.py or a component does not need the whole file resent.
+- validate_package runs your draft against up to three states from earlier games and returns the assembled requests and diagnostics without calling Jev. Before the first game of this season has been played, the sample states come from Celtics games in 2024-25 instead; they carry last season's roster and are only a check that the package runs, not evidence about this season.
 - freeze_package validates and freezes the package. A failed freeze returns the reason and you may fix the draft and try again. After a successful freeze the package cannot change. Freezing is the point of the pregame session: if no package is frozen before the session ends, or the frozen package fails on the first window, the whole game is unscored. If it raises on a later window, that window takes the fallback answers.
 
 # The observable state
@@ -144,7 +145,7 @@ Players appear only as ids. ${BETWEEN_PERIODS_STATE_NOTE} The state never contai
 
 After each game the environment replays it with your frozen package and releases a trace the next morning. read_feedback returns, window by window: a summary of the state, your diagnostics, the request Jev received, Jev's answers and whether they were valid, the proposed action, the coach's actual decision, and the scores; and for the game, aggregate scores and failure counts. In a pregame session it returns the previous game's trace; in a postgame session, the trace of the game just played. Older traces are not available from the tool.
 
-The same trace is also a file in the workspace, feedback/<game_id>/trace.json (in code execution, /workspace/feedback/<game_id>/trace.json), available whenever read_feedback would return it. It is one JSON object of a megabyte or more, so load it in code rather than reading it into the conversation; read_feedback pages hold two windows each. Its top-level keys include gameId, summary and windows. Each entry of windows has result.window (id, kind, the full state, actual as {players_out, players_in} or null, and exclusions, which is empty for a scored window), result.raw (Jev's answers), result.validation, result.scores, and assembly.assembly (the jev_state, instructions, criteria and diagnostics your package returned for that window).
+The same trace is also a file in the workspace, feedback/<game_id>/trace.json (in code execution, /workspace/feedback/<game_id>/trace.json), available whenever read_feedback would return it. It is one JSON object of a megabyte or more, so load it in code rather than reading it into the conversation; read_feedback pages hold two windows each, and the game summary appears on the first page only. Its top-level keys include gameId, summary and windows. Each entry of windows has result.window (id, kind, the full state, actual as {players_out, players_in} or null, and exclusions, which is empty for a scored window), result.raw (Jev's answers), result.validation, result.scores, and assembly.assembly (the jev_state, instructions, criteria and diagnostics your package returned for that window).
 
 # Evidence, time and budget
 
@@ -167,11 +168,11 @@ Game tables and their main columns:
 - player_box_scores: game_id, team_id, player_id, minutes_seconds, points, rebounds, assists, personal_fouls and the other box-score counts. team_box_scores and team_period_scores are the team equivalents.
 - player_game_summary: per player and game, including starter, participation_status, minutes_by_period and first_entry_clock_ms_by_period. team_game_summary and possessions also exist.
 
-Clock columns are milliseconds remaining in the period. Tables may also carry record-keeping columns (dataset_version, transformation_version, raw_object_ids, availability fields and similar) that say nothing about the game.
+Clock columns are milliseconds remaining in the period. By default the tools leave out the record-keeping columns (dataset_version, transformation_version, raw_object_ids, availability fields and similar), which say nothing about the game; query_game_history also returns column names without descriptions. Pass include_metadata=true to query_game_history, nba_data.table or nba_data.query if you want them.
 
 nba_data.session() returns a SQLite connection to the tables that are not per game: player_profiles (player_id, full_name, listed_position, opening_team_id and more), player_reference (player_id, full_name for every player), player_season_stats, player_2024_25_summary, player_career_summary, injuries, injury_team_snapshots, schedule (game_id, scheduled_start, venue, and home and away as JSON objects with team_id, abbreviation and name), evidence, posts, transcripts and lineups. These are not in the per-game databases, so nba_data.table does not find them.
 
-A code result is added to this conversation in full, and everything in the conversation is re-read on every later step, so print summaries rather than whole tables.
+A code result is added to this conversation and everything in the conversation is re-read on every later step, so print summaries rather than whole tables. Output beyond 16,000 bytes (stdout and stderr together) is cut and the result says so; files you write under /workspace or /scratch are never cut.
 
 Each session has a budget of model tokens, sandbox compute and tool calls. When it runs out the session ends, so leave room to validate and freeze. Each session starts with no conversation history.`;
 
@@ -228,7 +229,7 @@ export function memoryPermissionInstructions(
     );
   if (coach || practices)
     parts.push(
-      "The text under memory/ is capped at 50,000 tokens in total. A write that would exceed the cap is refused and tells you the current size, so revise and consolidate rather than only append.",
+      "The text under memory/ is capped at 50,000 tokens in total. The context tool and every write, append, edit or delete under memory/ report the tokens currently retained against the cap. A write that would exceed the cap is refused, so revise and consolidate rather than only append; workspace_edit is the cheap way to revise a note in place.",
     );
   parts.push(
     "The previous game's trace is read through read_feedback and is not kept for you. If you want something from a trace later, copy it into a directory you are permitted to keep, within that directory's rules.",
