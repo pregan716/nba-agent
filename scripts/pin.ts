@@ -32,7 +32,7 @@ try {
     await pin(
       `pbp-${season}`,
       "sports-nba-data",
-      `nba/releases/spo-771-full-v1-${season}/manifest.json`,
+      `nba/releases/spo-839-full-v1-${season}/manifest.json`,
     );
   await pin(
     "injuries",

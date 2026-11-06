@@ -158,12 +158,15 @@ def analyze(x):
                  changed_boundaries=sum(bool(b['entries']) for b in boundaries),boundary_entry_sizes=dist(str(len(b['entries'])) if b['entries'] is not None else 'unknown' for b in boundaries))
     return summary,game_results,groups,boundaries,comparisons
 
-def opener_types(event, include_new=True):
+def opener_types(event, include_new=True, team_rebound=None):
     """Proposed openers, independent of the substitution target.
 
     Missing qualifiers mean unavailable, never a TEAM-description proxy.
     Period openings/ends are excluded by opener_counts, not counted twice.
+    team_rebound=None follows include_new; windows-v1 is include_new=True, team_rebound=False.
     """
+    if team_rebound is None:
+        team_rebound = include_new
     t, subtype = event['type'], event.get('subtype')
     kinds = []
     if t == 'timeout' and subtype == 'full':
@@ -178,13 +181,14 @@ def opener_types(event, include_new=True):
         opening_clock = 720000 if event['period'] <= 4 else 300000
         if t == 'jump_ball' and event['clock_remaining_ms'] != opening_clock:
             kinds.append('jump_ball')
+    if team_rebound:
         qualifiers = event.get('qualifiers') or []
         if t == 'rebound' and {'team', 'deadball'}.issubset(qualifiers):
             kinds.append('deadball_team_rebound')
     return kinds
 
 
-def opener_counts(events, include_new=True):
+def opener_counts(events, include_new=True, team_rebound=None):
     """Count candidate buckets, not qualified/scored windows.
 
     Adjacency associates an otherwise unanchored substitution bucket with the
@@ -201,7 +205,7 @@ def opener_counts(events, include_new=True):
         bs = buckets(list(rows))
         def in_period(b):
             return 0 < b[0]['clock_remaining_ms'] < (720000 if b[0]['period'] <= 4 else 300000)
-        candidates = {i for i, b in enumerate(bs) if in_period(b) and any(opener_types(e, include_new) for e in b)}
+        candidates = {i for i, b in enumerate(bs) if in_period(b) and any(opener_types(e, include_new, team_rebound) for e in b)}
         direct, attached = set(), set()
         counts['candidate_inperiod_buckets'] += len(candidates)
         for i, b in enumerate(bs):
@@ -266,7 +270,8 @@ def opener_counts(events, include_new=True):
 if __name__ == '__main__' and '--openers' in sys.argv:
     x = json.loads((ROOT / '2025-26.json').read_text())
     print(json.dumps(dict(baseline=opener_counts(x['tables']['events'], include_new=False),
-                          proxy_free=opener_counts(x['tables']['events'])), indent=2, sort_keys=True))
+                          windows_v1=opener_counts(x['tables']['events'], team_rebound=False),
+                          with_deadball_team_rebound=opener_counts(x['tables']['events'])), indent=2, sort_keys=True))
 elif __name__ == '__main__':
     for season in ['2025-26','2024-25']:
         x=json.loads((ROOT/(season+'.json')).read_text())
