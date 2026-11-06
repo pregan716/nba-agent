@@ -1,7 +1,7 @@
 import type { Corpus } from "../data/corpus.js";
 import { injuryPlayerName, normalizeName } from "../data/identity.js";
 import type { RecordEnvelope, Row } from "../data/contracts.js";
-import type { ObjectRef } from "../data/store.js";
+import { loadSeasonRoster } from "./roster.js";
 import { BOS, type Pregame, type ReplayInput } from "./types.js";
 /** Caller supplies the frozen pregame evidence; no same-game box score roster inference. */
 export async function loadReplayInputs(
@@ -58,35 +58,20 @@ export async function loadReplayInputs(
     };
   });
 }
-/** Restricted audit helper: opening roster is valid for the audited pre-trade sample,
- * not a season roster service. Production callers must provide game-specific rosters. */
+/** Season pregame evidence, using only dated curated membership and pre-tip reports. */
 export async function auditPregames(
   c: Corpus,
   gameIds: string[],
   identityMappings: Row[],
+  root = process.cwd(),
 ): Promise<Pregame[]> {
-  const profiles = (await c.players.records()).filter(
-      (r) => r.data.opening_team_id === BOS,
-    ),
-    games = (await c.pbp.games()).filter((g) => gameIds.includes(g.id));
+  const membership = await loadSeasonRoster(root);
+  const games = (await c.pbp.games()).filter((g) => gameIds.includes(g.id));
   if (
     games.length !== new Set(gameIds).size ||
-    games.some((g) => g.data.scheduled_tipoff >= "2026-02-01")
+    games.some((g) => ![g.data.home_team_id, g.data.away_team_id].includes(BOS))
   )
-    throw Error("Audit roster helper only supports pre-February games");
-  const players = new Map<string, string[]>();
-  for (const p of profiles) {
-    const key = normalizeName(p.data.full_name);
-    players.set(key, [...(players.get(key) ?? []), p.data.player_id]);
-  }
-  const resolveName = (name: string) => {
-    const matches = players.get(
-      normalizeName(name.includes(",") ? injuryPlayerName(name) : name),
-    );
-    if (matches?.length !== 1)
-      throw Error(`Unresolved frozen roster identity: ${name}`);
-    return matches[0];
-  };
+    throw Error("Unknown or non-Celtics pregame request");
   const eligible = (r: RecordEnvelope) => {
     const game = games.find((g) => g.id === r.data.game_id);
     return (
@@ -121,6 +106,16 @@ export async function auditPregames(
     }
   const announcements = await c.celticsLineups.records();
   return games.map((g) => {
+    const roster = membership.at(g.data.scheduled_tipoff);
+    const resolveName = (name: string) => {
+      const key = normalizeName(
+        name.includes(",") ? injuryPlayerName(name) : name,
+      );
+      const matches = roster.filter((p) => normalizeName(p.name) === key);
+      if (matches.length !== 1)
+        throw Error(`Unresolved frozen roster identity: ${g.id}: ${name}`);
+      return matches[0].playerId;
+    };
     const snapshot = latest.get(g.id),
       rows = reports.get(g.id) ?? [];
     const lineup = announcements
@@ -136,10 +131,9 @@ export async function auditPregames(
       )
       .sort((a, b) => a.availableAt.localeCompare(b.availableAt))
       .at(-1);
-    const sources: ObjectRef[] = [
-      c.players.release.root,
+    const sources: Pregame["sources"] = [
+      ...membership.sources,
       c.injuries.release.root,
-      ...profiles.map((p) => p.provenance.object),
       ...(snapshot ? [snapshot.provenance.object] : []),
       ...rows.map((p) => p.provenance.object),
       ...(lineup ? [lineup.provenance.object] : []),
@@ -147,12 +141,12 @@ export async function auditPregames(
     return {
       gameId: g.id,
       scheduledStart: g.data.scheduled_tipoff,
-      roster: profiles.map((p) => ({
-        playerId: p.data.player_id,
-        availableAt: p.availableAt,
+      roster: roster.map(({ playerId, availableAt }) => ({
+        playerId,
+        availableAt,
       })),
       injuryReport: {
-        availableAt: snapshot?.availableAt ?? profiles[0].availableAt,
+        availableAt: snapshot?.availableAt ?? membership.openingAvailableFrom,
         state:
           snapshot?.data.observed_state === "players_listed"
             ? "listed"

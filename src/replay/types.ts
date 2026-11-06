@@ -1,5 +1,6 @@
 import type { Row } from "../data/contracts.js";
 import type { ObjectRef } from "../data/store.js";
+import type { LocalSource } from "./roster.js";
 
 export const BOS = "1610612738";
 export const WINDOW_VERSION = "windows-v2";
@@ -25,7 +26,7 @@ export interface Pregame {
     players: { playerId: string; status: string }[];
   };
   announcedStarters: { availableAt: string; players: string[] } | null;
-  sources: ObjectRef[];
+  sources: (ObjectRef | LocalSource)[];
 }
 export const BOX_FIELDS = [
   "points",
