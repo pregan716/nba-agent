@@ -1,0 +1,399 @@
+{
+  "codeRevision": "1cdaae866bd2ac28444aedd5e0c110f23700ec28",
+  "live": true,
+  "gameId": "0022500083",
+  "release": {
+    "bucket": "sports-nba-data",
+    "key": "nba/releases/spo-839-full-v1-2025-26/manifest.json",
+    "sha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+    "bytes": 2386079
+  },
+  "datasetVersion": "windows-v2:04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+  "inputHash": "07f1c02cdcad3ab6db40f7512a6858da82b4fe6bb39fa9dfbd9f7cb0ebf8d025",
+  "versions": {
+    "handwritten": {
+      "api": "assemble-v1",
+      "replay": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "image": "local@sha256:5986a9fb184b9c516c3f892c6574cb2846921f5e4bc6d6709b738895dbea8c45",
+      "limits": {
+        "wallSeconds": 15,
+        "memoryBytes": 134217728,
+        "outputBytes": 256000
+      },
+      "jev": {
+        "model": "jev-1.14.0",
+        "inputUsdPerMillion": 0.042,
+        "retries": 1,
+        "perQuestionTokens": 32000,
+        "contextGuard": "utf8-bytes-plus-1024-v1",
+        "requestTokens": 64000,
+        "answerMapping": "score-index-v1"
+      },
+      "package": {
+        "gameId": "0022500083",
+        "packageHash": "df78931db2756e4db61671b0d8479181be88a9a316e7b409291831fc439d5aa6",
+        "manifestHash": "6fd82585a2d09220452847285e28e1b0ca2e8e2a01c20a2baf2a887e45fb207c",
+        "stateVersion": "state-v1",
+        "files": {
+          "assemble.py": "90eb73c4ab769e0343bd86aee963f832fc392ec3e6a663aa82315a0ceb361188",
+          "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+          "manifest.json": "6fd82585a2d09220452847285e28e1b0ca2e8e2a01c20a2baf2a887e45fb207c"
+        }
+      },
+      "codeRevision": "1cdaae866bd2ac28444aedd5e0c110f23700ec28",
+      "baseline": null,
+      "determinism": "double-run-and-content-cache-v1"
+    },
+    "generic": {
+      "api": "assemble-v1",
+      "replay": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "image": "local@sha256:5986a9fb184b9c516c3f892c6574cb2846921f5e4bc6d6709b738895dbea8c45",
+      "limits": {
+        "wallSeconds": 15,
+        "memoryBytes": 134217728,
+        "outputBytes": 256000
+      },
+      "jev": {
+        "model": "jev-1.14.0",
+        "inputUsdPerMillion": 0.042,
+        "retries": 1,
+        "perQuestionTokens": 32000,
+        "contextGuard": "utf8-bytes-plus-1024-v1",
+        "requestTokens": 64000,
+        "answerMapping": "score-index-v1"
+      },
+      "package": null,
+      "codeRevision": "1cdaae866bd2ac28444aedd5e0c110f23700ec28",
+      "baseline": "generic-jev-v1",
+      "determinism": "double-run-and-content-cache-v1"
+    }
+  },
+  "package": {
+    "gameId": "0022500083",
+    "packageHash": "df78931db2756e4db61671b0d8479181be88a9a316e7b409291831fc439d5aa6",
+    "manifestHash": "6fd82585a2d09220452847285e28e1b0ca2e8e2a01c20a2baf2a887e45fb207c",
+    "stateVersion": "state-v1",
+    "files": {
+      "assemble.py": "90eb73c4ab769e0343bd86aee963f832fc392ec3e6a663aa82315a0ceb361188",
+      "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+      "manifest.json": "6fd82585a2d09220452847285e28e1b0ca2e8e2a01c20a2baf2a887e45fb207c"
+    }
+  },
+  "probe": {
+    "model": "jev-1.14.0",
+    "request": {
+      "model": "jev-1.14.0",
+      "state": "",
+      "questions": {
+        "boston_won_opener": {
+          "type": "noul",
+          "instructions": "Did the Boston Celtics win their NBA regular-season game against Philadelphia on October 22, 2025?",
+          "criteria": {
+            "true": "The statement is true.",
+            "false": "The statement is false."
+          }
+        },
+        "philadelphia_won_opener": {
+          "type": "noul",
+          "instructions": "Did the Philadelphia 76ers win their NBA regular-season game against Boston on October 22, 2025?",
+          "criteria": {
+            "true": "The statement is true.",
+            "false": "The statement is false."
+          }
+        }
+      }
+    },
+    "response": {
+      "response": {
+        "model": "jev-1.14.0",
+        "answers": {
+          "boston_won_opener": {
+            "type": "noul",
+            "noul": 0.46
+          },
+          "philadelphia_won_opener": {
+            "type": "noul",
+            "noul": 0.4
+          }
+        },
+        "usage": {
+          "input_tokens": 376,
+          "output_tokens": 48
+        }
+      },
+      "usage": {
+        "input_tokens": 376,
+        "output_tokens": 48
+      },
+      "usd": 0.000015792,
+      "latencyMs": 142.45766600000024,
+      "attempt": 0,
+      "modelValid": true,
+      "usageValid": true
+    },
+    "results": [
+      {
+        "id": "boston_won_opener",
+        "question": "Did the Boston Celtics win their NBA regular-season game against Philadelphia on October 22, 2025?",
+        "truth": false,
+        "source": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+        "probability": 0.46,
+        "correct": true,
+        "brier": 0.2116
+      },
+      {
+        "id": "philadelphia_won_opener",
+        "question": "Did the Philadelphia 76ers win their NBA regular-season game against Boston on October 22, 2025?",
+        "truth": true,
+        "source": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+        "probability": 0.4,
+        "correct": false,
+        "brier": 0.36
+      }
+    ],
+    "valid": 2,
+    "invalid": 0,
+    "accuracy": 0.5,
+    "chanceAccuracy": 0.5,
+    "brier": 0.2858,
+    "chanceBrier": 0.25,
+    "discrimination": -0.06,
+    "interpretation": "Descriptive contamination diagnostic; small samples cannot establish absence of memorization."
+  },
+  "reports": [
+    {
+      "predictorId": "generic",
+      "summary": {
+        "windows": 75,
+        "eligible": 66,
+        "scored": 66,
+        "actualSubstitutions": 23,
+        "excluded": {
+          "ambiguous_equal_clock_run": 7,
+          "ambiguous_stoppage": 9,
+          "multiple_whistles": 7
+        },
+        "informational": {},
+        "failures": {},
+        "providerFailureRate": 0,
+        "providerFailureFlag": false,
+        "invalidQuestions": {},
+        "invalidActions": 0,
+        "timingBrier": 0.2463818181818183,
+        "timingLogLoss": 0.6855897615425349,
+        "clipped": 0,
+        "precision": 0.3125,
+        "recall": 0.43478260869565216,
+        "exitBrier": 0.23404347826086958,
+        "entryBrier": 0.10172284584980239,
+        "exitTop1": 0.2608695652173913,
+        "entryTop1": 0.21739130434782608,
+        "exitTopK": 0.17391304347826086,
+        "entryTopK": 0.17391304347826086,
+        "exactAction": 0.3333333333333333,
+        "partialOverlap": 0.029629629629629627,
+        "calibration": [
+          {
+            "lower": 0,
+            "upper": 0.1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 4,
+            "predicted": 0.2575,
+            "observed": 0.25
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 7,
+            "predicted": 0.38285714285714295,
+            "observed": 0.5714285714285714
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 23,
+            "predicted": 0.4395652173913044,
+            "observed": 0.34782608695652173
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 32,
+            "predicted": 0.5324999999999998,
+            "observed": 0.3125
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.9,
+            "upper": 1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 402827,
+        "output_tokens": 18587,
+        "usd": 0.016918734,
+        "latencyMs": 8515.422583999994
+      },
+      "windows": 75
+    },
+    {
+      "predictorId": "handwritten",
+      "summary": {
+        "windows": 75,
+        "eligible": 66,
+        "scored": 66,
+        "actualSubstitutions": 23,
+        "excluded": {
+          "ambiguous_equal_clock_run": 7,
+          "ambiguous_stoppage": 9,
+          "multiple_whistles": 7
+        },
+        "informational": {},
+        "failures": {},
+        "providerFailureRate": 0,
+        "providerFailureFlag": false,
+        "invalidQuestions": {},
+        "invalidActions": 0,
+        "timingBrier": 0.2516454545454546,
+        "timingLogLoss": 0.6960805376336514,
+        "clipped": 0,
+        "precision": 0.32432432432432434,
+        "recall": 0.5217391304347826,
+        "exitBrier": 0.2379965217391304,
+        "entryBrier": 0.11037865612648223,
+        "exitTop1": 0.43478260869565216,
+        "entryTop1": 0.2608695652173913,
+        "exitTopK": 0.2608695652173913,
+        "entryTopK": 0.17391304347826086,
+        "exactAction": 0.2878787878787879,
+        "partialOverlap": 0.048611111111111105,
+        "calibration": [
+          {
+            "lower": 0,
+            "upper": 0.1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 4,
+            "predicted": 0.26,
+            "observed": 0.25
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 25,
+            "predicted": 0.45760000000000006,
+            "observed": 0.4
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 37,
+            "predicted": 0.5362162162162163,
+            "observed": 0.32432432432432434
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.9,
+            "upper": 1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 404675,
+        "output_tokens": 18587,
+        "usd": 0.01699635,
+        "latencyMs": 9448.886960000014
+      },
+      "windows": 75
+    }
+  ]
+}
