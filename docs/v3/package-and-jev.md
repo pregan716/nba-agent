@@ -58,9 +58,9 @@ The existing validator and derived-action rule are reused without relaxing them.
 
 The [System One API](https://docs.typesafe.ai/api/system-one), [Score response](https://docs.typesafe.ai/primitives/score) and [request errors](https://docs.typesafe.ai/api/errors) were checked during implementation. The numeric count mapping is an API adaptation, not a scoring change.
 
-## Proposed brief detail raised in this PR
+## Agreed context guard
 
-The API documentation does not expose a tokenizer/count endpoint. The implementation therefore refuses a request when UTF-8 bytes of serialized state plus one question, plus 1,024 bytes of framing allowance, exceed 32,000; it also guards the serialized full request plus 4,096 against 64,000. This is a conservative capacity guard, **not an exact token count**, and can reject requests below the token limit. The brief's Jev settings section now explicitly offers this narrower guard as a Proposed implementation detail for review. An exact tokenizer would change the harness version. No research budget numbers or other Open decision are inferred here.
+The API documentation does not expose a tokenizer/count endpoint. The implementation therefore refuses a request when UTF-8 bytes of serialized state plus one question, plus 1,024 bytes of framing allowance, exceed 32,000; it also guards the serialized full request plus 4,096 against 64,000. This is a conservative capacity guard, **not an exact token count**, and can reject requests below the token limit. The user explicitly accepted this narrower guard on Nov 6, 2026; the brief marks it Agreed. An exact tokenizer would change the harness version. No research budget numbers or other Open decision are inferred here.
 
 ## Trace, feedback and local validation
 
@@ -89,4 +89,4 @@ The script uses the opener `0022500083`, verifies the pinned corpus, builds its 
 
 ## Review follow-ups
 
-CI now builds the assembler image and runs the real Docker test. Local image IDs remain host-local: registry publication and a pullable digest are required before scored runs. The context guard remains **Proposed**; the review did not constitute user acceptance. The original live gate below remains evidence for its recorded implementation revision; review fixes are covered by cancellation/resume, infrastructure, paging, cleanup and Docker tests.
+CI now builds the assembler image and runs the real Docker test. Local image IDs remain host-local: registry publication and a pullable digest are required before scored runs. The user accepted the context guard on Nov 6, 2026; that explicit decision is recorded in the brief. The original live gate below remains evidence for its recorded implementation revision; review fixes are covered by cancellation/resume, infrastructure, paging, cleanup and Docker tests.

@@ -132,7 +132,7 @@ The environment constructs the `exit` and `entry` option keys from the observabl
 
 **Settings, part of the harness version.** Model `jev-1.14.0` by versioned id; the response's `model` field is checked against it on every call. Default context mode: the assembled state plus one question must stay under the 32k-token per-question limit, and the long-context header is never sent, since TypeSafe documents that mode as slower and less accurate. The assembler sandbox refuses a request over the limit and the window is scored as an assembler error. One retry on 429 or transport error, honouring `retry-after`. `usage.input_tokens` and the versioned model id are recorded per window; spend is computed at the pinned price ($0.042 per million input tokens, output free), so a game of a few hundred windows costs cents.
 
-**Proposed implementation detail (SPO-841).** Until an exact TypeSafe tokenizer/count endpoint is available, preflight uses a conservative UTF-8 byte bound: serialized state plus one question plus 1,024 framing bytes must not exceed 32,000; the full serialized request plus 4,096 must not exceed 64,000. This can refuse requests that would fit under the token limit. It never enables long context; a provider `max_tokens_exceeded` response is also an assembler error. This narrower guard is offered for review in the R3 PR and is part of the harness version.
+**Agreed implementation detail (SPO-841; accepted by the user Nov 6, 2026).** Until an exact TypeSafe tokenizer/count endpoint is available, preflight uses a conservative UTF-8 byte bound: serialized state plus one question plus 1,024 framing bytes must not exceed 32,000; the full serialized request plus 4,096 must not exceed 64,000. This can refuse requests that would fit under the token limit. It never enables long context; a provider `max_tokens_exceeded` response is also an assembler error. This narrower guard is part of the harness version; replacing it with an exact tokenizer changes that version.
 
 **Determinism.** TypeSafe does not state whether identical requests return identical probabilities. The record stores every response, so scores are reproducible from the record regardless. Agreed (Nov 4, 2026): the pilot replays one development game twice with the same frozen package and reports the per-window probability differences; if they are material, the replay engine's reproducibility claim is stated as record-level only.
 
@@ -479,6 +479,7 @@ Decisions made for v3, and v2 decisions explicitly re-affirmed. Agreed.
 | Memory cap | 50,000 tokens of retained text in `memory/`; skills uncapped and reported in the first stage. Nov 4, 2026. |
 | Content-boundary audit | Automated name check into a human queue, end-of-run sample, breach reported as a confound. Nov 4, 2026. |
 | Jev question set and derived action | The four fixed questions and the argmax rule in the Jev contract; part of the harness version. Nov 4, 2026. |
+| Jev context guard | Conservative UTF-8 byte preflight: state plus one question plus 1,024 framing bytes ≤ 32,000; full request plus 4,096 ≤ 64,000. May reject requests below the token limit; long context stays disabled. User accepted Nov 6, 2026 (SPO-841). |
 | Jev determinism | Double replay of one development game in the pilot; reproducibility stated as record-level if probabilities differ materially. Nov 4, 2026. |
 | Game lines as context | Scheduled-start spread and total in the research agent's session context only. Nov 4, 2026. |
 | 2024–25 as evidence | Eligible from the start of the replay, as in v2. Nov 4, 2026. |
@@ -497,7 +498,6 @@ One decision is Open, by design. Everything proposed in the first draft's Open t
 | --- | --- | --- | --- |
 | Open | Budget numbers | Research budget | Set by the pilot procedure: development games on M3 at effort `high` with code execution on, caps at the 90th percentile, re-runs at a smaller and a larger pregame cap, recorded as budget profile v1. |
 | Proposed | Package detail: component layout, entry-point signature, manifest fields | The task, Policy package | R3 implements as written; the first hand-written package in gate 2 is the review. |
-| Proposed | Conservative UTF-8 byte context guard until an exact tokenizer is available | Jev prediction contract; [R3 contract](v3/package-and-jev.md) | SPO-841 implements the narrower guard and raises it for review; replacing it changes the harness version. |
 | Proposed | Trace fields | The task, Feedback trace | R3 implements as written; reviewed with the gate-2 trace. |
 | Proposed | Player-selection normalization (scale by k) | Scoring, Player selection | R2 implements as written with a hand-computed fixture; alternatives are a brief change. |
 | Proposed | Invalid-answer fallbacks and the 5 % provider-failure flag | Scoring, Invalid outputs and failures | R2 implements as written with a scorer fixture for the per-question rule. |
