@@ -6,22 +6,20 @@ R3 connects a frozen Python package to the existing `windows-v2` replay, per-que
 
 The agent writes `packages/<game_id>/` through the workspace tools or mediated research filesystem. The package contains `assemble.py`, optional components, and `manifest.json`:
 
+Agreed (Nov 6, 2026, SPO-857): the agent may omit `components`; the harness computes the hashes itself.
+
 ```json
 {
   "stateVersion": "state-v1",
-  "components": {
-    "assemble.py": "<SHA-256 of the actual bytes>",
-    "components/instructions.txt": "<SHA-256 of the actual bytes>"
-  },
-  "notes": "Free-form notes"
+  "notes": "Free-form notes (optional)"
 }
 ```
 
-Every file except the manifest must appear in `components`, including the entry point. Paths are relative; symlinks, hard links, devices, unlisted files, more than 256 files or more than 8 MiB are refused. The manifest and all file hashes form the package identity. See the runnable [hand-written package](../../examples/policy/assemble.py).
+If `components` is supplied, every file except the manifest must appear in it, including `assemble.py`, with its exact SHA-256; wrong hashes, missing entries and extra entries are refused. Without it, all ordinary package files are included automatically. Paths are relative; symlinks, hard links, devices, more than 256 files or more than 8 MiB are refused. The manifest and all file hashes form the package identity, and the frozen receipt records every hash including `manifest.json`. See the runnable [hand-written package](../../examples/policy/assemble.py), which remains compatible with its explicit hashes.
 
 `freeze_package` takes no agent-supplied game id or path. It validates hashes and schema, copies the bytes into a staging directory, loads the entry point inside the assembler container, checks the trusted logical clock again, and atomically renames the snapshot into the run's `frozen-packages/<game_id>/`. Both clock checks require strictly before scheduled tip. Identical pre-cutoff retries return the same receipt; changing a frozen package is refused. A failed freeze returns `status: invalid_package` and a reason, publishes no snapshot, and permits fixing the draft before cutoff. The replay caller passes a final failed freeze through `replayPolicy.invalidPackage` to mark the game unscored.
 
-Snapshots are outside the agent workspace, with read-only files/directories. The workspace service checks the durable receipt on write, append, delete, mkdir and filesystem authorization; this also covers the mediated research mount. Old packages cannot be listed or read in a new game's session. With the policy tools installed, the current package is writable even for stateless/append-only memory configurations; ordinary memory permissions are unchanged. The host administrator can modify files, but the replay verifies the snapshot's hashes before assembly and before cache use. Immutability is an agent/tool boundary, not a claim against a privileged host administrator.
+Snapshots are outside the agent workspace, with read-only files/directories. The workspace service checks the durable receipt on write, append, edit, delete, mkdir and filesystem authorization; this also covers the mediated research mount. Old packages cannot be listed or read in a new game's session. With the policy tools installed, the current package is writable even for stateless/append-only memory configurations; ordinary memory permissions are unchanged. The host administrator can modify files, but the replay verifies the snapshot's hashes before assembly and before cache use. Immutability is an agent/tool boundary, not a claim against a privileged host administrator.
 
 ## Assembler API and containment
 
@@ -98,7 +96,7 @@ are not rewritten.
 
 `PolicyTools` takes the trusted chronological schedule, current game, logical clock, and prior sample states. `read_feedback` returns exactly the immediate previous game in pregame or current game in postgame, only at/after its next-morning 9 a.m. Eastern release. Explicitly asking for an older/current/future game outside that rule returns the same unavailable error. The schedule's release times are validated. The agent cannot set the clock, supply a trace path, or nominate its own validation states.
 
-`validate_package` snapshots the draft separately and assembles at most three sample states from games released by the logical clock and strictly before current tip. It returns requests and diagnostics, never invokes Jev, and is charged against research compute through the runner's reservation/settlement path. The meter conservatively charges elapsed assembly/setup wall time; limits abort validation and preserve the error in the result. Tests plant current and future samples and confirm they are ignored. Temporary validation snapshots are unlocked and removed in `finally`. Session creation asserts that the policy package store shares the workspace freeze-lock root.
+`validate_package` snapshots the draft separately and assembles at most three sample states from games released by the logical clock and strictly before current tip. It returns requests and diagnostics, never invokes Jev, and is charged against research compute through the runner's reservation/settlement path. The meter conservatively charges elapsed assembly/setup wall time; limits abort validation and preserve the error in the result. When no earlier game of the run has been released, validation falls back to up to three qualified states from distinct games in the fixed chronological 2024–25 datasets from SPO-856: first quarter with at least six minutes left, second quarter with at most six minutes left, and fourth quarter. For each target, choose the first qualifying window in the earliest unused game; skip a target if none qualifies. Each fallback must have a canonical next-morning release strictly before the session cutoff, a prior-season scheduled start, and a matching state game ID; current and future games are refused. The run manifest pins each fallback’s game, release, dataset input hash and state hash. Once an earlier run game is released, only eligible run-game samples are used. Tests plant current and future samples and confirm they are ignored. Temporary validation snapshots are unlocked and removed in `finally`. Session creation asserts that the policy package store shares the workspace freeze-lock root.
 
 Integration: supply `sessionEnvironment`'s `policy` factory with a `PolicyTools` instance and put `policyHarness(assembler)` in the research harness config. The factory receives only trusted session/run context. Pregame uses a logical instant strictly before scheduled tip; postgame uses the game's release. Call `replayPolicy` during trusted replay, then publish via `PolicyTools.saveFeedback`. The analyst's model handle cannot call the `jev` role. Pi and the chronological learning runner are the subsequent R4/R5 work, not replaced here.
 
@@ -120,3 +118,17 @@ The script uses the opener `0022500083`, verifies the pinned corpus, builds its 
 ## Review follow-ups
 
 CI now builds the assembler image and runs the real Docker test. Local image IDs remain host-local: registry publication and a pullable digest are required before scored runs. The user accepted the context guard on Nov 6, 2026; that explicit decision is recorded in the brief. The original live gate below remains evidence for its recorded implementation revision; review fixes are covered by cancellation/resume, infrastructure, paging, cleanup and Docker tests.
+
+## Research tool output — SPO-857
+
+Research code output is capped at 16,384 bytes across stdout and stderr in the pilot preset. Up to 4 KiB is reserved for the tail of stderr when present; stdout uses the remaining bytes. The supervisor retains rolling stderr so the final exception survives earlier output. Truncated results carry `truncated: true` and `truncation_notice`; files saved in the permitted workspace are unaffected.
+
+`query_game_history` defaults to column names without descriptions and rows without provenance columns. `include_metadata: true` restores both. Python `nba_data.table(..., include_metadata=True)` and `nba_data.query(..., include_metadata=True)` restore provenance columns; their default frames omit them. `quality_status` remains in the default view so partial or failed rows are identifiable; `issue_ids` remains opt-in. The shared provenance list is `sandbox/provenance-columns.json`. SQL still executes over the complete stored tables; filtering occurs on result columns. Empty and all-null shards retain their rows and null values without pandas concatenation warnings.
+
+Agreed (Nov 6, 2026, SPO-857): `workspace_edit(path, old_text, new_text)` replaces exactly one literal occurrence in an existing UTF-8 file. Empty, absent or repeated matches are refused. It uses write permissions and the same phase checks, freeze lock and atomic memory-cap enforcement. Successful writes, appends, deletes and edits under `memory/` return `memoryUsage: {retainedTokens, cap}` using the existing analyst count protocol; v3 `context` returns the same usage. Skills and per-game artifacts are not included in retained memory usage.
+
+Feedback includes the game summary only on `cursor: 0`; later pages retain window details and pagination. The full forensic trace remains unchanged.
+
+Integration for SPO-855: prompts should describe the optional `components` map, the fallback validation states, `workspace_edit`, `include_metadata`, and `memoryUsage`. Prompt wording is outside SPO-857’s scope. The user accepted the simplified manifest, edit tool and prior-season practice states on Nov 6, 2026; all three are Agreed.
+
+Agreed (Nov 6, 2026, SPO-857): using the retrospective 2024–25 box-score roster datasets for unscored analyst validation extends the Nov 6 agreement, which covered statistical-baseline training only. These samples retain the same unknown injury status and synthetic timestamp caveats. They never supply rosters or states for evaluated games.

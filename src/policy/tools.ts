@@ -19,6 +19,13 @@ import { PackageStore } from "./package.js";
 import { assembleRequest, type PolicyTrace } from "./replay.js";
 import type { ObservableState } from "../replay/types.js";
 import { SessionError, type Phase } from "../env/contract.js";
+export interface ValidationSample {
+  gameId: string;
+  scheduledStart: string;
+  release: string;
+  inputHash: string;
+  state: ObservableState;
+}
 export interface PolicyGame {
   gameId: string;
   scheduledStart: string;
@@ -35,6 +42,7 @@ export class PolicyTools {
     readonly assembler: Assembler,
     readonly samples: { gameId: string; state: ObservableState }[],
     private clock: () => string,
+    readonly fallbackSamples: ValidationSample[] = [],
   ) {
     if (
       new Set(schedule.map((g) => g.gameId)).size !== schedule.length ||
@@ -105,18 +113,26 @@ export class PolicyTools {
         this.assembler,
         deadline,
       );
-      for (const sample of this.samples
-        .filter((s) => {
-          const g = this.schedule.find((g) => g.gameId === s.gameId);
-          return (
-            g &&
-            g.gameId !== this.game.gameId &&
-            Date.parse(g.release) <= Date.parse(this.clock()) &&
-            Date.parse(g.release) < Date.parse(this.game.scheduledStart) &&
-            s.state.gameId === s.gameId
+      const released = (g: PolicyGame) =>
+        g.gameId !== this.game.gameId &&
+        Date.parse(g.release) <= Date.parse(this.clock()) &&
+        Date.parse(g.release) < Date.parse(this.game.scheduledStart);
+      const hasEarlier = this.schedule.some(released);
+      const samples = hasEarlier
+        ? this.samples.filter((s) => {
+            const g = this.schedule.find((g) => g.gameId === s.gameId);
+            return g && released(g) && s.state.gameId === s.gameId;
+          })
+        : this.fallbackSamples.filter(
+            (s) =>
+              released(s) &&
+              Date.parse(s.release) < Date.parse(this.clock()) &&
+              s.state.gameId === s.gameId &&
+              Number.isFinite(Date.parse(s.scheduledStart)) &&
+              s.release === releaseTime(s.scheduledStart) &&
+              Date.parse(s.scheduledStart) < Date.parse("2025-07-01T00:00:00Z"),
           );
-        })
-        .slice(0, 3)) {
+      for (const sample of samples.slice(0, 3)) {
         const result = await assembleRequest(
           this.assembler,
           join(temporary.path(this.game.gameId), "package"),

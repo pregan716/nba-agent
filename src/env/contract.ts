@@ -40,6 +40,7 @@ export const TOOL_NAMES = [
   "workspace_write",
   "workspace_append",
   "workspace_delete",
+  "workspace_edit",
 ] as const;
 export type ToolName = (typeof TOOL_NAMES)[number];
 
@@ -73,6 +74,7 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
   workspace_write: "workspace",
   workspace_append: "workspace",
   workspace_delete: "workspace",
+  workspace_edit: "workspace",
 };
 
 /**
@@ -97,6 +99,7 @@ export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
   workspace_write: ["pregame", "postgame"],
   workspace_append: ["pregame", "postgame"],
   workspace_delete: ["pregame", "postgame"],
+  workspace_edit: ["pregame", "postgame"],
 };
 
 // ---------------------------------------------------------------------------
@@ -145,7 +148,12 @@ export interface DatasetVersion {
   release: string;
   manifest_sha256: string;
 }
+export interface MemoryUsage {
+  retainedTokens: number;
+  cap: number;
+}
 export interface ContextResult {
+  memoryUsage?: MemoryUsage;
   team: TeamRef;
   season: "2025-26";
   game: {
@@ -271,6 +279,7 @@ export const PLAYER_REFERENCE_TABLES = [
 export type PlayerReferenceTable = (typeof PLAYER_REFERENCE_TABLES)[number];
 export type HistoryTable = GameHistoryTable | PlayerReferenceTable;
 export interface QueryGameHistoryInput {
+  include_metadata?: boolean;
   table: HistoryTable;
   /**
    * For game-history tables at least one of game_id, team_id, player_id is
@@ -297,7 +306,7 @@ export interface ColumnDefinition {
 export interface QueryGameHistoryResult extends Page {
   table: HistoryTable;
   /** Explicit definitions for every column returned, from the release data dictionary. */
-  columns: ColumnDefinition[];
+  columns: { name: string; description?: string }[];
   rows: Record<string, Scalar>[];
   /** Eligible games whose product is not `valid` in the release coverage; served as absent. Empty for player-reference tables. */
   unavailable: { game_id: GameId; reason: string }[];
@@ -351,6 +360,7 @@ export interface ExecuteCodeInput {
   program: string;
 }
 export interface ExecuteCodeResult {
+  truncation_notice?: string;
   stdout: string;
   stderr: string;
   exit_status: number | null;
@@ -391,7 +401,13 @@ export interface WorkspaceAppendInput {
 export interface WorkspaceDeleteInput {
   path: string;
 }
+export interface WorkspaceEditInput {
+  path: string;
+  old_text: string;
+  new_text: string;
+}
 export interface WorkspaceMutationResult {
+  memoryUsage?: MemoryUsage;
   path: string;
   bytes: number;
 }
@@ -401,6 +417,10 @@ export interface WorkspaceMutationResult {
 // ---------------------------------------------------------------------------
 
 export interface ToolContract {
+  workspace_edit: {
+    input: WorkspaceEditInput;
+    result: WorkspaceMutationResult;
+  };
   freeze_package: {
     input: {};
     result:

@@ -156,6 +156,18 @@ export const configSchema = z.strictObject({
           }),
         )
         .min(1),
+      validationSamples: z
+        .array(
+          z.strictObject({
+            gameId: id,
+            scheduledStart: z.string().datetime({ offset: true }),
+            release: z.string().datetime({ offset: true }),
+            inputHash: hash,
+            stateHash: hash,
+          }),
+        )
+        .max(3)
+        .optional(),
       jevContaminationProbe: z.unknown().optional(),
     })
     .optional(),

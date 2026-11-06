@@ -120,7 +120,7 @@ holdout training are refused before predictions. No current-season inputs outsid
 the selected development games and ten warm-up games are loaded for fitting.
 Results on earlier development games remain retrospective diagnostics, never evidence.
 
-**Agreed roster source (Nov 6, 2026; training only):** the prior-season loader
+**Agreed roster source (Nov 6, 2026; statistical-baseline training and unscored practice states):** the prior-season loader
 uses every Celtics player listed in that game's pinned `player_box_scores`,
 including DNP rows, as its frozen roster. This is retrospective membership, not
 pregame availability evidence: it can omit an unlisted roster member or include
@@ -131,6 +131,12 @@ claims. The `same-game-box-score-v1` policy is included in input hashes and
 `trainingOnly` metadata, and both replay selection and execution reject those
 datasets. This approximation must never be used for an evaluated game. The
 2025–26 loader continues to require dated curated membership and pre-tip reports.
+
+Agreed (Nov 6, 2026, SPO-857): the same prior-season datasets may also supply
+up to three fixed, released practice states for analyst package validation when
+no earlier run game is released. This extends the original SPO-856
+baseline-training-only agreement to unscored validation; all roster caveats
+and the prohibition on use for evaluated games above still apply.
 
 The two pinned prior-season gaps (`0022400061`, `0022400230`) are retained in
 training provenance with zero windows and an explicit coverage-gap ledger entry.

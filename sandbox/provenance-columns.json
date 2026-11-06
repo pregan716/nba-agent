@@ -1,0 +1,18 @@
+[
+  "_row",
+  "dataset_version",
+  "schema_version",
+  "transformation_version",
+  "parser_version",
+  "configuration_hash",
+  "transformed_at",
+  "raw_object_ids",
+  "issue_ids",
+  "event_time",
+  "retrieved_at",
+  "source_published_at",
+  "source_updated_at",
+  "available_at",
+  "availability_basis",
+  "availability_evidence"
+]

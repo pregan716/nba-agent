@@ -22,8 +22,8 @@ const file = z
   .refine((s) => !s.split("/").some((x) => x === "." || x === ".."));
 export const packageSchema = z.strictObject({
   stateVersion: z.literal(STATE_VERSION),
-  components: z.record(file, z.string().regex(/^[a-f0-9]{64}$/)),
-  notes: z.string(),
+  components: z.record(file, z.string().regex(/^[a-f0-9]{64}$/)).optional(),
+  notes: z.string().optional(),
 });
 export interface PackageReceipt {
   gameId: string;
@@ -64,7 +64,9 @@ export function packageFiles(directory: string) {
   const manifest = packageSchema.parse(
     JSON.parse(files.get("manifest.json")?.toString() ?? "null"),
   );
-  const declared = Object.keys(manifest.components).sort(),
+  const declared = manifest.components
+      ? Object.keys(manifest.components).sort()
+      : [...files.keys()].filter((k) => k !== "manifest.json").sort(),
     actual = [...files.keys()].filter((k) => k !== "manifest.json").sort();
   if (
     canonicalJson(declared) !== canonicalJson(actual) ||
@@ -74,7 +76,10 @@ export function packageFiles(directory: string) {
       "Package component list must include every file and assemble.py",
     );
   for (const key of declared)
-    if (sha256(files.get(key)!) !== manifest.components[key])
+    if (
+      manifest.components &&
+      sha256(files.get(key)!) !== manifest.components[key]
+    )
       throw Error(`Package hash mismatch: ${key}`);
   return { files, manifest };
 }

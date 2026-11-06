@@ -294,7 +294,12 @@ def execute(request):
                     continue
                 output = buffers[streams[stream]]
                 available = max(0, cap - len(output))
-                output.extend(chunk[:available])
+                if streams[stream] == 1:
+                    # Keep the exception at the end even after noisy stderr.
+                    output.extend(chunk)
+                    del output[:max(0, len(output) - cap)]
+                else:
+                    output.extend(chunk[:available])
                 truncated |= len(chunk) > available
         status = process.wait()
         if oom_kills() > oom_before:

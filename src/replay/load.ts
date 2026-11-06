@@ -1,3 +1,4 @@
+import { releaseTime } from "../env/visibility.js";
 import { digest } from "../runner/config.js";
 import { buildDataset } from "./dataset.js";
 import { WINDOW_VERSION } from "./types.js";
@@ -287,4 +288,52 @@ export async function loadPriorSeasonTraining(
       },
     };
   });
+}
+
+/** Fixed, diverse prior-season samples: Q1 early, Q2 late, Q4, in distinct games. */
+export async function priorValidationSamples(
+  c: Corpus,
+  datasets?: DecisionDataset[],
+) {
+  const prior = datasets ?? (await loadPriorSeasonTraining(c));
+  const games = new Map((await c.priorPbp.games()).map((g) => [g.id, g]));
+  const ordered = [...prior].sort(
+    (a, b) =>
+      games
+        .get(a.gameId)!
+        .data.scheduled_tipoff.localeCompare(
+          games.get(b.gameId)!.data.scheduled_tipoff,
+        ) || a.gameId.localeCompare(b.gameId),
+  );
+  const used = new Set<string>();
+  const samples = [];
+  for (const period of [1, 2, 4]) {
+    for (const d of ordered) {
+      if (used.has(d.gameId)) continue;
+      const w = d.windows.find(
+        (w) =>
+          w.state &&
+          !w.exclusions.length &&
+          w.state.period === period &&
+          (period === 1
+            ? w.state.clockMs >= 6 * 60_000
+            : period === 2
+              ? w.state.clockMs <= 6 * 60_000
+              : true),
+      );
+      if (!w?.state) continue;
+      const scheduledStart = games.get(d.gameId)!.data
+        .scheduled_tipoff as string;
+      samples.push({
+        gameId: d.gameId,
+        inputHash: d.inputHash,
+        state: w.state,
+        scheduledStart,
+        release: releaseTime(scheduledStart),
+      });
+      used.add(d.gameId);
+      break;
+    }
+  }
+  return samples;
 }

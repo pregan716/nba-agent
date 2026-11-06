@@ -1,3 +1,9 @@
+export const PROVENANCE_COLUMNS: string[] = JSON.parse(
+  readFileSync(
+    new URL("../../sandbox/provenance-columns.json", import.meta.url),
+    "utf8",
+  ),
+);
 import { DatabaseSync } from "node:sqlite";
 import {
   mkdirSync,

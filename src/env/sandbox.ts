@@ -1,3 +1,4 @@
+import { capCodeOutput } from "./code-output.js";
 import { sandboxLabels } from "../runner/orphans.js";
 import { spawn, execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -12,11 +13,6 @@ import type { WorkspacePort } from "./workspace.js";
 import { SessionError } from "./contract.js";
 const command = promisify(execFile);
 type Limits = Parameters<Environment["execute"]>[1];
-const trim = (encoded: string, cap: number) => {
-  let result = Buffer.from(encoded, "base64").subarray(0, cap).toString("utf8");
-  while (Buffer.byteLength(result) > cap) result = result.slice(0, -1);
-  return result;
-};
 
 /** One trusted supervisor per session. Agent code never owns Docker or a host path. */
 export class DockerSandbox {
@@ -299,22 +295,17 @@ export class DockerSandbox {
         ![null, "wall_clock", "compute", "memory"].includes(message.limit)
       )
         throw Error("Invalid sandbox result");
+      const output = capCodeOutput(
+        Buffer.from(message.stdout, "base64").toString(),
+        this.#workspaceErrors +
+          Buffer.from(message.stderr, "base64").toString(),
+        limits.stdoutBytes,
+      );
       return {
-        stdout: trim(message.stdout, limits.stdoutBytes),
-        stderr: trim(
-          Buffer.concat([
-            Buffer.from(this.#workspaceErrors),
-            Buffer.from(message.stderr, "base64"),
-          ]).toString("base64"),
-          limits.stdoutBytes,
-        ),
+        ...output,
         exitStatus: message.exitStatus,
         computeSeconds: message.computeSeconds,
-        truncated:
-          !!message.truncated ||
-          Buffer.byteLength(this.#workspaceErrors) +
-            Buffer.from(message.stderr, "base64").length >
-            limits.stdoutBytes,
+        truncated: !!message.truncated || output.truncated,
         limit: message.limit,
       };
     } finally {

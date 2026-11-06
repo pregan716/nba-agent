@@ -11,7 +11,7 @@ import type { RecordLog } from "../runner/record.js";
 import { Runner } from "../runner/runner.js";
 import type { MeteringProxy } from "../runner/proxy.js";
 import type { Assembler } from "../policy/sandbox.js";
-import { PolicyTools } from "../policy/tools.js";
+import { PolicyTools, type ValidationSample } from "../policy/tools.js";
 import {
   policyHarness,
   policyVersion,
@@ -110,6 +110,7 @@ function replayManifest(
 }
 
 export function chronologicalRunner(options: {
+  validationSamples?: ValidationSample[];
   root: string;
   config: RunConfig;
   source: SessionSource;
@@ -121,6 +122,11 @@ export function chronologicalRunner(options: {
   const { root, config, source, datasets, schedule, assembler, proxy } =
     options;
   validateLaunch(config.purpose, assembler.image, config.harness.identity);
+  if (
+    digest(config.replay?.validationSamples ?? []) !==
+    digest(validationSampleDescriptors(options.validationSamples ?? []))
+  )
+    throw Error("Validation samples differ from run manifest");
   if (
     digest(config.replay?.versions) !== digest(REPLAY_VERSIONS) ||
     config.profile.modelRoles.jev !== "jev-1.14.0"
@@ -155,6 +161,7 @@ export function chronologicalRunner(options: {
         ),
       ),
       () => cutoff,
+      options.validationSamples ?? [],
     );
   const environment = sessionEnvironment(config, source, {
     policy: (context, trusted) =>
@@ -353,4 +360,11 @@ export function diagnosticSelection(
     evaluation: games.slice(0, limit),
     training: mode === "baselines" ? games.slice(10, 20) : [],
   };
+}
+
+export function validationSampleDescriptors(samples: ValidationSample[]) {
+  return samples.map(({ state, ...sample }) => ({
+    ...sample,
+    stateHash: digest(state),
+  }));
 }
