@@ -79,7 +79,10 @@ export class MeteringProxy {
           type: "error",
           error: { type: "authentication_error", message: "Expired session" },
         });
-      if (req.method !== "POST" || req.url !== "/v1/messages")
+      if (
+        req.method !== "POST" ||
+        !(req.url === "/v1/messages" || req.url === "/v1/messages?beta=true")
+      )
         return respond(404, {
           error: { message: "Only /v1/messages is available" },
         });
@@ -110,7 +113,8 @@ export class MeteringProxy {
             throw Error("Request too large");
         }
         if (scope.closed || scope.signal.aborted) throw Error("Session closed");
-        const request = this.request(JSON.parse(body), scope.budget);
+        const payload = JSON.parse(body);
+        const request = this.request(payload, scope.budget);
         const { value: count } = await retryModel(
           (signal) => this.provider.count(request, signal),
           scope.signal,
@@ -173,7 +177,51 @@ export class MeteringProxy {
             scope.budget.scope,
             scope.budget.remaining(),
           );
-        respond(200, response);
+        if (payload.stream === true) {
+          res.writeHead(200, { "content-type": "text/event-stream" });
+          const emit = (type: string, data: object) =>
+            res.write(
+              `event: ${type}\ndata: ${JSON.stringify({ type, ...data })}\n\n`,
+            );
+          // Transport adaptation only: upstream requests, reservations, and usage
+          // stay on the same non-streaming metered path as the homemade harness.
+          emit("message_start", {
+            message: {
+              ...response,
+              content: [],
+              stop_reason: null,
+              stop_sequence: null,
+              usage: { ...response.usage, output_tokens: 0 },
+            },
+          });
+          for (const [index, block] of response.content.entries()) {
+            if (block.type === "tool_use") {
+              emit("content_block_start", {
+                index,
+                content_block: { ...block, input: {} },
+              });
+              emit("content_block_delta", {
+                index,
+                delta: {
+                  type: "input_json_delta",
+                  partial_json: JSON.stringify(block.input),
+                },
+              });
+            } else {
+              emit("content_block_start", { index, content_block: block });
+            }
+            emit("content_block_stop", { index });
+          }
+          emit("message_delta", {
+            delta: {
+              stop_reason: response.stop_reason,
+              stop_sequence: response.stop_sequence,
+            },
+            usage: response.usage,
+          });
+          emit("message_stop", {});
+          res.end();
+        } else respond(200, response);
       } catch (e) {
         if (!upstreamErrorRecorded)
           scope.budget.record.append("model_error", scope.budget.scope, {
@@ -207,8 +255,8 @@ export class MeteringProxy {
     return meteredJev(this.jevProvider, request, record, scope, signal);
   }
   request(body: any, budget: Budget): MessageCreateParamsNonStreaming {
-    if (!body || typeof body !== "object" || body.stream === true)
-      throw Error("Non-streaming requests required");
+    if (!body || typeof body !== "object")
+      throw Error("Message request required");
     const allowed = new Set([
       "model",
       "max_tokens",
@@ -221,7 +269,11 @@ export class MeteringProxy {
       "output_config",
     ]);
     if (Object.keys(body).some((k) => !allowed.has(k)))
-      throw Error("Unsupported model request field");
+      throw Error(
+        `Unsupported model request field: ${Object.keys(body)
+          .filter((k) => !allowed.has(k))
+          .join(", ")}`,
+      );
     if (
       !Array.isArray(body.messages) ||
       !Number.isSafeInteger(body.max_tokens) ||

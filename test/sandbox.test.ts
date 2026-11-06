@@ -760,3 +760,97 @@ test(
     }
   },
 );
+
+dockerTest(
+  "Pi executes only through the metered research sandbox in both phases",
+  async () => {
+    const { piHarness } = await import("../src/harness/pi.js");
+    const { harnessConfig } = await import("../src/harness/version.js");
+    const { sessionEnvironment } = await import("../src/env/session.js");
+    const { Runner } = await import("../src/runner/runner.js");
+    const { manifest } = await import("../src/runner/config.js");
+    const { MeteringProxy } = await import("../src/runner/proxy.js");
+    const s = fixture();
+    Object.assign(s.f.config.budget.sandbox, {
+      perCallSeconds: 5,
+      cpu: 1,
+      memoryBytes: limits.memoryBytes,
+      stdoutBytes: 4096,
+    });
+    s.f.config.harness = harnessConfig({
+      implementation: "pi",
+      memory: s.f.config.profile.memory,
+      effort: "high",
+      thinking: "adaptive",
+      sandboxImage: s.f.config.harness.sandboxImage,
+      codeRevision: "test",
+    });
+    let calls = 0;
+    const proxy = new MeteringProxy({
+      count: async () => 5,
+      create: async (request) => {
+        const first = request.messages.length === 1;
+        const post = JSON.stringify(request.messages[0]).includes("postgame");
+        const content = first
+          ? [
+              {
+                type: "tool_use",
+                id: `code_${++calls}`,
+                name: "execute_code",
+                input: {
+                  program: post
+                    ? "print(open('/workspace/pi.txt').read())"
+                    : "open('/workspace/pi.txt','w').write('pi-memory'); print('ok')",
+                },
+              },
+            ]
+          : [{ type: "text", text: "done" }];
+        return {
+          id: "fixture",
+          type: "message",
+          role: "assistant",
+          model: request.model,
+          content,
+          stop_reason: first ? "tool_use" : "end_turn",
+          stop_sequence: null,
+          usage: {
+            input_tokens: 5,
+            output_tokens: 10,
+            cache_read_input_tokens: 0,
+            cache_creation_input_tokens: 0,
+          },
+        } as any;
+      },
+    });
+    await proxy.listen();
+    const runner = new Runner(
+      s.root,
+      manifest(s.f.config, [s.f.game]),
+      proxy,
+      sessionEnvironment(s.f.config, s.f.source),
+    );
+    try {
+      await runner.run(piHarness({ model: "claude-opus-4-6" }));
+      assert.deepEqual(runner.record.events("session_error"), []);
+      const results = runner.record.events("code_result");
+      assert.equal(results.length, 2);
+      assert.ok(
+        results.every(
+          (e) => e.data.exitStatus === 0 && e.data.computeSeconds > 0,
+        ),
+      );
+      assert.match(results[1].data.stdout, /pi-memory/);
+      assert.ok(
+        runner.record
+          .events("phase_end")
+          .every((e) => e.data.status === "completed"),
+      );
+      assert.ok(runner.record.events("harness_history").length >= 2);
+    } finally {
+      runner.close();
+      await proxy.close();
+      await s.session.close();
+      s.clean();
+    }
+  },
+);

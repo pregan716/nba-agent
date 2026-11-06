@@ -14,6 +14,7 @@ import {
   type ModelProvider,
 } from "../src/runner/proxy.js";
 import { Runner, type Harness } from "../src/runner/runner.js";
+import { piHarness } from "../src/harness/pi.js";
 import { analystHarness } from "../src/harness/loop.js";
 import { presetConfig } from "../src/harness/presets.js";
 import { probeForManifest } from "../src/harness/probe.js";
@@ -55,7 +56,11 @@ try {
       [g.data.home_team_id, g.data.away_team_id].includes("1610612738"),
   );
   if (mode !== "analyst") throw Error(`Unknown mode: ${mode}`);
+  const implementation = arg("harness", "pi");
+  if (implementation !== "pi" && implementation !== "homemade")
+    throw Error("Unknown harness");
   const config = presetConfig({
+    harness: implementation,
     runId,
     replicateId,
     purpose,
@@ -80,7 +85,7 @@ try {
         throw Error("ANTHROPIC_API_KEY is not set; run under doppler run");
       })(),
   );
-  const harness: Harness = analystHarness({
+  const harness: Harness = (config.harness.pi ? piHarness : analystHarness)({
     model: config.profile.modelRoles.analyst,
     process: memory.process,
     onTurn: (e) =>

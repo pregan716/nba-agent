@@ -100,7 +100,12 @@ export type EnvironmentFactory = (
     root: string;
   },
 ) => Promise<Environment>;
-export type SessionEndpoint = SessionTools;
+export interface SessionEndpoint extends SessionTools {
+  /** Trusted harness transcript sink; never registered as a model tool. */
+  recordHistory?(history: unknown): void;
+  /** Register bounded harness shutdown before the session record is closed. */
+  onClose?(cleanup: () => Promise<void>): void;
+}
 export interface HarnessHandles {
   session: SessionEndpoint;
   model: ModelEndpoint;
@@ -341,6 +346,7 @@ export class Runner {
       active = true,
       busy = false;
     let pending: Promise<unknown> | undefined;
+    const harnessCleanup: Array<() => Promise<void>> = [];
     let status: Status = "completed",
       limit: Limit = null;
     const previousElapsed = budget
@@ -558,7 +564,18 @@ export class Runner {
           }
         };
         const handles = Object.freeze({
-          session: Object.freeze({ call }) as SessionTools,
+          session: Object.freeze({
+            call,
+            onClose: (cleanup: () => Promise<void>) => {
+              harnessCleanup.push(cleanup);
+            },
+            recordHistory: (history: unknown) => {
+              this.record.append("harness_history", scope, {
+                attempt,
+                history,
+              });
+            },
+          }) as SessionEndpoint,
           model: endpoint,
           memoryInstructions: this.manifest.config.harness.memoryInstructions,
         });
@@ -598,6 +615,7 @@ export class Runner {
       clearTimeout(timeout);
       await pending?.catch(() => {});
       if (endpoint) await this.proxy.revoke(endpoint);
+      for (const cleanup of harnessCleanup) await cleanup();
       if (environment)
         try {
           try {

@@ -101,6 +101,7 @@ export const configSchema = z.strictObject({
     }),
     accessMethod: z.literal("anthropic-sdk-via-metering-proxy"),
     sdkVersion: name,
+    pi: z.record(name, z.unknown()).optional(),
     sandboxImage: z.string().regex(/@sha256:[a-f0-9]{64}$/),
     policy: z
       .strictObject({

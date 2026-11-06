@@ -46,6 +46,7 @@ export const PILOT_BUDGET: RunConfig["budget"] = {
 };
 
 export interface PresetOptions {
+  harness?: "pi" | "homemade";
   runId: string;
   replicateId: string;
   purpose: "fixture" | "pilot" | "scored";
@@ -98,6 +99,7 @@ export function presetConfig(options: PresetOptions): RunConfig {
     },
     budget: PILOT_BUDGET,
     harness: harnessConfig({
+      implementation: options.harness,
       memory: options.memory,
       effort: options.effort ?? "high",
       thinking: "adaptive",

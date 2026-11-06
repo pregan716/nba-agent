@@ -42,7 +42,40 @@ export const DEFAULT_LOOP: LoopParameters = {
   promptCache: "ephemeral-5m",
 };
 
+export const PI_CONTRACT = {
+  packageVersion: "1.5.0",
+  provider: {
+    id: "nba-metered",
+    api: "anthropic-messages",
+    baseUrl: "session.model.baseURL",
+    apiKey: "session.model.apiKey",
+    transport: "metered-nonstream-to-sse-v1",
+  },
+  tools: {
+    registration: "extension-registerTool-from-TOOL_DEFINITIONS",
+    selection: "phase-capability-memory",
+    guard: "TOOL_NAMES-and-offered-tools",
+    builtins: false,
+  },
+  prompts: {
+    system: "replace-entirely-before-agent-start",
+    append: [],
+    opening: "phase-prompt-and-context",
+  },
+  isolation:
+    "fresh-process-empty-env-temp-cwd-agentdir-in-memory-no-discovery-v1",
+  recovery: {
+    compaction: false,
+    retry: false,
+    cacheWarming: false,
+    truncation: "pi-paired-error-results",
+    piRequestedThinkingLevel: "high",
+    contextWindow: 200000,
+  },
+} as const;
+
 export interface HarnessConfigOptions {
+  implementation?: "pi" | "homemade";
   memory: RunConfig["profile"]["memory"];
   effort: RunConfig["harness"]["loop"]["effort"];
   thinking: RunConfig["harness"]["loop"]["thinking"];
@@ -68,7 +101,11 @@ export function harnessConfig(
 ): RunConfig["harness"] {
   const loop = { ...DEFAULT_LOOP, ...options.loop };
   return {
-    identity: "replay-infrastructure-v2",
+    identity:
+      options.implementation === "pi"
+        ? "pi-infrastructure-v3"
+        : "replay-infrastructure-v2",
+    ...(options.implementation === "pi" ? { pi: PI_CONTRACT } : {}),
     prompts: {
       system: SYSTEM_PROMPT,
       ...PHASE_PROMPTS,
@@ -82,7 +119,14 @@ export function harnessConfig(
       effort: options.effort,
       thinking: options.thinking,
       parameters: {
-        ...loop,
+        ...(options.implementation === "pi"
+          ? {
+              maxTokens: loop.maxTokens,
+              timeoutMs: loop.timeoutMs,
+              maxTurns: loop.maxTurns,
+              promptCache: loop.promptCache,
+            }
+          : loop),
       },
     },
     accessMethod: "anthropic-sdk-via-metering-proxy",
