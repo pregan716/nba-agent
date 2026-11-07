@@ -23,6 +23,7 @@ import {
   validateLaunch,
   diagnosticSelection,
   replayDescriptor,
+  validationSampleDescriptors,
 } from "../src/launch/run.js";
 import {
   scriptedAnalyst,
@@ -337,7 +338,22 @@ test("corpus diagnostics keep season tags and never replay or train on holdout g
   };
   const config = structuredClone(data.config);
   config.replay = replayDescriptor(datasets);
+  // Prior-season validation samples carry the window id since SPO-863; the
+  // manifest schema must accept the descriptor the launcher builds.
+  const sampleState = datasets[0]!.windows.find((w) => w.state)!.state!;
+  config.replay.validationSamples = validationSampleDescriptors([
+    {
+      gameId: "prior-1",
+      windowId: "prior-1:w1",
+      inputHash: "a".repeat(64),
+      state: sampleState,
+      scheduledStart: "2025-01-01T00:00:00.000Z",
+      release: "2025-01-02T00:00:00.000Z",
+    },
+  ]);
   const m = manifest(config, schedule);
+  assert.equal(m.config.replay?.validationSamples?.[0]?.windowId, "prior-1:w1");
+  delete config.replay.validationSamples;
   assert.equal(m.games.filter((g) => g.split === "holdout").length, 12);
   assert.equal(m.games[70].gameId, "season-71");
   const proxy = new MeteringProxy(scriptedAnalyst(), scriptedJev);
