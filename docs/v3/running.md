@@ -5,6 +5,25 @@ release, postgame reflection and the next game. `--memory=M0` through `M4` selec
 explicit permissions. Pi is the launcher harness; the older harness remains
 available to fixtures through its existing API.
 
+## Launch preflight and assembler failures (SPO-858)
+
+Before loading data or creating model providers, the launcher resolves the pinned
+assembler image and, when research code execution is enabled, the pinned sandbox
+image with `docker image inspect`. Both must already exist locally. A missing
+image or unavailable Docker daemon stops launch with the affected role and pin;
+no model calls are made and the launcher does not pull images automatically.
+Build or pull the exact image first, or start a new run with the new immutable
+pin. Scripted runs check only the assembler because they do not use the research
+sandbox.
+
+An `AssemblerInfrastructureError` ends the research session as an infrastructure
+failure without another session attempt. The record retains `retryable: false`
+and `failureKind: assembler_infrastructure`; resume honors that decision even
+if the process stopped after recording session end but before phase end. Other
+infrastructure failures keep their existing bounded retry behavior. This guard
+is not registry publication; SPO-848 remains the longer-term image-distribution
+work.
+
 ## Offline two-game acceptance run
 
 Build the isolated assembler image once:

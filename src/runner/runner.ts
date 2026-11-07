@@ -1,3 +1,4 @@
+import { AssemblerInfrastructureError } from "../policy/errors.js";
 import { capCodeOutput } from "../env/code-output.js";
 import { restoreMemoryArtifacts } from "./memory-artifacts.js";
 import { writeBlob } from "./blobs.js";
@@ -396,6 +397,7 @@ export class Runner {
       prior &&
       durableEnd?.data.limit !== "interrupted" &&
       durableEnd?.data.status === "infrastructure_failure" &&
+      durableEnd?.data.retryable !== false &&
       prior.data.attempt <
         (this.manifest.config.recovery?.maxSessionAttempts ?? 2);
     if (durableEnd && durableEnd.data.limit !== "interrupted" && !retry) {
@@ -529,6 +531,7 @@ export class Runner {
       busy = false;
     let pending: Promise<unknown> | undefined;
     const harnessCleanup: Array<() => Promise<void>> = [];
+    let assemblerFailure = false;
     let status: Status = "completed",
       limit: Limit = null;
     const previousElapsed = budget
@@ -640,7 +643,9 @@ export class Runner {
                 !!this.manifest.config.harness.policy,
                 game.gameId,
               ).authorize(
-                name.slice(10) as WorkspaceOperation,
+                name === "workspace_edit"
+                  ? "write"
+                  : (name.slice(10) as WorkspaceOperation),
                 false,
                 (args as { path?: string })?.path ||
                   (name === "workspace_list" &&
@@ -760,6 +765,8 @@ export class Runner {
             });
             return result;
           } catch (e) {
+            if (e instanceof AssemblerInfrastructureError)
+              assemblerFailure = true;
             this.record.append("tool_error", scope, {
               name,
               message: e instanceof Error ? e.message : String(e),
@@ -793,13 +800,18 @@ export class Runner {
       const modelFailure = budget
         .events("model_error")
         .some((e) => !e.data.limit && e.data.terminal !== false);
-      status = last
-        ? "budget_exhausted"
-        : modelFailure
-          ? "infrastructure_failure"
-          : "completed";
-      limit = last?.data.limit ?? (modelFailure ? "infrastructure" : null);
+      status = assemblerFailure
+        ? "infrastructure_failure"
+        : last
+          ? "budget_exhausted"
+          : modelFailure
+            ? "infrastructure_failure"
+            : "completed";
+      limit = assemblerFailure
+        ? "infrastructure"
+        : (last?.data.limit ?? (modelFailure ? "infrastructure" : null));
     } catch (e) {
+      if (e instanceof AssemblerInfrastructureError) assemblerFailure = true;
       status =
         e instanceof LimitError
           ? "budget_exhausted"
@@ -864,6 +876,9 @@ export class Runner {
     const after = snapshot(this.root, this.workspace);
     this.record.append("session_end", scope, {
       attempt,
+      ...(assemblerFailure
+        ? { retryable: false, failureKind: "assembler_infrastructure" }
+        : {}),
       status,
       limit,
       before,
@@ -883,6 +898,7 @@ export class Runner {
     });
     if (
       status === "infrastructure_failure" &&
+      !assemblerFailure &&
       attempt < (this.manifest.config.recovery?.maxSessionAttempts ?? 2)
     ) {
       await this.session(game, phase, harness);
