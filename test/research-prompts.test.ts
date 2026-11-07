@@ -221,3 +221,34 @@ test("the prompt describes the data, the trace file and the freeze lock", () => 
     /freeze_package/,
   );
 });
+
+test("the prompt matches the SPO-857 environment", () => {
+  const p = RESEARCH_SYSTEM_PROMPT_V3;
+  // The manifest no longer carries hashes; the first game spent six calls on them.
+  assert.doesNotMatch(p, /SHA-256/);
+  assert.match(p, /Do not compute or list file hashes/);
+  assert.match(p, /workspace_edit/);
+  assert.match(p, /2024-25 instead/);
+  assert.match(p, /include_metadata=true/);
+  assert.match(p, /16,000 bytes/);
+  assert.match(p, /first page only/);
+  // Found in the third pilot game: the agent stumbled on these trace and unit facts.
+  assert.match(p, /both lists empty when the coach did not substitute/);
+  assert.match(p, /raw, validation and scores are null/);
+  assert.match(p, /minutes_seconds \(seconds played\)/);
+  assert.match(p, /cumulative_minutes_exit \(decimal minutes\)/);
+  assert.doesNotMatch(p, /or null, and exclusions/);
+  assert.match(p, /one row per player entering or leaving/);
+  assert.match(p, /raw substitution batch, not a decision window/);
+  assert.doesNotMatch(p, /one clock as one decision/);
+  for (const v of ["M2", "M3", "M4"] as const)
+    assert.match(
+      memoryPermissionInstructions(memoryVariant(v)),
+      /surnames included/,
+    );
+  for (const v of ["M1", "M2", "M3"] as const) {
+    const m = memoryPermissionInstructions(memoryVariant(v));
+    assert.match(m, /tokens currently retained against the cap/);
+    assert.match(m, /workspace_edit/);
+  }
+});

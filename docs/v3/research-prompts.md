@@ -29,7 +29,11 @@ Things the prompt states because the agent cannot discover them otherwise:
 - The byte limits of the Agreed context guard, stated as round numbers below the
   real thresholds (30,976 bytes for the state plus one question; 59,904 for the
   whole request).
-- `validate_package` has no sample states before the first game.
+- `validate_package` uses fixed 2024–25 states before the first game of the
+  season is played (SPO-857), and the prompt says those are a check that the
+  package runs, not evidence about this season.
+- The manifest needs only `stateVersion` and optional `notes`; the environment
+  hashes the files (SPO-857). The prompt tells the agent not to compute hashes.
 - An unfrozen package, or one that fails on the first window, leaves the whole
   game unscored.
 - The period-boundary state: `period` and `clockMs` are the new period's, while
@@ -158,9 +162,41 @@ closed a proxy endpoint it never opened, and the session source's dictionary
 guard still named the superseded `spo-771` transformation although the
 dictionary was synced for `spo-839` when those releases were pinned (PR #41).
 
-The prompt still describes the manifest with hand-computed hashes. SPO-857
-changes that and adds an edit tool and memory-usage reporting; the prompt will be
-updated to match when it merges.
+## Revisions after SPO-857
+
+SPO-857 changed the environment; the prompt was updated to match once it merged:
+
+- The manifest no longer lists hashes, and the prompt says not to compute them.
+  The first game spent six calls on hand-computed hashes.
+- `workspace_edit` is described with the package tools and in the memory
+  instructions, as the way to fix a file without resending it.
+- The memory instructions say that `context` and every memory mutation report
+  the tokens retained against the cap.
+- `validate_package` sample states before the first game are the fixed 2024–25
+  states, described as a check that the package runs.
+- The data reference says that provenance columns and column descriptions are
+  off by default and how to turn them on with `include_metadata`.
+- The code-output cap (16,000 bytes, files unaffected) and the feedback summary
+  being on the first page only are stated.
+
+## Revisions after the third pilot game
+
+The third run (`pilot-m3-smoke3`, $4.98) showed three prompt gaps, fixed here;
+the environment findings from the same run are SPO-860.
+
+- The trace description said `actual` is "{players_out, players_in} or null".
+  It is never null: both lists are empty when the coach did not substitute. The
+  prompt now says so, and that an excluded window has null `raw`, `validation`
+  and `scores`. The agent spent four calls discovering both.
+- Substitution events are one row per entering or leaving player (SPO-860
+  verified this against the release); the agent had halved its counts.
+- Units: `minutes_seconds` is seconds played; `cumulative_minutes_*` is decimal
+  minutes. The agent spent three calls on each.
+- The coach-agnostic rule for best practices and skills is concrete: surnames
+  count, rates and game lessons belong in the coach profile, write the role not
+  the name, and flagged text is reviewed by a person. The agent's first
+  best-practices file named eight Celtics players and the audit, which matched
+  full names only, flagged nothing.
 
 ## Not in this change
 
