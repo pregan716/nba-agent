@@ -493,7 +493,7 @@ Decisions made for v3, and v2 decisions explicitly re-affirmed. Agreed.
 | Game lines as context | Scheduled-start spread and total in the research agent's session context only. Nov 4, 2026. |
 | 2024–25 as evidence | Eligible from the start of the replay, as in v2. Nov 4, 2026. |
 | Reflection | Voluntary for every first-stage variant; mandated reflection is a later process value. Nov 4, 2026. |
-| Local package validation | Provided, over states from eligible prior games, without calling Jev, costing research compute. Nov 4, 2026. |
+| Local package validation | Provided, over states from eligible prior games, costing research compute. Validation may call Jev on request; calls are metered and recorded as pregame Jev usage. Agreed Nov 7, 2026 (SPO-863). |
 | State schema | `state-v1` as tabled; SPO-837 amendments are brief changes. Nov 4, 2026. |
 | Decision windows | `windows-v2`: independently marked openers, snapshot after the opener (for a jump ball, before the first substitution-or-jump-ball row of its bucket; `windows-v1` cut at the bucket start), adjacency rule, between-period windows, unanchored ledger; the restricted estimand is stated wherever a rate is reported. No team-rebound opener: the restored `qualifiers` show that `deadball` marks missed-free-throw dead-ball context, not out-of-bounds stoppages (SPO-839 pin, Nov 5, 2026). Nov 2026. |
 | Carried from v2 | Team, season, data contracts, availability conventions, cutoff and release rules, isolation, metering, sandbox form, record, contamination probe, replicate policy, paired bootstrap over games, development games never evidence, harness contract, implementation choices (TypeScript on Node, SQLite plus files, adapters over R2, Docker sandboxes, in-process transport) |

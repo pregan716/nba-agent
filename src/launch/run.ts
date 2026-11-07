@@ -156,7 +156,7 @@ export function chronologicalRunner(options: {
       datasets.flatMap((d) =>
         d.windows.flatMap((w) =>
           w.state && !w.exclusions.length
-            ? [{ gameId: d.gameId, state: w.state }]
+            ? [{ gameId: d.gameId, windowId: w.id, state: w.state }]
             : [],
         ),
       ),
