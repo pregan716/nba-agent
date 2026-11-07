@@ -259,6 +259,8 @@ export const GAME_HISTORY_TABLES = [
   "player_game_summary",
   "team_game_summary",
   "possessions",
+  "decision_windows",
+  "unanchored_substitutions",
 ] as const;
 export type GameHistoryTable = (typeof GAME_HISTORY_TABLES)[number];
 /**
@@ -305,6 +307,7 @@ export interface ColumnDefinition {
 }
 export interface QueryGameHistoryResult extends Page {
   table: HistoryTable;
+  table_description?: string;
   /** Explicit definitions for every column returned, from the release data dictionary. */
   columns: { name: string; description?: string }[];
   rows: Record<string, Scalar>[];
