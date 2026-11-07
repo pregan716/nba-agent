@@ -255,6 +255,22 @@ test("the prompt matches the SPO-857 environment", () => {
   assert.match(p, /including its own estimate; Jev still makes the decision/);
   assert.match(p, /an asserted estimate becomes the answer/);
   assert.match(p, /every other tool, including memory writes, is refused/);
+  // SPO-863: validation can call Jev; the agent is told that is how to see
+  // the level its wording produces before the game.
+  assert.match(p, /With jev: true it also sends each request to Jev/);
+  assert.match(p, /the actual outcomes at those windows are never included/);
+  assert.match(
+    p,
+    /Jev reads qualitative wording at a level you cannot know in advance/,
+  );
+  assert.doesNotMatch(p, /without calling Jev/);
+  // Review of PR #67: the validation spread is balanced, not representative.
+  assert.match(p, /not drawn in their game frequencies/);
+  assert.match(p, /hold the states fixed and change only the wording/);
+  assert.doesNotMatch(p, /means the wording, not the situation/);
+  // SPO-865: the windows of released games are data.
+  assert.match(p, /decision_windows: one row per decision window/);
+  assert.match(p, /unanchored_substitutions/);
   assert.match(
     RESEARCH_PHASE_PROMPTS_V3.postgame,
     /look at the requests Jev actually received .* diagnostics are never sent/,

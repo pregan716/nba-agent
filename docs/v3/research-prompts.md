@@ -237,6 +237,31 @@ Changes:
 The trace-side measure (count of asserted estimates and Jev's deviation from
 them, per game) is SPO-862 for the environment.
 
+## Revisions after stage 4 of the pilot
+
+Stage 4 (`pilot-m0-10`, ten M0 games) and `pilot-m3b` showed the same
+calibration drift in fresh sessions: mean predicted substitution probability
+ran from 0.23 to 0.56 against rates of 0.26 to 0.40, because each session's
+new wording is read by Jev at a level the agent could only see in the
+postgame trace. SPO-863 lets `validate_package` send its sample requests to
+Jev (`jev: true`) over a spread of prior-game states. The prompt's tool line
+now describes that and says outcomes are never included. The Jev section
+says that wording sets a level the agent cannot know in advance and that
+validation with Jev is how to see it, with the qualification from the review
+of PR #67: the sample is balanced across stoppage kinds, so its mean is not a
+game-wide rate; compare like with like, and hold the states fixed to see a
+wording effect. A discrepancy is a reason to look, not proof. The
+tool-description change is Codex's (PR #65); this is the matching prompt
+change.
+
+SPO-865 exposed the decision windows and the ledger of released games as
+`decision_windows` and `unanchored_substitutions`. The data reference lists
+both with their columns and says the table description states the window
+definition. Until then the agent could see the scored windows of one game
+only, through the trace, and the pilot's per-stoppage results (worse than the
+kind's own rate at timeouts and dead-ball turnovers in every run) followed
+from guessing those levels each session.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the
