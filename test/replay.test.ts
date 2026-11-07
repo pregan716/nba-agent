@@ -1119,3 +1119,38 @@ test("non-substitution rows between the first substitution and jump ball exclude
   assert.equal(d.diagnostics.candidates, 1);
   assert.equal(d.diagnostics.positiveCandidates, 1);
 });
+
+test("released decision-history rows preserve built windows and ledger without scoring", async () => {
+  const { decisionRows } = await import("../src/env/decision-history.js");
+  for (const mode of ["normal", "excluded", "unanchored"] as const) {
+    const input = fixture();
+    if (mode === "excluded") input.events[1].home_lineup_after = [];
+    if (mode === "unanchored") input.events[1].type = "field_goal";
+    const dataset = buildDataset(input);
+    const facts = {
+      dataset,
+      events: input.events,
+      participants: input.participants,
+    };
+    const windows = decisionRows("decision_windows", facts) as any[];
+    assert.equal(windows.length, dataset.windows.length);
+    for (const [i, w] of dataset.windows.entries()) {
+      assert.equal(windows[i].window_id, w.id);
+      assert.deepEqual(windows[i].state, w.state);
+      assert.deepEqual(windows[i].players_out, w.actual?.players_out ?? null);
+      assert.deepEqual(windows[i].players_in, w.actual?.players_in ?? null);
+      assert.equal(windows[i].exclusion_reason, w.exclusions.join(";") || null);
+    }
+    const ledger = decisionRows("unanchored_substitutions", facts) as any[];
+    assert.equal(ledger.length, dataset.ledger.length);
+    for (const [i, l] of dataset.ledger.entries()) {
+      assert.equal(ledger[i].mechanism, l.mechanism);
+      assert.equal(ledger[i].sequence_start, l.span[0]);
+      assert.equal(ledger[i].sequence_end, l.span[1]);
+    }
+    if (mode === "unanchored") {
+      assert.deepEqual(ledger[0].players_out, ["a"]);
+      assert.deepEqual(ledger[0].players_in, ["f"]);
+    }
+  }
+});

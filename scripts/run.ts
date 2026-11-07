@@ -151,13 +151,16 @@ try {
             ),
           )
         ).map(buildDataset);
+        const priorDatasets = await loadPriorSeasonTraining(corpus);
+        source.registerDecisionDatasets?.([...loaded, ...priorDatasets]);
         return {
           source,
           schedule,
-          priorTraining:
-            mode === "baselines" ? await loadPriorSeasonTraining(corpus) : [],
+          priorTraining: mode === "baselines" ? priorDatasets : [],
           validationSamples:
-            mode === "analyst" ? await priorValidationSamples(corpus) : [],
+            mode === "analyst"
+              ? await priorValidationSamples(corpus, priorDatasets)
+              : [],
           datasets: loaded.filter((d) =>
             selection.evaluation.some((g) => g.gameId === d.gameId),
           ),

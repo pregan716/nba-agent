@@ -1,3 +1,4 @@
+import { decisionTable } from "./decision-history.js";
 import type { ValidationInput, ValidationJev } from "../policy/validation.js";
 import { PROVENANCE_COLUMNS } from "./export.js";
 import { readFileSync } from "node:fs";
@@ -353,6 +354,13 @@ export class Session {
         visible(releasedGame(g), this.#cutoff),
       )) {
         if (
+          decisionTable(input.table) &&
+          (game.id === this.#game.gameId ||
+            Date.parse(releasedGame(game).availableAt) >=
+              Date.parse(this.#game.scheduledStart))
+        )
+          continue;
+        if (
           (input.game_id && game.id !== input.game_id) ||
           (input.season && game.data.season !== input.season) ||
           (input.team_id &&
@@ -454,7 +462,11 @@ export class Session {
     );
     const names = new Set(rows.flatMap(Object.keys));
     const columns = definitions
-      .filter((c) => names.has(c.name === "type" ? "kind" : c.name))
+      .filter(
+        (c) =>
+          decisionTable(input.table) ||
+          names.has(c.name === "type" ? "kind" : c.name),
+      )
       .map((c) => ({
         name: c.name === "type" ? "kind" : c.name,
         description:
@@ -494,6 +506,9 @@ export class Session {
     const end = Math.min(rows.length, offset + (input.limit ?? 20));
     return {
       table: input.table,
+      ...(input.include_metadata && this.#source.tableDescription?.(input.table)
+        ? { table_description: this.#source.tableDescription(input.table) }
+        : {}),
       columns: input.include_metadata
         ? columns
         : columns.map(({ name }) => ({ name })),
@@ -790,6 +805,7 @@ export class Session {
         games,
         this.#cutoff,
         signal,
+        { cutoff: this.#game.scheduledStart, currentGameId: this.#game.gameId },
       );
     }
     return writeSessionExport(directory, this.#exportBatches(signal), signal);
