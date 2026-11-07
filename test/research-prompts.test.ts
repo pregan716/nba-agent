@@ -239,6 +239,8 @@ test("the prompt matches the SPO-857 environment", () => {
   assert.match(p, /cumulative_minutes_exit \(decimal minutes\)/);
   assert.doesNotMatch(p, /or null, and exclusions/);
   assert.match(p, /one row per player entering or leaving/);
+  assert.match(p, /raw substitution batch, not a decision window/);
+  assert.doesNotMatch(p, /one clock as one decision/);
   for (const v of ["M2", "M3", "M4"] as const)
     assert.match(
       memoryPermissionInstructions(memoryVariant(v)),
