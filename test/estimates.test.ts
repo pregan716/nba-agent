@@ -17,6 +17,20 @@ test("assertion heuristic covers decimal and percentage estimates in either orde
     "probability = 1",
     "The probability is 0.06.",
     "0 percent likelihood",
+    "sub_probability_estimate: 0.06",
+    "exit_estimate=0.43",
+    "Estimate ~0.43",
+    "estimate ≈ 0.43",
+    "Probability [0.06]",
+    "Probability—0.06",
+    "Estimate for exit, 0.43",
+    "P(sub) = 0.06",
+    "sub prob: 0.06",
+    "chance of a sub: 6%",
+    "Estimated probability of a substitution in this window based on the historical table: 0.06",
+    "odds: 25%",
+    "25% ≈ estimated",
+    "estimated minutes: 0.5", // Accepted false positive: prefer recall.
   ])
     assert.equal(hasAssertedEstimate(text), true, text);
   for (const text of [

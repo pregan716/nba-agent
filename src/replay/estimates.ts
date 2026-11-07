@@ -2,8 +2,10 @@ import type { Event, RecordLog } from "../runner/record.js";
 import { digest } from "../runner/config.js";
 import type { WindowResult } from "./types.js";
 
-const label = String.raw`\b(?:estimates?|estimated|probability|likelihood)\b`;
-const gap = String.raw`[a-z\s:=\"'()_-]{0,60}`;
+// Prefer recall: serialized keys and shorthand are common assembler output.
+const label = String.raw`(?:estimat|prob|likelihood|chance|odds|p\()`;
+// Lazy matching preserves leading-dot decimals instead of swallowing their dot.
+const gap = String.raw`[^0-9]{0,80}?`;
 const number = String.raw`(?<![\w.+-])(\d+(?:\.\d+)?|\.\d+)\s*(%|percent\b)?(?!\w|\.\d)`;
 const patterns = [
   new RegExp(`${label}${gap}${number}`, "gi"),

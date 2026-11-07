@@ -258,10 +258,13 @@ New per-game policy trace summaries (including `read_feedback`) and
 predictions, validation, scoring or package acceptance:
 
 - `assertedEstimates`: number of windows whose assembled request contains a
-  probability (0–1) or percentage (0–100%) near `estimate`, `estimated`,
-  `probability` or `likelihood`. The heuristic checks state, instructions and
-  criterion text independently, in either word/number order, with up to 60
-  intervening letters, whitespace or connector punctuation. Multiple matches
+  probability (0–1) or percentage (0–100%) near the case-insensitive substrings
+  `estimat`, `prob`, `likelihood`, `chance`, `odds` or `p(`. The heuristic checks
+  state, instructions and criterion text independently, in either word/number
+  order, with up to 80 intervening non-digit characters. It accepts serialized
+  keys, shorthand and arbitrary punctuation (including approximation symbols).
+  Recall is preferred over precision: `estimated minutes: 0.5` is an accepted
+  false positive. Numeric range and boundary checks still apply. Multiple matches
   count once per window. Diagnostics and option keys are not scanned. Excluded
   windows and windows without an assembled request do not count; an assembled
   request still counts if its provider call failed. This is an approximate text
