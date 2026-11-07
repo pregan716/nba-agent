@@ -63,6 +63,7 @@ interface Options {
   unknownSpend?: boolean;
   incomplete?: boolean;
   estimateSummary?: boolean;
+  firstBetweenPeriods?: boolean;
   state?: string;
   jev?: any;
 }
@@ -129,6 +130,10 @@ function fixture(root: string, options: Options = {}) {
         i === 1 && options.secondNoSub
           ? { players_out: [], players_in: [] }
           : { players_out: ["a", "b"], players_in: ["f", "g"] };
+      if (i === 0 && options.firstBetweenPeriods) {
+        w.kind = "between_periods";
+        w.state!.stoppage.kind = "between_periods";
+      }
       if (i === 1 && options.excluded) w.exclusions = ["fixture_excluded"];
       const rows =
         i === 1 && options.missing
@@ -618,6 +623,131 @@ test("extended estimate summaries preserve completeness and comparisons with leg
       { resamples: 10, seed: 1 },
     );
     assert.equal(comparison.status, "compared");
+  } finally {
+    remove(root);
+  }
+});
+
+test("report attaches baseline reference columns, statistical skill and mid-period bootstrap", () => {
+  const root = temp();
+  try {
+    fixture(join(root, "variant"), { p: 0.8 });
+    fixture(join(root, "statistical"), { predictor: "statistical", p: 0.5 });
+    const report = buildReport(
+      [{ label: "variant", path: join(root, "variant") }],
+      {
+        resamples: 20,
+        seed: 2,
+        baselines: [{ label: "reference", path: join(root, "statistical") }],
+      },
+    );
+    const run = report.runs.find((r) => r.variant)!;
+    close(run.totals.timingSkillVsStatistical, 1 - 0.04 / 0.25);
+    assert.equal(run.games[0].metrics.baselines.statistical.metrics?.scored, 1);
+    const comparison = report.comparisons[0].diagnostic;
+    assert.equal(comparison.status, "compared");
+    assert.ok(comparison.differingAxes.includes("predictor"));
+    assert.equal(comparison.midPeriod.status, "compared");
+    const text = markdown(report);
+    assert.match(text, /midPeriod/);
+    assert.match(text, /decomposition.reliability/);
+    assert.match(text, /exitMRR/);
+    assert.match(text, /generic-jev/);
+    fixture(join(root, "bad"), {
+      predictor: "statistical",
+      version: "different",
+    });
+    assert.throws(
+      () =>
+        buildReport([{ label: "v", path: join(root, "variant") }], {
+          resamples: 10,
+          seed: 1,
+          baselines: [{ label: "b", path: join(root, "bad") }],
+        }),
+      /decision_dataset_mismatch/,
+    );
+  } finally {
+    remove(root);
+  }
+});
+
+test("legacy scoring fields are checked while new reports are recomputed", () => {
+  const root = temp();
+  try {
+    fixture(root);
+    const record = readRecord(root);
+    // In-memory legacy projection leaves the on-disk immutable record untouched.
+    const scoreKeys = [
+      "exitLogLoss",
+      "entryLogLoss",
+      "exitMRR",
+      "entryMRR",
+      "exitLogLossClips",
+      "entryLogLossClips",
+    ];
+    const summaryKeys = [
+      ...scoreKeys,
+      "n",
+      "playerN",
+      "timingConstantBrier",
+      "timingSkillVsConstant",
+      "timingSkillVsConstantReason",
+      "timingSkillVsStatistical",
+      "timingSkillVsStatisticalReason",
+      "meanPredicted",
+      "observedRate",
+      "brierDecomposition",
+      "midPeriod",
+      "byStoppage",
+    ];
+    for (const e of record.events) {
+      if (e.kind === "replay_window")
+        for (const key of scoreKeys) delete e.data.result.scores[key];
+      if (e.kind === "replay_summary")
+        for (const key of summaryKeys) delete e.data.summary[key];
+    }
+    const run = evaluateRecord(record, "legacy")[0];
+    assert.ok(run.games.every((g) => g.complete));
+    close(run.totals.exitLogLoss, Math.log(5));
+    record.events.find(
+      (e) => e.kind === "replay_window",
+    )!.data.result.scores.timing = 0.123;
+    assert.throws(() => evaluateRecord(record, "tampered"), /score_mismatch/);
+  } finally {
+    remove(root);
+  }
+});
+
+test("matched mid-period bootstrap excludes boundary windows on both sides", () => {
+  const root = temp();
+  try {
+    fixture(join(root, "left"), {
+      firstBetweenPeriods: true,
+      probabilities: [0.9, 0.3],
+    });
+    fixture(join(root, "right"), {
+      firstBetweenPeriods: true,
+      probabilities: [0.6, 0.8],
+    });
+    const compared = compareRuns(
+      evaluated(join(root, "left")),
+      evaluated(join(root, "right")),
+      { resamples: 30, seed: 7 },
+    );
+    assert.equal(compared.status, "compared");
+    assert.equal(compared.midPeriod.status, "compared");
+    if (
+      compared.status !== "compared" ||
+      compared.midPeriod.status !== "compared"
+    )
+      throw Error();
+    assert.equal(compared.matchedWindows, 2);
+    assert.equal(compared.midPeriod.matchedWindows, 1);
+    assert.equal(compared.midPeriod.matchedGames, 1);
+    close(compared.midPeriod.scores.timingBrier.left, 0.49);
+    close(compared.midPeriod.scores.timingBrier.right, 0.04);
+    close(compared.midPeriod.scores.timingBrier.interval90[0], -0.45);
+    close(compared.midPeriod.scores.timingBrier.interval90[1], -0.45);
   } finally {
     remove(root);
   }

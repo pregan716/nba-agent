@@ -164,6 +164,8 @@ Over all eligible, unflagged windows i with outcome y_i = 1 if the coach substit
 
 Lower is better. Report alongside it: log loss where numerically stable (p clipped to [0.001, 0.999] for the log-loss column only, clips counted), a calibration table in deciles of p, and precision and recall at p ≥ 0.5 as diagnostics. Raw accuracy is not reported as a headline because no-substitution dominates.
 
+Additional reports Agreed (Nov 7, 2026, SPO-864): skill versus the constant at each game's scored substitution rate, and versus the statistical baseline on the same windows when available; mean predicted probability and observed rate; and decile Murphy reliability, resolution, uncertainty and signed binning error. Pooled constant loss and decomposition terms are weighted within-game quantities by scored windows. Report every stoppage kind and the mid-period subset (excluding between-period windows), with paired game bootstrap comparisons for both full and mid-period timing. Skill is the learning-curve axis; pooled timing Brier remains the headline.
+
 ### Player selection
 
 At windows where the coach substituted, regardless of what Jev predicted, score the conditional exit and entry distributions. Jev's `exit` and `entry` answers are single distributions over the eligible set that sum to about one. Proposed normalization: scale the distribution by the number of players actually moved, k, so that an exit score at a two-for-two window compares a distribution of mass two against two actual exits. For the exit side with eligible on-court set E, actual exits A ⊂ E with |A| = k, and normalized marginals q_j:
@@ -173,6 +175,8 @@ At windows where the coach substituted, regardless of what Jev predicted, score 
 ```
 
 The entry score is the same over the eligible bench. Lower is better. Also report top-k accuracy (the k highest probabilities equal A) and top-1 accuracy (the highest probability is in A). A `probabilities` map whose keys differ from the requested option set is an invalid answer under the Jev contract and takes the invalid-answer score below; there is no per-player zero.
+
+Additional reports Agreed (Nov 7, 2026, SPO-864): exit/entry log loss and mean reciprocal rank at actual substitution windows, averaged over actual movers within a window and then over substitution windows. Log loss normalizes probabilities to sum one (not k), clips to [0.001, 0.999], and counts clips. Rank ties use option id. Keep all existing selection scores and report them by stoppage kind with counts.
 
 ### Action match
 
@@ -202,6 +206,8 @@ Run on the same windows so the variants have a reference:
 - **Constant rate**: p = the warm-up-window substitution rate at every window; uniform marginals. Establishes the floor.
 - **Statistical predictor**: a documented simple model from the observable state only (for example a logistic hazard on stint length, period, score margin, fouls and stoppage type, fit on 2024–25 and the warm-up games), with player marginals from stint-length ranks. The conventional benchmark the proposal asks for. Proposed model form; the replay MVP fixes it. Training scope Agreed Nov 6, 2026 (SPO-856): all 2024–25 Celtics regular-season games plus games 11–20 of 2025–26; the two prior-season gap games contribute zero windows. The constant-rate baseline remains warm-up-only. The retrospective same-game box-score roster approximation for prior-season training is Agreed (Nov 6, 2026, SPO-856), documented in `docs/v3/running.md`, and is forbidden for evaluation.
 - **Generic Jev**: a fixed, hand-written state template and fixed question instructions over the observable state, with no agent-written components. Establishes what Jev does unaided.
+
+Baseline scores appear as reference columns in every variant score table when matching dataset pins and games are supplied (Agreed Nov 7, 2026, SPO-864). Missing references are explicit; incompatible references are refused.
 
 Baselines are not variants of the memory axis. If no variant beats the statistical predictor, that is reportable on its own.
 

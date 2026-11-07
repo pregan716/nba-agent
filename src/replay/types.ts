@@ -171,6 +171,12 @@ export interface ValidatedPrediction {
 export type Failure =
   "provider_failure" | "assembler_error" | "invalid_package";
 export interface Scores {
+  exitLogLoss: number | null;
+  entryLogLoss: number | null;
+  exitMRR: number | null;
+  entryMRR: number | null;
+  exitLogLossClips: number;
+  entryLogLossClips: number;
   timing: number;
   logLoss: number;
   logLossClipped: boolean;
