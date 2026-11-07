@@ -84,8 +84,9 @@ const assembler = new DockerAssembler(image, {
   memoryBytes: 128 * 1024 * 1024,
   outputBytes: 256000,
 });
-const sandboxImage = scripted ? null : localSandboxImage();
-if (!scripted && !sandboxImage)
+const codeExecution = !scripted && mode !== "baselines";
+const sandboxImage = codeExecution ? localSandboxImage() : null;
+if (codeExecution && !sandboxImage)
   throw Error(
     "Research sandbox image pin is missing; run npm run sandbox:build before launching",
   );
@@ -184,7 +185,7 @@ try {
     purpose,
     memory,
     dataSources: source.versions,
-    codeExecution: !scripted,
+    codeExecution,
     contaminationProbe: arg("probe")
       ? probeForManifest(JSON.parse(readFileSync(arg("probe")!, "utf8")))
       : null,
@@ -291,6 +292,7 @@ try {
               .events("phase_end")
               .map((e) => ({ scope: e.scope, status: e.data.status })),
             replays: runner.record.events("replay_completed").length,
+            halted: !runner.record.events("run_end").length,
           }),
         );
       } finally {

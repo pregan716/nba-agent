@@ -13,14 +13,24 @@ image with `docker image inspect`. Both must already exist locally. A missing
 image or unavailable Docker daemon stops launch with the affected role and pin;
 no model calls are made and the launcher does not pull images automatically.
 Build or pull the exact image first, or start a new run with the new immutable
-pin. Scripted runs check only the assembler because they do not use the research
-sandbox.
+pin. Scripted and baseline runs check only the assembler because they do not use
+the research sandbox. Baseline presets disable code execution and record the
+standard `none@sha256:…` sandbox identity, independent of the local sandbox pin.
+Every launch, including resume, runs this preflight.
 
 An `AssemblerInfrastructureError` ends the research session as an infrastructure
 failure without another session attempt. The record retains `retryable: false`
 and `failureKind: assembler_infrastructure`; resume honors that decision even
 if the process stopped after recording session end but before phase end. Other
-infrastructure failures keep their existing bounded retry behavior. This guard
+infrastructure failures keep their existing bounded retry behavior.
+
+SPO-859: a newly recorded assembler infrastructure failure also records
+`run_halted`, checkpoints the run, and stops before postgame or any later session.
+No `run_end` is recorded. Once Docker/images are repaired, explicitly relaunch
+with the same configuration: preflight runs again, the failed session is skipped,
+and execution continues at the next unstarted step. A failed pregame is replayed
+as `invalid_package` (unscored) before its postgame session. The failed session is
+not retried, and a previously recorded failure does not halt that resume again. This guard
 is not registry publication; SPO-848 remains the longer-term image-distribution
 work.
 
