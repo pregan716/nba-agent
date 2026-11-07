@@ -54,6 +54,28 @@ export async function boundaryNames(
     ],
   };
 }
+const foldAccents = (text: string) =>
+  text.normalize("NFD").replace(/\p{M}/gu, "");
+/** Map folded UTF-16 indices back to the original, including decomposed accents. */
+function foldedContent(original: string) {
+  let text = "",
+    offset = 0;
+  const starts: number[] = [],
+    ends: number[] = [];
+  for (const character of original) {
+    const folded = foldAccents(character);
+    if (!folded && ends.length)
+      ends[ends.length - 1] = offset + character.length;
+    for (let i = 0; i < folded.length; i++) {
+      starts.push(offset);
+      ends.push(offset + character.length);
+    }
+    text += folded;
+    offset += character.length;
+  }
+  return { text, starts, ends };
+}
+
 export function auditBoundary(
   root: string,
   gameId: string,
@@ -69,10 +91,35 @@ export function auditBoundary(
     queue: "human-review";
   }[] = [];
   const inputs: { file: string; sha256: string }[] = [];
+  const nameTerms = (names: string[], kind: string) =>
+    names.flatMap((text) => {
+      const tokens = text.trim().split(/\s+/);
+      while (
+        tokens.length > 1 &&
+        /^(?:Jr\.?|Sr\.?|II|III|IV|V)$/i.test(tokens.at(-1)!)
+      )
+        tokens.pop();
+      const surname = tokens.at(-1)!;
+      const surnames = [
+        ...new Set([surname, ...surname.split(/[-’']/u)]),
+      ].filter((s) => s.length > 1);
+      return [
+        { text, kind, sensitive: false },
+        ...surnames.map((text) => ({ text, kind, sensitive: true })),
+      ];
+    });
   const terms = [
-    ...names.players.map((text) => ({ text, kind: "player" })),
-    ...names.staff.map((text) => ({ text, kind: "staff" })),
-    ...names.gameIds.map((text) => ({ text, kind: "game-id" })),
+    ...new Map(
+      [
+        ...nameTerms(names.players, "player"),
+        ...nameTerms(names.staff, "staff"),
+        ...names.gameIds.map((text) => ({
+          text,
+          kind: "game-id",
+          sensitive: false,
+        })),
+      ].map((t) => [JSON.stringify(t), t]),
+    ).values(),
   ];
   const visit = (path: string) => {
     const file = join(root, path);
@@ -89,19 +136,23 @@ export function auditBoundary(
       return;
     }
     const bytes = readFileSync(file),
-      text = bytes.toString("utf8");
+      text = bytes.toString("utf8"),
+      folded = foldedContent(text);
     inputs.push({
       file: path,
       sha256: createHash("sha256").update(bytes).digest("hex"),
     });
     for (const term of terms) {
-      const escaped = term.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escaped = foldAccents(term.text).replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
       const pattern = `(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`;
-      const pathPattern = new RegExp(pattern, "iu");
+      const pathPattern = new RegExp(pattern, term.sensitive ? "u" : "iu");
       if (
-        pathPattern.test(path) ||
+        pathPattern.test(foldAccents(path)) ||
         (term.kind !== "game-id" &&
-          pathPattern.test(path.replace(/[-_.]/g, " ")))
+          pathPattern.test(foldAccents(path).replace(/[-_.]/g, " ")))
       )
         flags.push({
           game: gameId,
@@ -112,16 +163,21 @@ export function auditBoundary(
           kind: term.kind,
           queue: "human-review",
         });
-      for (const match of text.matchAll(new RegExp(pattern, "giu")))
+      for (const match of folded.text.matchAll(
+        new RegExp(pattern, term.sensitive ? "gu" : "giu"),
+      )) {
+        const offset = folded.starts[match.index!];
+        const end = folded.ends[match.index! + match[0].length - 1];
         flags.push({
           game: gameId,
           file: path,
-          matchedText: match[0],
+          matchedText: text.slice(offset, end),
           source: "content",
-          offset: match.index!,
+          offset,
           kind: term.kind,
           queue: "human-review",
         });
+      }
     }
   };
   for (const path of ["memory/best_practices.md", "memory/practices", "skills"])
@@ -131,7 +187,9 @@ export function auditBoundary(
     game: gameId,
     names,
     inputs,
-    flags,
+    flags: [
+      ...new Map(flags.map((flag) => [JSON.stringify(flag), flag])).values(),
+    ],
     action: "flag-only",
   };
 }

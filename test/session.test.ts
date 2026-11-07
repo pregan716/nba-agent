@@ -612,3 +612,54 @@ test("history defaults to lean rows and names; metadata opt-in preserves descrip
   );
   assert.equal(lean.rows.length, full.rows.length);
 });
+
+test("default schedule is current plus next, with bounded cutoff-bound pagination", async () => {
+  const f = fixtureCorpus();
+  for (const phase of ["pregame", "postgame"] as const) {
+    const s = create(f, phase);
+    const first = await s.read_schedule_and_injuries({});
+    assert.deepEqual(
+      first.schedule.map((g) => g.game_id),
+      ["current", "future"],
+    );
+    assert.ok(first.next_cursor);
+    const second = await s.read_schedule_and_injuries({
+      cursor: first.next_cursor,
+    });
+    assert.deepEqual(
+      second.schedule.map((g) => g.game_id),
+      ["0022500338"],
+    );
+    assert.equal(second.next_cursor, null);
+    assert.ok(second.injury_reports.every((r) => r.game_id === "0022500338"));
+    await assert.rejects(
+      s.read_schedule_and_injuries({ cursor: first.next_cursor, team_id: BOS }),
+      code("invalid_input"),
+    );
+    await assert.rejects(
+      s.read_schedule_and_injuries({ cursor: "bad" }),
+      code("invalid_input"),
+    );
+    await assert.rejects(
+      s.read_schedule_and_injuries({ cursor: first.next_cursor, from: before }),
+      code("invalid_input"),
+    );
+    const explicit = await s.read_schedule_and_injuries({ team_id: BOS });
+    assert.deepEqual(
+      explicit.schedule.map((g) => g.game_id),
+      ["prior", "current", "future", "0022500338"],
+    );
+    assert.equal(Object.hasOwn(explicit, "next_cursor"), false);
+    assert.deepEqual(
+      (await s.read_schedule_and_injuries({ game_id: "prior" })).schedule.map(
+        (g) => g.game_id,
+      ),
+      ["prior"],
+    );
+  }
+  const cursor = (await create(f).read_schedule_and_injuries({})).next_cursor!;
+  await assert.rejects(
+    create(f, "postgame").read_schedule_and_injuries({ cursor }),
+    code("invalid_input"),
+  );
+});
