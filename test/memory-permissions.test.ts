@@ -989,6 +989,8 @@ test("boundary audit catches case-sensitive surnames, suffixes and compound name
       "Karl-Anthony Towns",
       "Royce O'Neale",
       "Shai Gilgeous-Alexander",
+      "Nikola Vučević",
+      "Hugo González",
     ],
     staff: ["Joe Mazzulla"],
     gameIds: [],
@@ -1003,7 +1005,7 @@ test("boundary audit catches case-sensitive surnames, suffixes and compound name
       mkdirSync(join(root, path, ".."), { recursive: true });
       writeFileSync(
         join(root, path),
-        "Stars (currently Brown, White), Harper, Mazzulla, O'Neale, Neale, Gilgeous-Alexander. white background, brown paper. jaylen brown.",
+        "Stars (currently Brown, White), Harper, Mazzulla, O'Neale, Neale, Gilgeous-Alexander, Vucevic, Gonzalez. white background, brown paper. jaylen brown.",
       );
     }
     mkdirSync(join(root, "skills/White"));
@@ -1025,6 +1027,8 @@ test("boundary audit catches case-sensitive surnames, suffixes and compound name
         "O'Neale",
         "Neale",
         "Gilgeous-Alexander",
+        "Vucevic",
+        "Gonzalez",
         "jaylen brown",
       ])
         assert.ok(
@@ -1048,6 +1052,75 @@ test("boundary audit catches case-sensitive surnames, suffixes and compound name
         (f) => f.source === "content" && f.file === "skills/White/note.md",
       ),
     );
+  } finally {
+    clean(root);
+  }
+});
+
+test("accent-insensitive audit preserves original matches and UTF-16 offsets", () => {
+  const root = temp();
+  const names = {
+    players: ["Nikola Vučević", "Hugo González"],
+    staff: [],
+    gameIds: [],
+    sources: [],
+  };
+  const text =
+    "🏀 Cafe\u0301: Vucevic and Gonzalez closed. Vučević too. Nikola Vucevic. nikola vucevic. Vuc\u030cevic\u0301. vucevic gonzalez.";
+  const file = "memory/best_practices.md";
+  try {
+    mkdirSync(join(root, "memory"));
+    mkdirSync(join(root, "skills"));
+    writeFileSync(join(root, file), text);
+    for (const path of [
+      "Vucevic.md",
+      "Gonzalez.md",
+      "Vučević.md",
+      "Gonza\u0301lez.md",
+      "vucevic.md",
+    ])
+      writeFileSync(join(root, "skills", path), "generic");
+    const audit = auditBoundary(root, "g", names);
+    const flags = audit.flags.filter((f) => f.source === "content");
+    for (const expected of [
+      "Vucevic",
+      "Gonzalez",
+      "Vučević",
+      "Nikola Vucevic",
+      "nikola vucevic",
+      "Vuc\u030cevic\u0301",
+    ]) {
+      assert.ok(
+        flags.some(
+          (f) =>
+            f.matchedText === expected && f.offset === text.indexOf(expected),
+        ),
+        expected,
+      );
+    }
+    for (const flag of flags)
+      assert.equal(
+        text.slice(flag.offset, flag.offset + flag.matchedText.length),
+        flag.matchedText,
+      );
+    assert.ok(
+      !flags.some(
+        (f) => f.matchedText === "vucevic" || f.matchedText === "gonzalez",
+      ),
+    );
+    const paths = audit.flags
+      .filter((f) => f.source === "path")
+      .map((f) => f.file);
+    assert.deepEqual(
+      paths.sort(),
+      [
+        "skills/Vucevic.md",
+        "skills/Gonzalez.md",
+        "skills/Vučević.md",
+        "skills/Gonza\u0301lez.md",
+      ].sort(),
+    );
+    assert.equal(readFileSync(join(root, file), "utf8"), text);
   } finally {
     clean(root);
   }
