@@ -327,6 +327,7 @@ export async function priorValidationSamples(
       samples.push({
         gameId: d.gameId,
         inputHash: d.inputHash,
+        windowId: w.id,
         state: w.state,
         scheduledStart,
         release: releaseTime(scheduledStart),

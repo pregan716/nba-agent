@@ -70,6 +70,8 @@ export async function assembleRequest(
   state: ObservableState,
   cache: string,
   signal: AbortSignal,
+  // Validation returns oversized drafts with a guard error; replay stays guarded.
+  validationOnly = false,
 ) {
   const hashes = Object.fromEntries(
     [...packageFiles(path).files].map(([k, v]) => [k, sha256(v)]),
@@ -82,6 +84,7 @@ export async function assembleRequest(
     image: assembler.image,
     limits: assembler.limits,
     api: "assemble-v1",
+    ...(validationOnly ? { validationOnly: true } : {}),
   };
   const key = digest(canonicalJson(identity)),
     target = join(cache, key + ".json");
@@ -114,7 +117,10 @@ export async function assembleRequest(
   const assembly = assemblySchema.parse(a.value);
   if (canonicalJson(assembly) !== canonicalJson(assemblySchema.parse(b.value)))
     throw new PackageExecutionError("Nondeterministic assembler output");
-  const result = { assembly, request: buildJevRequest(assembly, state) };
+  const result = {
+    assembly,
+    request: buildJevRequest(assembly, state, !validationOnly),
+  };
   mkdirSync(cache, { recursive: true });
   const temporary = target + "." + randomUUID();
   writeFileSync(

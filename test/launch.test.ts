@@ -529,3 +529,84 @@ test("assembler infrastructure failure halts the run; resume skips failed pregam
     clean(root);
   }
 });
+
+test("validation Jev calls use pregame scopes and costs without analyst tokens", async () => {
+  const { spending } = await import("../src/evaluation/evaluate.js");
+  const root = mkdtempSync(join(tmpdir(), "nba-validation-launch-"));
+  const data = fixtureLaunchConfig("M0");
+  data.config.profile.capabilities.enabled.push("code_execution");
+  const proxy = new MeteringProxy(scriptedAnalyst(), scriptedJev);
+  await proxy.listen();
+  const runner = chronologicalRunner({
+    root,
+    ...data,
+    assembler: fixtureAssembler,
+    proxy,
+  });
+  try {
+    await runner.run(async ({ session }) => {
+      const context = await session.call("context", {});
+      if (context.phase !== "pregame") return;
+      const id = context.game.game_id;
+      await session.call("workspace_write", {
+        path: `packages/${id}/assemble.py`,
+        content: "pass",
+      });
+      await session.call("workspace_write", {
+        path: `packages/${id}/manifest.json`,
+        content: JSON.stringify({ stateVersion: "state-v1" }),
+      });
+      if (id === "current") {
+        await assert.rejects(
+          session.call("validate_package", { samples: 25 }),
+          /Invalid tool input/,
+        );
+        const before = await session.call("context", {});
+        for (let i = 0; i < 2; i++) {
+          const result = await session.call("validate_package", {
+            jev: true,
+            samples: 2,
+          });
+          assert.equal(result.summary?.answered, result.outputs.length);
+          assert.equal(result.outputs.length, 1);
+          assert.ok(
+            result.outputs.every((o) => o.gameId === "prior" && o.answers),
+          );
+        }
+        const after = await session.call("context", {});
+        assert.equal(after.budget.tokens, before.budget.tokens);
+      }
+      await session.call("freeze_package", {});
+    });
+    const validations = runner.record
+      .events("jev_request")
+      .filter((e) => e.scope.startsWith("current:pregame:validation:"));
+    assert.equal(validations.length, 2);
+    assert.deepEqual(
+      [...new Set(validations.map((e) => e.scope))],
+      ["current:pregame:validation:1", "current:pregame:validation:2"],
+    );
+    const events = runner.record.events();
+    const cost = spending(events, "variant", ["current"], true);
+    const responses = events.filter(
+      (e) => e.kind === "jev_response" && e.scope.startsWith("current:"),
+    );
+    assert.ok(
+      Math.abs(cost.jevUsd - responses.reduce((n, e) => n + e.data.usd, 0)) <
+        1e-12,
+    );
+    assert.equal(cost.analystUsd, 0);
+    assert.equal(cost.unknownJevCalls, 0);
+    const excluded = spending(events, "variant", ["current"], false);
+    assert.ok(excluded.jevUsd < cost.jevUsd);
+    assert.ok(
+      runner.record
+        .events("settlement", "current:pregame")
+        .every((e) => e.data.tokens === 0),
+    );
+  } finally {
+    runner.close();
+    await proxy.close();
+    clean(root);
+  }
+});

@@ -289,3 +289,53 @@ Read-only verification against the stage-3 cached `pilot-m3/r1` record found:
 
 These are development-pilot observations, not experiment results. No model calls
 are needed to compute the measures.
+
+## Additional reports (SPO-864)
+
+`npm run evaluate -- --record=M3=/path/to/variant/r1 --baselines=/path/to/baselines/r1 --out=/path/to/report`
+
+`--baselines` explicitly supplies a baselines record; no live runs or automatic
+baseline discovery occur. Baseline predictors supplied through `--record` also
+serve as references. Dataset pins, state schema, Jev identity and game sets must
+pass the existing compatibility check. Multiple references for the same baseline
+are refused as ambiguous. Missing or incomplete baseline predictions yield null
+reference metrics with a reason; statistical skill requires a scored baseline
+answer on every scored variant window. Baseline comparison is allowed in either
+direction and names `predictor` in the differing axes.
+
+The report schema is `evaluation-v2`. Existing score fields retain their meanings.
+Old records are checked against their original fields, then new fields are
+recomputed from their recorded raw answers. Stored new fields are also verified.
+Records are opened read-only and never migrated or rewritten.
+
+Timing skill is `1 - loss/referenceLoss`. The constant reference uses each game's
+scored substitution rate; pooled reference loss is its window-weighted average,
+not the constant at the pooled rate. Zero reference loss and empty subsets return
+null with a reason. Skill versus statistical uses the attached baseline's loss
+on the identical scored windows. Learning-curve values use skill (higher better);
+the headline remains pooled timing Brier with paired game bootstrap intervals.
+
+Decomposition uses ten probability bins **within each game**, then weights each
+game's reliability, resolution and uncertainty by scored windows. This keeps
+uncertainty equal to the per-game constant reference, even when game rates differ.
+The signed `binningError` is `Brier - (reliability - resolution + uncertainty)`;
+adding it restores the exact raw Brier. Mean prediction and observed rate are
+reported directly. Per-stoppage groups and `midPeriod` use the same calculations
+on their subsets, including recalculating each game's reference rate. Mid-period
+excludes every between-period window; full and mid-period matched comparisons
+bootstrap games separately using the same declared seed and method.
+
+Player log losses normalize the validated exit/entry distribution to sum one,
+clip each actual mover's probability to [0.001, 0.999], average over movers, then
+average over substitution windows. An all-zero valid map uses a uniform
+normalization; invalid answers still use the existing uniform fallback. Clip
+counts count mover probabilities. MRR averages inverse ranks of actual movers,
+with the contract's option-id tie break. Existing scale-by-k Brier and top-1/top-k
+scores are unchanged. Breakdown `n` is scored windows; `playerN` is actual
+substitution windows.
+
+Markdown provides full, mid-period and every observed stoppage group for each
+game and pooled, including decomposition, player metrics, and available baseline
+reference columns. Baseline rows use the variant's scored-window set, so missing
+variant windows cannot make a statistical reference appear artificially better
+or worse. JSON retains all metrics and availability reasons at full precision.

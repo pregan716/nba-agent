@@ -68,8 +68,11 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "validate_package",
     description:
-      "Test the current package against up to three observable states from eligible prior games; before any earlier run game is released, uses fixed, released 2024–25 states. Returns assembled requests and diagnostics without calling Jev. Charges research compute; current and future games are never samples.",
-    input_schema: object({}),
+      "Test the current package against a deterministic spread of prior-game states. jev: true returns Jev answers for each; default false. samples chooses 1–24 states (default 3). Outcomes are never included. Before any run game is released, only the three fixed 2024–25 states are used. One tool call charges research compute; optional Jev calls are metered as pregame Jev usage, not research-agent weighted model tokens. Current and future games are never samples.",
+    input_schema: object({
+      jev: { type: "boolean" },
+      samples: { type: "integer", minimum: 1, maximum: 24 },
+    }),
     phases: ["pregame"],
   },
   {

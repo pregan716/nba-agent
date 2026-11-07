@@ -336,7 +336,7 @@ test("feedback permits only previous pregame/current postgame after release, val
     assert.deepEqual(readdirSync(join(root, "local-validation")), []);
     assert.deepEqual(
       validated.outputs.map((r: any) => r.gameId),
-      ["old", "previous"],
+      ["previous", "old"],
     );
     now = games[2].release;
     assert.equal(service.readFeedback("postgame").gameId, "g");

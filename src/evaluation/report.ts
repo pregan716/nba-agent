@@ -1,3 +1,4 @@
+import { referenceRuns, withReferences } from "./references.js";
 import {
   compareRuns,
   DEFAULT_BOOTSTRAP,
@@ -13,9 +14,13 @@ export interface ReportInput {
 }
 export function buildReport(
   inputs: ReportInput[],
-  options: Bootstrap & { revealHoldout?: boolean } = DEFAULT_BOOTSTRAP,
+  options: Bootstrap & {
+    revealHoldout?: boolean;
+    baselines?: ReportInput[];
+  } = DEFAULT_BOOTSTRAP,
 ) {
   validateBootstrap(options);
+  inputs = [...inputs, ...(options.baselines ?? [])];
   if (inputs.some((i) => !i.label.trim()))
     throw new EvaluationError("input_labels", "Labels cannot be empty");
   if (
@@ -37,6 +42,28 @@ export function buildReport(
       "duplicate_record",
       "Same predictor supplied twice",
     );
+  const enriched = runs.map((run) => {
+    const references = run.variant ? referenceRuns(run, runs) : [];
+    const rows = run.games.flatMap((g) => g.rows);
+    return {
+      ...run,
+      games: run.games.map((g) => ({
+        ...g,
+        metrics: withReferences(g.rows, references),
+      })),
+      totals: withReferences(rows, references),
+      headline: withReferences(
+        run.games.filter((g) => g.game.tag === "scored").flatMap((g) => g.rows),
+        references,
+      ),
+      holdout: withReferences(
+        run.games
+          .filter((g) => g.game.tag === "holdout")
+          .flatMap((g) => g.rows),
+        references,
+      ),
+    };
+  });
   const comparisons = [];
   for (let i = 0; i < runs.length; i++)
     for (let j = i + 1; j < runs.length; j++) {
@@ -87,18 +114,28 @@ export function buildReport(
     );
   const learningCurves = common.map((game) => ({
     game,
-    runs: runs.map((r) => ({
+    runs: enriched.map((r) => ({
       id: r.id,
       scores: Object.fromEntries(
-        PRIMARY.map((metric) => [
+        (
+          [
+            ...PRIMARY,
+            "timingSkillVsConstant",
+            "timingSkillVsStatistical",
+          ] as const
+        ).map((metric) => [
           metric,
           r.games.find((g) => g.game.gameId === game.gameId)!.metrics[metric],
         ]),
       ),
+      midPeriod: r.games.find((g) => g.game.gameId === game.gameId)!.metrics
+        .midPeriod,
+      baselines: r.games.find((g) => g.game.gameId === game.gameId)!.metrics
+        .baselines,
     })),
   }));
   return {
-    version: "evaluation-v1",
+    version: "evaluation-v2",
     bootstrap: { resamples: options.resamples, seed: options.seed },
     holdoutRevealed: !!options.revealHoldout,
     notices: [
@@ -107,7 +144,7 @@ export function buildReport(
       "All primary differences are right minus left; lower losses are better. Score/cost ratios are loss per unit, not causal returns.",
       "Provider-failure flags disclose affected games; unscored windows are dropped pairwise, not silently assigned a score.",
     ],
-    runs: runs.map(({ events, ...r }) => r),
+    runs: enriched.map(({ events, ...r }) => r),
     comparisons,
     learningCurves,
     learningCurveOmissions: runs.map((r) => ({
@@ -134,6 +171,69 @@ const json = (x: unknown) =>
   "```json\n" +
   JSON.stringify(x, null, 2).replace(/```/g, "\\u0060\\u0060\\u0060") +
   "\n```";
+const displayMetrics = [
+  "timingBrier",
+  "timingSkillVsConstant",
+  "timingSkillVsStatistical",
+  "meanPredicted",
+  "observedRate",
+  "timingLogLoss",
+  "exitBrier",
+  "entryBrier",
+  "exitTop1",
+  "entryTop1",
+  "exitTopK",
+  "entryTopK",
+  "exitLogLoss",
+  "entryLogLoss",
+  "exitMRR",
+  "entryMRR",
+  "exitLogLossClips",
+  "entryLogLossClips",
+];
+function metricTable(m: EvaluationReport["runs"][number]["totals"]) {
+  const lines = [
+    "\n| Scope | Metric | Scored / substitutions | Run | constant | statistical | generic-jev |",
+    "| --- | --- | --- | --- | --- | --- | --- |",
+  ];
+  const groups = [
+    ["full", m],
+    ["midPeriod", m.midPeriod],
+    ...Object.entries(m.byStoppage),
+  ] as const;
+  for (const [scope, value] of groups) {
+    const get = (v: any, key: string) =>
+      key.startsWith("decomposition.")
+        ? v?.brierDecomposition?.[key.slice(14)]
+        : v?.[key];
+    for (const key of [
+      ...displayMetrics,
+      "decomposition.reliability",
+      "decomposition.resolution",
+      "decomposition.uncertainty",
+      "decomposition.binningError",
+    ]) {
+      const cells = [
+        value,
+        ...["constant", "statistical", "generic-jev"].map(
+          (name) => value.baselines[name]?.metrics,
+        ),
+      ];
+      lines.push(
+        `| ${cell(scope)} | ${key} | ${value.scored}/${value.actualSubstitutions} | ${cells.map((v) => number(get(v, key))).join(" | ")} |`,
+      );
+    }
+  }
+  lines.push(
+    `\nStatistical reference: ${cell(m.timingSkillVsStatisticalReason ?? "available")}. Baseline availability: ${Object.entries(
+      m.baselines,
+    )
+      .map(([name, b]) => `${name}: ${b.reason ?? b.runId}`)
+      .map(cell)
+      .join("; ")}.`,
+  );
+  return lines.join("\n");
+}
 export function markdown(report: EvaluationReport) {
   const out = [
     "# Experiment record report",
@@ -148,17 +248,19 @@ export function markdown(report: EvaluationReport) {
       "\n### Descriptors and run profile",
       json(run.descriptors),
       "\n### Scores by game",
-      "\n| Game | Index (1-based) | Tag | Brier | Exit | Entry | Log loss | Scored / eligible | Provider flag | Complete | USD | Recorded seconds |",
-      "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     );
     for (const g of run.games)
       out.push(
-        `| ${cell(g.game.gameId)} | ${g.game.index + 1} | ${g.game.tag} | ${number(g.metrics.timingBrier)} | ${number(g.metrics.exitBrier)} | ${number(g.metrics.entryBrier)} | ${number(g.metrics.timingLogLoss)} | ${g.metrics.scored}/${g.metrics.eligible} | ${g.metrics.providerFailureFlag} | ${g.complete} | ${number(g.cost.totalUsd)} | ${number(g.cost.recordedSeconds)} |`,
+        `\n#### ${cell(g.game.gameId)} — game ${g.game.index + 1}, ${g.game.tag}`,
+        `Scored/eligible: ${g.metrics.scored}/${g.metrics.eligible}; provider flag: ${g.metrics.providerFailureFlag}; complete: ${g.complete}; USD: ${number(g.cost.totalUsd)}; recorded seconds: ${number(g.cost.recordedSeconds)}.`,
+        metricTable(g.metrics),
       );
     out.push(
       "\n### Headline (scored games only)",
+      metricTable(run.headline),
       json(run.headline),
       "\n### All reported games: diagnostics and counts",
+      metricTable(run.totals),
       json({
         metrics: run.totals,
         invalidPackageGames: run.invalidPackageGames,
@@ -176,7 +278,14 @@ export function markdown(report: EvaluationReport) {
   }
   out.push("\n## Matched comparisons");
   for (const pair of report.comparisons)
-    for (const [section, c] of Object.entries(pair)) {
+    for (const [section, c] of Object.entries(pair).flatMap(([section, c]) =>
+      c
+        ? ([
+            [section, c],
+            [section + " midPeriod", c.midPeriod],
+          ] as const)
+        : [],
+    )) {
       if (!c) continue;
       out.push(
         `\n### ${cell(c.left)} → ${cell(c.right)}: ${section}`,
@@ -190,6 +299,14 @@ export function markdown(report: EvaluationReport) {
         "Marginal metrics use (left loss − right loss) / (right cost − left cost); time is converted to hours. Zero or unknown deltas are undefined. Negative deltas describe savings, not added spend.",
         `Matched windows: ${c.matchedWindows}; matched games: ${c.matchedGames}; dropped: ${c.dropped.count}.`,
         json(c.dropped),
+        "\n| Timing diagnostic | Left | Right |",
+        "| --- | --- | --- |",
+        ...(
+          ["timingSkillVsConstant", "meanPredicted", "observedRate"] as const
+        ).map(
+          (key) =>
+            `| ${key} | ${number(c.metrics.left[key])} | ${number(c.metrics.right[key])} |`,
+        ),
         "\n| Primary loss | Left | Right | Difference | 90% interval | Left USD / seconds | Right USD / seconds | Left loss/USD / loss/second | Right loss/USD / loss/second |",
         "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
       );
@@ -210,13 +327,14 @@ export function markdown(report: EvaluationReport) {
     }
   out.push(
     "\n## Learning curves on common games",
-    "\n| Game | Index (1-based) | Tag | Run | Timing Brier | Exit Brier | Entry Brier |",
-    "| --- | --- | --- | --- | --- | --- | --- |",
+    "Y-axis: timing skill (higher is better); raw Brier remains the headline metric. Decomposition uses within-game deciles pooled by scored windows; signed binning error is Brier minus reliability plus resolution minus uncertainty.",
+    "\n| Game | Index (1-based) | Tag | Run | Timing skill vs constant | Timing skill vs statistical | Mid-period skill vs constant | constant skill | statistical skill | generic-jev skill |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
   );
   for (const point of report.learningCurves)
     for (const run of point.runs)
       out.push(
-        `| ${cell(point.game.gameId)} | ${point.game.index + 1} | ${point.game.tag} | ${cell(run.id)} | ${number(run.scores.timingBrier)} | ${number(run.scores.exitBrier)} | ${number(run.scores.entryBrier)} |`,
+        `| ${cell(point.game.gameId)} | ${point.game.index + 1} | ${point.game.tag} | ${cell(run.id)} | ${number(run.scores.timingSkillVsConstant)} | ${number(run.scores.timingSkillVsStatistical)} | ${number(run.midPeriod.timingSkillVsConstant)} | ${["constant", "statistical", "generic-jev"].map((name) => number(run.baselines[name]?.metrics?.timingSkillVsConstant)).join(" | ")} |`,
       );
   out.push(
     "\nLearning-curve omissions:",

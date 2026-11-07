@@ -1,3 +1,4 @@
+import type { ValidationInput, ValidationJev } from "../policy/validation.js";
 import { PROVENANCE_COLUMNS } from "./export.js";
 import { readFileSync } from "node:fs";
 import { boundaryNames, auditBoundary } from "./memory-audit.js";
@@ -754,14 +755,25 @@ export class Session {
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
   }
-  async validatePackage(allowance: number, signal: AbortSignal) {
-    this.#check("validate_package", {});
+  async validatePackage(
+    allowance: number,
+    signal: AbortSignal,
+    input: ValidationInput = {},
+    jev?: ValidationJev,
+  ) {
+    this.#check("validate_package", input);
     if (!this.policyTools)
       throw new SessionError(
         "capability_disabled",
         "Policy tools are not installed",
       );
-    return this.policyTools.validate(this.#phase, allowance, signal);
+    return this.policyTools.validate(
+      this.#phase,
+      allowance,
+      signal,
+      input,
+      jev,
+    );
   }
   async assertCodeAllowed(program: string) {
     this.#check("execute_code", { program });
@@ -872,8 +884,8 @@ export function sessionEnvironment(
     );
     let sandbox: DockerSandbox | undefined;
     return {
-      validatePackage: (allowance, signal) =>
-        session.validatePackage(allowance, signal),
+      validatePackage: (allowance, signal, input, jev) =>
+        session.validatePackage(allowance, signal, input, jev),
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
       boundaryAudit: async () =>

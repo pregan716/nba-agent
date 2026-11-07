@@ -22,6 +22,9 @@ const report = buildReport(inputs, {
   resamples: Number(value("resamples") ?? DEFAULT_BOOTSTRAP.resamples),
   seed: Number(value("seed") ?? DEFAULT_BOOTSTRAP.seed),
   revealHoldout: args.includes("--holdout-revealed"),
+  baselines: args
+    .filter((a) => a.startsWith("--baselines="))
+    .map((a, i) => ({ label: `baselines-${i + 1}`, path: a.slice(12) })),
 });
 mkdirSync(resolve(out), { recursive: true });
 writeFileSync(join(out, "report.json"), JSON.stringify(report, null, 2) + "\n");
