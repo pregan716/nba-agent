@@ -53,7 +53,7 @@ test("launcher refuses missing images before data access or provider setup", asy
   const { join, resolve } = await import("node:path");
   const { spawnSync } = await import("node:child_process");
   const script = resolve("scripts/run.ts");
-  for (const role of ["assembler", "sandbox"]) {
+  for (const role of ["assembler", "sandbox", "baselines"]) {
     const root = mkdtempSync(join(tmpdir(), "nba-preflight-"));
     try {
       mkdirSync(join(root, ".cache"));
@@ -66,33 +66,59 @@ test("launcher refuses missing images before data access or provider setup", asy
         `#!/bin/sh\nprintf '%s\\n' "$*" >> '${root}/inspected'\nif [ "$3" = '${role === "assembler" ? id : remote}' ]; then exit 1; fi\nprintf '%s\\n' '${id}'\n`,
         { mode: 0o700 },
       );
-      const result = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          import.meta.resolve("tsx"),
-          script,
-          `--assembler-image=${local}`,
-          `--root=${root}/run`,
-        ],
-        {
-          cwd: root,
-          encoding: "utf8",
-          timeout: 15000,
-          env: { ...process.env, PATH: `${root}:${process.env.PATH}` },
-        },
-      );
+      const launch = () =>
+        spawnSync(
+          process.execPath,
+          [
+            "--import",
+            import.meta.resolve("tsx"),
+            script,
+            `--assembler-image=${local}`,
+            `--root=${root}/run`,
+            ...(role === "baselines" ? ["--mode=baselines"] : []),
+          ],
+          {
+            cwd: root,
+            encoding: "utf8",
+            timeout: 15000,
+            env: { ...process.env, PATH: `${root}:${process.env.PATH}` },
+          },
+        );
+      const result = launch();
       assert.notEqual(result.status, 0);
-      assert.match(
-        result.stderr,
-        new RegExp(`Cannot resolve pinned ${role} image locally`),
-      );
-      assert.match(result.stderr, /no model calls have been started/);
+      if (role === "baselines") {
+        // Reaching corpus setup without a sandbox proves preflight succeeded.
+        assert.match(result.stderr, /config\/datasets.json/);
+        assert.doesNotMatch(
+          result.stderr,
+          /Cannot resolve pinned|sandbox image pin is missing/,
+        );
+      } else {
+        assert.match(
+          result.stderr,
+          new RegExp(`Cannot resolve pinned ${role} image locally`),
+        );
+        assert.match(result.stderr, /no model calls have been started/);
+      }
       assert.equal(existsSync(join(root, "run")), false);
+      // A resume invocation must run preflight again before reading run data.
+      mkdirSync(join(root, "run"));
+      writeFileSync(join(root, "run", "sentinel"), "existing run");
+      const resumed = launch();
+      assert.notEqual(resumed.status, 0);
+      if (role !== "baselines")
+        assert.match(
+          resumed.stderr,
+          new RegExp(`Cannot resolve pinned ${role} image locally`),
+        );
+      assert.equal(
+        readFileSync(join(root, "run", "sentinel"), "utf8"),
+        "existing run",
+      );
       const inspected = readFileSync(join(root, "inspected"), "utf8")
         .trim()
         .split("\n");
-      assert.equal(inspected.length, role === "assembler" ? 1 : 2);
+      assert.equal(inspected.length, role === "sandbox" ? 4 : 2);
       assert.ok(inspected.every((line) => line.startsWith("image inspect ")));
     } finally {
       rmSync(root, { recursive: true, force: true });

@@ -289,7 +289,27 @@ export class Runner {
             }
           }
           if (this.record.events("phase_end", scope).length) continue;
+          const previousEnd = this.record
+            .events("session_end", scope)
+            .at(-1)?.seq;
           await this.session(game, phase, harness);
+          const end = this.record.events("session_end", scope).at(-1);
+          // Halt only for a failure produced by this invocation. An explicit
+          // resume skips the failed session and continues at the next step.
+          if (
+            end &&
+            end.seq !== previousEnd &&
+            end.data.failureKind === "assembler_infrastructure"
+          ) {
+            this.record.append("run_halted", "run", {
+              gameId: game.gameId,
+              phase,
+              failureKind: "assembler_infrastructure",
+              sessionEndSeq: end.seq,
+            });
+            await this.checkpoint();
+            return;
+          }
           await this.checkpoint();
         }
         this.record.append("game_end", game.gameId, {

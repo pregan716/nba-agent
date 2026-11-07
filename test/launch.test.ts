@@ -459,3 +459,73 @@ test("corpus diagnostics keep season tags and never replay or train on holdout g
     clean(root);
   }
 });
+
+test("assembler infrastructure failure halts the run; resume skips failed pregame", async () => {
+  const { AssemblerInfrastructureError } =
+    await import("../src/policy/errors.js");
+  const root = mkdtempSync(join(tmpdir(), "nba-halt-"));
+  const data = fixtureLaunchConfig("M3");
+  const proxy = new MeteringProxy(scriptedAnalyst(), scriptedJev);
+  await proxy.listen();
+  let broken = true;
+  const assembler = {
+    ...fixtureAssembler,
+    run: async (...args: Parameters<typeof fixtureAssembler.run>) => {
+      if (broken) throw new AssemblerInfrastructureError("Docker unavailable");
+      return fixtureAssembler.run(...args);
+    },
+  };
+  const make = () => chronologicalRunner({ root, ...data, assembler, proxy });
+  let runner = make();
+  const harness: Parameters<typeof runner.run>[0] = async ({ session }) => {
+    const context = await session.call("context", {});
+    if (context.phase !== "pregame") return;
+    const path = `packages/${context.game.game_id}`;
+    await session.call("workspace_write", {
+      path: `${path}/assemble.py`,
+      content: "def assemble(state): return {}\n",
+    });
+    await session.call("workspace_write", {
+      path: `${path}/manifest.json`,
+      content: '{"stateVersion":"state-v1"}',
+    });
+    await session.call("freeze_package", {});
+  };
+  try {
+    await runner.run(harness);
+    assert.deepEqual(
+      runner.record.events("session_start").map((e) => e.scope),
+      ["prior:pregame"],
+    );
+    assert.equal(runner.record.events("run_halted").length, 1);
+    assert.equal(runner.record.events("run_end").length, 0);
+    assert.equal(runner.record.events("replay_completed").length, 0);
+    runner.close();
+    broken = false;
+    runner = make();
+    await runner.run(harness);
+    assert.deepEqual(
+      runner.record.events("session_start").map((e) => e.scope),
+      [
+        "prior:pregame",
+        "prior:postgame",
+        "current:pregame",
+        "current:postgame",
+      ],
+    );
+    assert.equal(
+      runner.record.events("game_end", "prior")[0].data.status,
+      "invalid_package",
+    );
+    assert.equal(
+      runner.record.events("game_end", "current")[0].data.status,
+      "completed",
+    );
+    assert.equal(runner.record.events("run_halted").length, 1);
+    assert.equal(runner.record.events("run_end").length, 1);
+  } finally {
+    runner.close();
+    await proxy.close();
+    clean(root);
+  }
+});
