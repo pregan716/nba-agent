@@ -20,6 +20,7 @@ price list before any budget claim is final.
 | `pilot-m3` (stage 3) | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                   |
 | `pilot-m3b`          | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                   |
 | `pilot-m0` (stage 4) | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                   |
+| `pilot-m0-10`        | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                   |
 
 All runs: Jev `jev-1.14.0`, analyst `claude-opus-4-6` at effort `high` with
 adaptive thinking, Pi harness with prompt caching (`ephemeral-5m`) and
@@ -161,34 +162,80 @@ Exit is unchanged at about 0.39 with top-1 near 50%, and entry top-1 is poor
 (0.06–0.40). This is a briefing-content problem (who replaces whom), not an
 anchoring one; the agent has begun a sub-pairs note.
 
-### Stage 4 (`pilot-m0`, two M0 games)
+### Stage 4 (M0 over the ten development games)
 
 M0 persists nothing: each pregame starts with an empty workspace and only the
-previous game's trace. Same first two games, same prompt and code revision as
-`pilot-m3b`.
+previous game's trace. `pilot-m0` ran the first two games; `pilot-m0-10` ran
+all ten as a fresh run id, so games 1 and 2 were run twice under the same
+configuration. Prompt and code revision are those of `pilot-m3b`; stage 3 used
+the old prompt, so the M0 to stage-3 comparison confounds memory with prompt.
 
-| Game       | Base rate | M0 timing | M3b timing | Stage 3 timing | M0 exit / entry | M3b exit / entry |
-| ---------- | --------- | --------- | ---------- | -------------- | --------------- | ---------------- |
-| 0022500083 | .227      | .203      | .252       | .202           | .318 / .130     | .238 / .119      |
-| 0022500018 | .202      | .170      | .155       | .151           | .326 / .173     | .297 / .191      |
+| Game       | Base rate | M0 timing | M0 (2-game run) | M3b timing | Stage 3 timing | M0 exit / entry | M0 mean p / actual |
+| ---------- | --------- | --------- | --------------- | ---------- | -------------- | --------------- | ------------------ |
+| 0022500083 | .227      | .191      | .203            | .252       | .202           | .277 / .119     | .41 / .35          |
+| 0022500018 | .202      | .199      | .170            | .155       | .151           | .401 / .172     | .46 / .28          |
+| 0022500106 | .198      | .152      |                 | .152       | .133           | .616 / .200     | .23 / .27          |
+| 0022500117 | .229      | .172      |                 | .175       | .216           | .334 / .195     | .40 / .35          |
+| 0022500128 | .237      | .162      |                 | .154       | .195           | .532 / .222     | .45 / .38          |
+| 0022500021 | .237      | .213      |                 |            | .219           | .280 / .176     | .37 / .38          |
+| 0022500146 | .224      | **.270**  |                 |            | .215           | .459 / .157     | .56 / .34          |
+| 0022500158 | .239      | **.239**  |                 |            | .239           | .466 / .190     | .29 / .40          |
+| 0022500174 | .192      | **.268**  |                 |            | .186           | .345 / .196     | .54 / .26          |
+| 0022500028 | .205      | .181      |                 |            | .151           | .222 / .336     | .44 / .29          |
 
-Two things follow. First, M0 game 1 and `pilot-m3b` game 1 are the same
-configuration (empty memory, same prompt, same game) and differ by 0.05 on
-timing: that is the run-to-run variation of the research agent's own choices on
-one game, five times the Jev replay noise. The `pilot-m3b` game-1 result was
-in part a bad draw, and the game-by-game trajectory above should be read with
-that in mind. Second, on game 2 the memory variant was 0.015 better than M0,
-inside that noise. Memory effects of the size we hope for will not be visible
-per game; pooled over 50 games the agent-level noise shrinks to roughly 0.007
-on the mean, which makes a variant gap of about 0.02 detectable with one
-replicate and anything smaller not.
+Pooled (weighted by scored windows; subset comparisons use the same games):
 
-M0 costs less: postgame sessions with nothing to write ran $0.98 and $1.74 and
-5–9 minutes. The agent called `read_feedback` in the first pregame, where no
-trace exists yet (one refused call); a note in the M0 instructions would save
-it. Mean predicted probability was 0.39 and 0.38 against actual rates of 0.35
-and 0.28: the qualitative briefing still runs slightly high in a fresh session,
-as it did in `pilot-m3b` game 1.
+| Comparison                     | Games | M0 timing | Other timing | M0 exit | Other exit | M0 entry | Other entry |
+| ------------------------------ | ----- | --------- | ------------ | ------- | ---------- | -------- | ----------- |
+| M0 vs `pilot-m3b`, same prompt | 1–5   | .176      | .179         | .419    | .388       | .179     | .174        |
+| M0 vs `pilot-m3b`, same prompt | 2–5   | .172      | .159         | .461    | .434       | .198     | .191        |
+| M0 vs stage 3, prompt differs  | 1–10  | .204      | .190         | .390    | .382       | .193     | .217        |
+| M0 vs stage 3, prompt differs  | 6–10  | .235      | .201         | .360    | .377       | .208     | .240        |
+
+What this does and does not show:
+
+- **Noise.** Games 1 and 2 run twice under the same configuration differ by
+  0.012 and 0.029 on timing; M0 game 1 against `pilot-m3b` game 1 (also the
+  same configuration) by 0.05. Per game, the M0 minus stage-3 timing difference
+  has a standard deviation of 0.04. The research agent's own run-to-run
+  variation is about 0.03–0.05 per game, four to five times the Jev replay
+  noise. Nothing in a single game's number is a memory effect.
+- **Memory, same prompt (games 2–5).** M3b is 0.013 better on timing and about
+  equal on exit and entry. Over four games the standard error of that
+  difference is about 0.02; the sign is right and the size is not established.
+- **Memory, all ten games.** Stage 3 is 0.014 better on timing (paired mean
+  difference 0.014, standard error 0.013) and 0.024 better on entry; exit is
+  equal. The gap is concentrated in games 6–10 (0.034 on timing), where M0 had
+  no profile to carry and stage 3 had five games of one. Three M0 games (7, 8, 9) scored at or below the base rate; no stage-3 game did. This is the shape
+  a memory effect would have, and ten games with one replicate cannot separate
+  it from the prompt change or from noise.
+- **Calibration.** M0's mean predicted substitution probability ranged from
+  0.23 to 0.56 against actual rates of 0.26 to 0.40; the two games below base
+  rate over-predicted by 0.22 and 0.28. Each fresh session writes its own
+  wording for the stoppage types and Jev reads that wording at a level the
+  agent cannot see until postgame, and M0 cannot carry the correction forward.
+  `pilot-m3b` wrote exactly that correction to memory (`coach/framing_lessons.md`)
+  but still ran at 0.54 and 0.48 in two of its five games, so memory has not
+  yet fixed calibration either. Stage 3's lookup table was well calibrated
+  (0.24–0.42) because the numbers Jev echoed were fitted rates.
+- **Detectability.** Pooled over 50 scored games, agent-level noise of 0.04 per
+  game shrinks to about 0.006 on a paired mean, so a variant gap of 0.015 or
+  more is detectable with one replicate and a gap of about 0.01 needs two.
+  The effect sizes seen here (0.013–0.034) sit at that threshold.
+
+`assertedEstimates` was nonzero in two M0 games (59 and 53): the instructions
+carried static tendency rates ("fouls: moderate chance (~35%)", "between
+periods: ~87%"), which the recall-biased detector counts. These are briefing
+content, not per-window answers, and Jev's mean absolute difference from the
+diagnostics estimate was 0.6 in both games, so they were not echoed. No M0
+game built a per-window lookup table under the revised prompt.
+
+M0 costs less than M3: $2.90 per game (pregame median $2.0, postgame $1.0) and
+17 minutes, against $4.78 and 26 minutes for M3. No tool was refused and no
+boundary-audit flag was raised (M0 has nothing to audit); one transient API
+connection error in game 2's pregame was retried. In `pilot-m0` the agent had
+called `read_feedback` in the first pregame, where no trace exists yet (one
+refused call); a note in the M0 instructions would save that call.
 
 ## Jev
 
