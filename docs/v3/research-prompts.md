@@ -179,6 +179,23 @@ SPO-857 changed the environment; the prompt was updated to match once it merged:
 - The code-output cap (16,000 bytes, files unaffected) and the feedback summary
   being on the first page only are stated.
 
+## Revisions after the third pilot game
+
+The third run (`pilot-m3-smoke3`, $4.98) showed three prompt gaps, fixed here;
+the environment findings from the same run are SPO-860.
+
+- The trace description said `actual` is "{players_out, players_in} or null".
+  It is never null: both lists are empty when the coach did not substitute. The
+  prompt now says so, and that an excluded window has null `raw`, `validation`
+  and `scores`. The agent spent four calls discovering both.
+- Units: `minutes_seconds` is seconds played; `cumulative_minutes_*` is decimal
+  minutes. The agent spent three calls on each.
+- The coach-agnostic rule for best practices and skills is concrete: surnames
+  count, rates and game lessons belong in the coach profile, write the role not
+  the name, and flagged text is reviewed by a person. The agent's first
+  best-practices file named eight Celtics players and the audit, which matched
+  full names only, flagged nothing.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the

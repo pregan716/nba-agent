@@ -232,6 +232,17 @@ test("the prompt matches the SPO-857 environment", () => {
   assert.match(p, /include_metadata=true/);
   assert.match(p, /16,000 bytes/);
   assert.match(p, /first page only/);
+  // Found in the third pilot game: the agent stumbled on these trace and unit facts.
+  assert.match(p, /both lists empty when the coach did not substitute/);
+  assert.match(p, /raw, validation and scores are null/);
+  assert.match(p, /minutes_seconds \(seconds played\)/);
+  assert.match(p, /cumulative_minutes_exit \(decimal minutes\)/);
+  assert.doesNotMatch(p, /or null, and exclusions/);
+  for (const v of ["M2", "M3", "M4"] as const)
+    assert.match(
+      memoryPermissionInstructions(memoryVariant(v)),
+      /surnames included/,
+    );
   for (const v of ["M1", "M2", "M3"] as const) {
     const m = memoryPermissionInstructions(memoryVariant(v));
     assert.match(m, /tokens currently retained against the cap/);
