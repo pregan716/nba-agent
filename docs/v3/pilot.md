@@ -237,6 +237,56 @@ connection error in game 2's pregame was retried. In `pilot-m0` the agent had
 called `read_feedback` in the first pregame, where no trace exists yet (one
 refused call); a note in the M0 instructions would save that call.
 
+### Re-cut with the SPO-864 metrics
+
+`npm run evaluate` over the same three records (no model calls), after PR #66.
+Skill is 1 − Brier / Brier(constant at the game's own rate); higher is better,
+0 is no better than the rate. Mid-period excludes between-period windows.
+
+| Run              | Games | Timing | Skill | Mid-period timing | Mid-period skill | Mean p / rate | Reliability | Resolution |
+| ---------------- | ----- | ------ | ----- | ----------------- | ---------------- | ------------- | ----------- | ---------- |
+| Stage 3 (M3)     | 1–10  | .190   | .131  | .196              | .049             | .34 / .33     | .030        | .058       |
+| `pilot-m3b` (M3) | 1–5   | .179   | .178  | .187              | .084             | .41 / .33     | .037        | .074       |
+| `pilot-m0-10`    | 1–10  | .204   | .064  | .211              | **−.025**        | .42 / .33     | .038        | .050       |
+
+By stoppage kind, skill against a constant at that kind's own rate (a harder
+reference: it already knows that timeouts substitute 57 % of the time and
+dead-ball turnovers 12 %):
+
+| Kind               | n   | Rate | Stage 3 | `m3b` | M0   |
+| ------------------ | --- | ---- | ------- | ----- | ---- |
+| foul               | 380 | .30  | +.01    | +.07  | −.05 |
+| timeout            | 68  | .57  | −.23    | −.10  | −.35 |
+| dead-ball turnover | 84  | .12  | −.45    | −.98  | −.68 |
+| between periods    | 30  | .93  | −.67    | —     | −.76 |
+
+What the re-cut adds to the stage write-ups above:
+
+- **Most of the headline skill is the between-period windows.** Mid-period,
+  stage 3 is 0.05 better than a constant and M0 is slightly worse than one.
+  The matched M3-versus-M0 difference is the same size on both cuts (0.015
+  full, 0.015 mid-period; 90 % interval −0.006 to 0.036 on ten games), so the
+  memory signal is not a between-period artefact, but the absolute level of
+  skill on the windows that matter is small.
+- **No variant beats the per-kind rate except at fouls.** At timeouts and
+  dead-ball turnovers every run is worse than knowing the kind's own rate.
+  Within a stoppage kind, Jev's briefed judgement is not yet discriminating;
+  the decomposition agrees (resolution 0.05–0.07 against an uncertainty of
+  0.22). This is the figure the statistical baseline should be compared with
+  once the development baselines run exists.
+- **Reliability is the M0 cost.** M0's reliability (0.038) is worse than stage
+  3's (0.030) and its resolution lower (0.050 against 0.058): it both sits at
+  the wrong level and ranks less well. `pilot-m3b` has the best resolution
+  (0.074) and the worst level (mean 0.41 against 0.33), which is the pattern
+  SPO-863 is meant to fix.
+- **Entry: M0 is better than stage 3, not worse.** Entry Brier −0.024 (90 %
+  interval −0.053 to 0.007) in M0's favour, entry log loss 2.80 against 3.40,
+  MRR equal (0.45). Stage 3's player selection was the lookup table's weakest
+  part and M0's briefing, written fresh each game, did better at it.
+
+The M3b-to-M0 comparison is refused by the report (five games against ten);
+the pooled numbers for games 1–5 are in the stage 4 table above.
+
 ## Jev
 
 **Determinism (double replay, Agreed Nov 4, 2026).** Game 0022500083's 66
