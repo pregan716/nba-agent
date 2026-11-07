@@ -257,7 +257,11 @@ test("the prompt matches the SPO-857 environment", () => {
   assert.match(p, /every other tool, including memory writes, is refused/);
   assert.match(
     RESEARCH_PHASE_PROMPTS_V3.postgame,
-    /compare Jev's answers with any estimates your diagnostics recorded/,
+    /look at the requests Jev actually received .* diagnostics are never sent/,
+  );
+  assert.match(
+    RESEARCH_PHASE_PROMPTS_V3.postgame,
+    /agreement with those says nothing by itself/,
   );
   for (const v of ["M1", "M2", "M3"] as const) {
     const m = memoryPermissionInstructions(memoryVariant(v));

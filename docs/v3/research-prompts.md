@@ -225,9 +225,11 @@ Changes:
   contains, and that an asserted number becomes the answer and is visible in
   the trace. The package-contract line keeps the brief's rule word for word
   and points at that passage.
-- The postgame phase prompt asks the agent to compare Jev's answers with the
-  estimates in its diagnostics and, where they track, to improve the briefing
-  rather than the formula.
+- The postgame phase prompt asks the agent to look at the requests Jev
+  received, and where they state an estimate that Jev's answers track, to
+  improve the briefing rather than the formula. Diagnostics never reach Jev,
+  so agreement with an estimate kept only there is not evidence of anchoring
+  (review of PR #62).
 - The `freeze_package` line says a successful freeze ends the session. In
   eight of ten pregames the agent froze and then tried to write memory; the
   memory instructions already said this, the freeze line now does too.
