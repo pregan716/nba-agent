@@ -1,3 +1,4 @@
+import { summarizeEstimates } from "../replay/estimates.js";
 import { scoreWindow, summarize } from "../replay/scoring.js";
 import type { WindowResult } from "../replay/types.js";
 import {
@@ -376,7 +377,16 @@ export function evaluateRecord(
           );
           const complete =
             summaries.length === 1 &&
-            canonical(summaries[0].data.summary) === canonical(summarize(rs));
+            canonical(summaries[0].data.summary) ===
+              canonical({
+                ...summarize(rs),
+                ...(Object.hasOwn(
+                  summaries[0].data.summary,
+                  "assertedEstimates",
+                )
+                  ? summarizeEstimates(rs, summaries[0].scope, events)
+                  : {}),
+              });
           return {
             game,
             rows: rs,

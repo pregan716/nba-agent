@@ -404,6 +404,12 @@ test("policy replay scores per-question fallback and resumes without another pro
   try {
     const trace = await replayPolicy(options);
     assert.equal(trace.celticsHome, false);
+    assert.equal(trace.summary.assertedEstimates, 0);
+    assert.equal(trace.summary.jevAgreementWithDiagnostics, null);
+    assert.deepEqual(
+      record.events("replay_summary")[0].data.summary,
+      trace.summary,
+    );
     assert.equal(
       trace.windows[0].result.validation?.questions.entry.valid,
       false,

@@ -250,3 +250,42 @@ run directory, generates both artifacts, and verifies that the input is unchange
 and no run-side files are created. Existing launcher fixture records are also a
 supported smoke-test input. No run is executed by evaluation and fixture values
 are not evidence.
+
+## Asserted estimates in policy traces (SPO-862)
+
+New per-game policy trace summaries (including `read_feedback`) and
+`replay_summary` records contain two descriptive fields. Neither changes
+predictions, validation, scoring or package acceptance:
+
+- `assertedEstimates`: number of windows whose assembled request contains a
+  probability (0–1) or percentage (0–100%) near the case-insensitive substrings
+  `estimat`, `prob`, `likelihood`, `chance`, `odds` or `p(`. The heuristic checks
+  state, instructions and criterion text independently, in either word/number
+  order, with up to 80 intervening non-digit characters. It accepts serialized
+  keys, shorthand and arbitrary punctuation (including approximation symbols).
+  Recall is preferred over precision: `estimated minutes: 0.5` is an accepted
+  false positive. Numeric range and boundary checks still apply. Multiple matches
+  count once per window. Diagnostics and option keys are not scanned. Excluded
+  windows and windows without an assembled request do not count; an assembled
+  request still counts if its provider call failed. This is an approximate text
+  detector, not a claim that every probability was found or used by Jev.
+- `jevAgreementWithDiagnostics`: `{meanAbsoluteDifference, count}`, or `null`
+  when there are no comparable windows. For each window, choose the first
+  lexically sorted top-level diagnostic key containing `sub` (case-insensitive)
+  with a finite numeric value in [0, 1], then compare it to Jev's valid raw
+  substitution answer. Missing/invalid answers, fallbacks, excluded windows and
+  failed predictions are omitted. Each window counts once even if several keys
+  qualify. Diagnostics never reach Jev; agreement does not establish anchoring.
+
+Evaluation verifies the additional fields when present and continues to accept
+older summaries without them. Existing immutable records are not rewritten.
+
+Read-only verification against the stage-3 cached `pilot-m3/r1` record found:
+
+| Game | Asserted windows | Comparable windows | Mean absolute difference |
+| --- | ---: | ---: | ---: |
+| 0022500083 | 66 | 66 | 0.10413636 |
+| 0022500028 | 59 | 59 | 0.02970000 |
+
+These are development-pilot observations, not experiment results. No model calls
+are needed to compute the measures.

@@ -62,6 +62,7 @@ interface Options {
   predictor?: string;
   unknownSpend?: boolean;
   incomplete?: boolean;
+  estimateSummary?: boolean;
   state?: string;
   jev?: any;
 }
@@ -148,7 +149,14 @@ function fixture(root: string, options: Options = {}) {
           result,
         });
       if (!options.incomplete)
-        record.append("replay_summary", scope, { summary: summarize(rows) });
+        record.append("replay_summary", scope, {
+          summary: {
+            ...summarize(rows),
+            ...(options.estimateSummary
+              ? { assertedEstimates: 0, jevAgreementWithDiagnostics: null }
+              : {}),
+          },
+        });
       const researchScope = `${game.gameId}:pregame`;
       record.append("session_start", researchScope, { attempt: 1 });
       record.append("model_request", researchScope, {
@@ -594,6 +602,22 @@ test("marginal loss reductions use signed extra dollars and hours, with undefine
     );
     assert.match(markdown(report), /lossReductionPerExtraUsd/);
     assert.match(markdown(report), /null means undefined/);
+  } finally {
+    remove(root);
+  }
+});
+
+test("extended estimate summaries preserve completeness and comparisons with legacy records", () => {
+  const root = temp();
+  try {
+    fixture(join(root, "old"));
+    fixture(join(root, "new"), { estimateSummary: true });
+    const comparison = compareRuns(
+      evaluated(join(root, "old")),
+      evaluated(join(root, "new")),
+      { resamples: 10, seed: 1 },
+    );
+    assert.equal(comparison.status, "compared");
   } finally {
     remove(root);
   }
