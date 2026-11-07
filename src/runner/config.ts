@@ -160,6 +160,7 @@ export const configSchema = z.strictObject({
         .array(
           z.strictObject({
             gameId: id,
+            windowId: z.string().min(1).optional(),
             scheduledStart: z.string().datetime({ offset: true }),
             release: z.string().datetime({ offset: true }),
             inputHash: hash,
