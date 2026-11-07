@@ -12,6 +12,44 @@ import {
   type ReplayInput,
   type DecisionDataset,
 } from "./types.js";
+/** Full-fidelity released facts, also used by excluded-window history projections. */
+export async function decisionHistoryFacts(
+  adapter: Corpus["pbp"],
+  gameId: string,
+) {
+  const rows = await indexedRows(adapter, new Set([gameId]), [
+    "events",
+    "event_participants",
+  ]);
+  return { events: rows.events, participants: rows.event_participants };
+}
+async function indexedRows(
+  adapter: Corpus["pbp"],
+  ids: Set<string>,
+  names: string[],
+) {
+  const release = adapter.release;
+  const index = JSON.parse(
+    (
+      await release.bytes(
+        release.manifest.object_prefix + release.manifest.game_index,
+      )
+    ).toString(),
+  );
+  const tables: Record<string, Row[]> = {};
+  for (const table of names) {
+    tables[table] = [];
+    for (const name of release.manifest.tables[table] ?? []) {
+      const entries = index.tables[table]?.[name];
+      if (!entries || !entries.some((r: any) => ids.has(r[0]))) continue;
+      for (const row of await release.rows(
+        release.manifest.object_prefix + name,
+      ))
+        if (ids.has(row.game_id)) tables[table].push(row);
+    }
+  }
+  return tables;
+}
 /** Caller supplies the frozen pregame evidence; no same-game box score roster inference. */
 export async function loadReplayInputs(
   c: Corpus,
@@ -27,30 +65,12 @@ async function loadInputs(
     release = adapter.release,
     coverage = await adapter.coverage(),
     games = await adapter.games();
-  const index = JSON.parse(
-    (
-      await release.bytes(
-        release.manifest.object_prefix + release.manifest.game_index,
-      )
-    ).toString(),
-  );
-  const tables: Record<string, Row[]> = {};
-  for (const table of [
+  const tables = await indexedRows(adapter, ids, [
     "events",
     "event_participants",
     "v_player_stints",
     "data_quality_issues",
-  ]) {
-    tables[table] = [];
-    for (const name of release.manifest.tables[table] ?? []) {
-      const entries = index.tables[table]?.[name];
-      if (!entries || !entries.some((r: any) => ids.has(r[0]))) continue;
-      for (const row of await release.rows(
-        release.manifest.object_prefix + name,
-      ))
-        if (ids.has(row.game_id)) tables[table].push(row);
-    }
-  }
+  ]);
   return pregames.map((pregame) => {
     const g = games.find((g) => g.id === pregame.gameId);
     if (!g) throw Error(`Unknown game ${pregame.gameId}`);

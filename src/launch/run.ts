@@ -141,6 +141,7 @@ export function chronologicalRunner(options: {
     throw Error("Assembler differs from run manifest");
   if (config.replay?.mode !== "variant")
     throw Error("Variant replay mode required");
+  source.registerDecisionDatasets?.(datasets);
   const m = manifest(config, schedule);
   const tools = (
     game: Game,

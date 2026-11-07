@@ -1,3 +1,4 @@
+import { decisionTable } from "./decision-history.js";
 export const PROVENANCE_COLUMNS: string[] = JSON.parse(
   readFileSync(
     new URL("../../sandbox/provenance-columns.json", import.meta.url),
@@ -150,6 +151,10 @@ export async function mountGameShards(
   games: RecordEnvelope[],
   cutoff: string,
   signal: AbortSignal,
+  decisionVisibility: { cutoff: string; currentGameId: string } = {
+    cutoff,
+    currentGameId: "",
+  },
 ) {
   const transient = !source.exportCacheDirectory;
   const cache =
@@ -157,15 +162,28 @@ export async function mountGameShards(
     mkdtempSync(join(tmpdir(), "nba-history-cache-"));
   try {
     mkdirSync(cache, { recursive: true });
-    const entries = games.map((game) => {
-      const key = digest([
-        "history-export-v4",
-        source.versions,
-        game,
-        source.exportCacheDirectory ? null : cutoff,
-      ]);
-      return { game, key, target: join(cache!, key + ".sqlite.gz") };
-    });
+    const entries = await Promise.all(
+      games.map(async (game) => {
+        const decisionsVisible =
+          game.id !== decisionVisibility.currentGameId &&
+          Date.parse(releasedGame(game).availableAt) <
+            Date.parse(decisionVisibility.cutoff);
+        const key = digest([
+          "history-export-v5",
+          decisionsVisible,
+          decisionsVisible ? await source.historyIdentity?.(game) : null,
+          source.versions,
+          game,
+          source.exportCacheDirectory ? null : cutoff,
+        ]);
+        return {
+          game,
+          key,
+          decisionsVisible,
+          target: join(cache!, key + ".sqlite.gz"),
+        };
+      }),
+    );
     const missing = entries.filter((e) => !existsSync(e.target));
     if (missing.length) {
       const staging = join(cache, randomUUID());
@@ -177,13 +195,18 @@ export async function mountGameShards(
             c.name === "type" ? "kind" : c.name,
           );
           async function* fallback() {
-            for (const { game } of missing)
+            for (const { game } of missing.filter(
+              (e) => !decisionTable(table) || e.decisionsVisible,
+            ))
               yield { gameId: game.id, ...(await source.history(table, game)) };
           }
+          const tableGames = missing.filter(
+            (e) => !decisionTable(table) || e.decisionsVisible,
+          );
           const batches =
             source.exportHistory?.(
               table,
-              missing.map((e) => e.game),
+              tableGames.map((e) => e.game),
             ) ?? fallback();
           const seen = new Set<string>();
           for await (const batch of batches) {
@@ -205,6 +228,21 @@ export async function mountGameShards(
             async function* projected() {
               yield { table, columns, rows };
               yield {
+                table: "_history_metadata",
+                columns: [
+                  "table_name",
+                  "column_name",
+                  "description",
+                  "table_description",
+                ],
+                rows: definitions.map((c) => ({
+                  table_name: table,
+                  column_name: c.name === "type" ? "kind" : c.name,
+                  description: c.description,
+                  table_description: source.tableDescription?.(table) ?? null,
+                })),
+              };
+              yield {
                 table: "unavailable",
                 columns: ["table", "game_id", "reason"],
                 rows: batch.reason
@@ -223,6 +261,21 @@ export async function mountGameShards(
           for (const entry of missing.filter((e) => !seen.has(e.game.id))) {
             async function* empty() {
               yield { table, columns, rows: [] };
+              yield {
+                table: "_history_metadata",
+                columns: [
+                  "table_name",
+                  "column_name",
+                  "description",
+                  "table_description",
+                ],
+                rows: definitions.map((c) => ({
+                  table_name: table,
+                  column_name: c.name === "type" ? "kind" : c.name,
+                  description: c.description,
+                  table_description: source.tableDescription?.(table) ?? null,
+                })),
+              };
             }
             await writeSessionExport(
               join(staging, entry.key),
