@@ -1,5 +1,6 @@
 import type { RecordLog } from "../runner/record.js";
 import { digest } from "../runner/config.js";
+import { summarizeRecordedEstimates } from "./estimates.js";
 import { scoreWindow, summarize } from "./scoring.js";
 import { REPLAY_VERSIONS } from "./types.js";
 import type {
@@ -113,7 +114,10 @@ export async function replay(
     record.append("replay_summary", scope, {
       releaseManifestSha256: dataset.release.sha256,
       datasetVersion: dataset.version,
-      summary: summarize(results),
+      summary: {
+        ...summarize(results),
+        ...summarizeRecordedEstimates(results, scope, record),
+      },
     });
   }
   record.verify();

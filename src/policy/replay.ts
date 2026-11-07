@@ -24,6 +24,7 @@ import {
   type DecisionDataset,
   type ObservableState,
 } from "../replay/types.js";
+import { summarizeRecordedEstimates } from "../replay/estimates.js";
 import { summarize } from "../replay/scoring.js";
 import type { Assembler } from "./sandbox.js";
 import { packageFiles, type PackageReceipt } from "./package.js";
@@ -275,7 +276,10 @@ export async function replayPolicy(options: {
     package: receipt,
     policy: version,
     windows,
-    summary: summarize(results),
+    summary: {
+      ...summarize(results),
+      ...summarizeRecordedEstimates(results, scope, record),
+    },
     usage: {
       input_tokens: responses.reduce(
         (n, r) => n + (r.usage?.input_tokens ?? 0),
