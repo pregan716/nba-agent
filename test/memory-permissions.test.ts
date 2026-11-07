@@ -548,10 +548,49 @@ for (const variant of ["M0", "M3", "M4"] as const)
             content: code,
           });
           await session.call("workspace_write", {
+            path: "scratch/edit.txt",
+            content: "before",
+          });
+          await session.call("workspace_edit", {
+            path: "scratch/edit.txt",
+            old_text: "before",
+            new_text: "after",
+          });
+          assert.equal(
+            (await session.call("workspace_read", { path: "scratch/edit.txt" }))
+              .content,
+            "after",
+          );
+          await assert.rejects(
+            session.call("workspace_edit", {
+              path: "scratch/edit.txt",
+              old_text: "missing",
+              new_text: "x",
+            }),
+            { code: "invalid_input" },
+          );
+          if (variant === "M0")
+            await assert.rejects(
+              session.call("workspace_edit", {
+                path: "memory/coach_profile.md",
+                old_text: "a",
+                new_text: "b",
+              }),
+              { code: "not_found" },
+            );
+          await session.call("workspace_write", {
             path: `packages/${game}/manifest.json`,
             content: packageManifest,
           });
           await session.call("freeze_package", {});
+          await assert.rejects(
+            session.call("workspace_edit", {
+              path: `packages/${game}/assemble.py`,
+              old_text: "return",
+              new_text: "yield",
+            }),
+            { code: "phase_refused" },
+          );
           await assert.rejects(
             session.call("workspace_write", {
               path: "scratch/locked",

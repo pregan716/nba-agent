@@ -14,7 +14,8 @@ import {
 } from "../src/runner/proxy.js";
 import { RecordStore } from "../src/runner/record.js";
 import { piHarness } from "../src/harness/pi.js";
-import { presetConfig } from "../src/harness/presets.js";
+import { verifyLaunchImages } from "../src/launch/images.js";
+import { localSandboxImage, presetConfig } from "../src/harness/presets.js";
 import { PROMPT_SETS, type PromptSet } from "../src/harness/prompts.js";
 import { probeForManifest } from "../src/harness/probe.js";
 import { currentCodeRevision } from "../src/harness/version.js";
@@ -83,6 +84,12 @@ const assembler = new DockerAssembler(image, {
   memoryBytes: 128 * 1024 * 1024,
   outputBytes: 256000,
 });
+const sandboxImage = scripted ? null : localSandboxImage();
+if (!scripted && !sandboxImage)
+  throw Error(
+    "Research sandbox image pin is missing; run npm run sandbox:build before launching",
+  );
+verifyLaunchImages({ assembler: image, sandbox: sandboxImage });
 const root = resolve(arg("root", ".cache/runs")!);
 const store = scripted ? null : new DopplerStore();
 const secret = (name: string) =>
@@ -182,6 +189,8 @@ try {
       ? probeForManifest(JSON.parse(readFileSync(arg("probe")!, "utf8")))
       : null,
   });
+  // Bind the run to the exact sandbox pin checked before loading data.
+  if (sandboxImage) config.harness.sandboxImage = sandboxImage;
   config.codeRevision = config.harness.codeRevision = currentCodeRevision();
   config.budget.id = "development-limits-not-a-budget-profile";
   config.harness.policy = policyHarness(assembler);
