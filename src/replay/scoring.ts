@@ -1,3 +1,4 @@
+import { diagnosticBreakdowns } from "./diagnostics.js";
 import { rank, validatePrediction } from "./contract.js";
 import type { Failure, Scores, Window, WindowResult } from "./types.js";
 const same = (a: string[], b: string[]) =>
@@ -38,7 +39,15 @@ export function scoreWindow(
     const probabilities = v.answers[kind].probabilities,
       keys = Object.keys(probabilities),
       order = rank(probabilities);
+    const total = Object.values(probabilities).reduce((a, b) => a + b, 0);
+    const normalized = target.map((id) =>
+      total > 0 ? probabilities[id] / total : 1 / keys.length,
+    );
+    const clipped = normalized.map((p) => Math.min(0.999, Math.max(0.001, p)));
     return {
+      logLoss: mean(clipped.map((p) => -Math.log(p))),
+      clips: clipped.filter((p, i) => p !== normalized[i]).length,
+      mrr: mean(target.map((id) => 1 / (order.indexOf(id) + 1))),
       brier: mean(
         keys.map(
           (id) => (k * probabilities[id] - Number(target.includes(id))) ** 2,
@@ -60,6 +69,12 @@ export function scoreWindow(
     predicted = moved(v.action),
     union = new Set([...target, ...predicted]);
   result.scores = {
+    exitLogLoss: k ? exit.logLoss : null,
+    entryLogLoss: k ? entry.logLoss : null,
+    exitMRR: k ? exit.mrr : null,
+    entryMRR: k ? entry.mrr : null,
+    exitLogLossClips: exit.clips,
+    entryLogLossClips: entry.clips,
     timing: (p - y) ** 2,
     logLoss: -(y * Math.log(q) + (1 - y) * Math.log(1 - q)),
     logLossClipped: q !== p,
@@ -107,6 +122,7 @@ export function summarize(results: WindowResult[]) {
       [...new Set(xs)].sort().map((k) => [k, xs.filter((x) => x === k).length]),
     );
   return {
+    ...diagnosticBreakdowns(results),
     windows: results.length,
     eligible: eligible.length,
     scored: scores.length,

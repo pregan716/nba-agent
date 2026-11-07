@@ -9,6 +9,37 @@ import {
 } from "./record.js";
 import type { Event } from "../runner/record.js";
 
+// Additive reports are recomputed from raw answers even for pre-extension records.
+const addedScores = [
+  "exitLogLoss",
+  "entryLogLoss",
+  "exitMRR",
+  "entryMRR",
+  "exitLogLossClips",
+  "entryLogLossClips",
+];
+const addedSummary = [
+  ...addedScores,
+  "n",
+  "playerN",
+  "timingConstantBrier",
+  "timingSkillVsConstant",
+  "timingSkillVsConstantReason",
+  "timingSkillVsStatistical",
+  "timingSkillVsStatisticalReason",
+  "meanPredicted",
+  "observedRate",
+  "brierDecomposition",
+  "midPeriod",
+  "byStoppage",
+];
+function matchesRecorded(current: any, stored: any, additions: string[]) {
+  if (!current || !stored) return canonical(current) === canonical(stored);
+  const projected = { ...current };
+  for (const key of additions)
+    if (!Object.hasOwn(stored, key)) delete projected[key];
+  return canonical(projected) === canonical(stored);
+}
 export const PRIMARY = ["timingBrier", "exitBrier", "entryBrier"] as const;
 export type Metric = (typeof PRIMARY)[number];
 export type Tag = "development" | "warm-up" | "scored" | "holdout";
@@ -362,7 +393,7 @@ export function evaluateRecord(
           stored.failure,
         );
         if (
-          canonical(recomputed.scores) !== canonical(stored.scores) ||
+          !matchesRecorded(recomputed.scores, stored.scores, addedScores) ||
           canonical(recomputed.validation) !== canonical(stored.validation)
         )
           throw new EvaluationError("score_mismatch", key);
@@ -387,8 +418,8 @@ export function evaluateRecord(
           );
           const complete =
             summaries.length === 1 &&
-            canonical(summaries[0].data.summary) ===
-              canonical({
+            matchesRecorded(
+              {
                 ...summarize(rs),
                 ...(Object.hasOwn(
                   summaries[0].data.summary,
@@ -396,7 +427,10 @@ export function evaluateRecord(
                 )
                   ? summarizeEstimates(rs, summaries[0].scope, events)
                   : {}),
-              });
+              },
+              summaries[0].data.summary,
+              addedSummary,
+            );
           return {
             game,
             rows: rs,

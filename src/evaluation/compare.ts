@@ -1,3 +1,4 @@
+import { isMidPeriod } from "../replay/diagnostics.js";
 import { canonical } from "./record.js";
 import {
   metrics,
@@ -139,11 +140,12 @@ function marginal(
         : null,
   };
 }
-export function compareRuns(
+function compareSubset(
   a: EvaluatedRun,
   b: EvaluatedRun,
   options: Bootstrap = DEFAULT_BOOTSTRAP,
   gameIds = a.games.map((g) => g.game.gameId),
+  midPeriod = false,
 ) {
   validateBootstrap(options);
   const check = compatibility(a, b);
@@ -175,12 +177,14 @@ export function compareRuns(
     a.games
       .filter((g) => gameIds.includes(g.game.gameId))
       .flatMap((g) => g.rows)
+      .filter((r) => !midPeriod || isMidPeriod(r))
       .map((r) => [key(r), r]),
   );
   const right = new Map(
     b.games
       .filter((g) => gameIds.includes(g.game.gameId))
       .flatMap((g) => g.rows)
+      .filter((r) => !midPeriod || isMidPeriod(r))
       .map((r) => [key(r), r]),
   );
   const pairs: { left: WindowResult; right: WindowResult }[] = [],
@@ -327,10 +331,26 @@ export function compareRuns(
     status: pairs.length
       ? ("compared" as const)
       : ("no_matched_windows" as const),
+    metrics: {
+      left: metrics(pairs.map((p) => p.left)),
+      right: metrics(pairs.map((p) => p.right)),
+    },
     matchedWindows: pairs.length,
     matchedGames: matchedGameIds.length,
     dropped: dropReport,
     scores,
+  };
+}
+
+export function compareRuns(
+  a: EvaluatedRun,
+  b: EvaluatedRun,
+  options: Bootstrap = DEFAULT_BOOTSTRAP,
+  gameIds = a.games.map((g) => g.game.gameId),
+) {
+  return {
+    ...compareSubset(a, b, options, gameIds),
+    midPeriod: compareSubset(a, b, options, gameIds, true),
   };
 }
 
