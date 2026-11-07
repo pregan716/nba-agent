@@ -268,6 +268,11 @@ question for the user.
 
 ## Open items arising
 
+- Calibration drift in fresh sessions (stage 4): the agent cannot see how Jev
+  reads its wording before the game. SPO-863 lets `validate_package` return
+  Jev's answers on a spread of prior-game states (user approved Nov 7, 2026;
+  amends the brief's "without calling Jev" decision). The M0 and M3 comparison
+  should be re-run on a few games after it merges.
 - Budget profile v1 is Proposed above; the smaller- and larger-cap re-runs the
   brief asks for have not been run.
 - Price schedule is a placeholder.
