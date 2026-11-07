@@ -188,6 +188,8 @@ the environment findings from the same run are SPO-860.
   It is never null: both lists are empty when the coach did not substitute. The
   prompt now says so, and that an excluded window has null `raw`, `validation`
   and `scores`. The agent spent four calls discovering both.
+- Substitution events are one row per entering or leaving player (SPO-860
+  verified this against the release); the agent had halved its counts.
 - Units: `minutes_seconds` is seconds played; `cumulative_minutes_*` is decimal
   minutes. The agent spent three calls on each.
 - The coach-agnostic rule for best practices and skills is concrete: surnames
