@@ -21,6 +21,7 @@ price list before any budget claim is final.
 | `pilot-m3b`          | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                   |
 | `pilot-m0` (stage 4) | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                   |
 | `pilot-m0-10`        | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                   |
+| `baselines-dev`      | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                   |
 
 All runs: Jev `jev-1.14.0`, analyst `claude-opus-4-6` at effort `high` with
 adaptive thinking, Pi harness with prompt caching (`ephemeral-5m`) and
@@ -283,6 +284,41 @@ What the re-cut adds to the stage write-ups above:
   interval −0.053 to 0.007) in M0's favour, entry log loss 2.80 against 3.40,
   MRR equal (0.45). Stage 3's player selection was the lookup table's weakest
   part and M0's briefing, written fresh each game, did better at it.
+
+### Baselines on the development games
+
+`baselines-dev` (Nov 7, 2026; constant, statistical and generic-Jev over the
+same 584 scored windows; no research-agent calls). The statistical baseline
+is the brief's seven-feature logistic fit on warm-up games 11–20 with
+rank-based player marginals.
+
+| Predictor     | Timing | Skill vs constant | Mid-period timing | Mid-period skill | Exit Brier / log loss / MRR | Entry Brier / log loss / MRR |
+| ------------- | ------ | ----------------- | ----------------- | ---------------- | --------------------------- | ---------------------------- |
+| Constant      | .221   | −.011             | .209              | −.014            | .186 / 1.61 / .40           | .130 / 2.20 / .38            |
+| Statistical   | .203   | .070              | .198              | .037             | .210 / 1.73 / .47           | .150 / 2.59 / .22            |
+| Generic Jev   | .234   | −.073             | .236              | −.146            | .253 / 1.87 / .46           | .142 / 2.27 / .38            |
+| Stage 3 (M3)  | .190   | .131              | .196              | .049             | .382 / 2.67 / .57           | .217 / 3.40 / .46            |
+| `pilot-m0-10` | .204   | .064              | .211              | −.025            | .390 / 2.88 / .57           | .193 / 2.80 / .45            |
+
+Paired bootstrap against the statistical baseline (90 % intervals, ten
+games): stage 3 is better by 0.013 on all windows [0.007, 0.020] and by
+0.002 mid-period [−0.004, 0.010]; M0 is −0.001 [−0.023, 0.020] and −0.013
+mid-period [−0.035, 0.009]. The statistical baseline's full-window number is
+dragged by between-period windows (0.289 there: the fit does not learn that
+breaks are near-certain), which is why its mid-period score is close to the
+agent's. On the windows that matter, the stage-3 agent with memory matched a
+plain logistic fit and M0 was worse than one.
+
+**Player selection: the agent is overconfident.** On ranking, the briefed
+Jev is clearly best (exit MRR .57 against .40–.47, exit top-1 .47 against
+.18–.30). On the proper scores it is clearly worst: exit log loss 2.67–2.88
+against 1.61 for the uniform distribution and 1.73 for the rank-based one.
+The briefing puts confident mass on players who do not move, so the actual
+mover is often given a small probability and the squared and log losses are
+large. A uniform distribution over the eligible set beats every agent run on
+both player Briers. This is the kind of finding the brief's player scores
+were meant to surface; the fix is in how the briefing frames the exit and
+entry questions, not in Jev.
 
 The M3b-to-M0 comparison is refused by the report (five games against ten);
 the pooled numbers for games 1–5 are in the stage 4 table above.
