@@ -998,6 +998,8 @@ for i, values in enumerate([[], [(None, None, 'raw-a', 'partial')], [(3, 1.5, 'r
  db=sqlite3.connect(':memory:')
  db.execute('create table events (count INTEGER, value REAL, raw_object_ids TEXT, quality_status TEXT)')
  db.executemany('insert into events values (?,?,?,?)', values)
+ db.execute('create table _history_metadata (table_name TEXT, column_name TEXT, description TEXT, table_description TEXT)')
+ db.execute("insert into _history_metadata values ('events','count','Fixture count','Fixture table')")
  db.commit()
  (root/'games'/f'{i}.sqlite.gz').write_bytes(gzip.compress(db.serialize()))
  db.close()
@@ -1008,6 +1010,9 @@ assert len(lean)==2 and lean.iloc[1]['count']==3 and lean.iloc[1]['value']==1.5
 assert lean.iloc[0][['count','value']].isna().all()
 assert list(lean.quality_status)==['partial','valid']
 assert list(full.raw_object_ids)==['raw-a','raw-b']
+assert full.attrs['column_descriptions']['events']['count']=='Fixture count'
+assert full.attrs['table_descriptions']['events']=='Fixture table'
+assert not lean.attrs
 assert 'raw_object_ids' not in nba_data.query('select * from events', root=root).columns
 assert 'raw_object_ids' in nba_data.query('select * from events', root=root, include_metadata=True).columns
 assert nba_data.table('events', root=root, columns='count').shape==(2,1)

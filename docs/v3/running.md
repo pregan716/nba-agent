@@ -264,3 +264,45 @@ time. Tool definitions change the harness version; no manifest fields are added.
 
 The brief records the Nov 7, 2026 approval. The system-prompt description is left
 for the separate SPO-855 follow-up; the tool description states the new contract.
+
+## Released decision-window history (SPO-865)
+
+The `game_history` capability exposes `decision_windows` and
+`unanchored_substitutions` through `query_game_history`, per-game SQLite shards,
+`nba_data.table` and `nba_data.query`. These are pinned replay-derived facts,
+never predictions, scoring losses, aggregates or experiment-record data. The
+scope is Celtics regular-season decision datasets; other games have empty tables.
+
+The launcher registers its already-built datasets. Other released Celtics games
+are loaded on demand by the same reconstruction code; the 2024–25 datasets use
+`loadPriorSeasonTraining`, as validation does. The existing prior-season roster
+caveats apply: retrospective same-game box membership including DNPs, unknown
+injuries and synthetic pregame timestamps, never an evaluated game's roster.
+Known prior-season coverage gaps retain their empty windows and ledger entries.
+
+A game must be released, strictly before the current game's scheduled start, and
+not the current game. This also holds in postgame; current-game raw history keeps
+its existing visibility, but its decision tables stay empty. Window state is the
+exact `state-v1` JSON used by replay. Opener sequence is the actual marker's
+sequence, not the state cutoff, and is null for boundaries. Excluded windows are
+retained. Multiple exclusion reasons are joined with semicolons. Unknown states,
+lineups and outcomes remain null rather than being reported as no substitution;
+known no-substitution outcomes use empty arrays and `substituted=0`.
+
+The ledger exports every dataset ledger entry, including excluded-window
+qualifications as well as unanchored substitution blocks. Mechanism and sequence
+span are preserved; players are the Celtics substitution participants in that
+span. Coverage-gap entries have null clock/player details.
+
+With `include_metadata=true`, the history tool returns column descriptions and a
+`table_description` naming `windows-v2`. In Python use `include_metadata=True`:
+`frame.attrs['column_descriptions'][table]` and
+`frame.attrs['table_descriptions'][table]` expose the shard dictionaries. Columns
+remain ordinary queryable data. Existing history table columns and values are
+unchanged; dictionaries live separately in `_history_metadata`.
+
+Exposure identity `decision-history-v1` is recorded on the data-sources axis.
+`history-export-v5` shard keys also include the dataset input hash and whether
+these decision tables are visible. Existing shards are not reused accidentally.
+Rebuild the research sandbox image to include the updated `nba_data` helper;
+no prompt text is changed here.

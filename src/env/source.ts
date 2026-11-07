@@ -1,3 +1,12 @@
+import { withDecisionHistory, type DecisionTable } from "./decision-history.js";
+import { buildDataset } from "../replay/dataset.js";
+import {
+  auditPregames,
+  decisionHistoryFacts,
+  loadReplayInputs,
+  loadPriorSeasonTraining,
+} from "../replay/load.js";
+import { BOS, type DecisionDataset } from "../replay/types.js";
 import { historyExportCacheDirectory } from "./cache.js";
 import { readFile } from "node:fs/promises";
 import type { Corpus } from "../data/corpus.js";
@@ -21,6 +30,9 @@ export interface HistoryBatch {
 /** Trusted P1 port. Every envelope is still filtered by Session after this port returns. */
 export interface SessionSource {
   exportCacheDirectory?: string;
+  historyIdentity?(game: RecordEnvelope): Promise<unknown>;
+  tableDescription?(table: HistoryTable): string | undefined;
+  registerDecisionDatasets?(datasets: DecisionDataset[]): void;
   versions: DatasetVersion[];
   identities: Identities;
   teams: TeamRef[];
@@ -40,7 +52,10 @@ export interface SessionSource {
   odds(): Promise<RecordEnvelope[]>;
   evidence(source: EvidenceSource): Promise<RecordEnvelope[]>;
 }
-export const HISTORY_TABLE: Record<GameHistoryTable, string> = {
+export const HISTORY_TABLE: Record<
+  Exclude<GameHistoryTable, DecisionTable>,
+  string
+> = {
   games: "games",
   player_box_scores: "player_box_scores",
   team_box_scores: "team_box_scores",
@@ -141,7 +156,12 @@ export async function corpusSource(
         "PBP dictionary must be reviewed for this transformation version",
       );
   }
-  return {
+  const registered = new Map<string, DecisionDataset>();
+  let prior: Promise<DecisionDataset[]> | undefined;
+  const base: SessionSource = {
+    registerDecisionDatasets(datasets) {
+      for (const d of datasets) registered.set(d.gameId, d);
+    },
     exportCacheDirectory,
     identities,
     teams,
@@ -175,7 +195,10 @@ export async function corpusSource(
       const adapter =
         game.data.season === "2024-25" ? corpus.priorPbp : corpus.pbp;
       if (table === "games") return { records: [game], reason: null };
-      const records = await adapter.records(HISTORY_TABLE[table], game.id);
+      const records = await adapter.records(
+        HISTORY_TABLE[table as keyof typeof HISTORY_TABLE],
+        game.id,
+      );
       return {
         records,
         participants:
@@ -184,7 +207,9 @@ export async function corpusSource(
             : undefined,
         reason:
           adapter.exclusions.find(
-            (e) => e.source === HISTORY_TABLE[table] && e.id === game.id,
+            (e) =>
+              e.source === HISTORY_TABLE[table as keyof typeof HISTORY_TABLE] &&
+              e.id === game.id,
           )?.reason ?? null,
       };
     },
@@ -198,7 +223,7 @@ export async function corpusSource(
           ["2025-26", corpus.pbp],
         ] as const)
           yield* adapter.exportRecords(
-            HISTORY_TABLE[table],
+            HISTORY_TABLE[table as keyof typeof HISTORY_TABLE],
             games.filter((g) => g.data.season === season),
           );
       }
@@ -206,7 +231,10 @@ export async function corpusSource(
     reference: (table) => corpus.players.records(table),
     async columns(table) {
       return table in HISTORY_TABLE
-        ? dictionary(pbpDictionary, HISTORY_TABLE[table as GameHistoryTable])
+        ? dictionary(
+            pbpDictionary,
+            HISTORY_TABLE[table as keyof typeof HISTORY_TABLE],
+          )
         : dictionary(playerDictionary, table);
     },
     injuries: (kind) => corpus.injuries.partitions(kind),
@@ -221,4 +249,34 @@ export async function corpusSource(
               corpus.opponentLineups.records(),
             ]).then((groups) => groups.flat()),
   };
+  return withDecisionHistory(base, async (game) => {
+    if (
+      ![game.data.home_team_id, game.data.away_team_id].includes(BOS) ||
+      game.data.phase !== "regular_season"
+    )
+      return null;
+    const adapter =
+      game.data.season === "2024-25" ? corpus.priorPbp : corpus.pbp;
+    let dataset = registered.get(game.id);
+    if (!dataset) {
+      if (game.data.season === "2024-25") {
+        prior ??= loadPriorSeasonTraining(corpus);
+        for (const d of await prior) registered.set(d.gameId, d);
+        dataset = registered.get(game.id);
+      } else {
+        const pregames = await auditPregames(
+          corpus,
+          [game.id],
+          identities.rows(),
+        );
+        dataset = buildDataset((await loadReplayInputs(corpus, pregames))[0]);
+        registered.set(game.id, dataset);
+      }
+    }
+    if (!dataset) throw Error(`Missing decision dataset: ${game.id}`);
+    return {
+      dataset,
+      ...(await decisionHistoryFacts(adapter, game.id)),
+    };
+  });
 }
