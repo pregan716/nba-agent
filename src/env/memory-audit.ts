@@ -69,10 +69,35 @@ export function auditBoundary(
     queue: "human-review";
   }[] = [];
   const inputs: { file: string; sha256: string }[] = [];
+  const nameTerms = (names: string[], kind: string) =>
+    names.flatMap((text) => {
+      const tokens = text.trim().split(/\s+/);
+      while (
+        tokens.length > 1 &&
+        /^(?:Jr\.?|Sr\.?|II|III|IV|V)$/i.test(tokens.at(-1)!)
+      )
+        tokens.pop();
+      const surname = tokens.at(-1)!;
+      const surnames = [
+        ...new Set([surname, ...surname.split(/[-’']/u)]),
+      ].filter((s) => s.length > 1);
+      return [
+        { text, kind, sensitive: false },
+        ...surnames.map((text) => ({ text, kind, sensitive: true })),
+      ];
+    });
   const terms = [
-    ...names.players.map((text) => ({ text, kind: "player" })),
-    ...names.staff.map((text) => ({ text, kind: "staff" })),
-    ...names.gameIds.map((text) => ({ text, kind: "game-id" })),
+    ...new Map(
+      [
+        ...nameTerms(names.players, "player"),
+        ...nameTerms(names.staff, "staff"),
+        ...names.gameIds.map((text) => ({
+          text,
+          kind: "game-id",
+          sensitive: false,
+        })),
+      ].map((t) => [JSON.stringify(t), t]),
+    ).values(),
   ];
   const visit = (path: string) => {
     const file = join(root, path);
@@ -97,7 +122,7 @@ export function auditBoundary(
     for (const term of terms) {
       const escaped = term.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const pattern = `(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`;
-      const pathPattern = new RegExp(pattern, "iu");
+      const pathPattern = new RegExp(pattern, term.sensitive ? "u" : "iu");
       if (
         pathPattern.test(path) ||
         (term.kind !== "game-id" &&
@@ -112,7 +137,9 @@ export function auditBoundary(
           kind: term.kind,
           queue: "human-review",
         });
-      for (const match of text.matchAll(new RegExp(pattern, "giu")))
+      for (const match of text.matchAll(
+        new RegExp(pattern, term.sensitive ? "gu" : "giu"),
+      ))
         flags.push({
           game: gameId,
           file: path,
@@ -131,7 +158,9 @@ export function auditBoundary(
     game: gameId,
     names,
     inputs,
-    flags,
+    flags: [
+      ...new Map(flags.map((flag) => [JSON.stringify(flag), flag])).values(),
+    ],
     action: "flag-only",
   };
 }

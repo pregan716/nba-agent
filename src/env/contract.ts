@@ -313,6 +313,7 @@ export interface QueryGameHistoryResult extends Page {
 }
 
 export interface ReadScheduleAndInjuriesInput {
+  cursor?: string;
   /** Defaults to the session team. */
   team_id?: TeamId;
   game_id?: GameId;
@@ -350,6 +351,7 @@ export interface TeamStatusSnapshot {
   state: "listed" | "not_yet_submitted" | "unknown";
 }
 export interface ReadScheduleAndInjuriesResult {
+  next_cursor?: string | null;
   schedule: ScheduleEntry[];
   injury_reports: InjuryReportEntry[];
   team_snapshots: TeamStatusSnapshot[];

@@ -978,3 +978,77 @@ test("exact edits are atomic and memory mutations report retained usage", async 
     clean(root);
   }
 });
+
+test("boundary audit catches case-sensitive surnames, suffixes and compound names", () => {
+  const root = temp();
+  const names = {
+    players: [
+      "Jaylen Brown",
+      "Derrick White",
+      "Ron Harper Jr.",
+      "Karl-Anthony Towns",
+      "Royce O'Neale",
+      "Shai Gilgeous-Alexander",
+    ],
+    staff: ["Joe Mazzulla"],
+    gameIds: [],
+    sources: [],
+  };
+  try {
+    for (const path of [
+      "memory/best_practices.md",
+      "memory/practices/notes.md",
+      "skills/notes.md",
+    ]) {
+      mkdirSync(join(root, path, ".."), { recursive: true });
+      writeFileSync(
+        join(root, path),
+        "Stars (currently Brown, White), Harper, Mazzulla, O'Neale, Neale, Gilgeous-Alexander. white background, brown paper. jaylen brown.",
+      );
+    }
+    mkdirSync(join(root, "skills/White"));
+    writeFileSync(join(root, "skills/White/note.md"), "white background");
+    const audit = auditBoundary(root, "g", names);
+    for (const file of [
+      "memory/best_practices.md",
+      "memory/practices/notes.md",
+      "skills/notes.md",
+    ]) {
+      const flags = audit.flags.filter(
+        (f) => f.file === file && f.source === "content",
+      );
+      for (const name of [
+        "Brown",
+        "White",
+        "Harper",
+        "Mazzulla",
+        "O'Neale",
+        "Neale",
+        "Gilgeous-Alexander",
+        "jaylen brown",
+      ])
+        assert.ok(
+          flags.some((f) => f.matchedText === name),
+          name,
+        );
+      assert.ok(flags.every((f) => f.queue === "human-review"));
+      assert.ok(
+        !flags.some((f) =>
+          ["white", "brown", "Jr", "Anthony"].includes(f.matchedText),
+        ),
+      );
+    }
+    assert.ok(
+      audit.flags.some(
+        (f) => f.source === "path" && f.file === "skills/White/note.md",
+      ),
+    );
+    assert.ok(
+      !audit.flags.some(
+        (f) => f.source === "content" && f.file === "skills/White/note.md",
+      ),
+    );
+  } finally {
+    clean(root);
+  }
+});

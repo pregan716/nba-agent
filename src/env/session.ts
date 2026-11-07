@@ -514,17 +514,68 @@ export class Session {
     _signal?: AbortSignal,
   ): Promise<ReadScheduleAndInjuriesResult> {
     this.#check("read_schedule_and_injuries", input);
-    return this.#scheduleAndInjuries(input, input.team_id ?? BOS);
+    const bounded = !input.game_id && !input.team_id;
+    if (input.cursor && !bounded)
+      throw new SessionError(
+        "invalid_input",
+        "Schedule cursor cannot be combined with game_id or team_id",
+      );
+    return this.#scheduleAndInjuries(input, input.team_id ?? BOS, bounded);
   }
   async #scheduleAndInjuries(
     input: ReadScheduleAndInjuriesInput,
     team?: string,
+    bounded = false,
   ): Promise<ReadScheduleAndInjuriesResult> {
-    const games = (await this.#games()).filter(
+    let games = (await this.#games()).filter(
       (g) =>
         (!team || [g.data.home_team_id, g.data.away_team_id].includes(team)) &&
         (!input.game_id || input.game_id === g.id),
     );
+    let next_cursor: string | null = null;
+    if (bounded) {
+      games = games
+        .filter(
+          (g) =>
+            g.id === this.#game.gameId ||
+            compare(g.data.scheduled_tipoff, this.#game.scheduledStart) > 0,
+        )
+        .sort(
+          (a, b) =>
+            compare(a.data.scheduled_tipoff, b.data.scheduled_tipoff) ||
+            a.id.localeCompare(b.id),
+        );
+      const { cursor, ...query } = input;
+      const binding = digest([
+        this.#config.runId,
+        this.#config.replicateId,
+        this.#game.gameId,
+        this.#phase,
+        this.#cutoff,
+        this.#source.versions,
+        query,
+      ]);
+      let offset = 0;
+      if (cursor)
+        try {
+          const page = JSON.parse(Buffer.from(cursor, "base64url").toString());
+          if (
+            page.binding !== binding ||
+            !Number.isSafeInteger(page.offset) ||
+            page.offset < 0 ||
+            page.offset >= games.length
+          )
+            throw Error();
+          offset = page.offset;
+        } catch {
+          throw new SessionError("invalid_input", "Invalid schedule cursor");
+        }
+      if (offset + 2 < games.length)
+        next_cursor = Buffer.from(
+          JSON.stringify({ binding, offset: offset + 2 }),
+        ).toString("base64url");
+      games = games.slice(offset, offset + 2);
+    }
     const gameIds = new Set(games.map((g) => g.id));
     const gameTeams = new Map(
       games.map((g) => [g.id, [g.data.home_team_id, g.data.away_team_id]]),
@@ -577,6 +628,7 @@ export class Session {
         });
       }
     return {
+      ...(bounded ? { next_cursor } : {}),
       schedule: games
         .sort(
           (a, b) =>
