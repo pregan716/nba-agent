@@ -198,6 +198,45 @@ the environment findings from the same run are SPO-860.
   best-practices file named eight Celtics players and the audit, which matched
   full names only, flagged nothing.
 
+## Revisions after stage 3 of the pilot
+
+Stage 3 (`pilot-m3`, ten M3 development games, $47.78) showed no improvement
+across games: timing Brier 0.19 pooled against a 0.22 base rate, exit and
+entry worse after game 1 than in it. The record explains why. From game 1 the
+assembler wrote its own probability into every criterion ("Sub probability
+estimate: 0.06", "Exit estimate: 0.43"), the agent found that Jev returns about
+the number it is given and wrote that down as a rule, and every later session
+tuned the assembler's lookup table. Jev's timing Brier was 0.190 against 0.195
+for the package's own `sub_prob`; by game 10 the state text had shrunk to a
+lineup table plus "somewhat unlikely (25% estimate)". The brief (§116) permits
+an assembler that asserts the answer and relies on the trace showing it; the
+prompt repeated the permission as a tip.
+
+Resending game 1's 66 stored requests with every estimate stripped scored
+better on all three questions (timing 0.195 against 0.202, exit 0.215 against
+0.231, entry 0.101 against 0.109): Jev briefed with the coach's tendencies out-
+reasoned the formula. The same for game 10, whose state carried no tendencies,
+collapsed to 0.299 timing: with the number gone there was nothing to reason
+from. The generic-Jev baseline, with no briefing at all, is 0.246.
+
+Changes:
+
+- A new passage in the Jev section states what Jev is for, what a briefing
+  contains, and that an asserted number becomes the answer and is visible in
+  the trace. The package-contract line keeps the brief's rule word for word
+  and points at that passage.
+- The postgame phase prompt asks the agent to look at the requests Jev
+  received, and where they state an estimate that Jev's answers track, to
+  improve the briefing rather than the formula. Diagnostics never reach Jev,
+  so agreement with an estimate kept only there is not evidence of anchoring
+  (review of PR #62).
+- The `freeze_package` line says a successful freeze ends the session. In
+  eight of ten pregames the agent froze and then tried to write memory; the
+  memory instructions already said this, the freeze line now does too.
+
+The trace-side measure (count of asserted estimates and Jev's deviation from
+them, per game) is SPO-862 for the environment.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the
