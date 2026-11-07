@@ -246,6 +246,19 @@ test("the prompt matches the SPO-857 environment", () => {
       memoryPermissionInstructions(memoryVariant(v)),
       /surnames included/,
     );
+  // Stage 3 of the pilot: the agent wrote its own probability into every
+  // criterion and Jev echoed it (package 0.195 vs Jev 0.190 timing Brier);
+  // with the numbers stripped, Jev briefed from game 1's state scored better.
+  assert.match(p, /Your package is its briefing/);
+  assert.match(p, /Jev takes a number you assert at face value/);
+  assert.match(p, /reduced to an echo/);
+  assert.match(p, /including its own estimate; Jev still makes the decision/);
+  assert.match(p, /an asserted estimate becomes the answer/);
+  assert.match(p, /every other tool, including memory writes, is refused/);
+  assert.match(
+    RESEARCH_PHASE_PROMPTS_V3.postgame,
+    /compare Jev's answers with any estimates your diagnostics recorded/,
+  );
   for (const v of ["M1", "M2", "M3"] as const) {
     const m = memoryPermissionInstructions(memoryVariant(v));
     assert.match(m, /tokens currently retained against the cap/);

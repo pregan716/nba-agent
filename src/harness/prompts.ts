@@ -101,6 +101,10 @@ An invalid answer to one question is replaced by a neutral fallback for that que
 
 Jev is not a chat model. It takes a state text and typed questions and returns only probabilities. It has no tools, no data access and no memory: each window is a separate request, and Jev knows nothing about the game, the players or the coach except what that request says. Player ids mean nothing to it unless your text says who each player is. It does not see your research, your notes or this prompt.
 
+Jev is in the system to apply judgement to each situation: to weigh the stoppage, the lineup, the clock, the score and the people involved in the way a coach would, which is more than any fixed rule can anticipate. Your package is its briefing. A good briefing tells Jev who this coach is and how he behaves: how he staggers his stars, how long his stints run, when he sticks with a closing lineup, how he reacts to foul trouble or a run, which players he trusts in which situations and what each player is for. It is written so that an intelligent reader who knew nothing about this team could reason to the decision. The assembler's job is to choose and render the parts of that knowledge that bear on the window in front of it, and to describe the situation accurately; the judgement is Jev's.
+
+Jev takes a number you assert at face value. If the state or the option descriptions say "estimated probability 8%", Jev returns about 0.08, and the prediction is then your assembler's lookup table with Jev reduced to an echo. That is permitted by the rules, but it discards the reasoning Jev is there to provide, and the trace shows it: Jev's answers track your diagnostics instead of the situation. Describe the situation and the coach's tendencies qualitatively ("the bench unit has been out for most of its usual stint", "he rarely substitutes at a foul this early in a period") and let the probabilities come from Jev.
+
 Size limit per window: the state text plus any one question (its instructions and all its option descriptions), measured in UTF-8 bytes, must stay under about 30,000 bytes, and the whole request under about 59,000 bytes. A request over the limit is refused and that window takes the fallback answers.
 
 # The policy package
@@ -117,13 +121,13 @@ Write the package to packages/<game_id>/ in the workspace, where <game_id> is th
 
 assemble.py runs in an isolated container during the game: Python 3.12 standard library only, no network, no workspace, no game data, nothing but /package (read-only) and an empty /scratch. It must be deterministic: the same state must give the same output, and it is run twice to check. Each window has a few seconds of wall-clock time and 128 MiB of memory. Whatever the assembler needs to know about players, rotations or the opponent must be inside the package.
 
-The assembler may compute anything from the state and may write whatever it likes into the text Jev reads, including its own estimate. Jev still makes the decision.
+The assembler may compute anything from the state and may write whatever it likes into the text Jev reads, including its own estimate; Jev still makes the decision. But see the section on Jev: an asserted estimate becomes the answer, so put computed features into words Jev can reason with (and into diagnostics for yourself), not into probabilities for Jev to repeat.
 
 Tools for the package:
 
 - workspace_write creates or replaces a file; workspace_edit replaces one exact passage in an existing file, so a small fix to assemble.py or a component does not need the whole file resent.
 - validate_package runs your draft against up to three states from earlier games and returns the assembled requests and diagnostics without calling Jev. Before the first game of this season has been played, the sample states come from Celtics games in 2024-25 instead; they carry last season's roster and are only a check that the package runs, not evidence about this season.
-- freeze_package validates and freezes the package. A failed freeze returns the reason and you may fix the draft and try again. After a successful freeze the package cannot change. Freezing is the point of the pregame session: if no package is frozen before the session ends, or the frozen package fails on the first window, the whole game is unscored. If it raises on a later window, that window takes the fallback answers.
+- freeze_package validates and freezes the package. A failed freeze returns the reason and you may fix the draft and try again. After a successful freeze the package cannot change and the session is over: every other tool, including memory writes, is refused, so do everything else first. Freezing is the point of the pregame session: if no package is frozen before the session ends, or the frozen package fails on the first window, the whole game is unscored. If it raises on a later window, that window takes the fallback answers.
 
 # The observable state
 
@@ -180,7 +184,7 @@ export const RESEARCH_PHASE_PROMPTS_V3 = {
   pregame:
     "This is the pregame session for the game in the session context below. Prepare the policy package for this game and freeze it with freeze_package before you finish.",
   postgame:
-    "This is the postgame session. The game in the session context below has been played and replayed with the package you froze, and its trace is available through read_feedback. Nothing is required in this session. Use it as you see fit within your permissions, then finish.",
+    "This is the postgame session. The game in the session context below has been played and replayed with the package you froze, and its trace is available through read_feedback. Nothing is required in this session. Use it as you see fit within your permissions, then finish. One check is worth making whatever else you do: compare Jev's answers with any estimates your diagnostics recorded. If they track each other closely, Jev was repeating your numbers rather than judging the situation, and the way to improve is a better briefing about the coach, not a better formula.",
 } as const;
 
 const MEMORY_COMMON = `The workspace always has two areas. packages/<game_id>/ holds the package for the current game only; earlier packages are not visible. scratch/ is yours to use within a session and is emptied when the session ends. In code execution the workspace is mounted at /workspace with the same rules.`;
