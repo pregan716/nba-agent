@@ -66,6 +66,7 @@ export function contextGuard(request: JevRequest) {
 export function buildJevRequest(
   raw: unknown,
   state: ObservableState,
+  enforceContextGuard = true,
 ): JevRequest {
   const a = assemblySchema.parse(raw),
     keys = optionKeys(state);
@@ -104,7 +105,7 @@ export function buildJevRequest(
       },
     },
   };
-  contextGuard(request);
+  if (enforceContextGuard) contextGuard(request);
   return JSON.parse(canonicalJson(request));
 }
 /** Only translate the API's documented numeric score keys; never fill missing keys. */

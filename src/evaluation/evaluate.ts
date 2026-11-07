@@ -61,18 +61,25 @@ export function spending(
   variant: boolean,
 ) {
   const selected = new Set(gameIds);
-  const replay = events.filter(
-    (e) =>
-      selected.has(e.scope.split(":")[0]) &&
-      e.scope
-        .split(":")
-        .slice(2)
-        .join(":")
-        .startsWith(predictor + ":"),
+  const replay = new Set(
+    events.filter(
+      (e) =>
+        selected.has(e.scope.split(":")[0]) &&
+        e.scope
+          .split(":")
+          .slice(2)
+          .join(":")
+          .startsWith(predictor + ":"),
+    ),
   );
   // Exact call-scope prefix: predictor IDs may themselves contain colons.
-  const calls = replay.filter(
-    (e) => e.scope.split(":").slice(2).join(":").slice(0, -65) === predictor,
+  const calls = events.filter(
+    (e) =>
+      (replay.has(e) &&
+        e.scope.split(":").slice(2).join(":").slice(0, -65) === predictor) ||
+      (variant &&
+        selected.has(e.scope.split(":")[0]) &&
+        /^[^:]+:pregame:validation:\d+$/.test(e.scope)),
   );
   const researchScopes = new Set(
     gameIds.flatMap((id) => [`${id}:pregame`, `${id}:postgame`]),
@@ -144,6 +151,9 @@ export function spending(
     (n, e) => n + (e.data.elapsedMs ?? 0) / 1000,
     0,
   );
+  const validationJevSeconds = timeEvents
+    .filter((e) => e.scope.includes(":pregame:validation:"))
+    .reduce((n, e) => n + (e.data.latencyMs ?? 0) / 1000, 0);
   const jevSeconds = timeEvents.reduce(
     (n, e) => n + (e.data.latencyMs ?? 0) / 1000,
     0,
@@ -168,9 +178,9 @@ export function spending(
     assemblySeconds,
     recordedSeconds: missingTime
       ? null
-      : sessionSeconds + jevSeconds + assemblySeconds,
+      : sessionSeconds + jevSeconds + assemblySeconds - validationJevSeconds,
     coverage:
-      "Recorded session elapsed + Jev attempt latency + successful assembler compute; unmetered baseline CPU and outage time are unavailable.",
+      "Recorded session elapsed + replay Jev attempt latency + successful replay assembler compute (validation latency is already in session elapsed); unmetered baseline CPU and outage time are unavailable.",
   };
 }
 export interface EvaluatedRun {

@@ -226,3 +226,41 @@ without changing either scoring or temporal-access rules. Fixture runs keep the 
 the research prompt set for pilots. The warm-up-only statistical training choice above is explicitly Proposed for
 user decision. No brief decision was changed, and `feedback.ts` is
 untouched so SPO-850 can proceed independently.
+
+## Previewing Jev during package validation (SPO-863)
+
+`validate_package({jev: true, samples: 8})` assembles a draft on released prior-game
+states and returns Jev's answers alongside each request and its diagnostics.
+Both arguments are optional: `jev` defaults to false and `samples` to 3 (1–24).
+With Jev off, answers are absent and the summary is null. With Jev on, the summary
+reports attempted samples, answered samples, mean substitution probability and
+answered counts/means by stoppage group. Invalid answers are errors, not fallback
+predictions. Each output identifies the prior `gameId` and `windowId`; no actual
+substitution or score is returned.
+
+Selection is deterministic, round-robin across timeout, between-periods, foul,
+dead-ball turnover and other stoppages, then across first/second-half periods
+(overtime joins the second half), then games. Less-used halves and games are
+preferred, with newer released games winning game ties and a hash of game/window
+identity breaking window ties. Empty strata are skipped. Before any run game is
+released, validation retains the existing three fixed 2024–25 practice states;
+a request for more than three returns the available three with a note. No new
+prior-season states are added.
+
+Calls use the replay Jev provider, context guard, 60-second request timeout and
+retry policy. An oversized request or individual provider failure has null
+answers and an error, while other samples continue. Session cancellation and the
+whole tool's compute deadline still stop the call. Temporary validation assembly
+caches are separate from guarded replay caches so oversized drafts can be shown
+with their guard error without ever being sent to Jev.
+
+Each validation remains one pregame tool call and consumes research compute.
+Jev usage is priced and recorded separately from analyst tokens under
+`<game_id>:pregame:validation:<n>` (`n` increments for every validation, including
+assembly-only checks). Requests and responses retain the standard `jev_request`
+and `jev_response` event types. Evaluation includes these costs for the variant,
+not for baseline predictors, and avoids counting their latency twice in elapsed
+time. Tool definitions change the harness version; no manifest fields are added.
+
+The brief records the Nov 7, 2026 approval. The system-prompt description is left
+for the separate SPO-855 follow-up; the tool description states the new contract.

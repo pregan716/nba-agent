@@ -430,12 +430,8 @@ export interface ToolContract {
       | { status: "invalid_package"; reason: string };
   };
   validate_package: {
-    input: {};
-    result: {
-      outputs: unknown[];
-      computeSeconds: number;
-      error: string | null;
-    };
+    input: import("../policy/validation.js").ValidationInput;
+    result: import("../policy/validation.js").ValidationResult;
   };
   read_feedback: {
     input: {

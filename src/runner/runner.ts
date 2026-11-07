@@ -1,3 +1,8 @@
+import type {
+  ValidationInput,
+  ValidationJev,
+  ValidationResult,
+} from "../policy/validation.js";
 import { AssemblerInfrastructureError } from "../policy/errors.js";
 import { capCodeOutput } from "../env/code-output.js";
 import { restoreMemoryArtifacts } from "./memory-artifacts.js";
@@ -95,11 +100,9 @@ export interface Environment {
   validatePackage?(
     allowance: number,
     signal: AbortSignal,
-  ): Promise<{
-    outputs: unknown[];
-    computeSeconds: number;
-    error: string | null;
-  }>;
+    input?: ValidationInput,
+    jev?: ValidationJev,
+  ): Promise<ValidationResult>;
   workspace?: WorkspacePort;
   workspaceChanges?(): WorkspaceChange[];
   boundaryAudit?(): Promise<unknown>;
@@ -687,9 +690,24 @@ export class Runner {
               );
               if (allowance <= 0) budget.block("compute");
               const reservation = budget.reserve(0, allowance, "code");
+              const validationScope = `${scope}:validation:${this.record.events("validation_start", scope).length + 1}`;
+              this.record.append("validation_start", scope, {
+                validationScope,
+                input: args ?? {},
+              });
               const result = await env.validatePackage(
                 allowance,
                 controller.signal,
+                (args ?? {}) as ValidationInput,
+                async (request, signal) => {
+                  const response = await this.proxy.jev(
+                    request,
+                    this.record,
+                    validationScope,
+                    signal,
+                  );
+                  return response.response.answers;
+                },
               );
               if (
                 !Number.isFinite(result.computeSeconds) ||

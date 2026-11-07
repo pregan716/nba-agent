@@ -1,3 +1,17 @@
+import { validateInput } from "../env/input.js";
+import { contextGuard, mapJevAnswers } from "./request.js";
+import { validatePrediction } from "../replay/contract.js";
+import {
+  selectValidationSamples,
+  stoppageType,
+  windowId,
+  type Candidate,
+  type ValidationInput,
+  type ValidationJev,
+  type ValidationOutput,
+  type ValidationResult,
+  type ValidationSummary,
+} from "./validation.js";
 import { AssemblerInfrastructureError } from "./errors.js";
 import { feedbackPage, type FeedbackQuery } from "./feedback.js";
 import { randomUUID } from "node:crypto";
@@ -20,6 +34,7 @@ import { assembleRequest, type PolicyTrace } from "./replay.js";
 import type { ObservableState } from "../replay/types.js";
 import { SessionError, type Phase } from "../env/contract.js";
 export interface ValidationSample {
+  windowId?: string;
   gameId: string;
   scheduledStart: string;
   release: string;
@@ -40,7 +55,7 @@ export class PolicyTools {
     readonly game: PolicyGame,
     readonly schedule: PolicyGame[],
     readonly assembler: Assembler,
-    readonly samples: { gameId: string; state: ObservableState }[],
+    readonly samples: Candidate[],
     private clock: () => string,
     readonly fallbackSamples: ValidationSample[] = [],
   ) {
@@ -86,7 +101,14 @@ export class PolicyTools {
       };
     }
   }
-  async validate(phase: Phase, allowance: number, signal: AbortSignal) {
+  async validate(
+    phase: Phase,
+    allowance: number,
+    signal: AbortSignal,
+    input: ValidationInput = {},
+    jev?: ValidationJev,
+  ): Promise<ValidationResult> {
+    validateInput("validate_package", input);
     if (phase !== "pregame")
       throw new SessionError("phase_refused", "Validation is pregame only");
     if (!(allowance > 0)) throw Error("No validation compute allowance");
@@ -103,7 +125,28 @@ export class PolicyTools {
         String(Date.now()) + "-" + Math.random().toString(16).slice(2),
       ),
     );
-    const outputs: unknown[] = [];
+    const outputs: ValidationOutput[] = [];
+    let note: string | undefined;
+    const answered: { type: string; p: number }[] = [];
+    const summary = (): ValidationSummary | null => {
+      if (!input.jev || !answered.length) return null;
+      const byStoppage: ValidationSummary["byStoppage"] = {};
+      for (const type of new Set(answered.map((a) => a.type))) {
+        const rows = answered.filter((a) => a.type === type);
+        byStoppage[type] = {
+          n: rows.length,
+          meanSubstitutionProbability:
+            rows.reduce((s, a) => s + a.p, 0) / rows.length,
+        };
+      }
+      return {
+        samples: outputs.length,
+        answered: answered.length,
+        meanSubstitutionProbability:
+          answered.reduce((s, a) => s + a.p, 0) / answered.length,
+        byStoppage,
+      };
+    };
     try {
       const receipt = await temporary.freeze(
         this.game.gameId,
@@ -132,23 +175,64 @@ export class PolicyTools {
               s.release === releaseTime(s.scheduledStart) &&
               Date.parse(s.scheduledStart) < Date.parse("2025-07-01T00:00:00Z"),
           );
-      for (const sample of samples.slice(0, 3)) {
-        const result = await assembleRequest(
-          this.assembler,
-          join(temporary.path(this.game.gameId), "package"),
-          receipt,
-          sample.state,
-          join(temporary.root, "cache"),
-          deadline,
-        );
-        outputs.push({
+      const count = input.samples ?? 3;
+      const selected = hasEarlier
+        ? selectValidationSamples(
+            samples,
+            count,
+            new Map(this.schedule.map((g) => [g.gameId, g.release])),
+          )
+        : samples.slice(0, Math.min(count, 3));
+      if (!hasEarlier && count > 3)
+        note =
+          "Only three fixed prior-season states exist; returning the available released states.";
+      for (const sample of selected) {
+        deadline.throwIfAborted();
+        const output: ValidationOutput = {
           gameId: sample.gameId,
-          request: result.request,
-          diagnostics: result.assembly.diagnostics,
-        });
+          windowId: windowId(sample),
+          request: null,
+          diagnostics: null,
+          ...(input.jev ? { answers: null } : {}),
+        };
+        outputs.push(output);
+        try {
+          const result = await assembleRequest(
+            this.assembler,
+            join(temporary.path(this.game.gameId), "package"),
+            receipt,
+            sample.state,
+            join(temporary.root, "cache"),
+            deadline,
+            true,
+          );
+          output.request = result.request;
+          output.diagnostics = result.assembly.diagnostics;
+          contextGuard(result.request);
+          if (input.jev) {
+            if (!jev) throw Error("Jev validation provider unavailable");
+            const raw = mapJevAnswers(await jev(result.request, deadline));
+            deadline.throwIfAborted();
+            const checked = validatePrediction(raw, sample.state);
+            if (Object.values(checked.questions).some((q) => !q.valid))
+              throw Error("Invalid Jev validation answers");
+            output.answers = raw;
+            answered.push({
+              type: stoppageType(sample.state),
+              p: checked.answers.substitution.noul,
+            });
+          }
+        } catch (e) {
+          deadline.throwIfAborted();
+          if (e instanceof AssemblerInfrastructureError) throw e;
+          output.error =
+            e instanceof Error ? e.message : "Validation sample failed";
+        }
       }
       return {
         outputs,
+        summary: summary(),
+        ...(note ? { note } : {}),
         computeSeconds: (performance.now() - start) / 1000,
         error: null,
       };
@@ -157,6 +241,8 @@ export class PolicyTools {
       if (e instanceof AssemblerInfrastructureError) throw e;
       return {
         outputs,
+        summary: summary(),
+        ...(note ? { note } : {}),
         computeSeconds: (performance.now() - start) / 1000,
         error: e instanceof Error ? e.message : "Validation failed",
       };
