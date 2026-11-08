@@ -435,10 +435,10 @@ between the largest and smallest listed probabilities, so the answers are
 concentrated, not uniform. On the 13 hits the actual move was Jev's top
 candidate 6 times and received a mean probability of 0.27 against 0.135
 for a uniform spread over the list (individual values from 0.01 to 0.87,
-with three hits at 0.03 or less). Set top-1 is therefore 6 of 13 conditional
+with four hits at 0.03 or less). Set top-1 is therefore 6 of 13 conditional
 on a hit; the other 28 windows could not succeed because the move was
 absent. The descriptions discriminate; when the list is right the ranking
-is useful, and the three near-zero hits are the residue of the old
+is useful, and the four near-zero hits are the residue of the old
 "unlikely means never" problem at set level.
 
 **The player-score defect is fixed.** Exit and entry log-loss clips are 0
