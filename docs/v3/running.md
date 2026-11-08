@@ -205,6 +205,12 @@ Boston datasets and the 20 development/warm-up datasets, loads prior-season leag
 training, audits three non-Boston team-games against the experiment's relabeling
 method, and checks current Boston training against its pregame-evidence windows.
 It never loads the scored or holdout Boston games for compatibility evaluation.
+The [Nov 8 audit](../evidence/replay/team-training-audit.json) matched all 102
+Boston datasets and all three non-Boston comparisons. The league loader returned
+2,442 team-games and 145,712 candidate windows (including individually excluded
+windows), skipping four missing-roster team-games and 14 with no qualified
+windows. The experiment retained the latter empty-of-qualified-data cases, which
+accounts for the coverage-count difference.
 
 The tiny synthetic fixture uses a separate synthetic training game solely to
 exercise the interfaces; its outputs are not comparative results.
