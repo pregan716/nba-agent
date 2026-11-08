@@ -12,18 +12,20 @@ price list before any budget claim is final.
 
 ## Runs
 
-| Run id                  | Memory | Games | Code revision | Prompt                      | Cost   | Wall clock | Outcome                                              |
-| ----------------------- | ------ | ----- | ------------- | --------------------------- | ------ | ---------- | ---------------------------------------------------- |
-| `pilot-m3-smoke`        | M3     | 1     | pre-SPO-857   | first `research-v3`         | $8.83  | —          | completed; six calls spent on manifest hashes        |
-| `pilot-m3-smoke2`       | M3     | 1     | —             | —                           | $4.90  | —          | failed: stale assembler image pin (SPO-858, SPO-859) |
-| `pilot-m3-smoke3`       | M3     | 1     | `d314c44`     | after SPO-857               | $4.98  | 25 min     | completed                                            |
-| `pilot-m3` (stage 3)    | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                   |
-| `pilot-m3b`             | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                   |
-| `pilot-m0` (stage 4)    | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                   |
-| `pilot-m0-10`           | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                   |
-| `baselines-dev`         | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                   |
-| `pilot-m3-v2` (stage 5) | M3     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $27.11 | 2 h 11 min | completed, no halt                                   |
-| `pilot-m0-v2` (stage 5) | M0     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $17.88 | 1 h 30 min | completed, no halt                                   |
+| Run id                     | Memory | Games | Code revision | Prompt                      | Cost   | Wall clock | Outcome                                                                |
+| -------------------------- | ------ | ----- | ------------- | --------------------------- | ------ | ---------- | ---------------------------------------------------------------------- |
+| `pilot-m3-smoke`           | M3     | 1     | pre-SPO-857   | first `research-v3`         | $8.83  | —          | completed; six calls spent on manifest hashes                          |
+| `pilot-m3-smoke2`          | M3     | 1     | —             | —                           | $4.90  | —          | failed: stale assembler image pin (SPO-858, SPO-859)                   |
+| `pilot-m3-smoke3`          | M3     | 1     | `d314c44`     | after SPO-857               | $4.98  | 25 min     | completed                                                              |
+| `pilot-m3` (stage 3)       | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                                     |
+| `pilot-m3b`                | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                                     |
+| `pilot-m0` (stage 4)       | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                                     |
+| `pilot-m0-10`              | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                                     |
+| `baselines-dev`            | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                                     |
+| `pilot-m3-v2` (stage 5)    | M3     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $27.11 | 2 h 11 min | completed, no halt                                                     |
+| `pilot-m0-v2` (stage 5)    | M0     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $17.88 | 1 h 30 min | completed, no halt                                                     |
+| `pilot-m0-swap` (stage 6)  | M0     | 2     | `807adac`     | `jev-contract-v2` (PR #74)  | $9.70  | 38 min     | completed, no halt; first attempt failed at session start (PR #75), $0 |
+| `pilot-m0-swap2` (stage 7) | M0     | 2     | `b661208`     | after SPO-868 (PR #77)      | $7.92  | 36 min     | completed, no halt                                                     |
 
 All runs: Jev `jev-1.14.0`, analyst `claude-opus-4-6` at effort `high` with
 adaptive thinking, Pi harness with prompt caching (`ephemeral-5m`) and
@@ -456,6 +458,47 @@ expose the two levers, what is on the list and how much mass goes on
 carry its own observed miss rate, which the trace now shows it. The first
 is the harder research problem the experiment is about.
 
+### Stage 7: re-check after the `other` guidance (`pilot-m0-swap2`)
+
+Nov 7, 2026, M0, games 1–2, on `b661208` after SPO-868 (PR #77), which
+told the agent that `other` should carry about the list's miss rate, how to
+describe it, and how to look at it with `validate_package`.
+
+| Game       | Subs | Hit rate | Set top-1 | Candidates | `other` mass at subs | Set log loss (clips) | Exit / entry log loss | Timing |
+| ---------- | ---- | -------- | --------- | ---------- | -------------------- | -------------------- | --------------------- | ------ |
+| 0022500083 | 23   | .17      | 2         | 6.6        | .08                  | 5.87 (15)            | 2.81 / 2.48           | .207   |
+| 0022500018 | 18   | .22      | 1         | 8.0        | .21                  | 5.59 (6)             | 1.80 / 2.11           | .162   |
+
+Pooled set log loss 5.75 against 5.32 in stage 6 and the constant floor of
+5.02 on the same 41 moves. The agent did what the prompt asked and Jev did
+not follow. Game 2's `other` description, written after reading game 1's
+trace, says the coach "frequently makes substitutions not on any fixed list
+… a substantial fraction of his actual moves at timeouts are ones not on
+typical candidate lists", and its instructions repeat it; Jev gave `other`
+0.21 on average (0.28 at a timeout), up from 0.05, against a miss rate of
+0.83. Game 1, with no trace, wrote "frequently makes moves that differ from
+any template" and got 0.06–0.08. Qualitative frequency words move Jev a
+little; a concrete candidate naming two players outweighs an abstract
+catch-all every time.
+
+The hit rate fell from 13 of 41 to 8 of 41. With fresh M0 sessions and
+n = 41 that is inside binomial noise (standard error about 0.07), so it is
+not read as the prompt change doing harm, but fewer hits with `other` still
+small is a worse set score. Timing .207 in game 1 is a bad draw at the
+known 0.03–0.05 run-to-run noise. Player log losses kept improving (entry
+2.11 in game 2 is the best recorded); no clips.
+
+**Reading.** The prompt route to the `other` mass is close to exhausted.
+The lever that reliably moves Jev is an asserted number, which the prompt
+discourages for candidates because it reduces Jev to an echo. `other` is
+different in kind: its probability is a measured base rate, the list's miss
+rate from the trace, not a judgement about the situation, so asserting it
+there is defensible and within the rules (asserted estimates are permitted
+and the trace shows them). The alternatives are to allow an explicit
+frequency in the `other` description and re-check on two games, or to stop
+iterating here and carry the `other` mass as an open item into the scored
+run. Either is the user's call.
+
 ## Jev
 
 **Determinism (double replay, Agreed Nov 4, 2026).** Game 0022500083's 66
@@ -497,8 +540,11 @@ question for the user.
 - Player exit/entry overconfidence (baselines section): resolved by
   `jev-contract-v2` (PR #71, #73, #74); stage 6 shows no clips. Open in its
   place: the agent under-weights `other` (4–5 % against a 68 % miss rate),
-  which puts its set score below the constant floor. A prompt change and a
-  two-game re-check are the next step.
+  which puts its set score below the constant floor. SPO-868 (PR #77) told
+  the agent to carry the miss rate on `other`; stage 7 shows Jev reads the
+  qualitative wording at 0.08–0.21, not 0.8. Open: permit an asserted
+  frequency in the `other` description, or carry the item into the scored
+  run.
 - Budget profile v1 is Proposed above; the smaller- and larger-cap re-runs the
   brief asks for have not been run.
 - Price schedule is a placeholder.
