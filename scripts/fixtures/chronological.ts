@@ -13,7 +13,7 @@ import type { JevProvider } from "../../src/runner/jev.js";
 import { JEV_MODEL } from "../../src/policy/request.js";
 const five = ["a", "b", "c", "d", "e"],
   opp = ["v", "w", "x", "y", "z"];
-function replayInput(): ReplayInput {
+export function replayInput(): ReplayInput {
   const row = (seq: number, type: string, clock: number, extra: Row = {}) => ({
     game_id: "game",
     event_id: `e${seq}`,
@@ -114,7 +114,11 @@ export function chronologicalFixture() {
     input.pregame.injuryReport.availableAt = "2025-10-01T00:00:00Z";
     return input;
   });
-  return { source: f.source, schedule, datasets: inputs.map(buildDataset) };
+  return {
+    source: f.source,
+    schedule,
+    datasets: inputs.map((input) => buildDataset(input)),
+  };
 }
 export const scriptedJev: JevProvider = {
   async create(r) {

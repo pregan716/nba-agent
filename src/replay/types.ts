@@ -127,11 +127,14 @@ export interface LedgerEntry {
   mechanism: string;
 }
 export interface TrainingOnly {
-  season: "2024-25";
-  rosterPolicy: "same-game-box-score-v1";
+  season: "2024-25" | "2025-26";
+  rosterPolicy: "same-game-box-score-v1" | "season-pregame-v1";
 }
 export interface DecisionDataset {
-  /** Retrospective roster approximation: forbidden as an evaluation input. */
+  /** Target team; absent means Boston in historical windows-v2 datasets.
+   * Legacy celtics/celticsHome field names describe this team. */
+  teamId?: string;
+  /** Training provenance: forbidden as an evaluation input, for either roster policy. */
   trainingOnly?: TrainingOnly;
   /** Static game metadata; absent in older cached datasets. */
   celticsHome?: boolean;

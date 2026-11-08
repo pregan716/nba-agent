@@ -32,7 +32,7 @@ try {
   console.log("Pregame snapshots", pregames.length);
   const inputs = await loadReplayInputs(c, pregames);
   await writeFile(".cache/replay-inputs.json", JSON.stringify(inputs));
-  const datasets = inputs.map(buildDataset),
+  const datasets = inputs.map((input) => buildDataset(input)),
     training = datasets.filter((d) => trainingIds.includes(d.gameId)),
     audited = auditIds.map((id) => datasets.find((d) => d.gameId === id)!);
   const priorTraining = await loadPriorSeasonTraining(c);

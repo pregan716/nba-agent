@@ -1,0 +1,142 @@
+{
+  "issue": "SPO-870",
+  "codeRevision": "0f174d46b32a89f30109e42c7230881f06fab8b9",
+  "auditDate": "2026-11-08",
+  "notes": [
+    "priorWindows counts candidate windows, including individually excluded windows in retained team-games.",
+    "14 team-games with no qualified windows and 4 missing box-score rosters are skipped; the experimental export retained zero-qualified team-games.",
+    "Current-season compatibility covers development and warm-up games only."
+  ],
+  "referenceSha256": "2df87206e33bde69dae853386bcb007302e49223147be7bc02f2fc9b596897e7",
+  "priorBostonIdentical": 82,
+  "currentBostonIdentical": 20,
+  "priorTeamDatasets": 2442,
+  "priorWindows": 145712,
+  "skipped": [
+    {
+      "gameId": "0022400061",
+      "teamId": "1610612738",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400061",
+      "teamId": "1610612752",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400223",
+      "teamId": "1610612749",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400223",
+      "teamId": "1610612765",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_celtics_blocks, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400230",
+      "teamId": "1610612738",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400230",
+      "teamId": "1610612761",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400313",
+      "teamId": "1610612758",
+      "season": "2024-25",
+      "reason": "missing_box_score_roster"
+    },
+    {
+      "gameId": "0022400313",
+      "teamId": "1610612759",
+      "season": "2024-25",
+      "reason": "missing_box_score_roster"
+    },
+    {
+      "gameId": "0022400322",
+      "teamId": "1610612755",
+      "season": "2024-25",
+      "reason": "missing_box_score_roster"
+    },
+    {
+      "gameId": "0022400322",
+      "teamId": "1610612753",
+      "season": "2024-25",
+      "reason": "missing_box_score_roster"
+    },
+    {
+      "gameId": "0022400360",
+      "teamId": "1610612765",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, marker_after_decision, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unknown_prefix_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400360",
+      "teamId": "1610612762",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, marker_after_decision, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unknown_prefix_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400763",
+      "teamId": "1610612743",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unknown_boundary_lineup, unknown_lineup, unknown_prefix_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400763",
+      "teamId": "1610612757",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400903",
+      "teamId": "1610612747",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022400903",
+      "teamId": "1610612752",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, exit_reentry, invalid_lineups, invalid_stints, multiple_celtics_blocks, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022401162",
+      "teamId": "1610612762",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"
+    },
+    {
+      "gameId": "0022401162",
+      "teamId": "1610612757",
+      "season": "2024-25",
+      "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"
+    }
+  ],
+  "relabellingMatches": [
+    {
+      "gameId": "0022400062",
+      "teamId": "1610612747"
+    },
+    {
+      "gameId": "0022400062",
+      "teamId": "1610612750"
+    },
+    {
+      "gameId": "0022400063",
+      "teamId": "1610612765"
+    }
+  ],
+  "currentCutoff": "2025-10-23T13:00:00.001Z",
+  "currentTeamDatasets": 28,
+  "currentBostonPregameMatches": true
+}

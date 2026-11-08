@@ -34,7 +34,9 @@ try {
     );
   }
   console.log("All 82 pregame rosters match the curated cross-check.");
-  const datasets = (await loadReplayInputs(c, pregames)).map(buildDataset);
+  const datasets = (await loadReplayInputs(c, pregames)).map((input) =>
+    buildDataset(input),
+  );
   const perGame = datasets.map((d) => ({
     gameId: d.gameId,
     inputHash: d.inputHash,

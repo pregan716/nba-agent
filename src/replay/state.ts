@@ -104,8 +104,9 @@ export function buildState(
   snapshot: Row,
   before: boolean,
   nullFields: BoxField[],
+  targetTeamId = BOS,
 ): { state: ObservableState | null; reasons: string[] } {
-  const home = input.game.homeTeamId === BOS,
+  const home = input.game.homeTeamId === targetTeamId,
     own = home ? "home" : "away",
     other = home ? "away" : "home";
   const suffix = before ? "before" : "after",
@@ -174,7 +175,7 @@ export function buildState(
   const add = (e: Row, role: string, key: BoxField, value: number) => {
     for (const id of new Set(
       (parts.get(e.event_id) ?? [])
-        .filter((p) => p.role === role && p.team_id === BOS)
+        .filter((p) => p.role === role && p.team_id === targetTeamId)
         .map((p) => p.player_id),
     )) {
       const box = boxes.get(id);
@@ -212,7 +213,7 @@ export function buildState(
           fouls.set(p.player_id, fouls.get(p.player_id)! + 1);
     if (e.type === "ejection")
       for (const p of parts.get(e.event_id) ?? [])
-        if (p.team_id === BOS) ejected.add(p.player_id);
+        if (p.team_id === targetTeamId) ejected.add(p.player_id);
     if (e.type === "field_goal") {
       add(e, "shooter", "field_goals_attempted", 1);
       if (e.shot_value === 3) add(e, "shooter", "three_pointers_attempted", 1);

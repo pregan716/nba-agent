@@ -111,7 +111,7 @@ try {
             JSON.parse(readFileSync("config/identities.json", "utf8")),
           ),
         )
-      ).map(buildDataset),
+      ).map((input) => buildDataset(input)),
     );
   }
   mkdirSync(".cache/policy", { recursive: true });
