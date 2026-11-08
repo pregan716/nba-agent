@@ -225,10 +225,9 @@ export function genericSwapAssembly(state: ObservableState) {
   );
   const ins = [...state.eligibleBench].sort(
     (a, b) =>
-      (state.players.find((p) => p.playerId === b)?.restMs ??
-        Number.MAX_SAFE_INTEGER) -
-        (state.players.find((p) => p.playerId === a)?.restMs ??
-          Number.MAX_SAFE_INTEGER) || a.localeCompare(b),
+      (state.players.find((p) => p.playerId === b)?.restMs ?? -1) -
+        (state.players.find((p) => p.playerId === a)?.restMs ?? -1) ||
+      a.localeCompare(b),
   );
   const candidates: CandidateSet[] = [1, 2]
     .filter((k) => ins.length >= k)

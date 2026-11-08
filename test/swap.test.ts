@@ -599,3 +599,29 @@ test("validate_package returns swap answers and derived marginals, or candidate 
     cleanup(root);
   }
 });
+
+test("generic swap candidates prefer rested rotation players over never-played entries", () => {
+  const s = state();
+  s.eligibleBench = ["never-a", "rested-b", "rested-c"];
+  const template = s.players[0];
+  s.players.push(
+    { ...template, playerId: "never-a", restMs: null },
+    { ...template, playerId: "rested-b", restMs: 0 },
+    { ...template, playerId: "rested-c", restMs: 60000 },
+  );
+  assert.deepEqual(
+    genericSwapAssembly(s).candidates.map((c) => c.in),
+    [["rested-c"], ["rested-c", "rested-b"]],
+  );
+  // Never-played players remain eligible when needed, with deterministic ties.
+  s.eligibleBench = ["never-a", "rested-b"];
+  assert.deepEqual(
+    genericSwapAssembly(s).candidates.map((c) => c.in),
+    [["rested-b"], ["rested-b", "never-a"]],
+  );
+  s.players.find((p) => p.playerId === "rested-b")!.restMs = null;
+  assert.deepEqual(
+    genericSwapAssembly(s).candidates.map((c) => c.in),
+    [["never-a"], ["never-a", "rested-b"]],
+  );
+});

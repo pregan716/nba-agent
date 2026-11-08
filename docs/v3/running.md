@@ -367,7 +367,7 @@ weights by the statistical training size prior (prior season plus warm-up).
 Its eight highest-probability size-one/two sets are listed; remaining mass is
 `other`, expanded with the shared warm-up prior. The generic Jev baseline proposes
 one- and two-player swaps (when feasible): longest-current-stint players out and
-longest-rested eligible players in, with never-played players ordered first and
+longest-rested eligible players in, with never-played players ordered last and
 player-id tie breaks. These choices use only observable state.
 
 The adapted gate-2 package is `examples/policy-swap`. Run the one-game audit and
