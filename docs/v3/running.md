@@ -306,3 +306,79 @@ Exposure identity `decision-history-v1` is recorded on the data-sources axis.
 these decision tables are visible. Existing shards are not reused accidentally.
 Rebuild the research sandbox image to include the updated `nba_data` helper;
 no prompt text is changed here.
+
+## Set-valued Jev contract (SPO-866)
+
+Non-scripted launches use `jev-contract-v2`. The manifest records
+`harness.policy.swapContract`: the contract id, the five size-prior probabilities,
+and each warm-up game's id/input hash. The prior is the distribution of qualified
+substitution sizes in games 11–20, pinned before the run and shared by all variants
+and baselines. The launcher loads those ten datasets even for development
+analyst runs; this is evaluator calibration, not extra history made available to
+the agent. Historical four-question records and scripted legacy fixtures retain
+`prediction-v1`; evaluation preserves their original scoring and refuses
+cross-contract comparisons with `jev_contract_mismatch`. Different pinned priors
+are also incompatible. Changing the contract or prior changes the harness hash.
+
+The assembler adds `candidates`, an array of 1–8 `{out, in}` sets. Each set has
+1–5 distinct eligible players on each side and equal sizes. Sets are unordered;
+keys are `out:<lexicographically sorted comma-separated ids>|in:<sorted ids>`.
+The request contains `substitution` and `swap`; `instructions.swap` and
+`criteria.swap` describe the candidates and the `other` option. When the eligible
+bench is empty, candidates and swap criteria are empty and only `substitution`
+is sent. The research prompt update is tracked separately in SPO-867.
+
+Swap values require exact keys, finite probabilities in [0,1], and a total within
+0.05 of one. Raw answers are retained; accepted values are normalized before all
+scoring. Invalid answers use uniform option probabilities. `other` is distributed
+once across unlisted legal moves using the pinned prior, renormalized over sizes
+with remaining support and uniform within a size. Zero retained prior mass uses
+uniform feasible sizes. Exhausted support redistributes `other` proportionally
+among listed candidates (uniformly when their total is zero), recording
+`other_unsupported`. Ties use lexicographic option-key order. The action is the
+highest-probability listed set when substitution probability is at least 0.5;
+`other_argmax` is recorded even though the action remains a listed set.
+
+Set log loss uses the actual set's listed or expanded probability, clipped to
+[0.001,0.999], with clips counted. Reports include candidate hit rate, set top-1,
+mean candidate count and `other` mass on actual substitution windows, including
+per-game, stoppage and mid-period breakdowns. Paired game bootstrap reports add
+set log loss. Exit/entry Brier uses inclusion probabilities directly, without
+multiplying by the observed number of movers. Legacy selection log loss and MRR
+normalize inclusion probabilities to one; these columns do not make the contracts
+comparable. Trace validation includes candidates, normalized swap probabilities,
+expanded per-set probabilities, inclusion marginals, count distribution and flags.
+`validate_package` uses the same candidate checks and returns derived quantities
+when `jev: true`; it never returns sample outcomes. Decision-history tables remain
+dataset facts only and contain no run predictions or scoring losses.
+
+An invalid candidate list is a window-level `assembler_error`, including on the
+first window. No Jev call is made. It receives an environment-only fallback:
+empty candidates, all swap mass on `other`, substitution 0.5, and empty action.
+A first-window execution failure still invalidates the whole package. Later
+execution failures receive the same scored fallback. Neither an assembler nor a
+Jev response can request this trusted fallback representation.
+
+V2 baselines retain the existing timing models. The constant baseline uses no
+candidates and all conditional mass on `other`, while retaining its fitted timing
+rate. The statistical baseline retains the hazard and rank marginals; it
+multiplies exit/entry rank weights within each size, normalizes within size, and
+weights by the statistical training size prior (prior season plus warm-up).
+Its eight highest-probability size-one/two sets are listed; remaining mass is
+`other`, expanded with the shared warm-up prior. The generic Jev baseline proposes
+one- and two-player swaps (when feasible): longest-current-stint players out and
+longest-rested eligible players in, with never-played players ordered first and
+player-id tie breaks. These choices use only observable state.
+
+The adapted gate-2 package is `examples/policy-swap`. Run the one-game audit and
+nine-option shape probe with a scripted provider first:
+
+```sh
+npx tsx scripts/policy-audit.ts --swap --image=<pinned-assembler-image>
+```
+
+It writes `docs/evidence/policy/gate2-swap-fixture.json` and reports a conservative
+cost bound for two attempts per request. Adding `--live` invokes paid Jev calls
+and writes `gate2-swap-live.json`; obtain the user's spend approval first. Neither
+mode calls the research-agent model. The ordinary gate-2 command without `--swap`
+remains available to reproduce the legacy contract.

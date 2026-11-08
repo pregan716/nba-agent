@@ -68,7 +68,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "validate_package",
     description:
-      "Test the current package against a deterministic spread of prior-game states. jev: true returns Jev answers for each; default false. samples chooses 1–24 states (default 3). Outcomes are never included. Before any run game is released, only the three fixed 2024–25 states are used. One tool call charges research compute; optional Jev calls are metered as pregame Jev usage, not research-agent weighted model tokens. Current and future games are never samples.",
+      "Under jev-contract-v2 assemble(state) returns candidates (1–8 unique equal-size out/in sets, eligible players only), instructions.swap and criteria.swap keyed out:<sorted comma-separated ids>|in:<sorted comma-separated ids>, plus other. Empty eligible bench requires empty candidates and omits swap. Invalid candidate lists return reasons. With jev:true the response includes raw swap and derived inclusion marginals. Test the current package against a deterministic spread of prior-game states. jev: true returns Jev answers for each; default false. samples chooses 1–24 states (default 3). Outcomes are never included. Before any run game is released, only the three fixed 2024–25 states are used. One tool call charges research compute; optional Jev calls are metered as pregame Jev usage, not research-agent weighted model tokens. Current and future games are never samples.",
     input_schema: object({
       jev: { type: "boolean" },
       samples: { type: "integer", minimum: 1, maximum: 24 },

@@ -83,6 +83,7 @@ export interface ValidationOutput {
   request: JevRequest | null;
   diagnostics: Record<string, unknown> | null;
   answers?: any;
+  derived?: import("../replay/swap.js").SwapDerived;
   error?: string;
 }
 export interface ValidationSummary {

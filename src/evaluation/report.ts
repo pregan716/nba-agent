@@ -172,6 +172,11 @@ const json = (x: unknown) =>
   JSON.stringify(x, null, 2).replace(/```/g, "\\u0060\\u0060\\u0060") +
   "\n```";
 const displayMetrics = [
+  "setLogLoss",
+  "candidateHitRate",
+  "setTop1",
+  "meanCandidates",
+  "otherMass",
   "timingBrier",
   "timingSkillVsConstant",
   "timingSkillVsStatistical",

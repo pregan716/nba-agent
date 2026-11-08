@@ -48,6 +48,10 @@ export function compatibility(a: EvaluatedRun, b: EvaluatedRun) {
   const x = a.descriptors,
     y = b.descriptors;
   const reasons: string[] = [];
+  if ((x.jevContract ?? "prediction-v1") !== (y.jevContract ?? "prediction-v1"))
+    reasons.push("jev_contract_mismatch");
+  else if (canonical(x.swapContract) !== canonical(y.swapContract))
+    reasons.push("jev_contract_prior_mismatch");
   if (canonical(x.dataset) !== canonical(y.dataset))
     reasons.push("decision_dataset_mismatch");
   if (x.state !== y.state) reasons.push("state_schema_mismatch");
@@ -86,7 +90,12 @@ const stat = (rows: WindowResult[], metric: Metric) => {
   const summary = metrics(rows);
   return {
     value: summary[metric],
-    n: metric === "timingBrier" ? summary.scored : summary.actualSubstitutions,
+    n:
+      metric === "timingBrier"
+        ? summary.scored
+        : metric === "setLogLoss"
+          ? summary.setN
+          : summary.actualSubstitutions,
   };
 };
 const pooled = (xs: { value: number | null; n: number }[]) => {
@@ -258,6 +267,7 @@ function compareSubset(
     }[]
   >;
   const draws: Record<Metric, number[]> = {
+    setLogLoss: [],
     timingBrier: [],
     exitBrier: [],
     entryBrier: [],
