@@ -99,7 +99,9 @@ export class Session {
     if (
       policyTools &&
       canonicalJson(config.harness.policy) !==
-        canonicalJson(policyHarness(policyTools.assembler))
+        canonicalJson(
+          policyHarness(policyTools.assembler, policyTools.swapContract),
+        )
     )
       throw Error("Policy tools harness mismatch");
     if (isMemoryV3(config.profile.memory))
