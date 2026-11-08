@@ -161,6 +161,15 @@ test("exhaustive candidates, invalid fallback, zero prior support and empty benc
   assert.deepEqual(Object.keys(buildSwapRequest(a, s).questions), [
     "substitution",
   ]);
+  // An "other" criterion with no candidates is a key mismatch, not a bare substitution request.
+  assert.throws(
+    () =>
+      buildSwapRequest(
+        { ...a, criteria: { ...a.criteria, swap: { other: "anything else" } } },
+        s,
+      ),
+    /criteria_keys_mismatch/,
+  );
   const w = {
     ...fixture().windows[0],
     state: s,

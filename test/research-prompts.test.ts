@@ -167,7 +167,8 @@ test("research texts supply no team-specific names and state the contract", () =
     "freeze_package",
     "validate_package",
     "read_feedback",
-    "three_or_more",
+    "candidates",
+    "other_argmax",
   ])
     assert.ok(RESEARCH_SYSTEM_PROMPT_V3.includes(term), term);
 });
@@ -284,4 +285,31 @@ test("the prompt matches the SPO-857 environment", () => {
     assert.match(m, /tokens currently retained against the cap/);
     assert.match(m, /workspace_edit/);
   }
+});
+
+test("the prompt describes jev-contract-v2 (SPO-867)", () => {
+  const p = RESEARCH_SYSTEM_PROMPT_V3;
+  assert.match(p, /At every window Jev answers two fixed questions/);
+  assert.match(p, /plus a fixed option named other/);
+  assert.match(p, /candidates: a list of one to eight dicts/);
+  assert.match(p, /"out:<ids>\|in:<ids>"/);
+  assert.match(p, /return an empty list; the swap question is then omitted/);
+  assert.match(
+    p,
+    /swap must be an empty dict \(or omitted\) with no "other" entry/,
+  );
+  // The set score and the expansion of other, in one sentence each.
+  assert.match(
+    p,
+    /negative log of the probability the swap answer gave the move/,
+  );
+  assert.match(p, /shares the size-one portion of other with about fifty/);
+  assert.match(p, /The hit rate is the number to watch first/);
+  assert.match(p, /Write "unlikely" to mean unlikely, not never/);
+  assert.match(p, /probabilities must sum to about one/);
+  assert.match(p, /candidateHit is 0 are the moves your list missed/);
+  // The retired questions are no longer described as Jev questions.
+  assert.doesNotMatch(p, /ordered levels none, one, two, three_or_more/);
+  assert.doesNotMatch(p, /keys substitution, count, exit, entry/);
+  assert.doesNotMatch(p, /scaled to sum to k/);
 });
