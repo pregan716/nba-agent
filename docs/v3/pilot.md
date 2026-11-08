@@ -395,6 +395,67 @@ in telling windows apart, not in the probability scale.
 and .45–.51, still the best rankers. The overconfidence found in the
 baselines section is a prompt-side problem the new tooling does not touch.
 
+### Stage 6: first run on `jev-contract-v2` (`pilot-m0-swap`)
+
+Nov 7, 2026, M0, games 1–2, on `807adac` after the set-valued swap
+contract (brief amendment PR #71, environment PR #73, prompt PR #74). The
+first attempt failed every session at start with "Policy tools harness
+mismatch": the session recomputed the expected harness without the swap
+contract the launcher had pinned (PR #75, one line, $0 spent). The second
+attempt ran clean: 8 `validate_package` calls (5 with `jev: true`), 15
+`decision_windows` queries, both packages frozen, no invalid questions and
+no assembler errors.
+
+| Game       | Subs | Hit rate | Set top-1 | Candidates | `other` mass at subs | Set log loss (clips) | Exit / entry log loss (clips) | Timing |
+| ---------- | ---- | -------- | --------- | ---------- | -------------------- | -------------------- | ----------------------------- | ------ |
+| 0022500083 | 23   | .30      | 4         | 7.1        | .04                  | 5.40 (15)            | 2.83 / 2.53 (0 / 0)           | .171   |
+| 0022500018 | 18   | .33      | 2         | 8.0        | .05                  | 5.21 (9)             | 2.12 / 2.37 (0 / 0)           | .155   |
+
+**The list.** The agent put the coach's actual move on its candidate list
+at 32 % of substitutions (13 of 41; singles 10 of 31, doubles 3 of 7, the
+three larger moves, two 3-for-3s and a 4-for-4, all missed), against 4 % for the hand-written gate-2 package
+in PR #73's audit. It filled nearly every slot (mean 7.5 of 8), mostly with
+1-for-1s, and still missed two thirds of the 1-for-1s the coach made:
+selection, not slot count, is the limit.
+
+**The `other` mass is the failure.** Jev gave `other` 4–5 % while the list
+missed 68 % of moves, so each miss scored about 6.9 (the clip). Pooled set
+log loss is 5.32 against 5.02 for the constant form (no candidates, `other`
+= 1, scored through the size prior) on the same 41 moves: the first agent
+run on the new contract is worse than the floor. The same answers with
+`other` rescaled to 0.5 would score 4.60, well under the floor. The prompt
+says a missed move with little mass on `other` is the expensive case; the
+agent still wrote `other` descriptions Jev read as 1–24 %, and game 2 did
+not adjust after game 1's trace showed a 30 % hit rate.
+
+**Among listed candidates Jev commits, and is right about half the time it
+can be.** Jev's largest listed probability averages 0.50 over the 41
+substitution windows (0.46 on the 13 hits), with a median ratio of 77
+between the largest and smallest listed probabilities, so the answers are
+concentrated, not uniform. On the 13 hits the actual move was Jev's top
+candidate 6 times and received a mean probability of 0.27 against 0.135
+for a uniform spread over the list (individual values from 0.01 to 0.87,
+with four hits at 0.03 or less). Set top-1 is therefore 6 of 13 conditional
+on a hit; the other 28 windows could not succeed because the move was
+absent. The descriptions discriminate; when the list is right the ranking
+is useful, and the four near-zero hits are the residue of the old
+"unlikely means never" problem at set level.
+
+**The player-score defect is fixed.** Exit and entry log-loss clips are 0
+(23 and 19 of 99 under the four-question contract). Derived exit log loss
+2.83 / 2.12 and entry 2.53 / 2.37 against 2.6–2.9 before; these columns are
+not comparable across contracts and are reported for orientation only.
+Timing .171 / .155 is in line with `pilot-m0-v2` on the same games (.167 /
+.147).
+
+**Cost** $4.85 per game, up from $3.58 (more validation and code calls).
+
+What this says: the contract does what it was built to do, which is to
+expose the two levers, what is on the list and how much mass goes on
+`other`. The second is a prompt problem: the agent should write `other` to
+carry its own observed miss rate, which the trace now shows it. The first
+is the harder research problem the experiment is about.
+
 ## Jev
 
 **Determinism (double replay, Agreed Nov 4, 2026).** Game 0022500083's 66
@@ -433,9 +494,11 @@ question for the user.
   drift narrowed for M0 (+0.019) and not for M3 (+0.065); the M3–M0
   difference reversed sign against stage 4 and memory shows no detectable
   effect on five games.
-- Player exit/entry overconfidence (baselines section, unchanged in stage
-  5): the briefing's framing of the player questions needs a prompt change
-  and a re-check before the scored run.
+- Player exit/entry overconfidence (baselines section): resolved by
+  `jev-contract-v2` (PR #71, #73, #74); stage 6 shows no clips. Open in its
+  place: the agent under-weights `other` (4–5 % against a 68 % miss rate),
+  which puts its set score below the constant floor. A prompt change and a
+  two-game re-check are the next step.
 - Budget profile v1 is Proposed above; the smaller- and larger-cap re-runs the
   brief asks for have not been run.
 - Price schedule is a placeholder.
