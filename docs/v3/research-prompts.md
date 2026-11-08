@@ -262,6 +262,49 @@ only, through the trace, and the pilot's per-stoppage results (worse than the
 kind's own rate at timeouts and dead-ball turnovers in every run) followed
 from guessing those levels each session.
 
+## Revisions for jev-contract-v2 (SPO-867)
+
+The brief amendment accepted Nov 7, 2026 (PR #71) replaced `count`, `exit`
+and `entry` with one set-valued `swap` question over candidate substitutions
+the assembler proposes, plus `other`; SPO-866 (PR #73) implemented it. The
+pilot's finding behind it: the agent ranked players best of any predictor
+but scored worst on the proper player scores, because the single-winner
+questions made it write "very unlikely to exit this soon" and "rarely
+enters", which Jev reads as about zero, and a quarter of substitution
+windows then hit the log-loss clip.
+
+The prompt now:
+
+- Describes the two questions, the candidate list (one to eight equal-size
+  sets from the five on the floor and the eligible bench, empty when the
+  bench is empty), the environment-built keys, and the action rule (most
+  probable listed candidate, `other_argmax` noted).
+- Frames the candidate list as the coach's first decision, which moves are
+  live, and says it is scored.
+- States the set score and the expansion of `other` in one sentence each
+  (an unlisted 1-for-1 shares the size-one portion of `other` with about
+  fifty others, a 2-for-2 with several hundred), names the hit rate, set
+  top-1, candidate count and `other` mass, and says the per-player scores
+  are derived for continuity.
+- Says what is expensive: a missed move with little mass on `other`, and a
+  listed move given near zero that happens. "The hit rate is the number to
+  watch first."
+- In the Jev section: describe each candidate as a coach would see it
+  without asserting a number; "unlikely" means unlikely, not never; the
+  description of `other` matters; `validate_package` with `jev: true`
+  returns the swap probabilities and derived marginals on the fixed prior
+  states.
+- Updates the `assemble` return shape (`candidates`, `instructions.swap`,
+  `criteria.swap` keyed as the environment builds them) and the trace
+  fields (`validation.swap`, `setLogLoss`, `candidateHit`, `setTop1`,
+  `candidateCount`, `otherMass`, `assembly.candidates`), and tells the agent
+  to read the `candidateHit = 0` windows before changing wording.
+
+Tests assert the new descriptions and the absence of the retired questions.
+The tool-description change is Codex's (PR #73); this is the matching prompt
+change. The two-game M0 check the issue asks for is a live run and needs the
+user's approval of the spend.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the
