@@ -28,7 +28,7 @@ import {
   JEV_MODEL,
 } from "../src/policy/request.js";
 import { chronologicalFixture } from "../scripts/fixtures/chronological.js";
-import { fitSwapBaselines } from "../src/replay/baselines.js";
+import { fitBaselines, fitSwapBaselines } from "../src/replay/baselines.js";
 import { RecordStore } from "../src/runner/record.js";
 import { MeteringProxy } from "../src/runner/proxy.js";
 import {
@@ -623,5 +623,32 @@ test("generic swap candidates prefer rested rotation players over never-played e
   assert.deepEqual(
     genericSwapAssembly(s).candidates.map((c) => c.in),
     [["never-a"], ["never-a", "rested-b"]],
+  );
+});
+
+test("v2 statistical entry ranks prefer rested players while legacy ranks remain unchanged", () => {
+  const d = fixture(),
+    s = state();
+  s.eligibleBench = ["never", "rested"];
+  s.players.push(
+    { ...s.players[0], playerId: "never", restMs: null },
+    { ...s.players[0], playerId: "rested", restMs: 60000 },
+  );
+  const model = fitSwapBaselines([d]).statistical;
+  const raw = model.predict(s) as any;
+  const exit = raw.candidates.find((c: CandidateSet) => c.out.length === 1).out;
+  const restedKey = candidateKey({ out: exit, in: ["rested"] });
+  const neverKey = candidateKey({ out: exit, in: ["never"] });
+  assert.ok(
+    raw.swap.probabilities[restedKey] > (raw.swap.probabilities[neverKey] ?? 0),
+  );
+  const legacy = fitBaselines([d]).statistical.predict(s);
+  assert.ok(
+    legacy.entry.probabilities.never > legacy.entry.probabilities.rested,
+  );
+  assert.equal(raw.substitution.noul, legacy.substitution.noul);
+  assert.equal(
+    (model.parameters as any).entryRanking,
+    "rested-first-never-played-last-v1",
   );
 });

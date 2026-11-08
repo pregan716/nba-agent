@@ -362,9 +362,11 @@ Jev response can request this trusted fallback representation.
 V2 baselines retain the existing timing models. The constant baseline uses no
 candidates and all conditional mass on `other`, while retaining its fitted timing
 rate. The statistical baseline retains the hazard and rank marginals; it
-multiplies exit/entry rank weights within each size, normalizes within size, and
+ranks never-played eligible bench players last (`restMs ?? -1`, approved Nov 7,
+2026), then multiplies exit/entry rank weights within each size, normalizes within size, and
 weights by the statistical training size prior (prior season plus warm-up).
-Its eight highest-probability size-one/two sets are listed; remaining mass is
+The statistical id includes `rested-first-never-played-last-v1`; the legacy
+four-question entry ranks remain unchanged. Its eight highest-probability size-one/two sets are listed; remaining mass is
 `other`, expanded with the shared warm-up prior. The generic Jev baseline proposes
 one- and two-player swaps (when feasible): longest-current-stint players out and
 longest-rested eligible players in, with never-played players ordered last and

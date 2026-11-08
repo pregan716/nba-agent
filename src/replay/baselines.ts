@@ -154,6 +154,7 @@ export function fitBaselines(
 export function fitSwapBaselines(warmup: DecisionDataset[], training = warmup) {
   const old = fitBaselines(warmup, training),
     contract = pinSwapContract(warmup);
+  const entryRanking = "rested-first-never-played-last-v1";
   const sizeCounts = [0, 0, 0, 0, 0];
   for (const d of training)
     for (const w of d.windows)
@@ -166,8 +167,9 @@ export function fitSwapBaselines(warmup: DecisionDataset[], training = warmup) {
       name,
       {
         ...b,
-        id: `${name}-v2:${digest({ old: b.id, contract, prior })}`,
+        id: `${name}-v2:${digest({ old: b.id, contract, prior, ...(name === "statistical" ? { entryRanking } : {}) })}`,
         parameters: {
+          ...(name === "statistical" ? { entryRanking } : {}),
           legacy: b.parameters,
           swapContract: contract,
           sizePrior: prior,
@@ -181,6 +183,11 @@ export function fitSwapBaselines(warmup: DecisionDataset[], training = warmup) {
               candidates: [],
               degenerate: true,
             };
+          p.entry.probabilities = ranked(
+            s.eligibleBench,
+            (id) =>
+              s.players.find((player) => player.playerId === id)!.restMs ?? -1,
+          );
           const feasible = prior.map((v, i) =>
               i < Math.min(5, s.eligibleBench.length) ? v : 0,
             ),
