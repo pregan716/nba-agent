@@ -152,7 +152,7 @@ try {
               mappings,
             ),
           )
-        ).map(buildDataset);
+        ).map((input) => buildDataset(input));
         const priorDatasets = await loadPriorSeasonTraining(corpus);
         source.registerDecisionDatasets?.([...loaded, ...priorDatasets]);
         return {

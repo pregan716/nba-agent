@@ -50,8 +50,7 @@ export function opener(e: Row): string | null {
 const opening = (period: number) => (period <= 4 ? 720000 : 300000);
 const inPeriod = (b: Row[]) =>
   b[0].clock_remaining_ms > 0 && b[0].clock_remaining_ms < opening(b[0].period);
-const ownSubs = (b: Row[]) =>
-  b.filter((e) => e.type === "substitution" && e.team_id === BOS);
+
 const span = (b: Row[]): [number, number] => [
   b[0].canonical_sequence,
   b.at(-1)!.canonical_sequence,
@@ -78,7 +77,14 @@ function mechanism(b: Row[], previous: Row[]) {
   return "other";
 }
 /** Label construction can see the outcome; buildState is the separate prefix projection. */
-export function buildDataset(input: ReplayInput): DecisionDataset {
+export function buildDataset(
+  input: ReplayInput,
+  teamId = BOS,
+): DecisionDataset {
+  if (![input.game.homeTeamId, input.game.awayTeamId].includes(teamId))
+    throw Error("Target team is not in game");
+  const ownSubs = (b: Row[]) =>
+    b.filter((e) => e.type === "substitution" && e.team_id === teamId);
   validatePregame(input);
   const events = input.events
     .filter(
@@ -112,12 +118,13 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
   }
   const version = `${WINDOW_VERSION}:${input.release.sha256}`;
   const result: DecisionDataset = {
-    celticsHome: input.game.homeTeamId === BOS,
+    celticsHome: input.game.homeTeamId === teamId,
     version,
     windowVersion: WINDOW_VERSION,
     release: input.release,
     gameId: input.game.gameId,
-    inputHash: digest(input),
+    ...(teamId === BOS ? {} : { teamId }),
+    inputHash: teamId === BOS ? digest(input) : digest({ input, teamId }),
     windows: [],
     ledger: [],
     diagnostics: {
@@ -261,7 +268,9 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
         const now = elapsed(w.state.period, w.state.clockMs);
         const expected =
           stints
-            .filter((s) => s.team_id === BOS && s.player_id === player.playerId)
+            .filter(
+              (s) => s.team_id === teamId && s.player_id === player.playerId,
+            )
             .reduce(
               (sum, s) =>
                 sum +
@@ -279,7 +288,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
           w.exclusions.push("unreconciled_player_minutes");
         const entries = stints.filter(
           (s) =>
-            s.team_id === BOS &&
+            s.team_id === teamId &&
             s.player_id === player.playerId &&
             s.start_sequence < w.sequence,
         );
@@ -352,13 +361,14 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
       snapshot,
       retrospective,
       nullFields,
+      teamId,
     );
     const outcomeRows = retrospective
       ? rows.filter((e) => e.canonical_sequence >= cutoff)
       : rows;
     const blocks = substitutionBlocks(outcomeRows),
       own = blocks.filter((b) => ownSubs(b).length),
-      actual = actionFor(own.flat(), input.participants);
+      actual = actionFor(own.flat(), input.participants, teamId);
     const w: Window = {
       id: `${input.game.gameId}:in:${b[0].canonical_sequence}`,
       gameId: input.game.gameId,
@@ -467,7 +477,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
         .filter((e) => e.period === first.period - 1 && e.type === "period_end")
         .at(-1),
       start = b.find((e) => e.type === "period_start")!;
-    const own = input.game.homeTeamId === BOS ? "home" : "away",
+    const own = input.game.homeTeamId === teamId ? "home" : "away",
       next = b
         .filter((e) => e.type === "period_start" || e.type === "substitution")
         .at(-1)!;
@@ -482,6 +492,7 @@ export function buildDataset(input: ReplayInput): DecisionDataset {
           prior,
           false,
           nullFields,
+          teamId,
         )
       : { state: null, reasons: ["missing_prior_period_end"] };
     const before = prior?.[`${own}_lineup_after`],

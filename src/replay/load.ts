@@ -1,4 +1,6 @@
 import { releaseTime } from "../env/visibility.js";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { digest } from "../runner/config.js";
 import { buildDataset } from "./dataset.js";
 import { WINDOW_VERSION } from "./types.js";
@@ -11,6 +13,7 @@ import {
   type Pregame,
   type ReplayInput,
   type DecisionDataset,
+  type TrainingOnly,
 } from "./types.js";
 /** Full-fidelity released facts, also used by excluded-window history projections. */
 export async function decisionHistoryFacts(
@@ -22,6 +25,173 @@ export async function decisionHistoryFacts(
     "event_participants",
   ]);
   return { events: rows.events, participants: rows.event_participants };
+}
+
+export interface TeamTrainingResult {
+  datasets: DecisionDataset[];
+  skipped: {
+    gameId: string;
+    teamId: string;
+    season: TrainingOnly["season"];
+    reason: string;
+  }[];
+}
+
+/** Released team-games only. Retrospective membership includes DNP rows, with
+ * unknown injuries and synthetic timestamps; never use these datasets to evaluate.
+ * Boston's current-season inputs retain the actual pregame evidence instead.
+ * Reads use manifest indexes, not object-store listings. Mixed partitions are
+ * filtered by game id before roster construction or window building.
+ */
+export async function loadAllTeamsTraining(
+  c: Corpus,
+  cutoff: string,
+  options: {
+    seasons?: TrainingOnly["season"][];
+    batchSize?: number;
+    root?: string;
+  } = {},
+): Promise<TeamTrainingResult> {
+  const cutoffMs = Date.parse(cutoff),
+    batchSize = options.batchSize ?? 60;
+  if (!Number.isFinite(cutoffMs)) throw Error("Invalid training cutoff");
+  if (!Number.isInteger(batchSize) || batchSize < 1 || batchSize > 100)
+    throw Error("Training batch size must be 1–100");
+  const result: TeamTrainingResult = { datasets: [], skipped: [] };
+  for (const season of [
+    ...new Set<TrainingOnly["season"]>(
+      options.seasons ?? ["2024-25", "2025-26"],
+    ),
+  ].sort()) {
+    const adapter = season === "2024-25" ? c.priorPbp : c.pbp;
+    const games = (await adapter.games())
+      .filter(
+        (g) =>
+          g.data.season === season &&
+          g.data.phase === "regular_season" &&
+          Date.parse(releaseTime(g.data.scheduled_tipoff)) < cutoffMs,
+      )
+      .sort(
+        (a, b) =>
+          a.data.scheduled_tipoff.localeCompare(b.data.scheduled_tipoff) ||
+          a.id.localeCompare(b.id),
+      );
+    if (!games.length) continue;
+    const currentBoston =
+      season === "2025-26"
+        ? games.filter((g) =>
+            [g.data.home_team_id, g.data.away_team_id].includes(BOS),
+          )
+        : [];
+    const root = options.root ?? process.cwd();
+    const pregames = currentBoston.length
+      ? await auditPregames(
+          c,
+          currentBoston.map((g) => g.id),
+          JSON.parse(
+            await readFile(resolve(root, "config/identities.json"), "utf8"),
+          ),
+          root,
+        )
+      : [];
+    const boston = new Map(pregames.map((p) => [p.gameId, p]));
+    for (let offset = 0; offset < games.length; offset += batchSize) {
+      const batch = games.slice(offset, offset + batchSize);
+      const ids = new Set(batch.map((g) => g.id));
+      const rows = await indexedRows(adapter, ids, ["player_box_scores"]);
+      const rosters = new Map<string, Set<string>>();
+      for (const row of rows.player_box_scores) {
+        const key = `${row.game_id}:${row.team_id}`;
+        const members = rosters.get(key) ?? new Set<string>();
+        if (typeof row.player_id === "string" && row.player_id)
+          members.add(row.player_id);
+        rosters.set(key, members);
+      }
+      const requests: { teamId: string; pregame: Pregame }[] = [];
+      for (const g of batch) {
+        for (const teamId of [g.data.home_team_id, g.data.away_team_id]) {
+          const real = teamId === BOS ? boston.get(g.id) : undefined;
+          const roster = [...(rosters.get(`${g.id}:${teamId}`) ?? [])].sort();
+          if (!real && roster.length < 5) {
+            result.skipped.push({
+              gameId: g.id,
+              teamId,
+              season,
+              reason: "missing_box_score_roster",
+            });
+            continue;
+          }
+          const availableAt = new Date(
+            Date.parse(g.data.scheduled_tipoff) - 1,
+          ).toISOString();
+          requests.push({
+            teamId,
+            pregame: real ?? {
+              gameId: g.id,
+              scheduledStart: g.data.scheduled_tipoff,
+              roster: roster.map((playerId) => ({ playerId, availableAt })),
+              injuryReport: { availableAt, state: "unknown", players: [] },
+              announcedStarters: null,
+              sources: [adapter.release.root],
+            },
+          });
+        }
+      }
+      if (!requests.length) continue;
+      const inputs = await loadInputs(
+        adapter,
+        requests.map((r) => r.pregame),
+      );
+      for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i],
+          { teamId } = requests[i];
+        let dataset: DecisionDataset;
+        try {
+          dataset = buildDataset(input, teamId);
+        } catch (error) {
+          result.skipped.push({
+            gameId: input.game.gameId,
+            teamId,
+            season,
+            reason: `unbuildable: ${error instanceof Error ? error.message : String(error)}`,
+          });
+          continue;
+        }
+        if (
+          !dataset.windows.some(
+            (w) => !w.exclusions.length && w.state && w.actual,
+          )
+        ) {
+          const reasons = [
+            ...new Set(dataset.ledger.map((r) => r.reason)),
+          ].sort();
+          result.skipped.push({
+            gameId: dataset.gameId,
+            teamId,
+            season,
+            reason: `no_qualified_windows: ${reasons.join(", ") || "no_windows"}`,
+          });
+          continue;
+        }
+        // Even real-roster Boston rows in this loader are training-only. Preserve
+        // their roster provenance rather than falsely calling it retrospective.
+        const trainingOnly = {
+          season,
+          rosterPolicy:
+            boston.has(dataset.gameId) && teamId === BOS
+              ? ("season-pregame-v1" as const)
+              : ("same-game-box-score-v1" as const),
+        };
+        result.datasets.push({
+          ...dataset,
+          teamId,
+          trainingOnly,
+          inputHash: digest({ input, teamId, trainingOnly }),
+        });
+      }
+    }
+  }
+  return result;
 }
 async function indexedRows(
   adapter: Corpus["pbp"],

@@ -46,7 +46,7 @@ const current = (
       mappings,
     ),
   )
-).map(buildDataset);
+).map((input) => buildDataset(input));
 const prior = await loadPriorSeasonTraining(corpus);
 const rows: string[] = [];
 const emit = (d: any, season: string, index: number, start: string) => {

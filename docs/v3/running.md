@@ -173,6 +173,39 @@ No events or windows are fabricated. Local verification of the pinned input
 produced 4,384 candidate windows and 3,997 qualified windows across the other 80
 games; these are data coverage counts, not experimental results.
 
+**All-teams starter training (SPO-870; agreed Nov 8, 2026).**
+`loadAllTeamsTraining(corpus, cutoff, options)` returns `{ datasets, skipped }`.
+It selects regular-season team-games from 2024–25 and 2025–26 whose next-morning
+9 a.m. Eastern release is strictly before the cutoff. `options.seasons` can
+restrict the seasons; `batchSize` (1–100, default 60) bounds input batches.
+Only pinned manifest/index paths are read; no bucket listing is used. A partition
+containing several games is filtered before roster construction and window building.
+Missing box-score rosters, unbuildable inputs, and games with no qualified windows
+are skipped with the game, team, season, and reason. Individual excluded windows
+retain their existing ledger reasons in otherwise usable datasets.
+
+Every returned dataset has `teamId` and `trainingOnly`, including Boston's current
+season. Retrospective rosters include DNP rows, retain unknown injury status and
+synthetic timestamps, and use `same-game-box-score-v1`. Boston's 2025–26 rows
+instead use the existing curated pregame evidence (`season-pregame-v1`); the
+loader does not substitute box-score membership for that evidence. Both policies
+are forbidden as evaluation inputs. The existing statistical-baseline loader and
+its two empty gap datasets are unchanged.
+
+`buildDataset(input, teamId = BOS)` and the state builder preserve Boston as the
+default. Non-Boston datasets keep real team ids in history and bind the target
+team into their input hash. For compatibility, `celtics`, `celticsHome`, and
+Celtics-named diagnostic fields describe the selected team; an absent dataset
+`teamId` means Boston. Training consumers must key rows by team as well as game
+and window id, since both teams share the canonical game and event identifiers.
+
+The offline `scripts/team-training-audit.ts` accepts the pre-change experiment's
+`datasets.json` plus an optional object-cache directory. It compares all 82 prior
+Boston datasets and the 20 development/warm-up datasets, loads prior-season league
+training, audits three non-Boston team-games against the experiment's relabeling
+method, and checks current Boston training against its pregame-evidence windows.
+It never loads the scored or holdout Boston games for compatibility evaluation.
+
 The tiny synthetic fixture uses a separate synthetic training game solely to
 exercise the interfaces; its outputs are not comparative results.
 
