@@ -294,6 +294,10 @@ test("the prompt describes jev-contract-v2 (SPO-867)", () => {
   assert.match(p, /candidates: a list of one to eight dicts/);
   assert.match(p, /"out:<ids>\|in:<ids>"/);
   assert.match(p, /return an empty list; the swap question is then omitted/);
+  assert.match(
+    p,
+    /swap must be an empty dict \(or omitted\) with no "other" entry/,
+  );
   // The set score and the expansion of other, in one sentence each.
   assert.match(
     p,
