@@ -413,7 +413,7 @@ no assembler errors.
 
 **The list.** The agent put the coach's actual move on its candidate list
 at 32 % of substitutions (13 of 41; singles 10 of 31, doubles 3 of 7, the
-two larger moves missed), against 4 % for the hand-written gate-2 package
+three larger moves, two 3-for-3s and a 4-for-4, all missed), against 4 % for the hand-written gate-2 package
 in PR #73's audit. It filled nearly every slot (mean 7.5 of 8), mostly with
 1-for-1s, and still missed two thirds of the 1-for-1s the coach made:
 selection, not slot count, is the limit.
@@ -428,9 +428,18 @@ says a missed move with little mass on `other` is the expensive case; the
 agent still wrote `other` descriptions Jev read as 1–24 %, and game 2 did
 not adjust after game 1's trace showed a 30 % hit rate.
 
-**Among listed candidates Jev is near-uniform.** Mean set log loss on hits
-is 2.1, about −log(1/8); set top-1 is 6 of 41. The descriptions get moves
-onto the list but do not separate them.
+**Among listed candidates Jev commits, and is right about half the time it
+can be.** Jev's largest listed probability averages 0.50 over the 41
+substitution windows (0.46 on the 13 hits), with a median ratio of 77
+between the largest and smallest listed probabilities, so the answers are
+concentrated, not uniform. On the 13 hits the actual move was Jev's top
+candidate 6 times and received a mean probability of 0.27 against 0.135
+for a uniform spread over the list (individual values from 0.01 to 0.87,
+with three hits at 0.03 or less). Set top-1 is therefore 6 of 13 conditional
+on a hit; the other 28 windows could not succeed because the move was
+absent. The descriptions discriminate; when the list is right the ranking
+is useful, and the three near-zero hits are the residue of the old
+"unlikely means never" problem at set level.
 
 **The player-score defect is fixed.** Exit and entry log-loss clips are 0
 (23 and 19 of 99 under the four-question contract). Derived exit log loss
@@ -444,10 +453,8 @@ Timing .171 / .155 is in line with `pilot-m0-v2` on the same games (.167 /
 What this says: the contract does what it was built to do, which is to
 expose the two levers, what is on the list and how much mass goes on
 `other`. The second is a prompt problem: the agent should write `other` to
-carry its own observed miss rate, which the trace now shows it, and should
-read a near-uniform spread over its candidates as descriptions that do not
-discriminate. The first is the harder research problem the experiment is
-about.
+carry its own observed miss rate, which the trace now shows it. The first
+is the harder research problem the experiment is about.
 
 ## Jev
 
