@@ -313,14 +313,15 @@ test("the prompt describes jev-contract-v2 (SPO-867)", () => {
     p,
     /other should carry about the share of the coach's moves your list misses/,
   );
-  assert.match(p, /The trace's candidateHitRate is that share/);
+  assert.match(p, /so the miss rate is one minus it/);
+  assert.doesNotMatch(p, /candidateHitRate is that share/);
   assert.match(p, /assume the list will miss more moves than it catches/);
   assert.match(p, /scores worse than listing nothing at all/);
   assert.match(p, /Describe other as the live option it is/);
-  assert.match(
-    p,
-    /mass on other there should be in the region of your miss rate/,
-  );
+  // The samples are a fixed spread, not a game's substitutions: a wording probe, not a target.
+  assert.match(p, /is not your miss rate and need not match it/);
+  assert.match(p, /change only the other description, and see what moves/);
+  assert.doesNotMatch(p, /in the region of your miss rate/);
   assert.match(p, /a listed candidate at 0.03 or less that happens/);
   // The retired questions are no longer described as Jev questions.
   assert.doesNotMatch(p, /ordered levels none, one, two, three_or_more/);

@@ -317,16 +317,21 @@ case was expensive but not how much `other` should carry or how to get Jev
 to put it there.
 
 The scoring section now gives the rule of thumb: `other` should carry about
-the share of moves the list misses; `candidateHitRate` in the trace is that
-share for the last game; before any trace, assume the list misses more than
+the share of moves the list misses; `candidateHitRate` in the trace is the
+share caught, so the miss rate is its complement; before any trace, assume the list misses more than
 it catches (the pilot's lists caught about a third); a list missing two
 thirds with `other` at 0.05 scores worse than listing nothing. The Jev
 section says why `other` comes out small (a description like "anything
 else" reads as a long shot), how to describe it (as the live option it is,
 in words that carry the honest frequency, with the state text saying how
-unsettled the situation is), and how to check it (`validate_package` with
-`jev: true`, `other` mass in the region of the miss rate, change wording
-holding the states fixed). It names the set-level form of "unlikely means
+unsettled the situation is), and how to look at it (`validate_package` with
+`jev: true`; the samples are a fixed spread, not a game's substitutions, so
+their `other` mass is not the miss rate and need not match it; they measure
+the effect of wording with the states held fixed, and a few percent on every
+sample against a trace that shows most moves missed points at the wording,
+while disagreement on a handful of states is a reason to look, not proof).
+The review of PR #77 caught both the hit/miss inversion and the sampling
+caveat that the first draft dropped. It names the set-level form of "unlikely means
 never": a listed candidate at 0.03 or less that happens (four of thirteen
 hits in stage 6). Tests assert each of these. The two-game re-check is a
 live run and needs the user's approval of the spend.
