@@ -12,16 +12,18 @@ price list before any budget claim is final.
 
 ## Runs
 
-| Run id               | Memory | Games | Code revision | Prompt                      | Cost   | Wall clock | Outcome                                              |
-| -------------------- | ------ | ----- | ------------- | --------------------------- | ------ | ---------- | ---------------------------------------------------- |
-| `pilot-m3-smoke`     | M3     | 1     | pre-SPO-857   | first `research-v3`         | $8.83  | —          | completed; six calls spent on manifest hashes        |
-| `pilot-m3-smoke2`    | M3     | 1     | —             | —                           | $4.90  | —          | failed: stale assembler image pin (SPO-858, SPO-859) |
-| `pilot-m3-smoke3`    | M3     | 1     | `d314c44`     | after SPO-857               | $4.98  | 25 min     | completed                                            |
-| `pilot-m3` (stage 3) | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                   |
-| `pilot-m3b`          | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                   |
-| `pilot-m0` (stage 4) | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                   |
-| `pilot-m0-10`        | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                   |
-| `baselines-dev`      | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                   |
+| Run id                  | Memory | Games | Code revision | Prompt                      | Cost   | Wall clock | Outcome                                              |
+| ----------------------- | ------ | ----- | ------------- | --------------------------- | ------ | ---------- | ---------------------------------------------------- |
+| `pilot-m3-smoke`        | M3     | 1     | pre-SPO-857   | first `research-v3`         | $8.83  | —          | completed; six calls spent on manifest hashes        |
+| `pilot-m3-smoke2`       | M3     | 1     | —             | —                           | $4.90  | —          | failed: stale assembler image pin (SPO-858, SPO-859) |
+| `pilot-m3-smoke3`       | M3     | 1     | `d314c44`     | after SPO-857               | $4.98  | 25 min     | completed                                            |
+| `pilot-m3` (stage 3)    | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                   |
+| `pilot-m3b`             | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                   |
+| `pilot-m0` (stage 4)    | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                   |
+| `pilot-m0-10`           | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                   |
+| `baselines-dev`         | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                   |
+| `pilot-m3-v2` (stage 5) | M3     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $27.11 | 2 h 11 min | completed, no halt                                   |
+| `pilot-m0-v2` (stage 5) | M0     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $17.88 | 1 h 30 min | completed, no halt                                   |
 
 All runs: Jev `jev-1.14.0`, analyst `claude-opus-4-6` at effort `high` with
 adaptive thinking, Pi harness with prompt caching (`ephemeral-5m`) and
@@ -323,6 +325,76 @@ entry questions, not in Jev.
 The M3b-to-M0 comparison is refused by the report (five games against ten);
 the pooled numbers for games 1–5 are in the stage 4 table above.
 
+### Stage 5: M3 and M0 re-run with the Jev readout (`pilot-m3-v2`, `pilot-m0-v2`)
+
+Nov 7, 2026, games 1–5, both runs on `542907c` with the same prompt, so the
+report compares them directly (`harness_version_differs` is the memory
+profile, nothing else). This is the re-run the stage-4 open item asked for:
+`validate_package` now returns Jev's answers on a fixed spread of prior
+states (SPO-863), the `decision_windows` and `unanchored_substitutions`
+tables expose every released prior window (SPO-865), and the Jev section of
+the prompt tells the agent how to use both (PR #67).
+
+**The agent used the new tooling in every game.** M0: 15 `validate_package`
+calls, all with `jev: true` (3–6 samples), 46 `decision_windows` queries.
+M3: 14 calls, 9 with `jev: true`, 53 queries. Neither run queried
+`unanchored_substitutions`. The Jev calls are the reason pregame cost rose
+(M0 $3.58 per game against $2.90 in `pilot-m0-10`).
+
+| Run (games 1–5)          | Timing | Skill vs constant | Mid-period timing | Mid-period skill | Mean p / rate (mid) | Reliability / resolution | Exit log loss / MRR | Entry log loss / MRR |
+| ------------------------ | ------ | ----------------- | ----------------- | ---------------- | ------------------- | ------------------------ | ------------------- | -------------------- |
+| `pilot-m0-v2`            | .170   | .223              | .178              | .132             | .317 / .292         | .030 / .078              | 2.71 / .55          | 2.58 / .51           |
+| `pilot-m3-v2`            | .183   | .161              | .192              | .063             | .365 / .292         | .023 / .057              | 2.59 / .56          | 2.62 / .45           |
+| `pilot-m0-10`, games 1–5 | .176   | —                 | .184              | .111             | .365 / .292         | —                        | —                   | —                    |
+| `pilot-m3b`              | .179   | —                 | .187              | .084             | .383 / .292         | —                        | —                   | —                    |
+| stage 3, games 1–5       | .179   | —                 | .188              | —                | .267 / .292         | —                        | —                   | —                    |
+| statistical, games 1–5   | .197   | —                 | .191              | —                | .232 / .292         | —                        | —                   | —                    |
+| constant, games 1–5      | .220   | —                 | .207              | —                | .319 / .292         | —                        | —                   | —                    |
+
+The baseline rows are pooled by hand from `baselines-dev`'s per-game
+metrics; the report refuses to attach a ten-game baselines run to a
+five-game agent run (`decision_dataset_mismatch`), so there is no bootstrap
+interval against the baselines here.
+
+**Memory versus none, matched.** Paired bootstrap, M0 minus M3, 90 %
+intervals over games: timing −0.013 [−0.033, −0.001]; mid-period −0.014
+[−0.035, −0.002]; exit Brier +0.002 [−0.067, 0.076]; entry Brier +0.006
+[−0.037, 0.039]. Stage 4 found the opposite: M3 better than M0 by 0.014
+with an interval spanning zero. Two paired five-game comparisons, each
+about one noise-width wide and pointing in opposite directions, is the
+result: at this sample size memory has no detectable effect on timing,
+and the M3 run costs 50 % more per game. Per game, M0-v2 beat M3-v2 in four
+of five (0022500128 by 0.061, where M3's mean probability was .545 against
+a rate of .385); leaving that game out shrinks the difference to −0.004.
+M3's memory finished at 10.2k tokens, a fifth of the cap.
+
+**Calibration.** The readout narrowed the drift but did not remove it.
+M0-v2's pooled gap is +0.019 (was +0.063 for the same games in
+`pilot-m0-10`), with two games still well off: 0022500106 at .448 against
+.271 and 0022500117 at .273 against .355. M3-v2 drifted more, +0.065, with
+game 5 at .545 against .385, despite calling `validate_package` with Jev.
+By stoppage kind M0-v2 is now calibrated at fouls (.312 against .292, the
+only kind with positive skill against its own constant, +.076) and at
+timeouts (.542 against .571, skill zero), and still over-predicts dead-ball
+turnovers (.191 against .100) and jump balls. The prompt's warning that the
+validation mean is not a game-wide rate held: no agent in either run treated
+it as one, but seeing Jev's reading of a wording is evidently not enough on
+its own to make the agent lower a number it believes.
+
+**Resolution is the limit.** M0-v2 is the best five-game agent run so far
+(.170 against .176–.179 for every earlier run on these games), yet the gain
+over the previous M0 on the same games is 0.006 pooled with per-game
+differences of −.024, −.052, +.027, +.027, −.007, inside the 0.03–0.05
+run-to-run noise. Resolution rose to .078 against uncertainty .218 (mid
+.057 against .205); reliability is .030. A perfectly calibrated agent with
+this resolution would still score about .140, so the remaining headroom is
+in telling windows apart, not in the probability scale.
+
+**Player selection is unchanged.** Exit log loss 2.59–2.71 and entry
+2.58–2.62 against 1.61 and 2.20 for the uniform distribution; MRR .55–.56
+and .45–.51, still the best rankers. The overconfidence found in the
+baselines section is a prompt-side problem the new tooling does not touch.
+
 ## Jev
 
 **Determinism (double replay, Agreed Nov 4, 2026).** Game 0022500083's 66
@@ -357,8 +429,13 @@ question for the user.
 - Calibration drift in fresh sessions (stage 4): the agent cannot see how Jev
   reads its wording before the game. SPO-863 lets `validate_package` return
   Jev's answers on a spread of prior-game states (user approved Nov 7, 2026;
-  amends the brief's "without calling Jev" decision). The M0 and M3 comparison
-  should be re-run on a few games after it merges.
+  amends the brief's "without calling Jev" decision). Re-run as stage 5: the
+  drift narrowed for M0 (+0.019) and not for M3 (+0.065); the M3–M0
+  difference reversed sign against stage 4 and memory shows no detectable
+  effect on five games.
+- Player exit/entry overconfidence (baselines section, unchanged in stage
+  5): the briefing's framing of the player questions needs a prompt change
+  and a re-check before the scored run.
 - Budget profile v1 is Proposed above; the smaller- and larger-cap re-runs the
   brief asks for have not been run.
 - Price schedule is a placeholder.
