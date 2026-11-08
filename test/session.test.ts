@@ -663,3 +663,66 @@ test("default schedule is current plus next, with bounded cutoff-bound paginatio
     code("invalid_input"),
   );
 });
+
+test("a session under jev-contract-v2 accepts policy tools carrying the same swap contract", async () => {
+  const { PolicyTools } = await import("../src/policy/tools.js");
+  const { policyHarness } = await import("../src/policy/replay.js");
+  const { mkdtempSync, mkdirSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const assembler = {
+    image: "local@sha256:" + "a".repeat(64),
+    limits: { wallSeconds: 10, memoryBytes: 1 << 27, outputBytes: 100000 },
+    run: async () => ({ value: {}, stdout: "", stderr: "", durationMs: 0 }),
+  } as any;
+  const contract = {
+    version: "jev-contract-v2" as const,
+    sizePrior: [0.6, 0.4, 0, 0, 0],
+    training: [],
+  };
+  const root = mkdtempSync(join(tmpdir(), "session-swap-"));
+  mkdirSync(join(root, "workspace"));
+  const tools = (swap?: typeof contract) =>
+    new PolicyTools(
+      root,
+      join(root, "workspace"),
+      {
+        gameId: "g",
+        scheduledStart: "2025-01-05T23:00:00Z",
+        release: "2025-01-06T14:00:00Z",
+      },
+      [
+        {
+          gameId: "g",
+          scheduledStart: "2025-01-05T23:00:00Z",
+          release: "2025-01-06T14:00:00Z",
+        },
+      ],
+      assembler,
+      [],
+      () => "2025-01-05T22:00:00Z",
+      [],
+      swap,
+    );
+  const f = fixtureCorpus();
+  f.config.harness.policy = policyHarness(assembler, contract) as any;
+  const session = (swap?: typeof contract) =>
+    new Session(
+      f.config,
+      f.game,
+      "pregame",
+      f.game.scheduledStart,
+      f.source,
+      join(root, "workspace"),
+      root,
+      tools(swap),
+    );
+  // The run manifest pins the swap contract; the tools carry it; the session must accept them.
+  assert.ok(session(contract));
+  // Tools without the contract (or with a different prior) are a real mismatch.
+  assert.throws(() => session(undefined), /Policy tools harness mismatch/);
+  assert.throws(
+    () => session({ ...contract, sizePrior: [1, 0, 0, 0, 0] }),
+    /Policy tools harness mismatch/,
+  );
+});
