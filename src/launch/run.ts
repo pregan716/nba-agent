@@ -1,3 +1,4 @@
+import { pinSwapContract } from "../replay/swap.js";
 import { join } from "node:path";
 import type { SessionSource } from "../env/source.js";
 import { sessionEnvironment } from "../env/session.js";
@@ -18,7 +19,7 @@ import {
   replayPolicy,
 } from "../policy/replay.js";
 import { replay, type ReplayManifest } from "../replay/run.js";
-import { fitBaselines } from "../replay/baselines.js";
+import { fitBaselines, fitSwapBaselines } from "../replay/baselines.js";
 import { REPLAY_VERSIONS, type DecisionDataset } from "../replay/types.js";
 
 /** Pilot and scored runs use the v3 research prompts (SPO-855). Scored runs stay
@@ -97,7 +98,10 @@ function replayManifest(
     releaseManifestSha256: dataset.release.sha256,
     datasetVersion: dataset.version,
     datasets: [{ gameId: dataset.gameId, inputHash: dataset.inputHash }],
-    harness: { ...REPLAY_VERSIONS, policy: policyHarness(assembler) },
+    harness: {
+      ...REPLAY_VERSIONS,
+      policy: policyHarness(assembler, config.harness.policy?.swapContract),
+    },
     predictors,
     codeRevision: config.codeRevision,
     ...(config.replay?.jevContaminationProbe
@@ -137,7 +141,10 @@ export function chronologicalRunner(options: {
     digest(replayDescriptor(datasets).datasets)
   )
     throw Error("Decision datasets differ from run manifest");
-  if (digest(config.harness.policy) !== digest(policyHarness(assembler)))
+  if (
+    digest(config.harness.policy) !==
+    digest(policyHarness(assembler, config.harness.policy?.swapContract))
+  )
     throw Error("Assembler differs from run manifest");
   if (config.replay?.mode !== "variant")
     throw Error("Variant replay mode required");
@@ -163,6 +170,7 @@ export function chronologicalRunner(options: {
       ),
       () => cutoff,
       options.validationSamples ?? [],
+      config.harness.policy?.swapContract,
     );
   const environment = sessionEnvironment(config, source, {
     policy: (context, trusted) =>
@@ -195,7 +203,12 @@ export function chronologicalRunner(options: {
         replayManifest(dataset, config, assembler, {
           variant: {
             id: predictorId,
-            policy: policyVersion(assembler, receipt, config.codeRevision),
+            policy: policyVersion(
+              assembler,
+              receipt,
+              config.codeRevision,
+              config.harness.policy?.swapContract,
+            ),
           },
         }),
       );
@@ -212,6 +225,7 @@ export function chronologicalRunner(options: {
         signal: new AbortController().signal,
         releaseAt: game.release,
         codeRevision: config.codeRevision,
+        swapContract: config.harness.policy?.swapContract,
         ...(!receipt
           ? { invalidPackage: "Pregame ended without a frozen package" }
           : {}),
@@ -255,7 +269,10 @@ export async function runBaselines(options: {
     throw Error("Baseline datasets differ from run manifest");
   if (config.replay?.mode !== "baselines")
     throw Error("Baseline replay mode required");
-  if (digest(config.harness.policy) !== digest(policyHarness(assembler)))
+  if (
+    digest(config.harness.policy) !==
+    digest(policyHarness(assembler, config.harness.policy?.swapContract))
+  )
     throw Error("Assembler differs from baseline manifest");
   const m = manifest(config, options.schedule);
   const priorTraining = options.priorTraining ?? [];
@@ -301,7 +318,15 @@ export async function runBaselines(options: {
     throw Error(
       "Baseline training requires ten warm-up and 82 prior-season games",
     );
-  const fitted = fitBaselines(training, allTraining);
+  if (
+    config.harness.policy?.swapContract &&
+    digest(config.harness.policy.swapContract) !==
+      digest(pinSwapContract(training))
+  )
+    throw Error("Swap prior differs from warm-up datasets");
+  const fitted = config.harness.policy?.swapContract
+    ? fitSwapBaselines(training, allTraining)
+    : fitBaselines(training, allTraining);
   for (const dataset of datasets) {
     const predictors: ReplayManifest["predictors"] = Object.fromEntries(
       Object.entries(fitted).map(([name, b]) => [
@@ -311,7 +336,12 @@ export async function runBaselines(options: {
     );
     predictors.generic = {
       id: "generic-jev",
-      policy: policyVersion(assembler, null, config.codeRevision),
+      policy: policyVersion(
+        assembler,
+        null,
+        config.codeRevision,
+        config.harness.policy?.swapContract,
+      ),
     };
     const view = replayRecord(
       record,
@@ -333,6 +363,7 @@ export async function runBaselines(options: {
       signal: new AbortController().signal,
       releaseAt: m.games.find((g) => g.gameId === dataset.gameId)!.release,
       codeRevision: config.codeRevision,
+      swapContract: config.harness.policy?.swapContract,
     });
   }
 }

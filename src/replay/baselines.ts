@@ -1,3 +1,4 @@
+import { pinSwapContract, candidateKey, combinations } from "./swap.js";
 import { digest } from "../runner/config.js";
 import { uniform } from "./contract.js";
 import {
@@ -146,4 +147,95 @@ export function fitBaselines(
       },
     },
   };
+}
+
+/** Set candidates use the legacy hazard and rank weights, normalized within size.
+ * Sizes 3–5 remain entirely in other; the expansion prior is pinned separately. */
+export function fitSwapBaselines(warmup: DecisionDataset[], training = warmup) {
+  const old = fitBaselines(warmup, training),
+    contract = pinSwapContract(warmup);
+  const entryRanking = "rested-first-never-played-last-v1";
+  const sizeCounts = [0, 0, 0, 0, 0];
+  for (const d of training)
+    for (const w of d.windows)
+      if (!w.exclusions.length && w.state && w.actual?.players_out.length)
+        sizeCounts[w.actual.players_out.length - 1]++;
+  const total = sizeCounts.reduce((a, b) => a + b, 0),
+    prior = sizeCounts.map((n) => n / total);
+  return Object.fromEntries(
+    Object.entries(old).map(([name, b]) => [
+      name,
+      {
+        ...b,
+        id: `${name}-v2:${digest({ old: b.id, contract, prior, ...(name === "statistical" ? { entryRanking } : {}) })}`,
+        parameters: {
+          ...(name === "statistical" ? { entryRanking } : {}),
+          legacy: b.parameters,
+          swapContract: contract,
+          sizePrior: prior,
+        },
+        predict: (s: ObservableState) => {
+          const p = b.predict(s);
+          if (name === "constant")
+            return {
+              substitution: p.substitution,
+              swap: { type: "choice", probabilities: { other: 1 } },
+              candidates: [],
+              degenerate: true,
+            };
+          p.entry.probabilities = ranked(
+            s.eligibleBench,
+            (id) =>
+              s.players.find((player) => player.playerId === id)!.restMs ?? -1,
+          );
+          const feasible = prior.map((v, i) =>
+              i < Math.min(5, s.eligibleBench.length) ? v : 0,
+            ),
+            z = feasible.reduce((a, b) => a + b, 0);
+          const candidates = [1, 2]
+            .filter((k) => s.eligibleBench.length >= k)
+            .flatMap((k) => {
+              const sets = combinations(s.celtics, k).flatMap((out) =>
+                combinations(s.eligibleBench, k).map((inside) => ({
+                  out,
+                  in: inside,
+                })),
+              );
+              const weights = sets.map(
+                (c) =>
+                  c.out.reduce((a, id) => a * p.exit.probabilities[id], 1) *
+                  c.in.reduce((a, id) => a * p.entry.probabilities[id], 1),
+              );
+              const sum = weights.reduce((a, b) => a + b, 0);
+              return sets.map((c, i) => ({
+                c,
+                key: candidateKey(c),
+                p:
+                  ((z
+                    ? feasible[k - 1] / z
+                    : 1 / Math.min(5, s.eligibleBench.length)) *
+                    weights[i]) /
+                  sum,
+              }));
+            })
+            .sort((a, b) => b.p - a.p || a.key.localeCompare(b.key))
+            .slice(0, 8);
+          return {
+            substitution: p.substitution,
+            candidates: candidates.map((x) => x.c),
+            swap: {
+              type: "choice",
+              probabilities: {
+                ...Object.fromEntries(candidates.map((x) => [x.key, x.p])),
+                other: Math.max(0, 1 - candidates.reduce((a, x) => a + x.p, 0)),
+              },
+            },
+          };
+        },
+      },
+    ]),
+  ) as Record<
+    "constant" | "statistical",
+    Omit<Baseline, "predict"> & { predict: (s: ObservableState) => unknown }
+  >;
 }

@@ -67,6 +67,7 @@ function readPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
       questions: preview(w.assembly?.request?.questions),
       answers: preview(w.result.raw),
       validation: preview(w.result.validation),
+      ...(w.result.validation?.swap ? { swap: w.result.validation.swap } : {}),
       actual: w.result.window.actual,
       scores: w.result.scores,
       failure: w.result.failure,

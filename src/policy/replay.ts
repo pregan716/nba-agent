@@ -1,3 +1,9 @@
+import { type SwapContract } from "../replay/swap.js";
+import {
+  swapAssemblySchema,
+  buildSwapRequest,
+  genericSwapAssembly,
+} from "./request.js";
 import { ZodError } from "zod";
 import { PackageExecutionError } from "./errors.js";
 import { JevHttpError } from "../runner/jev.js";
@@ -36,9 +42,13 @@ import {
   JEV_SETTINGS,
   mapJevAnswers,
 } from "./request.js";
-export function policyHarness(assembler: Assembler) {
+export function policyHarness(
+  assembler: Assembler,
+  swapContract?: SwapContract,
+) {
   return {
     api: "assemble-v1",
+    ...(swapContract ? { swapContract } : {}),
     assemblerImage: assembler.image,
     limits: assembler.limits,
     jev: JEV_SETTINGS,
@@ -49,9 +59,11 @@ export function policyVersion(
   assembler: Assembler,
   receipt: PackageReceipt | null,
   codeRevision: string,
+  swapContract?: SwapContract,
 ) {
   return {
     api: "assemble-v1",
+    ...(swapContract ? { swapContract } : {}),
     replay: REPLAY_VERSIONS,
     image: assembler.image,
     limits: assembler.limits,
@@ -72,6 +84,7 @@ export async function assembleRequest(
   signal: AbortSignal,
   // Validation returns oversized drafts with a guard error; replay stays guarded.
   validationOnly = false,
+  swapContract?: SwapContract,
 ) {
   const hashes = Object.fromEntries(
     [...packageFiles(path).files].map(([k, v]) => [k, sha256(v)]),
@@ -84,6 +97,7 @@ export async function assembleRequest(
     image: assembler.image,
     limits: assembler.limits,
     api: "assemble-v1",
+    ...(swapContract ? { swapContract } : {}),
     ...(validationOnly ? { validationOnly: true } : {}),
   };
   const key = digest(canonicalJson(identity)),
@@ -114,12 +128,17 @@ export async function assembleRequest(
   const a = await execute(),
     b = await execute();
   signal.throwIfAborted();
-  const assembly = assemblySchema.parse(a.value);
-  if (canonicalJson(assembly) !== canonicalJson(assemblySchema.parse(b.value)))
+  const schema = swapContract ? swapAssemblySchema : assemblySchema;
+  const assembly = schema.parse(a.value);
+  if (canonicalJson(assembly) !== canonicalJson(schema.parse(b.value)))
     throw new PackageExecutionError("Nondeterministic assembler output");
   const result = {
     assembly,
-    request: buildJevRequest(assembly, state, !validationOnly),
+    request: (swapContract ? buildSwapRequest : buildJevRequest)(
+      assembly,
+      state,
+      !validationOnly,
+    ),
   };
   mkdirSync(cache, { recursive: true });
   const temporary = target + "." + randomUUID();
@@ -151,15 +170,21 @@ export async function replayPolicy(options: {
   releaseAt: string;
   codeRevision: string;
   invalidPackage?: string;
+  swapContract?: SwapContract;
 }) {
   const { dataset, record, proxy, assembler, receipt, predictorId, signal } =
     options;
   signal.throwIfAborted();
-  const version = policyVersion(assembler, receipt, options.codeRevision);
+  const version = policyVersion(
+    assembler,
+    receipt,
+    options.codeRevision,
+    options.swapContract,
+  );
   const manifest = record.events("manifest")[0].data;
   if (
     canonicalJson(manifest.harness.policy) !==
-    canonicalJson(policyHarness(assembler))
+    canonicalJson(policyHarness(assembler, options.swapContract))
   )
     throw Error("Assembler harness mismatch");
   const configured = manifest.predictors;
@@ -206,10 +231,16 @@ export async function replayPolicy(options: {
               state,
               join(record.root, "assembly-cache"),
               signal,
+              false,
+              options.swapContract,
             )
           : {
-              assembly: genericAssembly(state),
-              request: buildJevRequest(genericAssembly(state), state),
+              assembly: options.swapContract
+                ? genericSwapAssembly(state)
+                : genericAssembly(state),
+              request: options.swapContract
+                ? buildSwapRequest(genericSwapAssembly(state), state)
+                : buildJevRequest(genericAssembly(state), state),
               computeSeconds: 0,
               cacheHit: false,
             };
@@ -239,7 +270,14 @@ export async function replayPolicy(options: {
             ? received
             : await proxy.jev(assembled.request, record, callScope, signal);
         signal.throwIfAborted();
-        const answers = mapJevAnswers(response.response?.answers);
+        const mapped = mapJevAnswers(response.response?.answers);
+        const answers = options.swapContract
+          ? {
+              substitution: (mapped as any)?.substitution,
+              swap: (mapped as any)?.swap,
+              candidates: assembled.assembly.candidates,
+            }
+          : mapped;
         record.append("policy_prediction", callScope, {
           answers: answers ?? null,
           failure: null,

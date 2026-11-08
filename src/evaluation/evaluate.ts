@@ -20,6 +20,13 @@ const addedScores = [
 ];
 const addedSummary = [
   ...addedScores,
+  "setLogLoss",
+  "setLogLossClips",
+  "candidateHitRate",
+  "setTop1",
+  "meanCandidates",
+  "otherMass",
+  "setN",
   "n",
   "playerN",
   "timingConstantBrier",
@@ -35,12 +42,27 @@ const addedSummary = [
 ];
 function matchesRecorded(current: any, stored: any, additions: string[]) {
   if (!current || !stored) return canonical(current) === canonical(stored);
-  const projected = { ...current };
-  for (const key of additions)
-    if (!Object.hasOwn(stored, key)) delete projected[key];
-  return canonical(projected) === canonical(stored);
+  const project = (value: any, saved: any): any => {
+    if (Array.isArray(value))
+      return value.map((v, i) => project(v, saved?.[i]));
+    if (!value || typeof value !== "object") return value;
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(
+          ([key]) =>
+            !additions.includes(key) || Object.hasOwn(saved ?? {}, key),
+        )
+        .map(([key, v]) => [key, project(v, saved?.[key])]),
+    );
+  };
+  return canonical(project(current, stored)) === canonical(stored);
 }
-export const PRIMARY = ["timingBrier", "exitBrier", "entryBrier"] as const;
+export const PRIMARY = [
+  "timingBrier",
+  "exitBrier",
+  "entryBrier",
+  "setLogLoss",
+] as const;
 export type Metric = (typeof PRIMARY)[number];
 export type Tag = "development" | "warm-up" | "scored" | "holdout";
 export interface GameInfo {
@@ -229,6 +251,8 @@ export interface EvaluatedRun {
     codeRevision: string | null;
     dataset: any;
     state: any;
+    jevContract?: string;
+    swapContract?: unknown;
     jev: any;
     games: GameInfo[];
     selectedGames: string[];
@@ -387,10 +411,18 @@ export function evaluateRecord(
             m.config.profile.modelRoles.jev !== jevSettings?.model)
         )
           throw new EvaluationError("jev_model_or_settings_mismatch", key);
+        if (
+          canonical(rm.harness.policy?.swapContract) !==
+          canonical(
+            (m.config?.harness?.policy ?? m.harness?.policy)?.swapContract,
+          )
+        )
+          throw new EvaluationError("jev_contract_mismatch", key);
         const recomputed = scoreWindow(
           stored.window,
           stored.raw,
           stored.failure,
+          rm.harness.policy?.swapContract,
         );
         if (
           !matchesRecorded(recomputed.scores, stored.scores, addedScores) ||
@@ -493,6 +525,12 @@ export function evaluateRecord(
           codeRevision: m.config?.codeRevision ?? m.codeRevision ?? null,
           dataset,
           state: replayVersions.state,
+          jevContract:
+            (m.config?.harness?.policy ?? m.harness?.policy)?.swapContract
+              ?.version ?? "prediction-v1",
+          swapContract:
+            (m.config?.harness?.policy ?? m.harness?.policy)?.swapContract ??
+            null,
           jev,
           games,
           selectedGames: [...selected].sort(),

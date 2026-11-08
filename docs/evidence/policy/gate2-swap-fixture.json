@@ -1,0 +1,754 @@
+{
+  "codeRevision": "1af397ea4b265cdc93a961adefefe3876468dad8",
+  "swapContract": {
+    "version": "jev-contract-v2",
+    "sizePrior": [
+      0.631578947368421,
+      0.2789473684210526,
+      0.05789473684210526,
+      0.02631578947368421,
+      0.005263157894736842
+    ],
+    "training": [
+      {
+        "gameId": "0022500049",
+        "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+      },
+      {
+        "gameId": "0022500060",
+        "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+      },
+      {
+        "gameId": "0022500193",
+        "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+      },
+      {
+        "gameId": "0022500209",
+        "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+      },
+      {
+        "gameId": "0022500216",
+        "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+      },
+      {
+        "gameId": "0022500233",
+        "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+      },
+      {
+        "gameId": "0022500250",
+        "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+      },
+      {
+        "gameId": "0022500277",
+        "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+      },
+      {
+        "gameId": "0022500293",
+        "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+      },
+      {
+        "gameId": "0022500302",
+        "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+      }
+    ]
+  },
+  "live": false,
+  "gameId": "0022500083",
+  "release": {
+    "bucket": "sports-nba-data",
+    "key": "nba/releases/spo-839-full-v1-2025-26/manifest.json",
+    "sha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+    "bytes": 2386079
+  },
+  "datasetVersion": "windows-v2:04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+  "inputHash": "07f1c02cdcad3ab6db40f7512a6858da82b4fe6bb39fa9dfbd9f7cb0ebf8d025",
+  "versions": {
+    "handwritten": {
+      "api": "assemble-v1",
+      "swapContract": {
+        "version": "jev-contract-v2",
+        "sizePrior": [
+          0.631578947368421,
+          0.2789473684210526,
+          0.05789473684210526,
+          0.02631578947368421,
+          0.005263157894736842
+        ],
+        "training": [
+          {
+            "gameId": "0022500049",
+            "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+          },
+          {
+            "gameId": "0022500060",
+            "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+          },
+          {
+            "gameId": "0022500193",
+            "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+          },
+          {
+            "gameId": "0022500209",
+            "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+          },
+          {
+            "gameId": "0022500216",
+            "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+          },
+          {
+            "gameId": "0022500233",
+            "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+          },
+          {
+            "gameId": "0022500250",
+            "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+          },
+          {
+            "gameId": "0022500277",
+            "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+          },
+          {
+            "gameId": "0022500293",
+            "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+          },
+          {
+            "gameId": "0022500302",
+            "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+          }
+        ]
+      },
+      "replay": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "image": "local@sha256:22540ab4b00142daca3bb5dc1619770223eb161836cbd2af8b77dcb345b1d0b9",
+      "limits": {
+        "wallSeconds": 15,
+        "memoryBytes": 134217728,
+        "outputBytes": 256000
+      },
+      "jev": {
+        "model": "jev-1.14.0",
+        "inputUsdPerMillion": 0.042,
+        "retries": 1,
+        "maxRetryAfterMs": 60000,
+        "perQuestionTokens": 32000,
+        "contextGuard": "utf8-bytes-plus-1024-v1",
+        "requestTokens": 64000,
+        "answerMapping": "score-index-v1"
+      },
+      "package": {
+        "gameId": "0022500083",
+        "packageHash": "57f5d81c4ed9896d6575184be3983b56676ec27d2af28828859478ad0c595054",
+        "manifestHash": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650",
+        "stateVersion": "state-v1",
+        "files": {
+          "__pycache__/assemble.cpython-314.pyc": "c8734212140f33b1eeb5c563d321f5c2216e959c9138f2d9f046edb8dee234ae",
+          "assemble.py": "b11c2385a2189daca1df092dbf03169076c3669b5f16f846f4ddd2c88ddf88e3",
+          "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+          "manifest.json": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650"
+        }
+      },
+      "codeRevision": "1af397ea4b265cdc93a961adefefe3876468dad8",
+      "baseline": null,
+      "determinism": "double-run-and-content-cache-v1"
+    },
+    "generic": {
+      "api": "assemble-v1",
+      "swapContract": {
+        "version": "jev-contract-v2",
+        "sizePrior": [
+          0.631578947368421,
+          0.2789473684210526,
+          0.05789473684210526,
+          0.02631578947368421,
+          0.005263157894736842
+        ],
+        "training": [
+          {
+            "gameId": "0022500049",
+            "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+          },
+          {
+            "gameId": "0022500060",
+            "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+          },
+          {
+            "gameId": "0022500193",
+            "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+          },
+          {
+            "gameId": "0022500209",
+            "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+          },
+          {
+            "gameId": "0022500216",
+            "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+          },
+          {
+            "gameId": "0022500233",
+            "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+          },
+          {
+            "gameId": "0022500250",
+            "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+          },
+          {
+            "gameId": "0022500277",
+            "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+          },
+          {
+            "gameId": "0022500293",
+            "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+          },
+          {
+            "gameId": "0022500302",
+            "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+          }
+        ]
+      },
+      "replay": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "image": "local@sha256:22540ab4b00142daca3bb5dc1619770223eb161836cbd2af8b77dcb345b1d0b9",
+      "limits": {
+        "wallSeconds": 15,
+        "memoryBytes": 134217728,
+        "outputBytes": 256000
+      },
+      "jev": {
+        "model": "jev-1.14.0",
+        "inputUsdPerMillion": 0.042,
+        "retries": 1,
+        "maxRetryAfterMs": 60000,
+        "perQuestionTokens": 32000,
+        "contextGuard": "utf8-bytes-plus-1024-v1",
+        "requestTokens": 64000,
+        "answerMapping": "score-index-v1"
+      },
+      "package": null,
+      "codeRevision": "1af397ea4b265cdc93a961adefefe3876468dad8",
+      "baseline": "generic-jev-v1",
+      "determinism": "double-run-and-content-cache-v1"
+    }
+  },
+  "package": {
+    "gameId": "0022500083",
+    "packageHash": "57f5d81c4ed9896d6575184be3983b56676ec27d2af28828859478ad0c595054",
+    "manifestHash": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650",
+    "stateVersion": "state-v1",
+    "files": {
+      "__pycache__/assemble.cpython-314.pyc": "c8734212140f33b1eeb5c563d321f5c2216e959c9138f2d9f046edb8dee234ae",
+      "assemble.py": "b11c2385a2189daca1df092dbf03169076c3669b5f16f846f4ddd2c88ddf88e3",
+      "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+      "manifest.json": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650"
+    }
+  },
+  "probe": {
+    "contract": "jev-contract-v2",
+    "request": {
+      "model": "jev-1.14.0",
+      "state": "Contract-shape probe: players 100–104 are on court; 200 and 201 are eligible bench players.",
+      "questions": {
+        "swap": {
+          "type": "choice",
+          "instructions": "Conditional on a substitution, assign probabilities to these eight candidate swaps and other.",
+          "criteria": {
+            "out:100|in:200": "out:100|in:200",
+            "out:100|in:201": "out:100|in:201",
+            "out:101|in:200": "out:101|in:200",
+            "out:101|in:201": "out:101|in:201",
+            "out:102|in:200": "out:102|in:200",
+            "out:102|in:201": "out:102|in:201",
+            "out:103|in:200": "out:103|in:200",
+            "out:103|in:201": "out:103|in:201",
+            "other": "Any unlisted legal swap."
+          }
+        }
+      }
+    },
+    "response": {
+      "response": {
+        "model": "jev-1.14.0",
+        "answers": {
+          "swap": {
+            "type": "choice",
+            "probabilities": {
+              "out:100|in:200": 0.1111111111111111,
+              "out:100|in:201": 0.1111111111111111,
+              "out:101|in:200": 0.1111111111111111,
+              "out:101|in:201": 0.1111111111111111,
+              "out:102|in:200": 0.1111111111111111,
+              "out:102|in:201": 0.1111111111111111,
+              "out:103|in:200": 0.1111111111111111,
+              "out:103|in:201": 0.1111111111111111,
+              "other": 0.1111111111111111
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "usd": 0,
+      "latencyMs": 0.5989999999983411,
+      "attempt": 0,
+      "modelValid": true,
+      "usageValid": true
+    },
+    "expectedKeys": [
+      "other",
+      "out:100|in:200",
+      "out:100|in:201",
+      "out:101|in:200",
+      "out:101|in:201",
+      "out:102|in:200",
+      "out:102|in:201",
+      "out:103|in:200",
+      "out:103|in:201"
+    ],
+    "returnedKeys": [
+      "other",
+      "out:100|in:200",
+      "out:100|in:201",
+      "out:101|in:200",
+      "out:101|in:201",
+      "out:102|in:200",
+      "out:102|in:201",
+      "out:103|in:200",
+      "out:103|in:201"
+    ],
+    "valid": true
+  },
+  "reports": [
+    {
+      "predictorId": "handwritten",
+      "summary": {
+        "n": 66,
+        "timingBrier": 0.25,
+        "timingConstantBrier": 0.22704315886134066,
+        "timingSkillVsConstant": -0.10111223458038432,
+        "timingSkillVsConstantReason": null,
+        "timingSkillVsStatistical": null,
+        "timingSkillVsStatisticalReason": "baseline_not_supplied",
+        "meanPredicted": 0.5,
+        "observedRate": 0.3484848484848485,
+        "brierDecomposition": {
+          "bins": 10,
+          "pooling": "window-weighted within-game deciles",
+          "reliability": 0.022956841138659312,
+          "resolution": 0,
+          "uncertainty": 0.22704315886134066,
+          "binningError": 0
+        },
+        "setLogLoss": 5.628380749551936,
+        "setLogLossClips": 5,
+        "candidateHitRate": 0.043478260869565216,
+        "setTop1": 0,
+        "meanCandidates": 2,
+        "otherMass": 0.3333333333333332,
+        "setN": 23,
+        "playerN": 23,
+        "exitBrier": 0.30500410928562227,
+        "entryBrier": 0.11322015569056543,
+        "exitTop1": 0.13043478260869565,
+        "entryTop1": 0.2608695652173913,
+        "exitTopK": 0.043478260869565216,
+        "entryTopK": 0.2608695652173913,
+        "exitLogLoss": 2.3388195966387735,
+        "entryLogLoss": 2.0863469193670716,
+        "exitMRR": 0.3518115942028985,
+        "entryMRR": 0.5198067632850242,
+        "exitLogLossClips": 0,
+        "entryLogLossClips": 0,
+        "midPeriod": {
+          "n": 63,
+          "timingBrier": 0.25,
+          "timingConstantBrier": 0.21667926429831194,
+          "timingSkillVsConstant": -0.1537790697674417,
+          "timingSkillVsConstantReason": null,
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": 0.5,
+          "observedRate": 0.31746031746031744,
+          "brierDecomposition": {
+            "bins": 10,
+            "pooling": "window-weighted within-game deciles",
+            "reliability": 0.03332073570168809,
+            "resolution": 0,
+            "uncertainty": 0.21667926429831194,
+            "binningError": -5.551115123125783e-17
+          },
+          "setLogLoss": 5.572537231574538,
+          "setLogLossClips": 4,
+          "candidateHitRate": 0.05,
+          "setTop1": 0,
+          "meanCandidates": 2,
+          "otherMass": 0.3333333333333332,
+          "setN": 20,
+          "playerN": 20,
+          "exitBrier": 0.3001107072310723,
+          "entryBrier": 0.11257940328071792,
+          "exitTop1": 0.15,
+          "entryTop1": 0.25,
+          "exitTopK": 0.05,
+          "entryTopK": 0.25,
+          "exitLogLoss": 2.3818294822886736,
+          "entryLogLoss": 2.1538305660765,
+          "exitMRR": 0.34708333333333335,
+          "entryMRR": 0.5047222222222223,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0
+        },
+        "byStoppage": {
+          "between_periods": {
+            "n": 3,
+            "timingBrier": 0.25,
+            "timingConstantBrier": 0,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "zero_reference_loss",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5,
+            "observedRate": 1,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.25,
+              "resolution": 0,
+              "uncertainty": 0,
+              "binningError": 0
+            },
+            "setLogLoss": 6.000670869401262,
+            "setLogLossClips": 1,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.3333333333333333,
+            "setN": 3,
+            "playerN": 3,
+            "exitBrier": 0.33762678964928866,
+            "entryBrier": 0.11749183842288209,
+            "exitTop1": 0,
+            "entryTop1": 0.3333333333333333,
+            "exitTopK": 0,
+            "entryTopK": 0.3333333333333333,
+            "exitLogLoss": 2.0520870256394406,
+            "entryLogLoss": 1.6364559413042141,
+            "exitMRR": 0.3833333333333333,
+            "entryMRR": 0.6203703703703703,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "dead_ball_turnover": {
+            "n": 7,
+            "timingBrier": 0.25,
+            "timingConstantBrier": 0.12244897959183675,
+            "timingSkillVsConstant": -1.0416666666666665,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5,
+            "observedRate": 0.14285714285714285,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.12755102040816327,
+              "resolution": 0,
+              "uncertainty": 0.12244897959183675,
+              "binningError": 0
+            },
+            "setLogLoss": 1.0986122886681098,
+            "setLogLossClips": 0,
+            "candidateHitRate": 1,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.3333333333333333,
+            "setN": 1,
+            "playerN": 1,
+            "exitBrier": 0.054896807438144554,
+            "entryBrier": 0.022491301860915882,
+            "exitTop1": 1,
+            "entryTop1": 1,
+            "exitTopK": 1,
+            "entryTopK": 1,
+            "exitLogLoss": 0.6746672379646248,
+            "entryLogLoss": 0.7492121192018677,
+            "exitMRR": 1,
+            "entryMRR": 1,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "foul": {
+            "n": 43,
+            "timingBrier": 0.25,
+            "timingConstantBrier": 0.20118983234180637,
+            "timingSkillVsConstant": -0.2426075268817205,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5,
+            "observedRate": 0.27906976744186046,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.04881016765819362,
+              "resolution": 0,
+              "uncertainty": 0.20118983234180637,
+              "binningError": 0
+            },
+            "setLogLoss": 5.86299438109024,
+            "setLogLossClips": 3,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.3333333333333333,
+            "setN": 12,
+            "playerN": 12,
+            "exitBrier": 0.3067890698041717,
+            "entryBrier": 0.11875594688188117,
+            "exitTop1": 0.16666666666666666,
+            "entryTop1": 0.25,
+            "exitTopK": 0,
+            "entryTopK": 0.25,
+            "exitLogLoss": 2.3984492165147326,
+            "entryLogLoss": 2.2575436374830087,
+            "exitMRR": 0.3354166666666667,
+            "entryMRR": 0.4787037037037037,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "jump_ball": {
+            "n": 4,
+            "timingBrier": 0.25,
+            "timingConstantBrier": 0.1875,
+            "timingSkillVsConstant": -0.33333333333333326,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5,
+            "observedRate": 0.25,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.0625,
+              "resolution": 0,
+              "uncertainty": 0.1875,
+              "binningError": 0
+            },
+            "setLogLoss": 5.547128664610824,
+            "setLogLossClips": 0,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.3333333333333333,
+            "setN": 1,
+            "playerN": 1,
+            "exitBrier": 0.31993627313334794,
+            "entryBrier": 0.14296378626782652,
+            "exitTop1": 0,
+            "entryTop1": 0,
+            "exitTopK": 0,
+            "entryTopK": 0,
+            "exitLogLoss": 2.701926248867476,
+            "entryLogLoss": 3.490383609231746,
+            "exitMRR": 0.3333333333333333,
+            "entryMRR": 0.3333333333333333,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "timeout": {
+            "n": 8,
+            "timingBrier": 0.25,
+            "timingConstantBrier": 0.1875,
+            "timingSkillVsConstant": -0.33333333333333326,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5,
+            "observedRate": 0.75,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.0625,
+              "resolution": 0,
+              "uncertainty": 0.1875,
+              "binningError": 0
+            },
+            "setLogLoss": 5.7415118508548275,
+            "setLogLossClips": 1,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.3333333333333333,
+            "setN": 6,
+            "playerN": 6,
+            "exitBrier": 0.32431870439998217,
+            "entryBrier": 0.11017693581717365,
+            "exitTop1": 0,
+            "entryTop1": 0.16666666666666666,
+            "exitTopK": 0,
+            "entryTopK": 0.16666666666666666,
+            "exitLogLoss": 2.579767593460764,
+            "entryLogLoss": 1.9577486572167129,
+            "exitMRR": 0.2638888888888889,
+            "entryMRR": 0.5027777777777778,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "violation": {
+            "n": 1,
+            "timingBrier": 0.25,
+            "timingConstantBrier": 0,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "zero_reference_loss",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5,
+            "observedRate": 0,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.25,
+              "resolution": 0,
+              "uncertainty": 0,
+              "binningError": 0
+            },
+            "setLogLoss": null,
+            "setLogLossClips": 0,
+            "candidateHitRate": null,
+            "setTop1": null,
+            "meanCandidates": null,
+            "otherMass": null,
+            "setN": 0,
+            "playerN": 0,
+            "exitBrier": null,
+            "entryBrier": null,
+            "exitTop1": null,
+            "entryTop1": null,
+            "exitTopK": null,
+            "entryTopK": null,
+            "exitLogLoss": null,
+            "entryLogLoss": null,
+            "exitMRR": null,
+            "entryMRR": null,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          }
+        },
+        "windows": 75,
+        "eligible": 66,
+        "scored": 66,
+        "actualSubstitutions": 23,
+        "excluded": {
+          "ambiguous_equal_clock_run": 7,
+          "ambiguous_stoppage": 9,
+          "multiple_whistles": 7
+        },
+        "informational": {},
+        "failures": {},
+        "providerFailureRate": 0,
+        "providerFailureFlag": false,
+        "invalidQuestions": {},
+        "invalidActions": 0,
+        "timingLogLoss": 0.6931471805599453,
+        "clipped": 0,
+        "precision": 0.3484848484848485,
+        "recall": 1,
+        "exactAction": 0,
+        "partialOverlap": 0.07110389610389611,
+        "calibration": [
+          {
+            "lower": 0,
+            "upper": 0.1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 66,
+            "predicted": 0.5,
+            "observed": 0.3484848484848485
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.9,
+            "upper": 1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          }
+        ],
+        "assertedEstimates": 0,
+        "jevAgreementWithDiagnostics": null
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "usd": 0,
+        "latencyMs": 54.53812200003085
+      },
+      "windows": 75
+    }
+  ]
+}

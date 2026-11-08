@@ -1,3 +1,4 @@
+import { validateSwap, type SwapContract } from "../replay/swap.js";
 import { validateInput } from "../env/input.js";
 import { contextGuard, mapJevAnswers } from "./request.js";
 import { validatePrediction } from "../replay/contract.js";
@@ -58,6 +59,7 @@ export class PolicyTools {
     readonly samples: Candidate[],
     private clock: () => string,
     readonly fallbackSamples: ValidationSample[] = [],
+    readonly swapContract?: SwapContract,
   ) {
     if (
       new Set(schedule.map((g) => g.gameId)).size !== schedule.length ||
@@ -205,6 +207,7 @@ export class PolicyTools {
             join(temporary.root, "cache"),
             deadline,
             true,
+            this.swapContract,
           );
           output.request = result.request;
           output.diagnostics = result.assembly.diagnostics;
@@ -213,10 +216,20 @@ export class PolicyTools {
             if (!jev) throw Error("Jev validation provider unavailable");
             const raw = mapJevAnswers(await jev(result.request, deadline));
             deadline.throwIfAborted();
-            const checked = validatePrediction(raw, sample.state);
+            const checked = this.swapContract
+              ? validateSwap(
+                  {
+                    ...(raw as object),
+                    candidates: result.assembly.candidates,
+                  },
+                  sample.state,
+                  this.swapContract,
+                )
+              : validatePrediction(raw, sample.state);
             if (Object.values(checked.questions).some((q) => !q.valid))
               throw Error("Invalid Jev validation answers");
             output.answers = raw;
+            if (checked.swap) output.derived = checked.swap;
             answered.push({
               type: stoppageType(sample.state),
               p: checked.answers.substitution.noul,

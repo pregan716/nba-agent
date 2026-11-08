@@ -1,3 +1,8 @@
+import {
+  candidateReasons,
+  candidateKey,
+  type CandidateSet,
+} from "../replay/swap.js";
 import { PackageExecutionError, UnsupportedDecisionState } from "./errors.js";
 import { z } from "zod";
 import { canonicalJson } from "../env/tools.js";
@@ -155,5 +160,100 @@ export function genericAssembly(state: ObservableState): Assembly {
       ),
     },
     diagnostics: { baseline: "generic-jev-v1" },
+  };
+}
+
+export const swapAssemblySchema = z.strictObject({
+  jev_state: z.string(),
+  instructions: z.strictObject({
+    substitution: z.string(),
+    swap: z.string().optional(),
+  }),
+  criteria: z.strictObject({
+    substitution: z.strictObject({ true: z.string(), false: z.string() }),
+    swap: strings.optional(),
+  }),
+  candidates: z.unknown().optional(),
+  diagnostics: z.record(z.string(), z.json()),
+});
+export function buildSwapRequest(
+  raw: unknown,
+  state: ObservableState,
+  guard = true,
+): JevRequest {
+  const a = swapAssemblySchema.parse(raw),
+    reasons = candidateReasons(a.candidates, state);
+  if (reasons.length) throw new PackageExecutionError(reasons.join(", "), true);
+  const candidates = a.candidates as CandidateSet[],
+    keys = candidates
+      .map(candidateKey)
+      .concat(state.eligibleBench.length ? ["other"] : [])
+      .sort();
+  if (
+    JSON.stringify(Object.keys(a.criteria.swap ?? {}).sort()) !==
+    JSON.stringify(keys)
+  )
+    throw new PackageExecutionError("criteria_keys_mismatch", true);
+  if (state.eligibleBench.length && typeof a.instructions.swap !== "string")
+    throw new PackageExecutionError("Missing swap instructions", true);
+  const request: JevRequest = {
+    model: JEV_MODEL,
+    state: a.jev_state,
+    questions: {
+      substitution: {
+        type: "noul",
+        instructions: a.instructions.substitution,
+        criteria: a.criteria.substitution,
+      },
+    },
+  };
+  if (state.eligibleBench.length)
+    request.questions.swap = {
+      type: "choice",
+      instructions: a.instructions.swap!,
+      criteria: a.criteria.swap!,
+    };
+  if (guard) contextGuard(request);
+  return JSON.parse(canonicalJson(request));
+}
+export function genericSwapAssembly(state: ObservableState) {
+  const outs = [...state.celtics].sort(
+    (a, b) =>
+      (state.players.find((p) => p.playerId === b)?.currentStintMinutes ?? 0) -
+        (state.players.find((p) => p.playerId === a)?.currentStintMinutes ??
+          0) || a.localeCompare(b),
+  );
+  const ins = [...state.eligibleBench].sort(
+    (a, b) =>
+      (state.players.find((p) => p.playerId === b)?.restMs ?? -1) -
+        (state.players.find((p) => p.playerId === a)?.restMs ?? -1) ||
+      a.localeCompare(b),
+  );
+  const candidates: CandidateSet[] = [1, 2]
+    .filter((k) => ins.length >= k)
+    .map((k) => ({ out: outs.slice(0, k), in: ins.slice(0, k) }));
+  return {
+    jev_state: canonicalJson(state),
+    candidates,
+    instructions: {
+      substitution: "Will the Celtics substitute at this window?",
+      swap: "Conditional on a substitution, which complete swap will the coach make?",
+    },
+    criteria: {
+      substitution: {
+        true: "A substitution occurs.",
+        false: "No substitution occurs.",
+      },
+      swap: Object.fromEntries([
+        ...candidates.map((c) => [
+          candidateKey(c),
+          `Players out: ${c.out.join(", ")}. Players in: ${c.in.join(", ")}.`,
+        ]),
+        ...(ins.length
+          ? [["other", "Any legal substitution not listed."]]
+          : []),
+      ]),
+    },
+    diagnostics: { baseline: "generic-jev-v2" },
   };
 }

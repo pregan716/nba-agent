@@ -90,3 +90,52 @@ export async function probeJev(
   record.append("jev_contamination_probe", scope, result);
   return result;
 }
+
+/** Contract-shape probe, separate from contamination; caller controls paid use. */
+export async function probeSwap(
+  proxy: MeteringProxy,
+  record: RecordStore<any>,
+  signal: AbortSignal,
+) {
+  const keys = Array.from(
+    { length: 8 },
+    (_, i) => `out:${100 + Math.floor(i / 2)}|in:${200 + (i % 2)}`,
+  ).concat("other");
+  const request: JevRequest = {
+    model: JEV_MODEL,
+    state:
+      "Contract-shape probe: players 100–104 are on court; 200 and 201 are eligible bench players.",
+    questions: {
+      swap: {
+        type: "choice",
+        instructions:
+          "Conditional on a substitution, assign probabilities to these eight candidate swaps and other.",
+        criteria: Object.fromEntries(
+          keys.map((key) => [
+            key,
+            key === "other" ? "Any unlisted legal swap." : key,
+          ]),
+        ),
+      },
+    },
+  };
+  const response = await proxy.jev(request, record, "jev-swap-probe", signal),
+    answer = response.response?.answers?.swap;
+  const returned = Object.keys(answer?.probabilities ?? {}).sort();
+  const result = {
+    contract: "jev-contract-v2",
+    request,
+    response,
+    expectedKeys: [...keys].sort(),
+    returnedKeys: returned,
+    valid:
+      answer?.type === "choice" &&
+      JSON.stringify(returned) === JSON.stringify([...keys].sort()),
+  };
+  record.append("jev_swap_probe", "jev-swap-probe", result);
+  if (!result.valid)
+    throw Error(
+      "Jev swap probe did not return the complete nine-option key set",
+    );
+  return result;
+}

@@ -163,14 +163,21 @@ export interface Validation {
   reasons: string[];
 }
 export interface ValidatedPrediction {
+  swap?: import("./swap.js").SwapDerived;
   answers: Prediction;
-  questions: Record<Question, Validation>;
+  questions: Record<Question, Validation> & { swap?: Validation };
   action: Action;
   actionValidation: Validation;
 }
 export type Failure =
   "provider_failure" | "assembler_error" | "invalid_package";
 export interface Scores {
+  setLogLoss?: number | null;
+  setLogLossClips?: number;
+  candidateHit?: number | null;
+  setTop1?: number | null;
+  candidateCount?: number | null;
+  otherMass?: number | null;
   exitLogLoss: number | null;
   entryLogLoss: number | null;
   exitMRR: number | null;

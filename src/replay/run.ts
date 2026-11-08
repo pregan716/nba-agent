@@ -97,7 +97,12 @@ export async function replay(
       }
     if (!window.exclusions.length && window.state && window.actual)
       attempted = true;
-    const result = scoreWindow(window, raw, failure);
+    const result = scoreWindow(
+      window,
+      raw,
+      failure,
+      manifest.harness.policy?.swapContract,
+    );
     results.push(result);
     record.append("replay_window", scope, {
       releaseManifestSha256: dataset.release.sha256,

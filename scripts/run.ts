@@ -1,3 +1,4 @@
+import { pinSwapContract } from "../src/replay/swap.js";
 // Trusted launcher: provider credentials never enter the research process.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -139,6 +140,7 @@ try {
           }))
           .sort((a, b) => a.scheduledStart.localeCompare(b.scheduledStart));
         const selection = diagnosticSelection(schedule, mode, gameLimit);
+        selection.training = schedule.slice(10, 20);
         const loaded = (
           await loadReplayInputs(
             corpus,
@@ -197,7 +199,10 @@ try {
   if (sandboxImage) config.harness.sandboxImage = sandboxImage;
   config.codeRevision = config.harness.codeRevision = currentCodeRevision();
   config.budget.id = "development-limits-not-a-budget-profile";
-  config.harness.policy = policyHarness(assembler);
+  config.harness.policy = policyHarness(
+    assembler,
+    scripted ? undefined : pinSwapContract(training),
+  );
   config.profile.modelRoles.jev = "jev-1.14.0";
   config.replay = replayDescriptor(
     datasets,

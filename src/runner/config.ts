@@ -120,6 +120,15 @@ export const configSchema = z.strictObject({
     policy: z
       .strictObject({
         api: z.literal("assemble-v1"),
+        swapContract: z
+          .strictObject({
+            version: z.literal("jev-contract-v2"),
+            sizePrior: z.array(z.number().nonnegative()).length(5),
+            training: z.array(
+              z.strictObject({ gameId: z.string(), inputHash: z.string() }),
+            ),
+          })
+          .optional(),
         assemblerImage: z.string().regex(/@sha256:[a-f0-9]{64}$/),
         limits: z.strictObject({
           wallSeconds: positive,

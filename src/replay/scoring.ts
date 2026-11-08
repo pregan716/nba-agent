@@ -1,3 +1,4 @@
+import { validateSwap, candidateKey, type SwapContract } from "./swap.js";
 import { diagnosticBreakdowns } from "./diagnostics.js";
 import { rank, validatePrediction } from "./contract.js";
 import type { Failure, Scores, Window, WindowResult } from "./types.js";
@@ -9,6 +10,7 @@ export function scoreWindow(
   window: Window,
   raw: unknown,
   failure: Failure | null = null,
+  contract?: SwapContract,
 ): WindowResult {
   const result: WindowResult = {
     window,
@@ -25,10 +27,17 @@ export function scoreWindow(
     failure === "invalid_package"
   )
     return result;
-  const v = validatePrediction(
-    failure === "assembler_error" ? {} : raw,
-    window.state,
-  );
+  const v = contract
+    ? validateSwap(
+        failure === "assembler_error" ? {} : raw,
+        window.state,
+        contract,
+        failure === "assembler_error" || (raw as any)?.degenerate === true,
+      )
+    : validatePrediction(
+        failure === "assembler_error" ? {} : raw,
+        window.state,
+      );
   result.validation = v;
   const actual = window.actual,
     k = actual.players_in.length,
@@ -50,7 +59,10 @@ export function scoreWindow(
       mrr: mean(target.map((id) => 1 / (order.indexOf(id) + 1))),
       brier: mean(
         keys.map(
-          (id) => (k * probabilities[id] - Number(target.includes(id))) ** 2,
+          (id) =>
+            ((contract ? probabilities[id] : k * probabilities[id]) -
+              Number(target.includes(id))) **
+            2,
         ),
       ),
       top1: Number(target.includes(order[0])),
@@ -95,6 +107,40 @@ export function scoreWindow(
       ? [...target].filter((p) => predicted.has(p)).length / union.size
       : null,
   };
+  if (v.swap) {
+    const key = candidateKey({
+      out: actual.players_out,
+      in: actual.players_in,
+    });
+    const hit = Object.hasOwn(v.swap.listed, key);
+    const probability = hit
+      ? v.swap.listed[key]
+      : (v.swap.unlistedPerSet[k - 1] ?? 0);
+    const clipped = Math.min(0.999, Math.max(0.001, probability));
+    const eligible = k > 0 && window.state.eligibleBench.length > 0;
+    Object.assign(result.scores, {
+      setLogLoss: eligible ? -Math.log(clipped) : null,
+      setLogLossClips: Number(eligible && probability !== clipped),
+      candidateHit: eligible ? Number(hit) : null,
+      setTop1: eligible ? Number(rank(v.swap.listed)[0] === key) : null,
+      candidateCount: eligible ? v.swap.candidates.length : null,
+      otherMass: eligible ? (v.swap.normalizedSwap.other ?? 0) : null,
+    });
+    if (!window.state.eligibleBench.length)
+      for (const name of [
+        "exit",
+        "entry",
+        "exitLogLoss",
+        "entryLogLoss",
+        "exitMRR",
+        "entryMRR",
+        "exitTop1",
+        "entryTop1",
+        "exitTopK",
+        "entryTopK",
+      ] as const)
+        result.scores[name] = null;
+  }
   return result;
 }
 export function summarize(results: WindowResult[]) {

@@ -1,3 +1,5 @@
+import { pinSwapContract } from "../src/replay/swap.js";
+import { probeSwap } from "../src/policy/probe.js";
 import {
   readFileSync,
   mkdirSync,
@@ -28,6 +30,7 @@ import { nextMorning } from "../src/data/time.js";
 import { Temporal } from "@js-temporal/polyfill";
 const image = process.argv.find((a) => a.startsWith("--image="))?.slice(8);
 if (!image) throw Error("Pass --image=<pinned assembler image>");
+const swap = process.argv.includes("--swap");
 const live = process.argv.includes("--live"),
   codeRevision = auditCodeRevision();
 const assembler = new DockerAssembler(image, {
@@ -81,12 +84,44 @@ try {
     ),
   );
   const dataset = buildDataset(input);
+  let swapContract;
+  if (swap) {
+    const games = await c.pbp.games();
+    const schedule = [];
+    for await (const g of games)
+      if (
+        [g.data.home_team_id, g.data.away_team_id].includes("1610612738") &&
+        g.data.phase === "regular_season"
+      )
+        schedule.push(g);
+    schedule.sort((a, b) =>
+      String(a.data.scheduled_tipoff).localeCompare(
+        String(b.data.scheduled_tipoff),
+      ),
+    );
+    const warmup = schedule.slice(10, 20).map((g) => g.id);
+    if (warmup.length !== 10) throw Error("Ten warm-up games required");
+    swapContract = pinSwapContract(
+      (
+        await loadReplayInputs(
+          c,
+          await auditPregames(
+            c,
+            warmup,
+            JSON.parse(readFileSync("config/identities.json", "utf8")),
+          ),
+        )
+      ).map(buildDataset),
+    );
+  }
   mkdirSync(".cache/policy", { recursive: true });
   const root = mkdtempSync(".cache/policy/gate2-");
   const workspace = join(root, "workspace"),
     source = join(workspace, "packages", id);
   mkdirSync(source, { recursive: true });
-  cpSync("examples/policy", source, { recursive: true });
+  cpSync(swap ? "examples/policy-swap" : "examples/policy", source, {
+    recursive: true,
+  });
   const start = input.game.scheduledStart,
     clock = () => new Date(Date.parse(start) - 1).toISOString();
   const packages = new PackageStore(join(root, "frozen-packages"));
@@ -105,8 +140,8 @@ try {
       .toString(),
   );
   const versions = {
-    handwritten: policyVersion(assembler, receipt, codeRevision),
-    generic: policyVersion(assembler, null, codeRevision),
+    handwritten: policyVersion(assembler, receipt, codeRevision, swapContract),
+    generic: policyVersion(assembler, null, codeRevision, swapContract),
   };
   const facts: ProbeFact[] = [
     {
@@ -131,7 +166,9 @@ try {
   });
   let probe;
   try {
-    probe = await probeJev(facts, proxy, probeRecord, signal);
+    probe = swap
+      ? await probeSwap(proxy, probeRecord, signal)
+      : await probeJev(facts, proxy, probeRecord, signal);
   } finally {
     probeRecord.close();
   }
@@ -141,7 +178,10 @@ try {
     releaseManifestSha256: dataset.release.sha256,
     datasetVersion: dataset.version,
     datasets: [{ gameId: id, inputHash: dataset.inputHash }],
-    harness: { ...REPLAY_VERSIONS, policy: policyHarness(assembler) },
+    harness: {
+      ...REPLAY_VERSIONS,
+      policy: policyHarness(assembler, swapContract),
+    },
     predictors: Object.fromEntries(
       Object.entries(versions).map(([id, policy]) => [id, { id, policy }]),
     ),
@@ -155,6 +195,7 @@ try {
       ["generic", null],
       ["handwritten", receipt],
     ] as const) {
+      if (swap && predictorId === "generic") continue;
       const trace = await replayPolicy({
         dataset,
         predictorId,
@@ -166,6 +207,7 @@ try {
         signal,
         releaseAt,
         codeRevision,
+        swapContract,
       });
       const service = new PolicyTools(
         join(root, predictorId),
@@ -187,12 +229,34 @@ try {
       console.log(predictorId, trace.summary, trace.usage);
     }
     record.verify();
+    if (swap) {
+      const requests = record
+        .events("policy_assembly")
+        .map((e) => e.data.request);
+      const bytes =
+        requests.reduce(
+          (n, r) => n + Buffer.byteLength(JSON.stringify(r)) + 4096,
+          0,
+        ) +
+        Buffer.byteLength(JSON.stringify(probe.request)) +
+        4096;
+      console.log(
+        JSON.stringify({
+          swapAudit: {
+            root,
+            requests: requests.length + 1,
+            conservativeUsdTwoAttempts: (2 * bytes * 0.042) / 1e6,
+          },
+        }),
+      );
+    }
     mkdirSync("docs/evidence/policy", { recursive: true });
     writeFileSync(
-      `docs/evidence/policy/gate2-${live ? "live" : "fixture"}.json`,
+      `docs/evidence/policy/gate2-${swap ? "swap-" : ""}${live ? "live" : "fixture"}.json`,
       JSON.stringify(
         {
           codeRevision,
+          swapContract,
           live,
           gameId: id,
           release: dataset.release,
