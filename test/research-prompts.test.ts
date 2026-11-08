@@ -308,6 +308,20 @@ test("the prompt describes jev-contract-v2 (SPO-867)", () => {
   assert.match(p, /Write "unlikely" to mean unlikely, not never/);
   assert.match(p, /probabilities must sum to about one/);
   assert.match(p, /candidateHit is 0 are the moves your list missed/);
+  // Stage 6: other carried 4-5% against a 68% miss rate and scored below the floor.
+  assert.match(
+    p,
+    /other should carry about the share of the coach's moves your list misses/,
+  );
+  assert.match(p, /The trace's candidateHitRate is that share/);
+  assert.match(p, /assume the list will miss more moves than it catches/);
+  assert.match(p, /scores worse than listing nothing at all/);
+  assert.match(p, /Describe other as the live option it is/);
+  assert.match(
+    p,
+    /mass on other there should be in the region of your miss rate/,
+  );
+  assert.match(p, /a listed candidate at 0.03 or less that happens/);
   // The retired questions are no longer described as Jev questions.
   assert.doesNotMatch(p, /ordered levels none, one, two, three_or_more/);
   assert.doesNotMatch(p, /keys substitution, count, exit, entry/);

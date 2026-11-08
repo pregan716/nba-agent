@@ -305,6 +305,32 @@ The tool-description change is Codex's (PR #73); this is the matching prompt
 change. The two-game M0 check the issue asks for is a live run and needs the
 user's approval of the spend.
 
+## Revisions after stage 6 of the pilot (SPO-868)
+
+The first agent run on `jev-contract-v2` (`pilot-m0-swap`, `docs/v3/pilot.md`)
+listed the coach's actual move at 32 % of substitutions but gave `other`
+4–5 % of the mass, so every miss scored the clip and the pooled set log loss
+(5.32) was below the constant floor (5.02); the same answers with `other` at
+0.5 would have scored 4.60. Game 2 did not adjust after game 1's trace
+showed the miss rate. The prompt said the missed-move-with-little-`other`
+case was expensive but not how much `other` should carry or how to get Jev
+to put it there.
+
+The scoring section now gives the rule of thumb: `other` should carry about
+the share of moves the list misses; `candidateHitRate` in the trace is that
+share for the last game; before any trace, assume the list misses more than
+it catches (the pilot's lists caught about a third); a list missing two
+thirds with `other` at 0.05 scores worse than listing nothing. The Jev
+section says why `other` comes out small (a description like "anything
+else" reads as a long shot), how to describe it (as the live option it is,
+in words that carry the honest frequency, with the state text saying how
+unsettled the situation is), and how to check it (`validate_package` with
+`jev: true`, `other` mass in the region of the miss rate, change wording
+holding the states fixed). It names the set-level form of "unlikely means
+never": a listed candidate at 0.03 or less that happens (four of thirteen
+hits in stage 6). Tests assert each of these. The two-game re-check is a
+live run and needs the user's approval of the spend.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the
