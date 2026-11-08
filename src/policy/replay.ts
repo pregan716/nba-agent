@@ -1,3 +1,9 @@
+import {
+  CODE_CONTRACT,
+  deferSchema,
+  type CodeAnswers,
+} from "../replay/code-prediction.js";
+import { codeAssemblySchema, buildCodeRequest } from "./request.js";
 import { type SwapContract } from "../replay/swap.js";
 import {
   swapAssemblySchema,
@@ -128,17 +134,24 @@ export async function assembleRequest(
   const a = await execute(),
     b = await execute();
   signal.throwIfAborted();
-  const schema = swapContract ? swapAssemblySchema : assemblySchema;
+  const code = swapContract?.version === CODE_CONTRACT;
+  const schema = code
+    ? codeAssemblySchema
+    : swapContract
+      ? swapAssemblySchema
+      : assemblySchema;
   const assembly = schema.parse(a.value);
   if (canonicalJson(assembly) !== canonicalJson(schema.parse(b.value)))
     throw new PackageExecutionError("Nondeterministic assembler output");
+  if (code && !deferSchema.safeParse((assembly as any).defer).success)
+    throw new PackageExecutionError("malformed_defer", true);
   const result = {
     assembly,
-    request: (swapContract ? buildSwapRequest : buildJevRequest)(
-      assembly,
-      state,
-      !validationOnly,
-    ),
+    request: (code
+      ? buildCodeRequest
+      : swapContract
+        ? buildSwapRequest
+        : buildJevRequest)(assembly, state, !validationOnly),
   };
   mkdirSync(cache, { recursive: true });
   const temporary = target + "." + randomUUID();
@@ -262,6 +275,37 @@ export async function replayPolicy(options: {
         record.append("policy_prediction", callScope, { failure, message });
         throw new PredictorFailure(failure, message);
       }
+      const code = options.swapContract?.version === CODE_CONTRACT;
+      const envelope = (
+        shadow: unknown,
+        shadowFailure: string | null,
+      ): CodeAnswers => ({
+        contract: CODE_CONTRACT,
+        prediction: receipt
+          ? (assembled.assembly.prediction ?? null)
+          : {
+              substitution: { type: "noul", noul: 0.5 },
+              ...(state.eligibleBench.length
+                ? {
+                    swap: {
+                      type: "choice",
+                      probabilities: Object.fromEntries(
+                        Object.keys(assembled.assembly.criteria.swap).map(
+                          (k, _, a) => [k, 1 / a.length],
+                        ),
+                      ),
+                    },
+                  }
+                : {}),
+            },
+        candidates: assembled.assembly.candidates,
+        defer: receipt
+          ? (deferSchema.parse(assembled.assembly.defer) ?? null)
+          : { reason: "generic Jev baseline" },
+        shadow: shadow ?? null,
+        shadowFailure: shadowFailure ? "provider_failure" : null,
+        shadowError: shadowFailure,
+      });
       try {
         // Resume a received response after a crash before its scoring record was written.
         const received = record.events("jev_response", callScope).at(-1)?.data;
@@ -278,11 +322,12 @@ export async function replayPolicy(options: {
               candidates: assembled.assembly.candidates,
             }
           : mapped;
+        const scored = code ? envelope(mapped, null) : answers;
         record.append("policy_prediction", callScope, {
-          answers: answers ?? null,
+          answers: scored ?? null,
           failure: null,
         });
-        return answers;
+        return scored;
       } catch (error) {
         signal.throwIfAborted();
         const message =
@@ -293,6 +338,14 @@ export async function replayPolicy(options: {
           JSON.stringify(error.detail).includes("max_tokens_exceeded")
             ? "assembler_error"
             : "provider_failure";
+        if (code && failure === "provider_failure") {
+          const answers = envelope(null, message);
+          record.append("policy_prediction", callScope, {
+            answers,
+            failure: null,
+          });
+          return answers;
+        }
         record.append("policy_prediction", callScope, { failure, message });
         throw new PredictorFailure(failure, message);
       }

@@ -259,6 +259,12 @@ export function markdown(report: EvaluationReport) {
         `\n#### ${cell(g.game.gameId)} — game ${g.game.index + 1}, ${g.game.tag}`,
         `Scored/eligible: ${g.metrics.scored}/${g.metrics.eligible}; provider flag: ${g.metrics.providerFailureFlag}; complete: ${g.complete}; USD: ${number(g.cost.totalUsd)}; recorded seconds: ${number(g.cost.recordedSeconds)}.`,
         metricTable(g.metrics),
+        ...(g.metrics.code
+          ? [
+              "\nPackage/Jev counterfactuals and deferral regret",
+              json(g.metrics.code),
+            ]
+          : []),
       );
     out.push(
       "\n### Headline (scored games only)",

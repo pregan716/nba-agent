@@ -321,7 +321,10 @@ export async function runBaselines(options: {
   if (
     config.harness.policy?.swapContract &&
     digest(config.harness.policy.swapContract) !==
-      digest(pinSwapContract(training))
+      digest({
+        ...pinSwapContract(training),
+        version: config.harness.policy.swapContract.version,
+      })
   )
     throw Error("Swap prior differs from warm-up datasets");
   const fitted = config.harness.policy?.swapContract

@@ -207,4 +207,6 @@ export interface WindowResult {
   failure: Failure | null;
   validation: ValidatedPrediction | null;
   scores: Scores | null;
+  contractVersion?: "jev-contract-v3";
+  code?: import("./code-prediction.js").CodeResult;
 }

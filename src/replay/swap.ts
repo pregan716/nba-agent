@@ -12,7 +12,7 @@ export interface CandidateSet {
   in: string[];
 }
 export interface SwapContract {
-  version: typeof SWAP_CONTRACT;
+  version: typeof SWAP_CONTRACT | "jev-contract-v3";
   sizePrior: number[];
   training: { gameId: string; inputHash: string }[];
 }
@@ -78,7 +78,7 @@ export function pinSwapContract(warmup: DecisionDataset[]): SwapContract {
 }
 export function assertSwapContract(c: SwapContract) {
   if (
-    c.version !== SWAP_CONTRACT ||
+    ![SWAP_CONTRACT, "jev-contract-v3"].includes(c.version) ||
     c.sizePrior.length !== 5 ||
     c.sizePrior.some((p) => !Number.isFinite(p) || p < 0) ||
     Math.abs(c.sizePrior.reduce((a, b) => a + b, 0) - 1) > 1e-9

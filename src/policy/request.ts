@@ -176,6 +176,24 @@ export const swapAssemblySchema = z.strictObject({
   candidates: z.unknown().optional(),
   diagnostics: z.record(z.string(), z.json()),
 });
+// Keep prediction validation separate: invalid predictions are scored failures,
+// including on the first window, and do not cancel valid deferrals.
+export const codeAssemblySchema = swapAssemblySchema.extend({
+  prediction: z.unknown().optional(),
+  defer: z.unknown().optional(),
+});
+export function buildCodeRequest(
+  raw: unknown,
+  state: ObservableState,
+  guard = true,
+) {
+  const {
+    prediction: _prediction,
+    defer: _defer,
+    ...request
+  } = codeAssemblySchema.parse(raw);
+  return buildSwapRequest(request, state, guard);
+}
 export function buildSwapRequest(
   raw: unknown,
   state: ObservableState,
