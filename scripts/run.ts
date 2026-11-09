@@ -26,6 +26,7 @@ import {
   auditPregames,
   loadReplayInputs,
   loadPriorSeasonTraining,
+  loadBacktestData,
   priorValidationSamples,
 } from "../src/replay/load.js";
 import { buildDataset } from "../src/replay/dataset.js";
@@ -113,6 +114,7 @@ try {
           ...fixture,
           training: [training],
           priorTraining: [],
+          backtestSource: undefined,
           validationSamples: [],
         };
       })()
@@ -158,6 +160,8 @@ try {
         return {
           source,
           schedule,
+          backtestSource: (cutoff: string, signal: AbortSignal) =>
+            loadBacktestData(corpus, cutoff, signal),
           priorTraining: mode === "baselines" ? priorDatasets : [],
           validationSamples:
             mode === "analyst"
@@ -178,6 +182,7 @@ try {
     training,
     priorTraining,
     validationSamples,
+    backtestSource,
   } = inputs;
   const config = presetConfig({
     harness: "pi",
@@ -270,6 +275,7 @@ try {
       }
     } else {
       const runner = chronologicalRunner({
+        backtestSource,
         validationSamples,
         root,
         config,

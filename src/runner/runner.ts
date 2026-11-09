@@ -97,6 +97,11 @@ export interface Environment {
     },
     signal: AbortSignal,
   ): Promise<CodeResult>;
+  backtestPackage?(
+    allowance: number,
+    signal: AbortSignal,
+    input?: import("../policy/backtest.js").BacktestInput,
+  ): Promise<import("../policy/backtest.js").BacktestResult>;
   validatePackage?(
     allowance: number,
     signal: AbortSignal,
@@ -678,6 +683,37 @@ export class Runner {
                     : ""),
               );
             budget.tool(name, args);
+            if (name === "backtest_package") {
+              if (!env.backtestPackage)
+                throw new SessionError(
+                  "capability_disabled",
+                  "Package backtest unavailable",
+                );
+              const allowance = Math.min(
+                this.manifest.config.budget.sandbox.perCallSeconds,
+                budget.remaining().compute,
+              );
+              if (allowance <= 0) budget.block("compute");
+              const reservation = budget.reserve(0, allowance, "code");
+              this.record.append("backtest_start", scope, {
+                reservation,
+                input: args ?? {},
+                allowance,
+              });
+              const result = await env.backtestPackage(
+                allowance,
+                controller.signal,
+                (args ?? {}) as import("../policy/backtest.js").BacktestInput,
+              );
+              if (
+                !Number.isFinite(result.computeSeconds) ||
+                result.computeSeconds < 0
+              )
+                throw Error("Invalid backtest meter");
+              this.record.append("package_backtest", scope, result);
+              budget.settle(reservation, 0, result.computeSeconds, result);
+              return result;
+            }
             if (name === "validate_package") {
               if (!env.validatePackage)
                 throw new SessionError(

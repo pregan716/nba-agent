@@ -115,6 +115,8 @@ function replayManifest(
 
 export function chronologicalRunner(options: {
   validationSamples?: ValidationSample[];
+  backtestSource?: import("../policy/backtest.js").BacktestSource;
+  starter?: import("../policy/backtest.js").BacktestStarter;
   root: string;
   config: RunConfig;
   source: SessionSource;
@@ -171,6 +173,8 @@ export function chronologicalRunner(options: {
       () => cutoff,
       options.validationSamples ?? [],
       config.harness.policy?.swapContract,
+      options.backtestSource,
+      options.starter,
     );
   const environment = sessionEnvironment(config, source, {
     policy: (context, trusted) =>

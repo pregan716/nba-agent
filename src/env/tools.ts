@@ -59,6 +59,13 @@ const CUTOFF =
 
 export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
+    name: "backtest_package",
+    description:
+      "Score the current unfrozen package on every eligible released prior Celtics window, including 2024–25 retrospective same-game box-score rosters (DNP included, injury status unknown, timestamps synthetic; never evaluation rosters). Requires a swap contract. Package-only: scores prediction even when defer is set; never calls Jev and is not the deployed policy score. Returns scorer metrics, calibration and stoppage breakdowns, invalid reasons, would-defer counts and split scores. per_window adds window scores. Starter scores, when installed, are labelled in-sample. Charges research compute with the configured sandbox per-call limit; incomplete results explicitly report compute_limit and completed/eligible counts. Current and future games are unreachable. Every call is recorded.",
+    input_schema: object({ per_window: { type: "boolean" } }),
+    phases: ["pregame"],
+  },
+  {
     name: "freeze_package",
     description:
       "Validate and atomically freeze packages/<current game id>/ before cutoff. manifest.json requires stateVersion state-v1 and may include notes. The harness computes every file SHA-256; optional components hashes must match if supplied. Returns an immutable receipt; identical re-freezes return the same receipt. Later writes through tools or code are refused.",

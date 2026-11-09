@@ -49,6 +49,8 @@ export async function loadAllTeamsTraining(
   options: {
     seasons?: TrainingOnly["season"][];
     batchSize?: number;
+    teamIds?: string[];
+    signal?: AbortSignal;
     root?: string;
   } = {},
 ): Promise<TeamTrainingResult> {
@@ -63,12 +65,17 @@ export async function loadAllTeamsTraining(
       options.seasons ?? ["2024-25", "2025-26"],
     ),
   ].sort()) {
+    options.signal?.throwIfAborted();
     const adapter = season === "2024-25" ? c.priorPbp : c.pbp;
     const games = (await adapter.games())
       .filter(
         (g) =>
           g.data.season === season &&
           g.data.phase === "regular_season" &&
+          (!options.teamIds ||
+            [g.data.home_team_id, g.data.away_team_id].some((id) =>
+              options.teamIds!.includes(id),
+            )) &&
           Date.parse(releaseTime(g.data.scheduled_tipoff)) < cutoffMs,
       )
       .sort(
@@ -92,13 +99,20 @@ export async function loadAllTeamsTraining(
             await readFile(resolve(root, "config/identities.json"), "utf8"),
           ),
           root,
+          options.signal,
         )
       : [];
     const boston = new Map(pregames.map((p) => [p.gameId, p]));
     for (let offset = 0; offset < games.length; offset += batchSize) {
+      options.signal?.throwIfAborted();
       const batch = games.slice(offset, offset + batchSize);
       const ids = new Set(batch.map((g) => g.id));
-      const rows = await indexedRows(adapter, ids, ["player_box_scores"]);
+      const rows = await indexedRows(
+        adapter,
+        ids,
+        ["player_box_scores"],
+        options.signal,
+      );
       const rosters = new Map<string, Set<string>>();
       for (const row of rows.player_box_scores) {
         const key = `${row.game_id}:${row.team_id}`;
@@ -110,6 +124,7 @@ export async function loadAllTeamsTraining(
       const requests: { teamId: string; pregame: Pregame }[] = [];
       for (const g of batch) {
         for (const teamId of [g.data.home_team_id, g.data.away_team_id]) {
+          if (options.teamIds && !options.teamIds.includes(teamId)) continue;
           const real = teamId === BOS ? boston.get(g.id) : undefined;
           const roster = [...(rosters.get(`${g.id}:${teamId}`) ?? [])].sort();
           if (!real && roster.length < 5) {
@@ -141,8 +156,10 @@ export async function loadAllTeamsTraining(
       const inputs = await loadInputs(
         adapter,
         requests.map((r) => r.pregame),
+        options.signal,
       );
       for (let i = 0; i < inputs.length; i++) {
+        options.signal?.throwIfAborted();
         const input = inputs[i],
           { teamId } = requests[i];
         let dataset: DecisionDataset;
@@ -197,7 +214,9 @@ async function indexedRows(
   adapter: Corpus["pbp"],
   ids: Set<string>,
   names: string[],
+  signal?: AbortSignal,
 ) {
+  signal?.throwIfAborted();
   const release = adapter.release;
   const index = JSON.parse(
     (
@@ -210,6 +229,7 @@ async function indexedRows(
   for (const table of names) {
     tables[table] = [];
     for (const name of release.manifest.tables[table] ?? []) {
+      signal?.throwIfAborted();
       const entries = index.tables[table]?.[name];
       if (!entries || !entries.some((r: any) => ids.has(r[0]))) continue;
       for (const row of await release.rows(
@@ -230,17 +250,19 @@ export async function loadReplayInputs(
 async function loadInputs(
   adapter: Corpus["pbp"],
   pregames: Pregame[],
+  signal?: AbortSignal,
 ): Promise<ReplayInput[]> {
+  signal?.throwIfAborted();
   const ids = new Set(pregames.map((p) => p.gameId)),
     release = adapter.release,
     coverage = await adapter.coverage(),
     games = await adapter.games();
-  const tables = await indexedRows(adapter, ids, [
-    "events",
-    "event_participants",
-    "v_player_stints",
-    "data_quality_issues",
-  ]);
+  const tables = await indexedRows(
+    adapter,
+    ids,
+    ["events", "event_participants", "v_player_stints", "data_quality_issues"],
+    signal,
+  );
   return pregames.map((pregame) => {
     const g = games.find((g) => g.id === pregame.gameId);
     if (!g) throw Error(`Unknown game ${pregame.gameId}`);
@@ -269,7 +291,9 @@ export async function auditPregames(
   gameIds: string[],
   identityMappings: Row[],
   root = process.cwd(),
+  signal?: AbortSignal,
 ): Promise<Pregame[]> {
+  signal?.throwIfAborted();
   const membership = await loadSeasonRoster(root);
   const games = (await c.pbp.games()).filter((g) => gameIds.includes(g.id));
   if (
@@ -286,7 +310,8 @@ export async function auditPregames(
     );
   };
   const latest = new Map<string, RecordEnvelope>();
-  for await (const batch of c.injuries.partitions("teams"))
+  for await (const batch of c.injuries.partitions("teams")) {
+    signal?.throwIfAborted();
     for (const r of batch.filter(eligible)) {
       const prev = latest.get(r.data.game_id);
       if (
@@ -296,8 +321,10 @@ export async function auditPregames(
       )
         latest.set(r.data.game_id, r);
     }
+  }
   const reports = new Map<string, RecordEnvelope[]>();
-  for await (const batch of c.injuries.partitions("players"))
+  for await (const batch of c.injuries.partitions("players")) {
+    signal?.throwIfAborted();
     for (const r of batch.filter(eligible)) {
       const team = latest.get(r.data.game_id);
       if (
@@ -309,6 +336,8 @@ export async function auditPregames(
           r,
         ]);
     }
+  }
+  signal?.throwIfAborted();
   const announcements = await c.celticsLineups.records();
   return games.map((g) => {
     const roster = membership.at(g.data.scheduled_tipoff);
@@ -527,4 +556,34 @@ export async function priorValidationSamples(
     }
   }
   return samples;
+}
+
+/** Backtests use Boston only, with current-season pregame evidence and the
+ * accepted retrospective prior-season roster. Cutoff filtering happens before
+ * any game shard is loaded, using the same indexed loader as training. */
+export async function loadBacktestData(
+  c: Corpus,
+  cutoff: string,
+  signal: AbortSignal,
+): Promise<import("../policy/backtest.js").BacktestData> {
+  const data = await loadAllTeamsTraining(c, cutoff, {
+    teamIds: [BOS],
+    signal,
+  });
+  signal.throwIfAborted();
+  const schedule = [...(await c.priorPbp.games()), ...(await c.pbp.games())];
+  const starts = new Map(
+    schedule.map((g) => [g.id, g.data.scheduled_tipoff as string]),
+  );
+  return {
+    games: data.datasets.map((dataset) => ({
+      dataset,
+      scheduledStart: starts.get(dataset.gameId)!,
+    })),
+    skipped: data.skipped.map((g) => ({
+      gameId: g.gameId,
+      scheduledStart: starts.get(g.gameId)!,
+      reason: g.reason,
+    })),
+  };
 }

@@ -772,6 +772,19 @@ export class Session {
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
   }
+  async backtestPackage(
+    allowance: number,
+    signal: AbortSignal,
+    input: import("../policy/backtest.js").BacktestInput = {},
+  ) {
+    this.#check("backtest_package", input);
+    if (!this.policyTools)
+      throw new SessionError(
+        "capability_disabled",
+        "Policy tools are not installed",
+      );
+    return this.policyTools.backtest(this.#phase, allowance, signal, input);
+  }
   async validatePackage(
     allowance: number,
     signal: AbortSignal,
@@ -902,6 +915,8 @@ export function sessionEnvironment(
     );
     let sandbox: DockerSandbox | undefined;
     return {
+      backtestPackage: (allowance, signal, input) =>
+        session.backtestPackage(allowance, signal, input),
       validatePackage: (allowance, signal, input, jev) =>
         session.validatePackage(allowance, signal, input, jev),
       workspace: session.workspaceForSandbox(),

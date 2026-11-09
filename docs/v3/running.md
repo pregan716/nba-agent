@@ -477,3 +477,49 @@ Jev spend. This replays development game `0022500083`, also sends the nine-optio
 probe, records both sources and writes `docs/evidence/policy/gate2-code-*.json`.
 No analyst model is used. Starter-model fitting and `backtest_package` belong to
 subsequent issues.
+
+### Package-only backtesting (SPO-872)
+
+`backtest_package({per_window?: boolean})` is a pregame research tool for a draft
+package under a swap contract (`jev-contract-v2` or `jev-contract-v3`). It snapshots
+`packages/<current game>/` without freezing the final submission, then executes
+the assembler twice per eligible prior window to check determinism. Only the
+observable state crosses into the assembler; the evaluation scorer receives the
+outcome separately. No Jev or research-model calls are made by the tool.
+
+The launcher loads **all released prior Celtics games**, independently of the run's
+evaluation-game selection: 2025–26 uses actual pregame roster evidence, and
+2024–25 uses `same-game-box-score-v1` membership, including DNP rows. That prior
+roster is retrospective, injury status is unknown, and its timestamps are
+synthetic; it remains training-only and is never used for evaluated games. Game
+release must be strictly before both the current cutoff and the session clock.
+Filtering precedes indexed game-shard reads. Coverage gaps are returned under
+`skipped`, rather than silently disappearing.
+
+Results are labelled **package-only; deferral ignored**. Every eligible window is
+scored using the draft's own `prediction`, including windows it would defer.
+Invalid predictions or candidate lists use the scorer's degenerate form and are
+counted in `invalidByReason`. `wouldDefer` counts each stoppage kind, and `split`
+reports package-only scores for would-defer and non-deferred windows separately.
+`summary` is the evaluation scorer's output, including timing Brier and skill,
+calibration deciles, set log loss, candidate hit rate, other mass and stoppage
+breakdowns; `calibrationByStoppage` adds deciles within each kind. `per_window`
+returns window IDs, scores, reasons and deferral status. These are historical
+package scores, never scores of the deployed package-plus-Jev policy.
+
+The call charges elapsed research compute, including snapshotting and loading,
+against the lesser of the configured `sandbox.perCallSeconds` and remaining
+phase compute. A timeout returns `complete:false`, `error:"compute_limit"`, and
+scores only for completed windows, with their count and `eligibleWindows`; if
+loading did not finish, `eligibleWindows` is null because eligibility has not yet
+been established. It does not
+silently sample the history. Large histories or slow packages can exceed the
+per-call limit. Temporary snapshots are removed after the call. The runner records
+`backtest_start` and `package_backtest` with the package receipt, data hashes,
+roster provenance, results and compute charge. Tool definitions are included in
+the harness hash.
+
+The starter model is not installed by this issue. Until SPO-873 provides it, the
+result explicitly reports `starter.label:"unavailable"`. The trusted integration
+accepts a model hash and predictor; when supplied, it scores exactly the same
+completed windows and labels those scores **in-sample**.
