@@ -532,3 +532,14 @@ completed windows and labels those scores **in-sample**. Starter exceptions are
 reported under `starter.errors`, with attempted and scored counts, without losing
 package scores. A v2 package without its own `prediction` receives degenerate
 scores at every window; this is not an estimate of its Jev policy.
+
+Real-history acceptance for this tool is recorded in
+[`backtest-spo872.json`](../evidence/policy/backtest-spo872.json), produced by
+`scripts/backtest-audit.ts` from clean revision
+`26c3fbbfff8de175fc5f54718075a5fca26aae0d`. At game `0022501206`'s cutoff,
+104 released Celtics games supplied 5,397 eligible windows (80 prior-season and
+24 current-season games; two prior-season coverage gaps reported separately).
+The first call completed in 112.38 seconds, including 80.79 seconds of history
+loading. A repeat call completed in 31.53 seconds with exactly the same scores;
+history was loaded once. Both calls used the unchanged 120-second limit, reported
+317 would-defer windows and zero invalid outputs, and made no model calls.
