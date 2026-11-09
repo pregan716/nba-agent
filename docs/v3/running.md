@@ -487,7 +487,11 @@ the assembler in batches of up to 256 states, with a second pass to check
 determinism. Each state runs in a fresh child process with reset module/random
 state, closed input and clean scratch, preserving single-window behavior while
 amortizing Docker startup. Both execution modes use `--ipc none` to omit Docker’s writable shared-memory
-mount. Within each batch, states execute in
+mount. System V shared memory and POSIX message queues can still persist within
+a container’s private IPC namespace; packages using them may differ from
+single-window replay. Chronological execution prevents such persistence from
+carrying later-window information into an earlier prediction.
+Within each batch, states execute in
 chronological order and outputs are mapped back to their selected windows.
 Each state keeps the existing output and wall-clock
 limits, and the whole call keeps its deadline. Only the

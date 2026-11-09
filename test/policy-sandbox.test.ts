@@ -122,6 +122,8 @@ test(
   { skip: !image },
   async () => {
     const root = mkdtempSync(join(tmpdir(), "assembler-batch-"));
+    // Linux bind mounts retain host modes; the container runs as uid 65534.
+    chmodSync(root, 0o755);
     const sandbox = new DockerAssembler(image!, { ...limits, wallSeconds: 1 });
     try {
       writeFileSync(
@@ -175,6 +177,8 @@ test(
   { skip: !image },
   async () => {
     const root = mkdtempSync(join(tmpdir(), "assembler-shm-"));
+    // Linux bind mounts retain host modes; the container runs as uid 65534.
+    chmodSync(root, 0o755);
     const sandbox = new DockerAssembler(image!, limits);
     try {
       writeFileSync(
