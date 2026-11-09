@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { replayInput } from "../scripts/fixtures/chronological.js";
 import { buildDataset } from "../src/replay/dataset.js";
-import { loadAllTeamsTraining } from "../src/replay/load.js";
+import { loadAllTeamsTraining, loadBacktestData } from "../src/replay/load.js";
 import { replay } from "../src/replay/run.js";
 import { replayDescriptor } from "../src/launch/run.js";
 import { BOS } from "../src/replay/types.js";
@@ -84,8 +84,8 @@ test("team parameter matches relabelling with real ids preserved, home and away"
   assert.throws(() => buildDataset(fixtures[0], "not-in-game"), /Target team/);
 });
 
-function corpusFixture(season = "2024-25") {
-  const input = swap(replayInput(), BOS, "target");
+function corpusFixture(season = "2024-25", team = "target") {
+  const input = team === BOS ? replayInput() : swap(replayInput(), BOS, team);
   const tip =
     season === "2024-25" ? "2025-03-08T23:00:00Z" : "2025-11-01T23:00:00Z";
   const games = ["released", "future", "missing-roster", "missing-events"].map(
@@ -223,4 +223,31 @@ test("all-teams training filters before indexed reads, retains DNPs, reports gap
       /Training-only/,
     );
   }
+});
+
+test("Boston backtest loader filters future shards and retains retrospective membership", async () => {
+  const { corpus, reads, tip } = corpusFixture("2024-25", BOS);
+  corpus.pbp = { games: async () => [] };
+  const at = releaseTime(tip),
+    signal = new AbortController().signal;
+  assert.deepEqual(await loadBacktestData(corpus, at, signal), {
+    games: [],
+    skipped: [],
+  });
+  assert.equal(reads.length, 0);
+  const result = await loadBacktestData(
+    corpus,
+    new Date(Date.parse(at) + 1).toISOString(),
+    signal,
+  );
+  assert.equal(result.games.length, 1);
+  const { dataset, scheduledStart } = result.games[0];
+  assert.equal(scheduledStart, tip);
+  assert.equal(dataset.teamId, BOS);
+  assert.equal(dataset.trainingOnly?.rosterPolicy, "same-game-box-score-v1");
+  assert.ok(dataset.windows[0].state!.eligibleBench.includes("dnp"));
+  assert.equal(result.skipped!.length, 2);
+  assert.ok(result.skipped!.every((g) => g.scheduledStart === tip));
+  assert.ok(!reads.some((path) => path.startsWith("future/")));
+  assert.ok(!JSON.stringify(result).includes('"future"'));
 });

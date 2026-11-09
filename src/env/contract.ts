@@ -28,6 +28,7 @@ export const TOOL_NAMES = [
   "context",
   "freeze_package",
   "validate_package",
+  "backtest_package",
   "read_feedback",
   "search_evidence",
   "list_evidence",
@@ -62,6 +63,7 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
   context: null,
   freeze_package: null,
   validate_package: "code_execution",
+  backtest_package: "code_execution",
   read_feedback: null,
   search_evidence: "search_and_fetch",
   list_evidence: "search_and_fetch",
@@ -87,6 +89,7 @@ export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
   context: ["pregame", "commit", "postgame"],
   freeze_package: ["pregame"],
   validate_package: ["pregame"],
+  backtest_package: ["pregame"],
   read_feedback: ["pregame", "postgame"],
   search_evidence: ["pregame", "postgame"],
   list_evidence: ["pregame", "postgame"],
@@ -422,6 +425,10 @@ export interface WorkspaceMutationResult {
 // ---------------------------------------------------------------------------
 
 export interface ToolContract {
+  backtest_package: {
+    input: import("../policy/backtest.js").BacktestInput;
+    result: import("../policy/backtest.js").BacktestResult;
+  };
   workspace_edit: {
     input: WorkspaceEditInput;
     result: WorkspaceMutationResult;

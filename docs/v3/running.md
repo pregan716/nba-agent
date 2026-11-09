@@ -477,3 +477,79 @@ Jev spend. This replays development game `0022500083`, also sends the nine-optio
 probe, records both sources and writes `docs/evidence/policy/gate2-code-*.json`.
 No analyst model is used. Starter-model fitting and `backtest_package` belong to
 subsequent issues.
+
+### Package-only backtesting (SPO-872)
+
+`backtest_package({per_window?: boolean})` is a pregame research tool for a draft
+package under a swap contract (`jev-contract-v2` or `jev-contract-v3`). It snapshots
+`packages/<current game>/` without freezing the final submission, then executes
+the assembler in batches of up to 256 states, with a second pass to check
+determinism. Each state runs in a fresh child process with reset module/random
+state, closed input and clean scratch, preserving single-window behavior while
+amortizing Docker startup. Both execution modes use `--ipc none` to omit Docker’s writable shared-memory
+mount. System V shared memory and POSIX message queues can still persist within
+a container’s private IPC namespace; packages using them may differ from
+single-window replay. Chronological execution prevents such persistence from
+carrying later-window information into an earlier prediction.
+Within each batch, states execute in
+chronological order and outputs are mapped back to their selected windows.
+Each state keeps the existing output and wall-clock
+limits, and the whole call keeps its deadline. Only the
+observable state crosses into the assembler; the evaluation scorer receives the
+outcome separately. No Jev or research-model calls are made by the tool.
+
+The launcher loads **all released prior Celtics games**, independently of the run's
+evaluation-game selection: 2025–26 uses actual pregame roster evidence, and
+2024–25 uses `same-game-box-score-v1` membership, including DNP rows. That prior
+roster is retrospective, injury status is unknown, and its timestamps are
+synthetic; it remains training-only and is never used for evaluated games. Game
+release must be strictly before both the current cutoff and the session clock.
+Filtering precedes indexed game-shard reads. Coverage gaps are returned under
+`skipped`, rather than silently disappearing.
+
+Results are labelled **package-only; deferral ignored**. Every eligible window is
+scored using the draft's own `prediction`, including windows it would defer.
+Invalid predictions or candidate lists use the scorer's degenerate form and are
+counted in `invalidByReason`. `wouldDefer` counts each stoppage kind, and `split`
+reports package-only scores for would-defer and non-deferred windows separately.
+`summary` is the evaluation scorer's output, including timing Brier and skill,
+calibration deciles, set log loss, candidate hit rate, other mass and stoppage
+breakdowns; `calibrationByStoppage` adds deciles within each kind. `per_window`
+returns window IDs, scores, reasons and deferral status. These are historical
+package scores, never scores of the deployed package-plus-Jev policy.
+
+The call charges elapsed research compute, including snapshotting and loading,
+against the lesser of the configured `sandbox.perCallSeconds` and remaining
+phase compute. History loads belong to the runner lifetime and are cached for
+the current cutoff. A tool deadline stops waiting without aborting or discarding
+the load; later calls reuse the pending or completed load. Calls pay only for
+their waiting time. Failed loads are not cached. Moving to another cutoff cancels
+the old load, and closing the runner cancels any outstanding load. A timeout returns `complete:false`, `error:"compute_limit"`, and
+scores only for completed windows, with their count and `eligibleWindows`; if
+loading did not finish, `eligibleWindows` is null because eligibility has not yet
+been established. It does not
+silently sample the history. Batches are selected newest game first so partial
+results include recent games, but each container executes its states oldest
+game and earliest window first to prevent cross-window lookahead. Slow packages can still exceed the per-call limit. Temporary snapshots are removed after the call. The runner records
+`backtest_start` and `package_backtest` with the package receipt, data hashes,
+roster provenance, results and compute charge. Tool definitions are included in
+the harness hash.
+
+The starter model is not installed by this issue. Until SPO-873 provides it, the
+result explicitly reports `starter.label:"unavailable"`. The trusted integration
+accepts a model hash and predictor; when supplied, it scores exactly the same
+completed windows and labels those scores **in-sample**. Starter exceptions are
+reported under `starter.errors`, with attempted and scored counts, without losing
+package scores. A v2 package without its own `prediction` receives degenerate
+scores at every window; this is not an estimate of its Jev policy.
+
+Real-history acceptance for this tool is recorded in
+[`backtest-spo872.json`](../evidence/policy/backtest-spo872.json), produced by
+`scripts/backtest-audit.ts` from clean revision
+`26c3fbbfff8de175fc5f54718075a5fca26aae0d`. At game `0022501206`'s cutoff,
+104 released Celtics games supplied 5,397 eligible windows (80 prior-season and
+24 current-season games; two prior-season coverage gaps reported separately).
+The first call completed in 112.38 seconds, including 80.79 seconds of history
+loading. A repeat call completed in 31.53 seconds with exactly the same scores;
+history was loaded once. Both calls used the unchanged 120-second limit, reported
+317 would-defer windows and zero invalid outputs, and made no model calls.

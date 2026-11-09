@@ -1,4 +1,10 @@
 import {
+  backtestPackage,
+  type BacktestSource,
+  type BacktestInput,
+  type BacktestStarter,
+} from "./backtest.js";
+import {
   CODE_CONTRACT,
   validCodePrediction,
 } from "../replay/code-prediction.js";
@@ -64,6 +70,8 @@ export class PolicyTools {
     private clock: () => string,
     readonly fallbackSamples: ValidationSample[] = [],
     readonly swapContract?: SwapContract,
+    readonly backtestSource?: BacktestSource,
+    readonly starter?: BacktestStarter,
   ) {
     if (
       new Set(schedule.map((g) => g.gameId)).size !== schedule.length ||
@@ -85,6 +93,35 @@ export class PolicyTools {
       ).length !== 1
     )
       throw Error("Current game absent from policy schedule");
+  }
+  async backtest(
+    phase: Phase,
+    allowance: number,
+    signal: AbortSignal,
+    input: BacktestInput = {},
+  ) {
+    validateInput("backtest_package", input);
+    if (phase !== "pregame")
+      throw new SessionError("phase_refused", "Backtest is pregame only");
+    if (!this.swapContract || !this.backtestSource)
+      throw new SessionError(
+        "capability_disabled",
+        "Backtest requires a swap contract and released history",
+      );
+    return backtestPackage({
+      root: this.root,
+      workspace: this.workspace,
+      gameId: this.game.gameId,
+      cutoff: this.game.scheduledStart,
+      clock: this.clock,
+      assembler: this.assembler,
+      contract: this.swapContract,
+      source: this.backtestSource,
+      allowance,
+      signal,
+      input,
+      starter: this.starter,
+    });
   }
   async freeze(phase: Phase, signal: AbortSignal) {
     if (phase !== "pregame")

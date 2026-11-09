@@ -1,3 +1,4 @@
+import { cachedBacktestSource } from "../policy/backtest.js";
 import { pinSwapContract } from "../replay/swap.js";
 import { join } from "node:path";
 import type { SessionSource } from "../env/source.js";
@@ -115,6 +116,8 @@ function replayManifest(
 
 export function chronologicalRunner(options: {
   validationSamples?: ValidationSample[];
+  backtestSource?: import("../policy/backtest.js").BacktestSource;
+  starter?: import("../policy/backtest.js").BacktestStarter;
   root: string;
   config: RunConfig;
   source: SessionSource;
@@ -150,6 +153,8 @@ export function chronologicalRunner(options: {
     throw Error("Variant replay mode required");
   source.registerDecisionDatasets?.(datasets);
   const m = manifest(config, schedule);
+  let backtestSource:
+    import("../policy/backtest.js").BacktestSource | undefined;
   const tools = (
     game: Game,
     trusted: { root: string; workspace: string },
@@ -171,6 +176,8 @@ export function chronologicalRunner(options: {
       () => cutoff,
       options.validationSamples ?? [],
       config.harness.policy?.swapContract,
+      backtestSource,
+      options.starter,
     );
   const environment = sessionEnvironment(config, source, {
     policy: (context, trusted) =>
@@ -242,6 +249,11 @@ export function chronologicalRunner(options: {
       service.saveFeedback(trace);
     },
   );
+  if (options.backtestSource)
+    backtestSource = cachedBacktestSource(
+      options.backtestSource,
+      runner.lifetimeSignal,
+    );
   return runner;
 }
 
