@@ -26,6 +26,8 @@ import { auditCodeRevision } from "./lib/audit-revision.js";
 const image = process.argv.find((a) => a.startsWith("--image="))?.slice(8);
 if (!image) throw Error("Pass --image=<pinned assembler image>");
 const codeRevision = auditCodeRevision();
+if (codeRevision.endsWith("-dirty"))
+  throw Error("Commit implementation before recording acceptance evidence");
 
 const store = new DopplerStore();
 const lifetime = new AbortController();

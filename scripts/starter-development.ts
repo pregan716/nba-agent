@@ -23,6 +23,10 @@ import { auditPregames, loadReplayInputs } from "../src/replay/load.js";
 import { buildDataset } from "../src/replay/dataset.js";
 import { DockerAssembler } from "../src/policy/sandbox.js";
 import { scoreWindow, summarize } from "../src/replay/scoring.js";
+import { auditCodeRevision } from "./lib/audit-revision.js";
+const codeRevision = auditCodeRevision();
+if (codeRevision.endsWith("-dirty"))
+  throw Error("Commit implementation before recording acceptance evidence");
 const image = process.argv.find((a) => a.startsWith("--image="))?.slice(8);
 if (!image) throw Error("Pass --image");
 const root = ".cache/starter-development";
@@ -126,12 +130,24 @@ try {
     writeFileSync(
       join(root, "results.json"),
       JSON.stringify(
-        { image, spec: STARTER_SPEC, fits, summary: summarize(results) },
+        {
+          codeRevision,
+          image,
+          spec: STARTER_SPEC,
+          fits,
+          summary: summarize(results),
+        },
         null,
         2,
       ) + "\n",
     );
   }
+  if (fits.length !== 10 || summarize(results).n !== 584)
+    throw Error("Incomplete starter development acceptance");
+  writeFileSync(
+    "docs/evidence/starter-model/spo873-scores.json",
+    readFileSync(join(root, "results.json")),
+  );
 } finally {
   store.close();
 }
