@@ -583,3 +583,204 @@ test("a call timeout retains the in-flight history load; runner shutdown aborts 
     clean(s.root);
   }
 });
+
+test("four concurrent batch containers preserve serial scores and join cancellation", async () => {
+  const s = setup();
+  const d = s.games[0].dataset;
+  const template = d.windows.find(
+    (w) => !w.exclusions.length && w.state && w.actual,
+  )!;
+  d.windows = Array.from({ length: 600 }, (_, i) => ({
+    ...structuredClone(template),
+    id: `many:${i}`,
+    sequence: i,
+    state: { ...structuredClone(template.state!), sequence: i },
+  }));
+  s.games = [s.games[0]];
+  let active = 0,
+    maximum = 0;
+  const batchAssembler = {
+    ...fixtureAssembler,
+    runBatch: async (_p: string, states: unknown[], signal: AbortSignal) => {
+      active++;
+      maximum = Math.max(maximum, active);
+      try {
+        const values = states as ObservableState[];
+        assert.deepEqual(
+          values.map((s) => s.sequence),
+          values.map((s) => s.sequence).sort((a, b) => a - b),
+        );
+        await delay(10, undefined, { signal });
+        return values.map((state) => ({ value: assembly(state, false) }));
+      } finally {
+        active--;
+      }
+    },
+  };
+  const options = {
+    ...s,
+    gameId: "current",
+    cutoff: "2025-11-03T00:00:00Z",
+    clock: () => "2025-11-02T23:59:59Z",
+    source: async () => ({ games: s.games }),
+    allowance: 10,
+    signal: new AbortController().signal,
+    input: { per_window: true },
+  };
+  try {
+    const parallel = await backtestPackage({
+      ...options,
+      assembler: batchAssembler,
+    });
+    const serial = await backtestPackage({
+      ...options,
+      assembler: {
+        ...fixtureAssembler,
+        run: async (p, state, signal, mode) =>
+          mode === "load"
+            ? fixtureAssembler.run(p, state, signal, mode)
+            : {
+                value: assembly(state as ObservableState, false),
+                computeSeconds: 0,
+              },
+      },
+    });
+    assert.equal(maximum, 4);
+    assert.equal(active, 0);
+    assert.equal(parallel.complete, true);
+    assert.deepEqual(parallel.summary, serial.summary);
+    assert.deepEqual(parallel.windows, serial.windows);
+    await assert.rejects(
+      backtestPackage({
+        ...options,
+        assembler: batchAssembler,
+        signal: AbortSignal.timeout(5),
+      }),
+    );
+    assert.equal(active, 0);
+  } finally {
+    clean(s.root);
+  }
+});
+
+test("starter comparison is prepared once per hash/cutoff and fails closed on unknown states", async () => {
+  const { StarterBacktestCache } = await import("../src/starter/backtest.js");
+  const s = setup(),
+    cache = new StarterBacktestCache();
+  let calls = 0;
+  const signal = new AbortController().signal;
+  const predictor = {
+    hash: "model-a",
+    predict: async (state: ObservableState) => {
+      calls++;
+      return {
+        prediction: assembly(state, false).prediction,
+        candidates: assembly(state, false).candidates,
+      };
+    },
+  };
+  const data = {
+    games: [
+      ...s.games,
+      { dataset: dataset("future"), scheduledStart: "2027-01-01T00:00:00Z" },
+    ],
+  };
+  try {
+    const first = await cache.prepare(
+      predictor,
+      data,
+      "current",
+      "2025-11-03T00:00:00Z",
+      signal,
+    );
+    const count = calls;
+    assert.ok(count > 0);
+    assert.equal(
+      await cache.prepare(
+        predictor,
+        data,
+        "current",
+        "2025-11-03T00:00:00Z",
+        signal,
+      ),
+      first,
+    );
+    assert.equal(calls, count);
+    const state = s.games[0].dataset.windows.find(
+      (w) => !w.exclusions.length && w.state && w.actual,
+    )!.state!;
+    const expected = await first.predict(state, signal);
+    (expected.prediction as any).substitution.noul = 99;
+    assert.notDeepEqual(await first.predict(state, signal), expected);
+    await assert.rejects(
+      first.predict({ ...state, sequence: 99999 }, signal),
+      /absent/,
+    );
+    await cache.prepare(
+      { ...predictor, hash: "model-b" },
+      data,
+      "current",
+      "2025-11-03T00:00:00Z",
+      signal,
+    );
+    assert.equal(calls, count * 2);
+    await cache.prepare(
+      predictor,
+      data,
+      "current",
+      "2025-11-04T00:00:00Z",
+      signal,
+    );
+    assert.equal(calls, count * 3);
+  } finally {
+    clean(s.root);
+  }
+});
+
+test("failed starter cache preparation joins workers and retries without a poisoned entry", async () => {
+  const { StarterBacktestCache } = await import("../src/starter/backtest.js");
+  const s = setup(),
+    cache = new StarterBacktestCache();
+  let active = 0;
+  const signal = AbortSignal.timeout(5);
+  const predictor = {
+    hash: "cancelled",
+    predict: async (_state: ObservableState, abort: AbortSignal) => {
+      active++;
+      try {
+        await delay(100, undefined, { signal: abort });
+        return { prediction: {}, candidates: [] };
+      } finally {
+        active--;
+      }
+    },
+  };
+  try {
+    await assert.rejects(
+      cache.prepare(
+        predictor,
+        { games: s.games },
+        "current",
+        "2025-11-03T00:00:00Z",
+        signal,
+      ),
+    );
+    assert.equal(active, 0);
+    const retry = await cache.prepare(
+      {
+        ...predictor,
+        predict: async (state: ObservableState) => ({
+          prediction: assembly(state, false).prediction,
+          candidates: assembly(state, false).candidates,
+        }),
+      },
+      { games: s.games },
+      "current",
+      "2025-11-03T00:00:00Z",
+      new AbortController().signal,
+    );
+    assert.equal(retry.hash, predictor.hash);
+  } finally {
+    clean(s.root);
+  }
+});

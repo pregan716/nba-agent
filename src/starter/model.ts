@@ -43,10 +43,19 @@ export const STARTER_SPEC = {
   shrinkWindows: 20,
   fitThreads: 8,
   apiHash: hash(
-    readFileSync(new URL("../../starter/nba_starter.py", import.meta.url)),
+    readFileSync(
+      new URL("../../starter/reference/nba_starter.py", import.meta.url),
+    ),
   ),
   fitHash: hash(
     readFileSync(new URL("../../starter/train.py", import.meta.url)),
+  ),
+} as const;
+/** Execution changes are versioned separately from the unchanged fitted artifact. */
+export const STARTER_RUNTIME = {
+  version: "starter-runtime-v2",
+  apiHash: hash(
+    readFileSync(new URL("../../starter/nba_starter.py", import.meta.url)),
   ),
 } as const;
 export interface StarterMount {
@@ -83,11 +92,13 @@ export function verifyStarter(m: StarterMount) {
 export function starterMountArgs(m?: StarterMount) {
   if (!m) return [];
   verifyStarter(m);
+  if (hash(readFileSync("starter/nba_starter.py")) !== STARTER_RUNTIME.apiHash)
+    throw Error("Starter runtime changed");
   return [
     "--mount",
     `type=bind,source=${resolve(m.path)},target=/starter,readonly`,
     "--mount",
-    `type=bind,source=${resolve(m.path, "nba_starter.py")},target=/usr/local/lib/python3.12/site-packages/nba_starter.py,readonly`,
+    `type=bind,source=${resolve("starter/nba_starter.py")},target=/usr/local/lib/python3.12/site-packages/nba_starter.py,readonly`,
     "--env",
     "STARTER_MODEL=1",
   ];
@@ -196,6 +207,8 @@ export async function fitStarter(options: {
         "--mount",
         `type=bind,source=${resolve("starter")},target=/code,readonly`,
         "--mount",
+        `type=bind,source=${resolve("starter/reference/nba_starter.py")},target=/code/nba_starter.py,readonly`,
+        "--mount",
         `type=bind,source=${resolve(options.input)},target=/input.jsonl,readonly`,
         "--mount",
         `type=bind,source=${root},target=/output`,
@@ -216,7 +229,10 @@ export async function fitStarter(options: {
   }
   const seconds = (performance.now() - start) / 1000;
   const trained = JSON.parse(stdout.trim().split("\n").at(-1)!);
-  copyFileSync("starter/nba_starter.py", join(root, "nba_starter.py"));
+  copyFileSync(
+    "starter/reference/nba_starter.py",
+    join(root, "nba_starter.py"),
+  );
   const modelSha256 = hash(readFileSync(join(root, "model.json"))),
     apiSha256 = hash(readFileSync(join(root, "nba_starter.py")));
   const mount: StarterMount = {

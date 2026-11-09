@@ -123,6 +123,12 @@ while True:
         break
     length = struct.unpack("!I", header)[0]
     message = json.loads(read_exact(length))
+    if os.environ.get("STARTER_MODEL") == "1":
+        try:
+            nba_starter.load().prepare(message["state"])
+        except (KeyError, TypeError, AttributeError):
+            # Invalid/unsupported states fail only if the package calls predict.
+            pass
     result = execute(message)
     print(json.dumps(result, separators=(",", ":"), allow_nan=False), flush=True)
     del message, result, header, length

@@ -1,11 +1,15 @@
 import json
+import importlib.util
 import tempfile
 from pathlib import Path
 from train import fit
 import unittest
 import numpy as np
 from sklearn.ensemble import HistGradientBoostingClassifier
-from nba_starter import PARAMS, serialize, Trees, History, timestamp
+from nba_starter import PARAMS, serialize, Trees, History, timestamp, Starter
+reference_spec=importlib.util.spec_from_file_location("reference_starter", "/code/reference/nba_starter.py")
+reference=importlib.util.module_from_spec(reference_spec)
+reference_spec.loader.exec_module(reference)
 
 class StarterTests(unittest.TestCase):
     def test_tree_serialization_matches_sklearn(self):
@@ -45,6 +49,10 @@ class StarterTests(unittest.TestCase):
                 out.write(json.dumps({"release":"2026-01-01T00:00:00Z"})+"\n")
             second=json.dumps(fit(path,target,target["scheduledStart"]),sort_keys=True,allow_nan=False)
             self.assertEqual(first,second)
+            optimized=Starter(json.loads(first)); original=reference.Starter(json.loads(first))
+            for w in windows[::7]:
+                optimized.prepare(w["state"])
+                self.assertEqual(json.dumps(optimized.predict(w["state"]),sort_keys=True,allow_nan=False),json.dumps(original.predict(w["state"]),sort_keys=True,allow_nan=False))
 
     def test_history_releases_not_tips_control_availability(self):
         g=dict(gameId="a",teamId="team",season="2024-25",scheduledStart="2025-01-01T23:00:00Z",release="2025-01-02T14:00:00Z",summary={"players":{"p":[30,[7],True]},"counts":{"timeout":[10,2]}})

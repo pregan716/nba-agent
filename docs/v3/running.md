@@ -693,3 +693,90 @@ automatically. The numerical model's training and prediction source hashes
 are bound by the recorded model identity and harness spec. Validation: 327 Node tests
 (312 passed, 15 optional-image skips), both starter Docker tests, all three
 assembler isolation tests, and all 15 research sandbox tests passed.
+
+### Complete starter backtests (SPO-876)
+
+The environment now prepares starter backtest predictions once per model hash
+and cutoff, after fitting and before the research agent starts. This trusted
+preparation is not charged to the agent's 900-second compute allowance; its
+elapsed time is recorded as `starter_backtest_prepare` and remains inside
+pregame wall time. Each tool call scores the cached predictions on exactly its
+completed windows, retaining the `in-sample` label. Missing or changed states
+fail closed rather than silently using a different prediction. Source data
+still passes the release, team, roster-policy and current-game exclusion gates.
+
+`BACKTEST_EXECUTION` fixes concurrency at **four containers** and batch size at
+256, recorded in the harness version. Two batches can execute together, with
+each batch's two determinism passes running concurrently. Each container still
+runs states oldest-first, has no network or shared-memory mount, mounts the
+package and starter read-only, forks a fresh child for each state, and applies
+the per-state time/output limits. Cancellation joins every container's cleanup
+before removing the package snapshot or returning. The 120-second per-call
+limit and 900-second pregame compute budget are unchanged. Charges remain
+**elapsed wall-clock seconds**: parallel execution buys more CPU per charged
+second, equally for every variant.
+
+The faster Python runtime traverses entry-model trees once for the three entry
+sizes and retains artifact-only per-game history caches in the trusted batch
+supervisor before forking. Probability transforms retain their original array
+shapes, preserving exact numerical output. Package mutations still disappear
+with each child. No future state is read to warm these caches.
+
+Fitted artifact identity remains unchanged: `starter/reference/nba_starter.py`
+is the frozen SPO-873 reference used for training and stored with each artifact.
+`STARTER_SPEC` continues to hash those exact reference bytes. The optimized
+installed `nba_starter` module is separately bound by `STARTER_RUNTIME` in the
+harness, replay identity and assembly cache identity. Both sandboxes use this
+read-only runtime; `/starter/nba_starter.py` remains the artifact's reference.
+This separates execution changes from the existing model identity without
+silently changing either version.
+
+Reproduction: build the numerical assembler, commit implementation changes,
+then run `scripts/starter-development.ts --image=<pin>` for all ten refits and
+byte-for-byte full API comparison against the reference (including features),
+and `scripts/starter-performance.ts --image=<pin> --game-id=<id>` for
+`0022501206` and `0022501149`. The performance audit preloads history and prepares
+the starter comparison outside the charged call, measures a full cached call,
+and checks its scores against serial reference predictions on every window.
+`--artifact=<directory>` may reuse a verified cutoff-matching fitted artifact;
+`--probe` permits exploratory measurements but writes only to the local cache,
+never committed acceptance evidence. Formal evidence requires a clean revision.
+
+Clean-revision acceptance with image
+`local@sha256:22d5fd90c12183212964dfebc31284ccf84d1fe03c866720fbca2cd5e14ba66c`:
+
+| Cached-history target | Eligible/scored windows | Charged seconds | Result | Exact reference API comparisons |
+| --- | ---: | ---: | --- | ---: |
+| Midseason `0022501206` | 5,397 / 5,397 | 88.68 | `complete: true` | 5,397 |
+| Game 79 `0022501149` | 8,207 / 8,207 | 95.59 | `complete: true` | 8,207 |
+
+The [midseason evidence](../evidence/policy/backtest-spo876-0022501206.json)
+was recorded from clean `28df49ccef19a0c43057b447138ef15c103e21f1` while the
+development audit was also running. The
+[late-season evidence](../evidence/policy/backtest-spo876-0022501149.json)
+was recorded from clean `5d28914bd052b0e95cb9eb89e1aa0736f74c0243`, with no
+concurrent training fit during the timed call. Both use the same execution
+and runtime versions. The latter commit only adds temporary-export cleanup to
+the audit scripts.
+
+Both calls had zero invalid predictions and zero starter errors. Every full
+Python API result (including features and the complete set distribution) was
+compared byte-for-byte against the frozen serial reference, and every summary
+field matched serial scoring on the same windows. The prepared comparison
+scores also matched the package. Trusted preparation, including the initial
+history load, took 116.21 and 148.25 seconds respectively, outside the charged
+call. These timings are machine measurements, not a guarantee for arbitrary
+agent-authored packages; slower packages still return explicit partial results
+at the unchanged deadline.
+
+The [development rerun](../evidence/starter-model/spo876-scores.json), from clean
+`5d28914bd052b0e95cb9eb89e1aa0736f74c0243`, fully refitted all ten games and
+reproduced all ten SPO-873 model hashes and every per-game score summary
+exactly: **584 windows, timing Brier 0.16486313135424627, set log loss
+4.323299538360917**. Full API outputs matched the reference byte-for-byte on
+all 584 states. Validation also passed: 315 Node tests (16 optional-image
+skips), all six starter/assembler Docker tests, and all 15 research sandbox
+tests. The parallel tests check serial score parity, oldest-first execution,
+fresh children, shared-memory isolation, four-container concurrency, and
+cleanup after cancellation and timeout. Audit exports are removed after fitting
+to avoid accumulating large temporary copies.

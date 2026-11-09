@@ -1,3 +1,4 @@
+import { BACKTEST_EXECUTION } from "./execution.js";
 import { chmodSync, lstatSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
@@ -127,6 +128,34 @@ export function scorePackage(
     ),
   };
 }
+export function eligibleBacktestGames(
+  data: BacktestData,
+  gameId: string,
+  cutoff: string,
+) {
+  return data.games
+    .filter((g) => {
+      const d = g.dataset,
+        released = Date.parse(releaseTime(g.scheduledStart));
+      const season = d.trainingOnly?.season;
+      return (
+        d.gameId !== gameId &&
+        released < Date.parse(cutoff) &&
+        (!d.teamId || d.teamId === BOS) &&
+        (season === "2024-25"
+          ? d.trainingOnly?.rosterPolicy === "same-game-box-score-v1"
+          : !season ||
+            (season === "2025-26" &&
+              d.trainingOnly?.rosterPolicy === "season-pregame-v1"))
+      );
+    })
+    .sort(
+      (a, b) =>
+        b.scheduledStart.localeCompare(a.scheduledStart) ||
+        a.dataset.gameId.localeCompare(b.dataset.gameId),
+    );
+}
+
 /** Only observable states cross the assembler boundary. Outcomes stay in the scorer. */
 export async function backtestPackage(options: {
   root: string;
@@ -188,27 +217,7 @@ export async function backtestPackage(options: {
     const data = await abortable(options.source(cutoff, deadline), deadline);
     deadline.throwIfAborted();
     // Recheck trusted input at this boundary; a planted future dataset is never executed or returned.
-    games = data.games
-      .filter((g) => {
-        const d = g.dataset,
-          released = Date.parse(releaseTime(g.scheduledStart));
-        const season = d.trainingOnly?.season;
-        return (
-          d.gameId !== options.gameId &&
-          released < Date.parse(cutoff) &&
-          (!d.teamId || d.teamId === BOS) &&
-          (season === "2024-25"
-            ? d.trainingOnly?.rosterPolicy === "same-game-box-score-v1"
-            : !season ||
-              (season === "2025-26" &&
-                d.trainingOnly?.rosterPolicy === "season-pregame-v1"))
-        );
-      })
-      .sort(
-        (a, b) =>
-          b.scheduledStart.localeCompare(a.scheduledStart) ||
-          a.dataset.gameId.localeCompare(b.dataset.gameId),
-      );
+    games = eligibleBacktestGames(data, options.gameId, cutoff);
     skipped = (data.skipped ?? []).filter(
       (g) =>
         g.gameId !== options.gameId &&
@@ -228,48 +237,73 @@ export async function backtestPackage(options: {
     const starts = new Map(
       games.map((g) => [g.dataset.gameId, g.scheduledStart]),
     );
-    const batchSize = 256;
+    const batchSize = BACKTEST_EXECUTION.batchSize;
+    const waveSize = batchSize * (BACKTEST_EXECUTION.concurrency / 2);
     let first: import("./sandbox.js").BatchAssemblyResult[] = [],
       second: import("./sandbox.js").BatchAssemblyResult[] = [];
     let starterBatch: ({ prediction: unknown; candidates: unknown } | Error)[] =
       [];
     for (let index = 0; index < eligible.length; index++) {
       const w = eligible[index];
-      if (assembler.runBatch && index % batchSize === 0) {
-        // Select recent batches first, but execute each container's states oldest
-        // first. Restore row order afterwards so scores keep their window identity.
-        const ordered = eligible
-          .slice(index, index + batchSize)
-          .map((window, offset) => ({ window, offset }))
-          .sort(
-            (a, b) =>
-              starts
-                .get(a.window.gameId)!
-                .localeCompare(starts.get(b.window.gameId)!) ||
-              a.window.gameId.localeCompare(b.window.gameId) ||
-              a.window.sequence - b.window.sequence ||
-              a.window.id.localeCompare(b.window.id),
-          );
-        const states = ordered.map(({ window }) => window.state);
-        try {
-          const path = join(temporary.path(options.gameId), "package");
-          const a = await assembler.runBatch(path, states, deadline);
-          const b = await assembler.runBatch(path, states, deadline);
-          if (a.length !== states.length || b.length !== states.length)
-            throw Error("Incomplete assembler batch");
-          first = [];
-          second = [];
-          ordered.forEach(({ offset }, i) => {
-            first[offset] = a[i];
-            second[offset] = b[i];
-          });
-        } catch (e) {
-          deadline.throwIfAborted();
-          if (e instanceof AssemblerInfrastructureError) throw e;
-          first = second = states.map(() => ({
-            error: "Assembler batch failed",
-          }));
+      if (assembler.runBatch && index % waveSize === 0) {
+        const controller = new AbortController();
+        const waveSignal = AbortSignal.any([deadline, controller.signal]);
+        const jobs: Promise<void>[] = [];
+        first = [];
+        second = [];
+        for (
+          let start = index;
+          start < Math.min(index + waveSize, eligible.length);
+          start += batchSize
+        ) {
+          // Recent batches first; each independent container executes oldest-first.
+          const ordered = eligible
+            .slice(start, start + batchSize)
+            .map((window, offset) => ({
+              window,
+              offset: start - index + offset,
+            }))
+            .sort(
+              (a, b) =>
+                starts
+                  .get(a.window.gameId)!
+                  .localeCompare(starts.get(b.window.gameId)!) ||
+                a.window.gameId.localeCompare(b.window.gameId) ||
+                a.window.sequence - b.window.sequence ||
+                a.window.id.localeCompare(b.window.id),
+            );
+          for (const target of [first, second])
+            jobs.push(
+              (async () => {
+                try {
+                  const answers = await assembler.runBatch!(
+                    join(temporary.path(options.gameId), "package"),
+                    ordered.map(({ window }) => window.state),
+                    waveSignal,
+                  );
+                  if (answers.length !== ordered.length)
+                    throw Error("Incomplete assembler batch");
+                  ordered.forEach(({ offset }, i) => {
+                    target[offset] = answers[i];
+                  });
+                } catch (e) {
+                  if (e instanceof AssemblerInfrastructureError) {
+                    controller.abort(e);
+                    throw e;
+                  }
+                  if (waveSignal.aborted) throw e;
+                  ordered.forEach(({ offset }) => {
+                    target[offset] = { error: "Assembler batch failed" };
+                  });
+                }
+              })(),
+            );
         }
+        // Join every container's cleanup before returning or removing its package.
+        const settled = await Promise.allSettled(jobs);
+        const failed = settled.find((r) => r.status === "rejected");
+        if (failed?.status === "rejected")
+          throw controller.signal.reason ?? failed.reason;
       }
       if (options.starter?.predictBatch && index % batchSize === 0) {
         const states = eligible
@@ -293,10 +327,10 @@ export async function backtestPackage(options: {
       try {
         const path = join(temporary.path(options.gameId), "package");
         const a = assembler.runBatch
-          ? first[index % batchSize]
+          ? first[index % waveSize]
           : await assembler.run(path, w.state, deadline);
         const b = assembler.runBatch
-          ? second[index % batchSize]
+          ? second[index % waveSize]
           : await assembler.run(path, w.state, deadline);
         if (("error" in a && a.error) || ("error" in b && b.error))
           throw Error("Assembler failed");

@@ -163,17 +163,21 @@ class Trees:
         self.spec=spec
         self.trees=[[TreePredictor(np.array([tuple(n) for n in nodes],dtype=PREDICTOR_RECORD_DTYPE),
                                    np.zeros((0,8),dtype=np.uint32),np.zeros((0,8),dtype=np.uint32)) for nodes in iteration] for iteration in spec["trees"]]
-    def predict(self, rows):
+    def raw(self, rows):
         x=np.array([[r[c] for c in self.spec["columns"]] for r in rows],dtype=np.float64)
         raw=np.tile(np.array(self.spec["baseline"],dtype=float),(len(rows),1))
         for iteration in self.trees:
             for k,tree in enumerate(iteration):
                 raw[:,k]+=tree.predict(x,np.zeros((0,8),dtype=np.uint32),np.zeros(x.shape[1],dtype=np.uint32),1)
+        return raw
+    def probabilities(self, raw):
         if len(self.spec["classes"])==1:
-            return np.ones((len(rows),1))
+            return np.ones((len(raw),1))
         if raw.shape[1]==1:
             p=1/(1+np.exp(-raw[:,0])); return np.column_stack((1-p,p))
         e=np.exp(raw-np.max(raw,axis=1,keepdims=True));return e/e.sum(axis=1,keepdims=True)
+    def predict(self, rows):
+        return self.probabilities(self.raw(rows))
     def positive(self,rows):
         p=self.predict(rows)
         return p[:,self.spec["classes"].index(1)] if 1 in self.spec["classes"] else np.zeros(len(rows))
@@ -199,6 +203,10 @@ class Starter:
         self.games={g["gameId"]:g for g in artifact["history"] if g["teamId"]==BOS}
         self.games[artifact["target"]["gameId"]]=artifact["target"]
         self.models=[Trees(spec) for spec in artifact["models"]]
+    def prepare(self, state):
+        # Called only by the trusted supervisor, before forking. This depends on
+        # artifact history and roster IDs, never package code or later states.
+        self.history.at(self.games[state["gameId"]], [p["playerId"] for p in state["players"]])
     def predict(self,state):
         game=self.games[state["gameId"]]
         ctx,pf,agg=features(state,game,self.history)
@@ -208,9 +216,14 @@ class Starter:
         pk=dict(zip(count.spec["classes"],count.predict([{**ctx,**agg}])[0]))
         bench=state["eligibleBench"]; entries={}; sets={}
         odds=lambda probs:{p:max(1e-6,q)/max(1e-6,1-q) for p,q in probs.items()}
-        for k in (1,2,3):
-            if k>len(bench) or pk.get(k,0)<=0: continue
-            pe=dict(zip(bench,entry.positive([{**ctx,**pf[p],"k":float(k)} for p in bench])))
+        sizes=[k for k in (1,2,3) if k<=len(bench) and pk.get(k,0)>0]
+        entry_raw=entry.raw([{**ctx,**pf[p],"k":float(k)} for k in sizes for p in bench]) if sizes else None
+        for index,k in enumerate(sizes):
+            # Keep each probability transform's original shape, preserving exact
+            # floating-point output while traversing the entry trees only once.
+            probs=entry.probabilities(entry_raw[index*len(bench):(index+1)*len(bench)])
+            positive=probs[:,entry.spec["classes"].index(1)] if 1 in entry.spec["classes"] else np.zeros(len(bench))
+            pe=dict(zip(bench,positive))
             entries[str(k)]={p:float(q) for p,q in pe.items()}
             for out,po in conditional(odds(exits),k).items():
                 for ins,pi in conditional(odds(pe),k).items():

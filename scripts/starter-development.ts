@@ -1,3 +1,4 @@
+import { referenceStarterPredictions } from "./lib/starter-parity.js";
 // Offline official-data acceptance; no provider calls.
 import {
   mkdirSync,
@@ -90,6 +91,9 @@ try {
       target: game,
       cutoff: game.scheduledStart,
       signal,
+    }).finally(() => {
+      rmSync(input, { force: true });
+      rmSync(current, { force: true });
     });
     const assembler = new DockerAssembler(
       image,
@@ -105,6 +109,18 @@ try {
       windows.map((w) => w.state!),
       signal,
     );
+    const reference = await referenceStarterPredictions(
+      image,
+      fit.mount.path,
+      windows.map((w) => w.state!),
+      join(dir, "parity"),
+    );
+    if (JSON.stringify(answers) !== JSON.stringify(reference.answers)) {
+      // JSON key order differs between emitters; compare canonical structures.
+      const { canonicalJson } = await import("../src/env/tools.js");
+      if (canonicalJson(answers) !== canonicalJson(reference.answers))
+        throw Error("Starter baseline differs from reference");
+    }
     const scored = windows.map((w, i) =>
       scoreWindow(
         w,
@@ -122,10 +138,9 @@ try {
       hash: fit.mount.hash,
       seconds: fit.seconds,
       rows: fit.rows,
+      parity: reference.parity,
       summary: summarize(scored),
     });
-    rmSync(input);
-    rmSync(current);
     console.log(JSON.stringify(fits.at(-1)));
     writeFileSync(
       join(root, "results.json"),
@@ -145,7 +160,7 @@ try {
   if (fits.length !== 10 || summarize(results).n !== 584)
     throw Error("Incomplete starter development acceptance");
   writeFileSync(
-    "docs/evidence/starter-model/spo873-scores.json",
+    "docs/evidence/starter-model/spo876-scores.json",
     readFileSync(join(root, "results.json")),
   );
 } finally {
