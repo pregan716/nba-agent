@@ -1,5 +1,6 @@
 {
-  "image": "local@sha256:2f90624b831a2f85a94307dff247af043a9a9fecdf3e42d868d0e7c13ff2c022",
+  "codeRevision": "c01ca95dc6bba14c01c2b40950fd1166181acb64",
+  "image": "local@sha256:f7cfa5f66e8a51a7d2e5624038ee4a278b112dc1e39e4bae3419e126f8abd79a",
   "spec": {
     "version": "starter-hgb-e-v1",
     "libraries": {
@@ -28,7 +29,7 @@
       "gameId": "0022500083",
       "scheduledStart": "2025-10-22T23:30:00.000Z",
       "hash": "9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc",
-      "seconds": 28.786748791999997,
+      "seconds": 32.669735292,
       "rows": [
         675125,
         135025,
@@ -129,7 +130,7 @@
               "reliability": 0.026091196973085845,
               "resolution": 0,
               "uncertainty": 0,
-              "binningError": 6.331661304282213e-05
+              "binningError": 0.00006331661304282213
             },
             "setLogLoss": 3.80489967870628,
             "setLogLossClips": 1,
@@ -443,7 +444,7 @@
       "gameId": "0022500018",
       "scheduledStart": "2025-10-24T23:30:00.000Z",
       "hash": "746ccbf65bd85f2e7abd7fc4148f380abb87b020fc0657761ab34ef45f4c475f",
-      "seconds": 31.675223375,
+      "seconds": 33.9274605,
       "rows": [
         684495,
         136899,
@@ -647,7 +648,7 @@
           },
           "jump_ball": {
             "n": 1,
-            "timingBrier": 1e-06,
+            "timingBrier": 0.000001,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -658,7 +659,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 1e-06,
+              "reliability": 0.000001,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -725,7 +726,7 @@
           },
           "violation": {
             "n": 1,
-            "timingBrier": 8.863673555563121e-05,
+            "timingBrier": 0.00008863673555563121,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -736,7 +737,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 8.863673555563121e-05,
+              "reliability": 0.00008863673555563121,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -858,7 +859,7 @@
       "gameId": "0022500106",
       "scheduledStart": "2025-10-26T19:30:00.000Z",
       "hash": "824ce23fe7a95b4d0668aa16995cc9848ce32e4f92767df198b6cae906f64cc1",
-      "seconds": 35.12342754199999,
+      "seconds": 33.297305584000014,
       "rows": [
         695490,
         139098,
@@ -1234,7 +1235,7 @@
       "gameId": "0022500117",
       "scheduledStart": "2025-10-28T00:00:00.000Z",
       "hash": "d979a8a2e712f4049b10acdd919f46a36c5acab4182627d217bd00417527a373",
-      "seconds": 37.0952285,
+      "seconds": 38.436937833,
       "rows": [
         701170,
         140234,
@@ -1438,7 +1439,7 @@
           },
           "jump_ball": {
             "n": 1,
-            "timingBrier": 1e-06,
+            "timingBrier": 0.000001,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -1449,7 +1450,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 1e-06,
+              "reliability": 0.000001,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -1610,7 +1611,7 @@
       "gameId": "0022500128",
       "scheduledStart": "2025-10-29T23:00:00.000Z",
       "hash": "7d91c5582197d10ec1192bc6b768afc016c245ddd742b4901a2768a927fb7e8e",
-      "seconds": 37.425889708,
+      "seconds": 35.713342459,
       "rows": [
         711065,
         142213,
@@ -1711,7 +1712,7 @@
               "reliability": 0.004998344174717666,
               "resolution": 0,
               "uncertainty": 0,
-              "binningError": 1.9983223578504128e-05
+              "binningError": 0.000019983223578504128
             },
             "setLogLoss": 4.820557911324192,
             "setLogLossClips": 2,
@@ -1814,7 +1815,7 @@
           },
           "jump_ball": {
             "n": 1,
-            "timingBrier": 1e-06,
+            "timingBrier": 0.000001,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -1825,7 +1826,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 1e-06,
+              "reliability": 0.000001,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -1986,7 +1987,7 @@
       "gameId": "0022500021",
       "scheduledStart": "2025-10-31T23:00:00.000Z",
       "hash": "0803a88df7b507fc8493033077671533600ca260567083427dfbb3223f20c2ce",
-      "seconds": 41.907455709000004,
+      "seconds": 37.988926792000015,
       "rows": [
         719560,
         143912,
@@ -2190,7 +2191,7 @@
           },
           "jump_ball": {
             "n": 1,
-            "timingBrier": 1e-06,
+            "timingBrier": 0.000001,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -2201,7 +2202,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 1e-06,
+              "reliability": 0.000001,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -2362,7 +2363,7 @@
       "gameId": "0022500146",
       "scheduledStart": "2025-11-02T00:00:00.000Z",
       "hash": "0a2948926fdcb66dfeb71c8a53a3a82dd939043d7551d78a55af0564ed5570ea",
-      "seconds": 41.160970292000044,
+      "seconds": 30.974273334000028,
       "rows": [
         724080,
         144816,
@@ -2385,7 +2386,7 @@
           "reliability": 0.03777066398057635,
           "resolution": 0.10901496601008236,
           "uncertainty": 0.2240735420856076,
-          "binningError": -8.10506859363902e-05
+          "binningError": -0.0000810506859363902
         },
         "setLogLoss": 4.555972767588931,
         "setLogLossClips": 6,
@@ -2541,7 +2542,7 @@
               "reliability": 0.048883598429294885,
               "resolution": 0.10574462471969398,
               "uncertainty": 0.23268698060941825,
-              "binningError": 2.4057253641684984e-06
+              "binningError": 0.0000024057253641684984
             },
             "setLogLoss": 4.37442565037816,
             "setLogLossClips": 3,
@@ -2566,7 +2567,7 @@
           },
           "jump_ball": {
             "n": 1,
-            "timingBrier": 1e-06,
+            "timingBrier": 0.000001,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -2577,7 +2578,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 1e-06,
+              "reliability": 0.000001,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -2777,7 +2778,7 @@
       "gameId": "0022500158",
       "scheduledStart": "2025-11-04T00:30:00.000Z",
       "hash": "278cfebbb3e7e17a630b99af8d086ad03d6fcc26f0ceb361a9edfe11fa5e950e",
-      "seconds": 43.42496274999995,
+      "seconds": 31.485098541999935,
       "rows": [
         732695,
         146539,
@@ -2800,7 +2801,7 @@
           "reliability": 0.060836133891383884,
           "resolution": 0.09690837622485896,
           "uncertainty": 0.23923104307582768,
-          "binningError": -9.865066070477435e-05
+          "binningError": -0.00009865066070477435
         },
         "setLogLoss": 5.0060385639263165,
         "setLogLossClips": 8,
@@ -2917,7 +2918,7 @@
               "reliability": 0.11936189072932912,
               "resolution": 0.1875,
               "uncertainty": 0.1875,
-              "binningError": 7.671648181097057e-05
+              "binningError": 0.00007671648181097057
             },
             "setLogLoss": 4.622559536651229,
             "setLogLossClips": 0,
@@ -2995,7 +2996,7 @@
               "reliability": 0.26585218512965164,
               "resolution": 0.22222222222222224,
               "uncertainty": 0.22222222222222224,
-              "binningError": 1.494171125715482e-08
+              "binningError": 1.494171125715482e-8
             },
             "setLogLoss": 2.2185499683075385,
             "setLogLossClips": 0,
@@ -3192,7 +3193,7 @@
       "gameId": "0022500174",
       "scheduledStart": "2025-11-06T00:30:00.000Z",
       "hash": "10bceafdc3651b31016d6d86b7a3eb5f10afd92d80ba16beb3f52e81d1e9dc1f",
-      "seconds": 31.84998783300002,
+      "seconds": 31.119193542000023,
       "rows": [
         741655,
         148331,
@@ -3568,7 +3569,7 @@
       "gameId": "0022500028",
       "scheduledStart": "2025-11-08T00:00:00.000Z",
       "hash": "4da52de7056cdc02eeba9a4520202d8cb57d83cbb73516bc2f5a475900adcb05",
-      "seconds": 42.37120150000008,
+      "seconds": 32.03378104099992,
       "rows": [
         749030,
         149806,
@@ -3669,7 +3670,7 @@
               "reliability": 0.005582415846658616,
               "resolution": 0,
               "uncertainty": 0,
-              "binningError": 8.132555481511587e-06
+              "binningError": 0.000008132555481511587
             },
             "setLogLoss": 4.816792055797514,
             "setLogLossClips": 2,
@@ -3772,7 +3773,7 @@
           },
           "jump_ball": {
             "n": 1,
-            "timingBrier": 1.174229477371149e-06,
+            "timingBrier": 0.000001174229477371149,
             "timingConstantBrier": 0,
             "timingSkillVsConstant": null,
             "timingSkillVsConstantReason": "zero_reference_loss",
@@ -3783,7 +3784,7 @@
             "brierDecomposition": {
               "bins": 10,
               "pooling": "window-weighted within-game deciles",
-              "reliability": 1.174229477371149e-06,
+              "reliability": 0.000001174229477371149,
               "resolution": 0,
               "uncertainty": 0,
               "binningError": 0
@@ -4074,7 +4075,7 @@
           "reliability": 0.03798842038773253,
           "resolution": 0.032095616024187465,
           "uncertainty": 0.09249811035525321,
-          "binningError": -1.5602354648674988e-05
+          "binningError": -0.000015602354648674988
         },
         "setLogLoss": 2.955823130327079,
         "setLogLossClips": 0,
@@ -4152,7 +4153,7 @@
           "reliability": 0.07010481004514799,
           "resolution": 0.041666666666666664,
           "uncertainty": 0.0787037037037037,
-          "binningError": -1.6984038771622467e-05
+          "binningError": -0.000016984038771622467
         },
         "setLogLoss": 3.6388389194784634,
         "setLogLossClips": 0,
@@ -4343,26 +4344,5 @@
         "observed": 0.95
       }
     ]
-  },
-  "codeRevision": "bf3e514854fb4b4b72e30d91dd6010f475cd8a13-dirty",
-  "provenance": "Measured during SPO-873 implementation; exact prediction and training sources are bound by spec.apiHash and spec.fitHash. Official loader, not experiment export.",
-  "trainingPopulation": {
-    "priorTeamDatasets": 2442,
-    "priorWindows": 145712,
-    "priorEligibleWindows": 134737,
-    "experimentTeamDatasets": 2374,
-    "experimentWindows": 142150
-  },
-  "determinism": {
-    "gameId": "0022500083",
-    "firstFitSeconds": 37.925822083,
-    "repeatFitSeconds": 28.786748791999997,
-    "sameHash": "9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc",
-    "dataExportSeconds": 386.609829709
-  },
-  "reference": {
-    "timingBrier": 0.164,
-    "setLogLoss": 4.29,
-    "note": "Rounded experiment variant E figures; official data and stricter as-of feature behavior differ."
   }
 }

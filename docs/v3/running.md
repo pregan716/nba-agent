@@ -629,12 +629,12 @@ remains the pinned warm-up prior.
 5,397 eligible windows as the SPO-872 measurement above,
 [`backtest-spo873.json`](../evidence/policy/backtest-spo873.json) records a package
 calling the starter at every window, plus the independently evaluated starter
-comparison. At the unchanged 120-second allowance, the cold call completed 512
-windows (68.76 seconds spent loading history) and the cached call completed
-1,536. Both returned `complete: false`, `error: compute_limit`; these are partial
+comparison. At the unchanged 120-second allowance, the cold call completed 768
+windows (69.44 seconds spent loading history) and the cached call completed
+1,792. Both returned `complete: false`, `error: compute_limit`; these are partial
 scores, not a full-history accuracy result. Neither call had invalid predictions
 or starter errors, and package/starter scores matched exactly on completed
-windows. The fit for that December 12 cutoff took 46.44 seconds. No time limit,
+windows. The fit for that December 12 cutoff took 45.04 seconds. No time limit,
 full-refit requirement, or two-pass package determinism check was relaxed. The
 measurement ran alongside the development audit on this machine, so throughput
 is indicative rather than an isolated hardware benchmark.
@@ -664,13 +664,15 @@ future partition read, including the streaming export path.
 [`spo873-scores.json`](../evidence/starter-model/spo873-scores.json) records all ten
 development games: **584 scored windows, 192 substitutions, timing Brier
 0.164863 and set log loss 4.323300**, versus the experiment's approximately
-0.164 and 4.29. Full per-game refits took 28.79–43.42 seconds. The opener's
-independent first fit (37.93 seconds) and repeat (28.79 seconds) produced the
-same model/API/spec hash,
+0.164 and 4.29. Full per-game refits in the clean rerun took 30.97–38.44
+seconds. All ten model hashes and complete per-game score summaries matched
+the original run exactly, including the opener's model/API/spec hash,
 `9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc`.
-Its initial all-team export took 386.61 seconds, separate from fitting, so
-cold data preparation plus fitting cost roughly seven minutes of pregame wall
-time. The holdout uses the same full-refit path.
+The original cold all-team export took 386.61 seconds, separate from fitting;
+this rerun reused that official prior-season export and freshly exported
+current-season rows at each cutoff. Cold preparation plus fitting therefore
+cost roughly seven minutes of pregame wall time in the original measurement.
+The holdout uses the same full-refit path.
 
 The official prior population is exactly SPO-870's 2,442 team-datasets and
 145,712 windows (134,737 eligible training windows), compared with the
@@ -684,8 +686,10 @@ small score movement above; this audit does not isolate each change's numerical
 contribution. Serialization parity with native scikit-learn is independently
 tested to 1e-12, including missing features and single-class models.
 
-Both evidence files were measured during implementation and identify that
-working-tree base; the numerical model's exact training and prediction source
-hashes and pinned assembler image are included. Validation: 327 Node tests
+Both evidence files were regenerated from clean commit
+`c01ca95dc6bba14c01c2b40950fd1166181acb64`. Both audit scripts refuse a dirty
+revision, and the development audit writes the revision into its evidence
+automatically. The numerical model's training and prediction source hashes
+are bound by the recorded model identity and harness spec. Validation: 327 Node tests
 (312 passed, 15 optional-image skips), both starter Docker tests, all three
 assembler isolation tests, and all 15 research sandbox tests passed.
