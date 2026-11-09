@@ -30,7 +30,8 @@ import { nextMorning } from "../src/data/time.js";
 import { Temporal } from "@js-temporal/polyfill";
 const image = process.argv.find((a) => a.startsWith("--image="))?.slice(8);
 if (!image) throw Error("Pass --image=<pinned assembler image>");
-const swap = process.argv.includes("--swap");
+const code = process.argv.includes("--code-predictions");
+const swap = code || process.argv.includes("--swap");
 const live = process.argv.includes("--live"),
   codeRevision = auditCodeRevision();
 const assembler = new DockerAssembler(image, {
@@ -114,14 +115,23 @@ try {
       ).map((input) => buildDataset(input)),
     );
   }
+  if (code && swapContract) swapContract.version = "jev-contract-v3";
   mkdirSync(".cache/policy", { recursive: true });
   const root = mkdtempSync(".cache/policy/gate2-");
   const workspace = join(root, "workspace"),
     source = join(workspace, "packages", id);
   mkdirSync(source, { recursive: true });
-  cpSync(swap ? "examples/policy-swap" : "examples/policy", source, {
-    recursive: true,
-  });
+  cpSync(
+    code
+      ? "examples/policy-code"
+      : swap
+        ? "examples/policy-swap"
+        : "examples/policy",
+    source,
+    {
+      recursive: true,
+    },
+  );
   const start = input.game.scheduledStart,
     clock = () => new Date(Date.parse(start) - 1).toISOString();
   const packages = new PackageStore(join(root, "frozen-packages"));
@@ -252,7 +262,7 @@ try {
     }
     mkdirSync("docs/evidence/policy", { recursive: true });
     writeFileSync(
-      `docs/evidence/policy/gate2-${swap ? "swap-" : ""}${live ? "live" : "fixture"}.json`,
+      `docs/evidence/policy/gate2-${code ? "code-" : swap ? "swap-" : ""}${live ? "live" : "fixture"}.json`,
       JSON.stringify(
         {
           codeRevision,

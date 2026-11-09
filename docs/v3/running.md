@@ -423,3 +423,57 @@ cost bound for two attempts per request. Adding `--live` invokes paid Jev calls
 and writes `gate2-swap-live.json`; obtain the user's spend approval first. Neither
 mode calls the research-agent model. The ordinary gate-2 command without `--swap`
 remains available to reproduce the legacy contract.
+
+## Code-first prediction (`jev-contract-v3`, SPO-871)
+
+Opt in with `scripts/run.ts --code-predictions` (non-scripted runs), or pin
+`harness.policy.swapContract.version` to `jev-contract-v3` in a programmatic
+configuration. The size prior and candidate/answer validation remain those of
+v2. The default launcher remains v2 until the v3 research prompts are delivered
+by SPO-874. Contract identity is included in harness and cache hashes, and
+cross-contract evaluation comparisons are refused.
+
+The package keeps the existing Jev request fields and adds `prediction`:
+`{ substitution: { type: "noul", noul: p }, swap: { type: "choice",
+probabilities: { ...candidateKeys, other: pOther } } }`. The swap keys must be
+those of the request. With an empty bench, omit swap and use empty candidates
+and swap criteria. Prediction fields never supply candidates or fallback flags.
+`defer` is absent/null for package scoring, or `{ "reason": "nonempty text" }`
+(up to 1,000 characters) to defer both questions to Jev. Other shapes are
+`assembler_error`. See `examples/policy-code` for a deterministic hand-written
+package that defers between-period windows.
+
+Every valid assembled request also goes to Jev in shadow. The record stores a
+trusted envelope with the package prediction, candidates, deferral reason,
+shadow answer and provider error. Per-window `result.code` records the scored
+source, both validated counterfactuals and scores, and regret (chosen loss minus
+alternative loss; positive means deferral selection was worse). Invalid package
+predictions take the degenerate form; on a deferred window this affects only
+the package counterfactual. Invalid Jev answers take per-question fallbacks.
+Invalid candidates or malformed deferrals skip Jev and score the degenerate
+form. First-window execution raises still invalidate the package.
+
+An exhausted shadow provider call leaves a non-deferred primary score intact
+and is counted separately as `shadow_provider_failure`. On a deferred window it
+leaves the primary score unavailable and counts as `provider_failure` toward
+the existing infrastructure flag. The package counterfactual is retained even
+then. Resume reuses the recorded envelope and never repeats a completed call.
+
+Trace summaries, feedback, and evaluation reports include `code`: primary and
+eligible counts; invalid-prediction counts; deferred counts by stoppage kind;
+shadow failure counts/rate; a missing-shadow flag above 5%; and package-only,
+Jev-only and regret aggregates. Each counterfactual is paired with the primary
+on windows where both exist and includes matching primary losses, exclusions
+by reason and per-metric counts (selection metrics exclude no-substitution
+windows). Regret requires both package and Jev scores. A positive regret is
+worse, and null is unavailable, not zero. Compact feedback includes source,
+answer previews, both score sets and regret; full window paging retains the
+complete envelope. `validate_package` returns `prediction`, `defer`, and
+`predictionValid` even without a Jev call.
+
+Offline acceptance: `npx tsx scripts/policy-audit.ts --code-predictions
+--image=<pinned assembler image>`. Add `--live` only after the user approves the
+Jev spend. This replays development game `0022500083`, also sends the nine-option
+probe, records both sources and writes `docs/evidence/policy/gate2-code-*.json`.
+No analyst model is used. Starter-model fitting and `backtest_package` belong to
+subsequent issues.

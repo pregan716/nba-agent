@@ -70,6 +70,21 @@ function readPage(trace: PolicyTrace, query: FeedbackQuery = {}) {
       ...(w.result.validation?.swap ? { swap: w.result.validation.swap } : {}),
       actual: w.result.window.actual,
       scores: w.result.scores,
+      ...(w.result.code
+        ? {
+            code: {
+              source: w.result.code.source,
+              defer: w.result.code.defer,
+              invalidPrediction: w.result.code.invalidPrediction,
+              shadowFailure: w.result.code.shadowFailure,
+              packagePrediction: preview(w.result.code.package.raw),
+              shadowAnswer: preview(w.result.code.jev.raw),
+              packageScores: w.result.code.package.scores,
+              shadowScores: w.result.code.jev.scores,
+              regret: w.result.code.regret,
+            },
+          }
+        : {}),
       failure: w.result.failure,
       exclusions: w.result.window.exclusions,
     };

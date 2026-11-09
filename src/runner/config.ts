@@ -122,7 +122,7 @@ export const configSchema = z.strictObject({
         api: z.literal("assemble-v1"),
         swapContract: z
           .strictObject({
-            version: z.literal("jev-contract-v2"),
+            version: z.enum(["jev-contract-v2", "jev-contract-v3"]),
             sizePrior: z.array(z.number().nonnegative()).length(5),
             training: z.array(
               z.strictObject({ gameId: z.string(), inputHash: z.string() }),

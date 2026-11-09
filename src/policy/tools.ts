@@ -1,3 +1,7 @@
+import {
+  CODE_CONTRACT,
+  validCodePrediction,
+} from "../replay/code-prediction.js";
 import { validateSwap, type SwapContract } from "../replay/swap.js";
 import { validateInput } from "../env/input.js";
 import { contextGuard, mapJevAnswers } from "./request.js";
@@ -210,6 +214,16 @@ export class PolicyTools {
             this.swapContract,
           );
           output.request = result.request;
+          if (this.swapContract?.version === CODE_CONTRACT) {
+            output.prediction = result.assembly.prediction ?? null;
+            output.defer = result.assembly.defer ?? null;
+            output.predictionValid = validCodePrediction(
+              output.prediction,
+              result.assembly.candidates,
+              sample.state,
+              this.swapContract,
+            );
+          }
           output.diagnostics = result.assembly.diagnostics;
           contextGuard(result.request);
           if (input.jev) {

@@ -1,3 +1,9 @@
+import {
+  CODE_CONTRACT,
+  scoreCodeWindow,
+  codeSummary,
+  type CodeAnswers,
+} from "./code-prediction.js";
 import { validateSwap, candidateKey, type SwapContract } from "./swap.js";
 import { diagnosticBreakdowns } from "./diagnostics.js";
 import { rank, validatePrediction } from "./contract.js";
@@ -12,7 +18,18 @@ export function scoreWindow(
   failure: Failure | null = null,
   contract?: SwapContract,
 ): WindowResult {
+  if (
+    contract?.version === CODE_CONTRACT &&
+    (raw as any)?.contract === CODE_CONTRACT &&
+    !window.exclusions.length &&
+    window.state &&
+    window.actual
+  )
+    return scoreCodeWindow(window, raw as CodeAnswers, contract);
   const result: WindowResult = {
+    ...(contract?.version === CODE_CONTRACT
+      ? { contractVersion: CODE_CONTRACT }
+      : {}),
     window,
     raw,
     failure,
@@ -169,6 +186,7 @@ export function summarize(results: WindowResult[]) {
     );
   return {
     ...diagnosticBreakdowns(results),
+    ...(codeSummary(results) ? { code: codeSummary(results) } : {}),
     windows: results.length,
     eligible: eligible.length,
     scored: scores.length,

@@ -426,7 +426,9 @@ export function evaluateRecord(
         );
         if (
           !matchesRecorded(recomputed.scores, stored.scores, addedScores) ||
-          canonical(recomputed.validation) !== canonical(stored.validation)
+          canonical(recomputed.validation) !== canonical(stored.validation) ||
+          canonical(recomputed.code) !== canonical(stored.code) ||
+          recomputed.failure !== stored.failure
         )
           throw new EvaluationError("score_mismatch", key);
         rows.push(recomputed);

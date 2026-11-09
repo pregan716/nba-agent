@@ -201,7 +201,14 @@ try {
   config.budget.id = "development-limits-not-a-budget-profile";
   config.harness.policy = policyHarness(
     assembler,
-    scripted ? undefined : pinSwapContract(training),
+    scripted
+      ? undefined
+      : {
+          ...pinSwapContract(training),
+          version: process.argv.includes("--code-predictions")
+            ? "jev-contract-v3"
+            : "jev-contract-v2",
+        },
   );
   config.profile.modelRoles.jev = "jev-1.14.0";
   config.replay = replayDescriptor(

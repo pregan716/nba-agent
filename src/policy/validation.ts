@@ -81,6 +81,9 @@ export interface ValidationOutput {
   gameId: string;
   windowId: string;
   request: JevRequest | null;
+  prediction?: unknown;
+  defer?: unknown;
+  predictionValid?: boolean;
   diagnostics: Record<string, unknown> | null;
   answers?: any;
   derived?: import("../replay/swap.js").SwapDerived;
