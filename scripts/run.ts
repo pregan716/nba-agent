@@ -18,7 +18,11 @@ import { RecordStore } from "../src/runner/record.js";
 import { piHarness } from "../src/harness/pi.js";
 import { verifyLaunchImages } from "../src/launch/images.js";
 import { localSandboxImage, presetConfig } from "../src/harness/presets.js";
-import { PROMPT_SETS, type PromptSet } from "../src/harness/prompts.js";
+import {
+  PROMPT_SETS,
+  isResearchPromptSet,
+  type PromptSet,
+} from "../src/harness/prompts.js";
 import { probeForManifest } from "../src/harness/probe.js";
 import { currentCodeRevision } from "../src/harness/version.js";
 import { DockerAssembler } from "../src/policy/sandbox.js";
@@ -36,6 +40,7 @@ import {
   replayDescriptor,
   runBaselines,
   validateLaunch,
+  checkPromptContract,
   diagnosticSelection,
   validationSampleDescriptors,
 } from "../src/launch/run.js";
@@ -59,16 +64,26 @@ delete process.env.TYPESAFE_API_KEY;
 const scripted = process.argv.includes("--scripted");
 const purpose = arg("purpose", "fixture") as RunConfig["purpose"];
 const image = arg("assembler-image", "")!;
+const codePredictions = process.argv.includes("--code-predictions");
 const promptSet = arg(
   "prompts",
-  purpose === "fixture" ? "infrastructure" : "research-v3",
+  purpose === "fixture"
+    ? "infrastructure"
+    : codePredictions
+      ? "research-v3-code"
+      : "research-v3",
 ) as PromptSet;
 if (!PROMPT_SETS.includes(promptSet)) throw Error("Unknown prompt set");
 validateLaunch(
   purpose,
   image,
-  promptSet === "research-v3" ? "pi-research-v3" : "pi-infrastructure-v3",
+  isResearchPromptSet(promptSet) ? "pi-research-v3" : "pi-infrastructure-v3",
 );
+if (!scripted)
+  checkPromptContract(
+    promptSet,
+    codePredictions ? "jev-contract-v3" : "jev-contract-v2",
+  );
 const gameLimit = Number(arg("games", "10"));
 if (!image)
   throw Error(
@@ -82,7 +97,7 @@ if (mode !== "analyst" && mode !== "baselines") throw Error("Unknown mode");
 const memory = memoryVariant(
   arg("memory", "M0") as MemoryPermissions["variant"],
 );
-const starterEnabled = !scripted && process.argv.includes("--code-predictions");
+const starterEnabled = !scripted && codePredictions;
 const assembler = new DockerAssembler(
   image,
   {
@@ -233,9 +248,7 @@ try {
       ? undefined
       : {
           ...pinSwapContract(training),
-          version: process.argv.includes("--code-predictions")
-            ? "jev-contract-v3"
-            : "jev-contract-v2",
+          version: codePredictions ? "jev-contract-v3" : "jev-contract-v2",
         },
   );
   config.profile.modelRoles.jev = "jev-1.14.0";

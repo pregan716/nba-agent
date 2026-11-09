@@ -1,5 +1,9 @@
 import { isMemoryV3 } from "../env/memory.js";
-import { SYSTEM_PROMPT, type PromptSet } from "./prompts.js";
+import {
+  SYSTEM_PROMPT,
+  isResearchPromptSet,
+  type PromptSet,
+} from "./prompts.js";
 // Run-config presets for the launcher. Budget numbers are Open in the brief and
 // are set by the pilot procedure; the values here are deliberately generous
 // ceilings for the development-games pilot and are labelled as such. They are
@@ -114,7 +118,7 @@ export function presetConfig(options: PresetOptions): RunConfig {
     harness: harnessConfig({
       implementation: options.harness,
       promptSet: options.promptSet,
-      ...(isMemoryV3(options.memory) && options.promptSet !== "research-v3"
+      ...(isMemoryV3(options.memory) && !isResearchPromptSet(options.promptSet)
         ? { memoryInstructions: SYSTEM_PROMPT }
         : {}),
       memory: options.memory,
