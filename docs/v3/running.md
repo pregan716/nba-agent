@@ -553,3 +553,139 @@ The first call completed in 112.38 seconds, including 80.79 seconds of history
 loading. A repeat call completed in 31.53 seconds with exactly the same scores;
 history was loaded once. Both calls used the unchanged 120-second limit, reported
 317 would-defer windows and zero invalid outputs, and made no model calls.
+
+### Environment starter model (SPO-873)
+
+For real-data launches, `--code-predictions` now enables the environment-owned
+starter as well as `jev-contract-v3`, in both analyst and baselines modes. Use the
+new numerical assembler image (`npx tsx scripts/assembler-build.ts`). Legacy and
+scripted fixture launches retain their existing contract. The starter-enabled
+assembler has a 512 MiB memory limit; its 15-second per-window and output limits
+are unchanged. The image pins NumPy 2.2.6, pandas 2.2.3, SciPy 1.15.3 and
+scikit-learn 1.6.1, matching the research image.
+
+Before each pregame, including holdout games, the trusted runner exports the
+SPO-870 all-team datasets at `release < scheduledStart`, then fully refits all
+four HistGradientBoosting classifiers. No evaluated game's retrospective roster
+enters its fit. Parameters match experiment variant E: learning rate .05,
+250 iterations maximum, depth 4, minimum leaf size 40, L2 1, seed 0, and Celtics
+row weight 5. Player minutes, completed substitution stints and start rate have
+a 21-day half-life; team overall and stoppage-kind rates use 20 pseudo-windows
+toward the 2024–25 league rates. The prior-season league shrinkage prior is a
+training-population aggregate, as in the experiment; player/team rolling
+histories use only games released before each feature row's scheduled start.
+The model form and both Python source hashes are in the harness version.
+
+The fit runs with eight CPU threads and a 6 GiB container limit. Data preparation
+and fitting occur inside the pregame wall-clock interval, before the research
+agent starts; the `starter_fit` event records their durations. Cancellation
+removes the fit container. The complete fit repeats on restart and must match
+the recorded hash before a frozen package can resume. Pregame, postgame and
+replay for a game share that game's pregame artifact. Postgame releases never
+update the current game's model.
+
+`context` identifies the artifact hash and API. In both sandboxes:
+
+```python
+from nba_starter import predict
+model = predict(state)
+answer = model["prediction"]
+candidates = model["candidates"]
+```
+
+The result also contains `exit` probabilities by on-court player, `timing`,
+`size` probabilities for 1/2/3/4+, `entry` probabilities by size and bench player,
+`sets` (the complete size-1–3 conditional-Bernoulli distribution), its residual
+`other`, and `features` (`context`, `players`, `aggregates`). Missing feature
+values are JSON null. The scored answer takes the top eight sets and puts all
+remaining mass on `other`; swap probabilities are conditional on a substitution.
+`examples/policy-starter` is a complete non-deferring package using this API.
+
+`/starter/model.json` and the installed `nba_starter` module are read-only. The
+artifact uses canonical JSON tree arrays, not executable pickle. Research code
+can inspect its features and parameters, use the installed numerical libraries
+to fit modified models, and save its own artifacts under the usual workspace
+rules. The environment's artifact is never overwritten. The hash is recorded
+in the session, frozen-package receipt and replay policy/trace, and binds the
+model, prediction API and fit specification. Batched assembly preloads the
+trusted model before forking a fresh child per state; a package's mutations
+cannot affect another prediction. The sandbox's existing isolation rules remain
+in force.
+
+Baselines mode adds `starter`, with a full cutoff-specific fit for every game.
+Reports show it alongside constant, statistical and generic-Jev. Package
+backtests include starter scores on the same completed windows, explicitly
+labelled in-sample because the current pregame model was fitted on that history.
+
+Acceptance evidence and reproduction commands are recorded with the SPO-873
+results below. These measurements use the official loader, not the experiment's
+cached export. Differences from the experiment include the larger official
+training population, real pregame rosters for released current-season Boston
+games, release-time (rather than tip-time) history eligibility, and reconstructing
+starters from each observable prefix. The set-size prior used by the scorer
+remains the pinned warm-up prior.
+
+**Backtest cost with the starter.** On the same 104 released Boston games and
+5,397 eligible windows as the SPO-872 measurement above,
+[`backtest-spo873.json`](../evidence/policy/backtest-spo873.json) records a package
+calling the starter at every window, plus the independently evaluated starter
+comparison. At the unchanged 120-second allowance, the cold call completed 512
+windows (68.76 seconds spent loading history) and the cached call completed
+1,536. Both returned `complete: false`, `error: compute_limit`; these are partial
+scores, not a full-history accuracy result. Neither call had invalid predictions
+or starter errors, and package/starter scores matched exactly on completed
+windows. The fit for that December 12 cutoff took 46.44 seconds. No time limit,
+full-refit requirement, or two-pass package determinism check was relaxed. The
+measurement ran alongside the development audit on this machine, so throughput
+is indicative rather than an isolated hardware benchmark.
+
+Reproduction (local cached corpus access required; no analyst/Jev provider calls):
+
+```sh
+npx tsx scripts/assembler-build.ts
+# Use the immutable local@sha256:... pin printed by the build below.
+npx tsx scripts/starter-audit.ts --image=<pin>
+npx tsx scripts/starter-development.ts --image=<pin>
+npx tsx scripts/starter-backtest.ts --image=<pin>
+ASSEMBLER_IMAGE=<pin> npx tsx --test test/starter.test.ts test/policy-sandbox.test.ts
+npm run sandbox:build
+npm run test:sandbox
+```
+
+The first audit exports the official data available at the opener. The
+subsequent audits reuse only its already-released 2024–25 rows, and export the
+2025–26 rows separately at each target cutoff. Refit comparison is byte-for-byte
+on canonical artifacts; Python fixtures also compare native serialized-tree
+predictions with scikit-learn and plant malformed records exactly at and after
+the cutoff. The official-loader fixture additionally fails on any attempted
+future partition read, including the streaming export path.
+
+**Development acceptance.**
+[`spo873-scores.json`](../evidence/starter-model/spo873-scores.json) records all ten
+development games: **584 scored windows, 192 substitutions, timing Brier
+0.164863 and set log loss 4.323300**, versus the experiment's approximately
+0.164 and 4.29. Full per-game refits took 28.79–43.42 seconds. The opener's
+independent first fit (37.93 seconds) and repeat (28.79 seconds) produced the
+same model/API/spec hash,
+`9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc`.
+Its initial all-team export took 386.61 seconds, separate from fitting, so
+cold data preparation plus fitting cost roughly seven minutes of pregame wall
+time. The holdout uses the same full-refit path.
+
+The official prior population is exactly SPO-870's 2,442 team-datasets and
+145,712 windows (134,737 eligible training windows), compared with the
+experiment's 2,374 datasets and 142,150 windows. The opener also has four
+already-released current-season team-datasets, with 288 eligible windows. This
+is a **data change**, not a replacement of the four-model form or its
+hyperparameters. The code changes relative to the reference are release-based
+rolling-history eligibility, per-prefix starter reconstruction, and a stable
+lexical tie-break for equally likely candidates. Their joint result is the
+small score movement above; this audit does not isolate each change's numerical
+contribution. Serialization parity with native scikit-learn is independently
+tested to 1e-12, including missing features and single-class models.
+
+Both evidence files were measured during implementation and identify that
+working-tree base; the numerical model's exact training and prediction source
+hashes and pinned assembler image are included. Validation: 327 Node tests
+(312 passed, 15 optional-image skips), both starter Docker tests, all three
+assembler isolation tests, and all 15 research sandbox tests passed.

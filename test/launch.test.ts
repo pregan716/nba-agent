@@ -626,3 +626,59 @@ test("validation Jev calls use pregame scopes and costs without analyst tokens",
     clean(root);
   }
 });
+
+test("starter refits before each pregame and binds frozen packages and replay", async () => {
+  const { STARTER_SPEC } = await import("../src/starter/model.js");
+  const { fixtureStarter } = await import("./fixtures/starter.js");
+  const { policyHarness } = await import("../src/policy/replay.js");
+  const root = mkdtempSync(join(tmpdir(), "nba-starter-launch-"));
+  const data = fixtureLaunchConfig("M0");
+  const model = fixtureStarter(root);
+  const assembler: import("../src/policy/sandbox.js").Assembler = {
+    ...fixtureAssembler,
+    starterSpec: STARTER_SPEC,
+    withStarter: (mount) => ({ ...assembler, starter: mount }),
+  };
+  data.config.harness.policy = policyHarness(assembler);
+  const proxy = new MeteringProxy(scriptedAnalyst(), scriptedJev);
+  await proxy.listen();
+  const fitted: string[] = [];
+  const runner = chronologicalRunner({
+    root,
+    ...data,
+    assembler,
+    proxy,
+    prepareStarter: async (game) => {
+      fitted.push(game.gameId);
+      return {
+        mount: { ...model, gameId: game.gameId, cutoff: game.scheduledStart },
+        seconds: 1,
+        rows: [1, 1, 1, 1],
+      };
+    },
+  });
+  try {
+    await runner.run(piHarness({ model: "claude-opus-4-6" }));
+    assert.deepEqual(fitted, ["prior", "current"]);
+    assert.equal(runner.record.events("starter_fit").length, 2);
+    for (const game of fitted) {
+      const receipt = JSON.parse(
+        readFileSync(
+          join(runner.root, "frozen-packages", game, "receipt.json"),
+          "utf8",
+        ),
+      );
+      assert.equal(receipt.starterHash, model.hash);
+    }
+    assert.ok(
+      runner.record
+        .events("phase_end")
+        .every((e) => e.data.status === "completed"),
+    );
+    assert.equal(runner.record.events("replay_completed").length, 2);
+  } finally {
+    runner.close();
+    await proxy.close();
+    clean(root);
+  }
+});

@@ -1,3 +1,4 @@
+import { starterIdentity } from "../starter/model.js";
 import {
   CODE_CONTRACT,
   deferSchema,
@@ -54,6 +55,7 @@ export function policyHarness(
 ) {
   return {
     api: "assemble-v1",
+    ...(assembler.starterSpec ? { starter: assembler.starterSpec } : {}),
     ...(swapContract ? { swapContract } : {}),
     assemblerImage: assembler.image,
     limits: assembler.limits,
@@ -69,6 +71,9 @@ export function policyVersion(
 ) {
   return {
     api: "assemble-v1",
+    ...(assembler.starter
+      ? { starter: starterIdentity(assembler.starter) }
+      : {}),
     ...(swapContract ? { swapContract } : {}),
     replay: REPLAY_VERSIONS,
     image: assembler.image,
@@ -99,6 +104,9 @@ export async function assembleRequest(
     throw Error("Frozen package changed");
   const identity = {
     package: receipt.packageHash,
+    ...(assembler.starter
+      ? { starter: starterIdentity(assembler.starter) }
+      : {}),
     state,
     image: assembler.image,
     limits: assembler.limits,
@@ -188,6 +196,8 @@ export async function replayPolicy(options: {
   const { dataset, record, proxy, assembler, receipt, predictorId, signal } =
     options;
   signal.throwIfAborted();
+  if (receipt && receipt.starterHash !== assembler.starter?.hash)
+    throw Error("Package starter model differs from replay");
   const version = policyVersion(
     assembler,
     receipt,

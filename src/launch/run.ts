@@ -1,3 +1,8 @@
+import {
+  starterIdentity,
+  starterPredictor,
+  type fitStarter,
+} from "../starter/model.js";
 import { cachedBacktestSource } from "../policy/backtest.js";
 import { pinSwapContract } from "../replay/swap.js";
 import { join } from "node:path";
@@ -118,6 +123,11 @@ export function chronologicalRunner(options: {
   validationSamples?: ValidationSample[];
   backtestSource?: import("../policy/backtest.js").BacktestSource;
   starter?: import("../policy/backtest.js").BacktestStarter;
+  prepareStarter?: (
+    game: { gameId: string; scheduledStart: string },
+    root: string,
+    signal: AbortSignal,
+  ) => Promise<Awaited<ReturnType<typeof fitStarter>>>;
   root: string;
   config: RunConfig;
   source: SessionSource;
@@ -129,6 +139,8 @@ export function chronologicalRunner(options: {
   const { root, config, source, datasets, schedule, assembler, proxy } =
     options;
   validateLaunch(config.purpose, assembler.image, config.harness.identity);
+  if (assembler.starterSpec && !options.prepareStarter)
+    throw Error("Starter-enabled runs require a full pregame refit");
   if (
     digest(config.replay?.validationSamples ?? []) !==
     digest(validationSampleDescriptors(options.validationSamples ?? []))
@@ -155,6 +167,15 @@ export function chronologicalRunner(options: {
   const m = manifest(config, schedule);
   let backtestSource:
     import("../policy/backtest.js").BacktestSource | undefined;
+  const prepared = new Map<string, Awaited<ReturnType<typeof fitStarter>>>();
+  const gameAssembler = (id: string) => {
+    const model = prepared.get(id);
+    return model ? assembler.withStarter!(model.mount) : assembler;
+  };
+  const starterPredictors = new Map<
+    string,
+    import("../policy/backtest.js").BacktestStarter
+  >();
   const tools = (
     game: Game,
     trusted: { root: string; workspace: string },
@@ -165,7 +186,7 @@ export function chronologicalRunner(options: {
       trusted.workspace,
       game,
       m.games,
-      assembler,
+      gameAssembler(game.gameId),
       datasets.flatMap((d) =>
         d.windows.flatMap((w) =>
           w.state && !w.exclusions.length
@@ -177,9 +198,9 @@ export function chronologicalRunner(options: {
       options.validationSamples ?? [],
       config.harness.policy?.swapContract,
       backtestSource,
-      options.starter,
+      starterPredictors.get(game.gameId) ?? options.starter,
     );
-  const environment = sessionEnvironment(config, source, {
+  const baseEnvironment = sessionEnvironment(config, source, {
     policy: (context, trusted) =>
       tools(
         context.game,
@@ -189,6 +210,40 @@ export function chronologicalRunner(options: {
           : new Date(Date.parse(context.game.scheduledStart) - 1).toISOString(),
       ),
   });
+  const prepare = async (game: Game, root: string, signal: AbortSignal) => {
+    if (!options.prepareStarter || prepared.has(game.gameId)) return;
+    if (!assembler.withStarter || !assembler.starterSpec)
+      throw Error("Starter-enabled assembler required");
+    const result = await options.prepareStarter(game, root, signal);
+    const { mount, ...timing } = result;
+    const scope = `${game.gameId}:pregame`;
+    const previous = runner.record.events("starter_fit", scope).at(-1)?.data;
+    if (previous && previous.model.hash !== mount.hash)
+      throw Error("Starter refit differs on resume");
+    runner.record.append("starter_fit", scope, {
+      model: starterIdentity(mount),
+      ...timing,
+    });
+    prepared.set(game.gameId, result);
+    starterPredictors.set(
+      game.gameId,
+      starterPredictor(gameAssembler(game.gameId), root),
+    );
+  };
+  const environment: import("../runner/runner.js").EnvironmentFactory = async (
+    context,
+    trusted,
+  ) => {
+    await prepare(
+      context.game,
+      trusted.root,
+      AbortSignal.any([
+        runner.lifetimeSignal,
+        ...(trusted.signal ? [trusted.signal] : []),
+      ]),
+    );
+    return baseEnvironment(context, trusted);
+  };
   const runner = new Runner(
     root,
     m,
@@ -196,6 +251,17 @@ export function chronologicalRunner(options: {
     environment,
     undefined,
     async (game, trusted) => {
+      // A timed-out pregame without a package remains invalid; do not retry its
+      // interrupted fit outside the research wall-clock budget.
+      if (
+        tools(
+          game,
+          { root: trusted.root, workspace: runner.workspace },
+          game.release,
+        ).packages.receipt(game.gameId)
+      )
+        await prepare(game, trusted.root, runner.lifetimeSignal);
+      const assembler = gameAssembler(game.gameId);
       const service = tools(
         game,
         { root: trusted.root, workspace: runner.workspace },
@@ -258,6 +324,11 @@ export function chronologicalRunner(options: {
 }
 
 export async function runBaselines(options: {
+  prepareStarter?: (
+    game: Game,
+    signal: AbortSignal,
+  ) => Promise<Awaited<ReturnType<typeof fitStarter>>>;
+  root?: string;
   config: RunConfig;
   datasets: DecisionDataset[];
   training: DecisionDataset[];
@@ -269,6 +340,8 @@ export async function runBaselines(options: {
 }) {
   const { config, datasets, training, record, assembler, proxy } = options;
   validateLaunch(config.purpose, assembler.image, config.harness.identity);
+  if (assembler.starterSpec && !options.prepareStarter)
+    throw Error("Starter-enabled runs require a full pregame refit");
   if (
     digest(config.replay?.versions) !== digest(REPLAY_VERSIONS) ||
     config.profile.modelRoles.jev !== "jev-1.14.0"
@@ -358,6 +431,33 @@ export async function runBaselines(options: {
         config.harness.policy?.swapContract,
       ),
     };
+    let starter: ReturnType<typeof starterPredictor> | undefined;
+    if (options.prepareStarter) {
+      if (!options.root || !assembler.withStarter || !assembler.starterSpec)
+        throw Error(
+          "Starter baseline requires an artifact root and enabled assembler",
+        );
+      const game = m.games.find((g) => g.gameId === dataset.gameId)!;
+      const { mount, ...timing } = await options.prepareStarter(
+        game,
+        new AbortController().signal,
+      );
+      const previous = record
+        .events("starter_fit", `${game.gameId}:pregame`)
+        .at(-1)?.data;
+      if (previous && previous.model.hash !== mount.hash)
+        throw Error("Starter refit differs on baseline resume");
+      record.append("starter_fit", `${game.gameId}:pregame`, {
+        model: starterIdentity(mount),
+        ...timing,
+      });
+      starter = starterPredictor(assembler.withStarter!(mount), options.root!);
+      predictors.starter = {
+        id: "starter",
+        model: starterIdentity(mount),
+        spec: assembler.starterSpec,
+      };
+    }
     const view = replayRecord(
       record,
       dataset.gameId,
@@ -365,6 +465,30 @@ export async function runBaselines(options: {
     );
     for (const baseline of Object.values(fitted))
       await replay(dataset, baseline.id, baseline.predict, view);
+    if (starter) {
+      const states = dataset.windows
+        .filter((w) => !w.exclusions.length && w.state && w.actual)
+        .map((w) => w.state!);
+      const answers = await starter.predictBatch!(
+        states,
+        new AbortController().signal,
+      );
+      const byState = new Map(
+        states.map((state, i) => [digest(state), answers[i]]),
+      );
+      await replay(
+        dataset,
+        "starter",
+        (state) => {
+          const answer = byState.get(digest(state))!;
+          return {
+            ...(answer.prediction as object),
+            candidates: answer.candidates,
+          };
+        },
+        view,
+      );
+    }
     await replayPolicy({
       dataset,
       predictorId: "generic-jev",

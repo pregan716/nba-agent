@@ -1,4 +1,9 @@
 import {
+  STARTER_SPEC,
+  starterMountArgs,
+  type StarterMount,
+} from "../starter/model.js";
+import {
   AssemblerInfrastructureError,
   PackageExecutionError,
 } from "./errors.js";
@@ -19,6 +24,9 @@ export interface AssemblyResult {
 export type BatchAssemblyResult =
   { value: unknown; error?: never } | { error: string; value?: never };
 export interface Assembler {
+  starter?: StarterMount;
+  starterSpec?: typeof STARTER_SPEC;
+  withStarter?(mount: StarterMount): Assembler;
   runBatch?(
     path: string,
     states: unknown[],
@@ -37,6 +45,8 @@ export class DockerAssembler implements Assembler {
   constructor(
     readonly image: string,
     readonly limits: AssemblerLimits,
+    readonly starter?: StarterMount,
+    readonly starterEnabled = !!starter,
   ) {
     if (!/@sha256:[a-f0-9]{64}$/.test(image))
       throw Error("Assembler image must be pinned");
@@ -49,6 +59,12 @@ export class DockerAssembler implements Assembler {
       limits.outputBytes < 1
     )
       throw Error("Invalid assembler limits");
+  }
+  get starterSpec() {
+    return this.starterEnabled ? STARTER_SPEC : undefined;
+  }
+  withStarter(mount: StarterMount) {
+    return new DockerAssembler(this.image, this.limits, mount, true);
   }
   async runBatch(
     path: string,
@@ -104,6 +120,7 @@ export class DockerAssembler implements Assembler {
       `/scratch:rw,noexec,nosuid,nodev,size=${this.limits.memoryBytes},uid=65534,gid=65534,mode=700`,
       "--mount",
       `type=bind,source=${resolve(path)},target=/package,readonly`,
+      ...starterMountArgs(this.starter),
       this.image.replace(/^local@/, ""),
       ...(batch ? ["--batch"] : []),
     ];

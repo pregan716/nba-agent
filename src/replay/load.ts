@@ -50,6 +50,11 @@ export async function loadAllTeamsTraining(
     seasons?: TrainingOnly["season"][];
     batchSize?: number;
     teamIds?: string[];
+    collect?: boolean;
+    onDataset?: (
+      dataset: DecisionDataset,
+      scheduledStart: string,
+    ) => Promise<void>;
     signal?: AbortSignal;
     root?: string;
   } = {},
@@ -199,12 +204,14 @@ export async function loadAllTeamsTraining(
               ? ("season-pregame-v1" as const)
               : ("same-game-box-score-v1" as const),
         };
-        result.datasets.push({
+        const trainingDataset = {
           ...dataset,
           teamId,
           trainingOnly,
           inputHash: digest({ input, teamId, trainingOnly }),
-        });
+        };
+        await options.onDataset?.(trainingDataset, input.game.scheduledStart);
+        if (options.collect !== false) result.datasets.push(trainingDataset);
       }
     }
   }

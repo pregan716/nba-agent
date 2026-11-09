@@ -26,6 +26,7 @@ export const packageSchema = z.strictObject({
   notes: z.string().optional(),
 });
 export interface PackageReceipt {
+  starterHash?: string;
   gameId: string;
   packageHash: string;
   manifestHash: string;
@@ -130,6 +131,7 @@ export class PackageStore {
     const { files } = packageFiles(source),
       hashes = Object.fromEntries([...files].map(([k, v]) => [k, sha256(v)]));
     const receipt: PackageReceipt = {
+      ...(assembler.starter ? { starterHash: assembler.starter.hash } : {}),
       gameId,
       packageHash: sha256(Buffer.from(canonicalJson(hashes))),
       manifestHash: hashes["manifest.json"],

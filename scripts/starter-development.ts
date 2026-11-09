@@ -1,0 +1,137 @@
+// Offline official-data acceptance; no provider calls.
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  readFileSync,
+  writeFileSync,
+  createReadStream,
+  createWriteStream,
+} from "node:fs";
+import { createInterface } from "node:readline";
+import { pipeline } from "node:stream/promises";
+import { join } from "node:path";
+import { openCorpus } from "../src/data/corpus.js";
+import { DopplerStore } from "../src/data/store.js";
+import {
+  exportStarterTraining,
+  fitStarter,
+  starterPredictor,
+  STARTER_SPEC,
+} from "../src/starter/model.js";
+import { auditPregames, loadReplayInputs } from "../src/replay/load.js";
+import { buildDataset } from "../src/replay/dataset.js";
+import { DockerAssembler } from "../src/policy/sandbox.js";
+import { scoreWindow, summarize } from "../src/replay/scoring.js";
+const image = process.argv.find((a) => a.startsWith("--image="))?.slice(8);
+if (!image) throw Error("Pass --image");
+const root = ".cache/starter-development";
+mkdirSync(root, { recursive: true });
+const signal = new AbortController().signal;
+const store = new DopplerStore();
+try {
+  const corpus = await openCorpus(store, process.cwd(), ".cache/objects");
+  const games = (await corpus.pbp.games())
+    .filter(
+      (g) =>
+        g.data.season === "2025-26" &&
+        [g.data.home_team_id, g.data.away_team_id].includes("1610612738"),
+    )
+    .sort((a, b) =>
+      a.data.scheduled_tipoff.localeCompare(b.data.scheduled_tipoff),
+    )
+    .slice(0, 10);
+  const prior = join(root, "prior.jsonl");
+  const out = createWriteStream(prior);
+  for await (const line of createInterface({
+    input: createReadStream(".cache/starter-audit/training.jsonl"),
+  })) {
+    if (JSON.parse(line).season === "2024-25") out.write(line + "\n");
+  }
+  out.end();
+  await new Promise<void>((resolve) => out.on("finish", resolve));
+  const datasets = (
+    await loadReplayInputs(
+      corpus,
+      await auditPregames(
+        corpus,
+        games.map((g) => g.id),
+        JSON.parse(readFileSync("config/identities.json", "utf8")),
+      ),
+    )
+  ).map((input) => buildDataset(input));
+  const contract = JSON.parse(
+    readFileSync("docs/evidence/policy/gate2-code-fixture.json", "utf8"),
+  ).swapContract;
+  const results = [];
+  const fits = [];
+  for (const g of games) {
+    const game = { gameId: g.id, scheduledStart: g.data.scheduled_tipoff };
+    const dir = join(root, g.id);
+    mkdirSync(dir, { recursive: true });
+    const current = join(dir, "current.jsonl");
+    await exportStarterTraining(corpus, game.scheduledStart, current, signal, [
+      "2025-26",
+    ]);
+    const input = join(dir, "training.jsonl");
+    await pipeline(createReadStream(prior), createWriteStream(input));
+    await pipeline(
+      createReadStream(current),
+      createWriteStream(input, { flags: "a" }),
+    );
+    const fit = await fitStarter({
+      input,
+      root: mkdtempSync(join(dir, "artifact-")),
+      image,
+      target: game,
+      cutoff: game.scheduledStart,
+      signal,
+    });
+    const assembler = new DockerAssembler(
+      image,
+      { wallSeconds: 15, memoryBytes: 512 * 1024 * 1024, outputBytes: 256000 },
+      fit.mount,
+    );
+    const predictor = starterPredictor(assembler, root);
+    const dataset = datasets.find((d) => d.gameId === g.id)!;
+    const windows = dataset.windows.filter(
+      (w) => !w.exclusions.length && w.state && w.actual,
+    );
+    const answers = await predictor.predictBatch!(
+      windows.map((w) => w.state!),
+      signal,
+    );
+    const scored = windows.map((w, i) =>
+      scoreWindow(
+        w,
+        {
+          ...(answers[i].prediction as object),
+          candidates: answers[i].candidates,
+        },
+        null,
+        contract,
+      ),
+    );
+    results.push(...scored);
+    fits.push({
+      ...game,
+      hash: fit.mount.hash,
+      seconds: fit.seconds,
+      rows: fit.rows,
+      summary: summarize(scored),
+    });
+    rmSync(input);
+    rmSync(current);
+    console.log(JSON.stringify(fits.at(-1)));
+    writeFileSync(
+      join(root, "results.json"),
+      JSON.stringify(
+        { image, spec: STARTER_SPEC, fits, summary: summarize(results) },
+        null,
+        2,
+      ) + "\n",
+    );
+  }
+} finally {
+  store.close();
+}

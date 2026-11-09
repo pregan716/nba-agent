@@ -119,6 +119,7 @@ export type EnvironmentFactory = (
     workspace: string;
     root: string;
     countMemory?: MemoryCounter;
+    signal?: AbortSignal;
   },
 ) => Promise<Environment>;
 export interface SessionEndpoint extends SessionTools {
@@ -594,6 +595,7 @@ export class Runner {
           {
             root: this.root,
             workspace: this.workspace,
+            signal: controller.signal,
             ...(isMemoryV3(this.manifest.config.profile.memory)
               ? { countMemory: this.counter(scope, controller.signal) }
               : {}),

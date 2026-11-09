@@ -1,3 +1,4 @@
+import { starterMountArgs, type StarterMount } from "../starter/model.js";
 import { capCodeOutput } from "./code-output.js";
 import { sandboxLabels } from "../runner/orphans.js";
 import { spawn, execFile } from "node:child_process";
@@ -40,6 +41,7 @@ export class DockerSandbox {
     ) => Promise<unknown>,
     workspace?: WorkspacePort,
     private runRoot?: string,
+    private starter?: StarterMount,
   ) {
     this.#port = workspace;
   }
@@ -117,7 +119,7 @@ export class DockerSandbox {
     if (this.runRoot)
       for (const label of sandboxLabels(this.runRoot))
         args.push("--label", label);
-    args.push(image);
+    args.push(...starterMountArgs(this.starter), image);
     this.#creation = command("docker", args, { timeout: 30000 });
     await this.#creation;
     this.#abort.signal.throwIfAborted();

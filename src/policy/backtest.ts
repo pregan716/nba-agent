@@ -70,6 +70,10 @@ export function cachedBacktestSource(
 }
 /** A trusted future starter-model integration; never an agent-supplied predictor. */
 export interface BacktestStarter {
+  predictBatch?(
+    states: ObservableState[],
+    signal: AbortSignal,
+  ): Promise<{ prediction: unknown; candidates: unknown }[]>;
   hash: string;
   predict(
     state: ObservableState,
@@ -227,6 +231,8 @@ export async function backtestPackage(options: {
     const batchSize = 256;
     let first: import("./sandbox.js").BatchAssemblyResult[] = [],
       second: import("./sandbox.js").BatchAssemblyResult[] = [];
+    let starterBatch: ({ prediction: unknown; candidates: unknown } | Error)[] =
+      [];
     for (let index = 0; index < eligible.length; index++) {
       const w = eligible[index];
       if (assembler.runBatch && index % batchSize === 0) {
@@ -263,6 +269,21 @@ export async function backtestPackage(options: {
           first = second = states.map(() => ({
             error: "Assembler batch failed",
           }));
+        }
+      }
+      if (options.starter?.predictBatch && index % batchSize === 0) {
+        const states = eligible
+          .slice(index, index + batchSize)
+          .map((w) => w.state!);
+        try {
+          starterBatch = await options.starter.predictBatch(states, deadline);
+          if (starterBatch.length !== states.length)
+            throw Error("Incomplete starter batch");
+        } catch (e) {
+          deadline.throwIfAborted();
+          starterBatch = states.map(() =>
+            e instanceof Error ? e : Error("Starter batch failed"),
+          );
         }
       }
       deadline.throwIfAborted();
@@ -305,11 +326,11 @@ export async function backtestPackage(options: {
       let starterResult: WindowResult | undefined;
       if (options.starter) {
         try {
-          starterResult = scorePackage(
-            w,
-            await options.starter.predict(w.state!, deadline),
-            contract,
-          ).result;
+          const prediction = options.starter.predictBatch
+            ? starterBatch[index % batchSize]
+            : await options.starter.predict(w.state!, deadline);
+          if (prediction instanceof Error) throw prediction;
+          starterResult = scorePackage(w, prediction, contract).result;
         } catch (e) {
           deadline.throwIfAborted();
           starterErrors.push({

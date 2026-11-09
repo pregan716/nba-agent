@@ -3,7 +3,12 @@ import { metrics, type EvaluatedRun } from "./evaluate.js";
 import { canonical, EvaluationError } from "./record.js";
 import { isMidPeriod } from "../replay/diagnostics.js";
 import type { WindowResult } from "../replay/types.js";
-export const BASELINES = ["constant", "statistical", "generic-jev"] as const;
+export const BASELINES = [
+  "constant",
+  "statistical",
+  "generic-jev",
+  "starter",
+] as const;
 export const baselineName = (run: EvaluatedRun) =>
   !run.variant
     ? BASELINES.find(

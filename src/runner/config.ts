@@ -120,6 +120,7 @@ export const configSchema = z.strictObject({
     policy: z
       .strictObject({
         api: z.literal("assemble-v1"),
+        starter: z.record(z.string(), z.unknown()).optional(),
         swapContract: z
           .strictObject({
             version: z.enum(["jev-contract-v2", "jev-contract-v3"]),
