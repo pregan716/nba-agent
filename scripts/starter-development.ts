@@ -91,6 +91,9 @@ try {
       target: game,
       cutoff: game.scheduledStart,
       signal,
+    }).finally(() => {
+      rmSync(input, { force: true });
+      rmSync(current, { force: true });
     });
     const assembler = new DockerAssembler(
       image,
@@ -138,8 +141,6 @@ try {
       parity: reference.parity,
       summary: summarize(scored),
     });
-    rmSync(input);
-    rmSync(current);
     console.log(JSON.stringify(fits.at(-1)));
     writeFileSync(
       join(root, "results.json"),

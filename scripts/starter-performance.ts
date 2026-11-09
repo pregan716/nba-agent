@@ -7,6 +7,7 @@ import { STARTER_RUNTIME, verifyStarter } from "../src/starter/model.js";
 // Offline real-history acceptance: data reads and Docker only, no model providers.
 import {
   cpSync,
+  rmSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -228,6 +229,8 @@ try {
   )
     throw Error(`Starter full-history acceptance failed; output root ${root}`);
 } finally {
+  rmSync(join(root, "training.jsonl"), { force: true });
+  rmSync(join(root, "current.jsonl"), { force: true });
   lifetime.abort();
   await store.close();
 }
