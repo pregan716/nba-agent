@@ -153,8 +153,8 @@ export function chronologicalRunner(options: {
     throw Error("Variant replay mode required");
   source.registerDecisionDatasets?.(datasets);
   const m = manifest(config, schedule);
-  const backtestSource =
-    options.backtestSource && cachedBacktestSource(options.backtestSource);
+  let backtestSource:
+    import("../policy/backtest.js").BacktestSource | undefined;
   const tools = (
     game: Game,
     trusted: { root: string; workspace: string },
@@ -249,6 +249,11 @@ export function chronologicalRunner(options: {
       service.saveFeedback(trace);
     },
   );
+  if (options.backtestSource)
+    backtestSource = cachedBacktestSource(
+      options.backtestSource,
+      runner.lifetimeSignal,
+    );
   return runner;
 }
 

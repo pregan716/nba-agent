@@ -459,7 +459,7 @@ test("history is loaded once for a cutoff, and aborted loads are not cached", as
     loads++;
     if (cutoff === "bad") throw Error("failed");
     return { games: [] };
-  });
+  }, new AbortController().signal);
   const signal = new AbortController().signal;
   await source("a", signal);
   await source("a", signal);
@@ -469,4 +469,117 @@ test("history is loaded once for a cutoff, and aborted loads are not cached", as
   await assert.rejects(source("bad", signal));
   await assert.rejects(source("bad", signal));
   assert.equal(loads, 4);
+});
+
+test("each batch executes oldest first and maps results back to the selected windows", async () => {
+  const s = setup();
+  const seen: string[][] = [];
+  for (const game of s.games) {
+    const original = game.dataset.windows.find(
+      (w) => w.state && !w.exclusions.length && w.actual,
+    )!;
+    game.dataset.windows = [3, 1, 2].map((sequence) => {
+      const w = structuredClone(original);
+      w.sequence = sequence;
+      w.state!.sequence = sequence;
+      w.id = `${w.gameId}:${sequence}`;
+      return w;
+    });
+  }
+  try {
+    const result = await backtestPackage({
+      ...s,
+      gameId: "current",
+      cutoff: "2025-11-03T00:00:00Z",
+      clock: () => "2025-11-02T23:00:00Z",
+      source: async () => ({ games: s.games }),
+      assembler: {
+        ...fixtureAssembler,
+        runBatch: async (_p, states) => {
+          seen.push(
+            states.map(
+              (s) =>
+                `${(s as ObservableState).gameId}:${(s as ObservableState).sequence}`,
+            ),
+          );
+          return states.map((s) => {
+            const state = s as ObservableState;
+            const value = assembly(state, false);
+            value.prediction.substitution.noul =
+              state.sequence / 10 + (state.gameId === "recent" ? 0.5 : 0);
+            return { value };
+          });
+        },
+      },
+      allowance: 5,
+      signal: new AbortController().signal,
+      input: { per_window: true },
+    });
+    assert.equal(result.complete, true);
+    assert.deepEqual(
+      seen,
+      [1, 2].map(() => [
+        "old:1",
+        "old:2",
+        "old:3",
+        "recent:1",
+        "recent:2",
+        "recent:3",
+      ]),
+    );
+    for (const row of result.windows!)
+      assert.equal(
+        row.scores!.probability,
+        Number(row.windowId.split(":").at(-1)) / 10 +
+          (row.gameId === "recent" ? 0.5 : 0),
+      );
+  } finally {
+    clean(s.root);
+  }
+});
+
+test("a call timeout retains the in-flight history load; runner shutdown aborts it", async () => {
+  const { cachedBacktestSource } = await import("../src/policy/backtest.js");
+  const s = setup(),
+    lifetime = new AbortController();
+  let loads = 0;
+  let loadSignal: AbortSignal | undefined;
+  const source = cachedBacktestSource(async (_cutoff, signal) => {
+    loads++;
+    loadSignal = signal;
+    await delay(200, null, { signal });
+    return { games: s.games };
+  }, lifetime.signal);
+  const options = {
+    ...s,
+    gameId: "current",
+    cutoff: "2025-11-03T00:00:00Z",
+    clock: () => "2025-11-02T23:00:00Z",
+    source,
+    assembler: {
+      ...fixtureAssembler,
+      runBatch: async (_p: string, states: unknown[]) =>
+        states.map((s) => ({ value: assembly(s as ObservableState, false) })),
+    },
+    signal: new AbortController().signal,
+    input: {},
+  };
+  try {
+    const first = await backtestPackage({ ...options, allowance: 0.06 });
+    assert.equal(first.error, "compute_limit");
+    assert.equal(first.eligibleWindows, null);
+    assert.equal(loads, 1);
+    assert.equal(loadSignal!.aborted, false);
+    const second = await backtestPackage({ ...options, allowance: 2 });
+    assert.equal(second.complete, true);
+    assert.equal(second.summary.scored, second.eligibleWindows);
+    assert.equal(loads, 1);
+    const pending = source("later-cutoff", new AbortController().signal);
+    lifetime.abort();
+    await assert.rejects(pending, /abort/i);
+    assert.equal(loadSignal!.aborted, true);
+  } finally {
+    lifetime.abort();
+    clean(s.root);
+  }
 });

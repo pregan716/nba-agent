@@ -85,6 +85,8 @@ export class DockerAssembler implements Assembler {
       name,
       "--network",
       "none",
+      "--ipc",
+      "none",
       "--read-only",
       "--cap-drop",
       "ALL",

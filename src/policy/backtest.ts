@@ -36,19 +36,36 @@ export type BacktestSource = (
   cutoff: string,
   signal: AbortSignal,
 ) => Promise<BacktestData>;
-/** Retain only the current cutoff, shared across calls and sessions for one runner.
- * A completed load is charged once; failed/aborted loads are never reused. */
-export function cachedBacktestSource(source: BacktestSource): BacktestSource {
-  let cached: { cutoff: string; data: Promise<BacktestData> } | undefined;
+/** Loads belong to the runner, not to individual callers' compute deadlines.
+ * Waiting is charged to each caller; only failed loads are evicted. */
+export function cachedBacktestSource(
+  source: BacktestSource,
+  lifetime: AbortSignal,
+): BacktestSource {
+  let cached:
+    | {
+        cutoff: string;
+        data: Promise<BacktestData>;
+        controller: AbortController;
+      }
+    | undefined;
   return (cutoff, signal) => {
     signal.throwIfAborted();
-    if (cached?.cutoff === cutoff) return cached.data;
-    const entry = { cutoff, data: source(cutoff, signal) };
-    cached = entry;
-    void entry.data.catch(() => {
-      if (cached === entry) cached = undefined;
-    });
-    return entry.data;
+    lifetime.throwIfAborted();
+    if (cached?.cutoff !== cutoff) {
+      cached?.controller.abort(new Error("Backtest cutoff changed"));
+      const controller = new AbortController();
+      const entry = {
+        cutoff,
+        controller,
+        data: source(cutoff, AbortSignal.any([lifetime, controller.signal])),
+      };
+      cached = entry;
+      void entry.data.catch(() => {
+        if (cached === entry) cached = undefined;
+      });
+    }
+    return abortable(cached.data, signal);
   };
 }
 /** A trusted future starter-model integration; never an agent-supplied predictor. */
@@ -59,8 +76,7 @@ export interface BacktestStarter {
     signal: AbortSignal,
   ): Promise<{ prediction: unknown; candidates: unknown }>;
 }
-/** Stop waiting at the call deadline; trusted loaders also observe the signal
- * between reads, so a pending object-store read cannot start further work. */
+/** Stop a caller waiting without changing the underlying operation lifetime. */
 function abortable<T>(work: Promise<T>, signal: AbortSignal): Promise<T> {
   return new Promise((resolve, reject) => {
     const abort = () => reject(signal.reason);
@@ -205,21 +221,42 @@ export async function backtestPackage(options: {
       ),
     );
     total = eligible.length;
+    const starts = new Map(
+      games.map((g) => [g.dataset.gameId, g.scheduledStart]),
+    );
     const batchSize = 256;
     let first: import("./sandbox.js").BatchAssemblyResult[] = [],
       second: import("./sandbox.js").BatchAssemblyResult[] = [];
     for (let index = 0; index < eligible.length; index++) {
       const w = eligible[index];
       if (assembler.runBatch && index % batchSize === 0) {
-        const states = eligible
+        // Select recent batches first, but execute each container's states oldest
+        // first. Restore row order afterwards so scores keep their window identity.
+        const ordered = eligible
           .slice(index, index + batchSize)
-          .map((w) => w.state);
+          .map((window, offset) => ({ window, offset }))
+          .sort(
+            (a, b) =>
+              starts
+                .get(a.window.gameId)!
+                .localeCompare(starts.get(b.window.gameId)!) ||
+              a.window.gameId.localeCompare(b.window.gameId) ||
+              a.window.sequence - b.window.sequence ||
+              a.window.id.localeCompare(b.window.id),
+          );
+        const states = ordered.map(({ window }) => window.state);
         try {
           const path = join(temporary.path(options.gameId), "package");
-          first = await assembler.runBatch(path, states, deadline);
-          second = await assembler.runBatch(path, states, deadline);
-          if (first.length !== states.length || second.length !== states.length)
+          const a = await assembler.runBatch(path, states, deadline);
+          const b = await assembler.runBatch(path, states, deadline);
+          if (a.length !== states.length || b.length !== states.length)
             throw Error("Incomplete assembler batch");
+          first = [];
+          second = [];
+          ordered.forEach(({ offset }, i) => {
+            first[offset] = a[i];
+            second[offset] = b[i];
+          });
         } catch (e) {
           deadline.throwIfAborted();
           if (e instanceof AssemblerInfrastructureError) throw e;

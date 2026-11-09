@@ -22,6 +22,7 @@ const codeRevision = auditCodeRevision();
 if (codeRevision.endsWith("-dirty"))
   throw Error("Commit implementation before recording acceptance evidence");
 const store = new DopplerStore();
+const lifetime = new AbortController();
 const cutoff = "2025-12-12T01:00:00Z",
   gameId = "0022501206";
 const assembler = new DockerAssembler(image, {
@@ -57,7 +58,7 @@ try {
       }),
     );
     return data;
-  });
+  }, lifetime.signal);
   const results = [];
   for (const call of ["cold", "cached"]) {
     const result = await backtestPackage({
@@ -112,5 +113,6 @@ try {
   )
     throw Error("Full-history acceptance failed");
 } finally {
+  lifetime.abort();
   await store.close();
 }

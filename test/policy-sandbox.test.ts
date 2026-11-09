@@ -169,3 +169,43 @@ def assemble(state):
     }
   },
 );
+
+test(
+  "shared-memory files cannot carry states between batch children",
+  { skip: !image },
+  async () => {
+    const root = mkdtempSync(join(tmpdir(), "assembler-shm-"));
+    const sandbox = new DockerAssembler(image!, limits);
+    try {
+      writeFileSync(
+        join(root, "assemble.py"),
+        `from pathlib import Path
+def assemble(state):
+ p = Path('/dev/shm/seen')
+ before = p.read_text().splitlines() if p.exists() else []
+ try:
+  with p.open('a') as f: f.write(str(state['i']) + '\\n')
+  writable = True
+ except OSError:
+  writable = False
+ return {'i': state['i'], 'seenBefore':before, 'writable':writable}
+`,
+      );
+      const states = [{ i: 1 }, { i: 2 }, { i: 3 }];
+      const batch = await sandbox.runBatch(root, states, signal());
+      assert.deepEqual(
+        batch,
+        states.map((s) => ({
+          value: { ...s, seenBefore: [], writable: false },
+        })),
+      );
+      for (let i = 0; i < states.length; i++)
+        assert.deepEqual(
+          (await sandbox.run(root, states[i], signal())).value,
+          batch[i].value,
+        );
+    } finally {
+      remove(root);
+    }
+  },
+);

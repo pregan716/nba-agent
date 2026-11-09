@@ -135,6 +135,10 @@ export interface HarnessHandles {
 export type Harness = (handles: HarnessHandles) => Promise<void>;
 
 export class Runner {
+  #lifetime = new AbortController();
+  get lifetimeSignal(): AbortSignal {
+    return this.#lifetime.signal;
+  }
   readonly record: RecordStore;
   readonly root: string;
   readonly workspace: string;
@@ -984,6 +988,7 @@ export class Runner {
     if (this.#running) throw Error("Cannot close active runner");
     if (this.#closed) return;
     this.#closed = true;
+    this.#lifetime.abort(new Error("Runner closed"));
     this.record.close();
     rmSync(this.#lock, { force: true });
   }

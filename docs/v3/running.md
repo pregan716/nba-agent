@@ -486,7 +486,10 @@ package under a swap contract (`jev-contract-v2` or `jev-contract-v3`). It snaps
 the assembler in batches of up to 256 states, with a second pass to check
 determinism. Each state runs in a fresh child process with reset module/random
 state, closed input and clean scratch, preserving single-window behavior while
-amortizing Docker startup. Each state keeps the existing output and wall-clock
+amortizing Docker startup. Both execution modes use `--ipc none` to omit Docker’s writable shared-memory
+mount. Within each batch, states execute in
+chronological order and outputs are mapped back to their selected windows.
+Each state keeps the existing output and wall-clock
 limits, and the whole call keeps its deadline. Only the
 observable state crosses into the assembler; the evaluation scorer receives the
 outcome separately. No Jev or research-model calls are made by the tool.
@@ -513,14 +516,17 @@ package scores, never scores of the deployed package-plus-Jev policy.
 
 The call charges elapsed research compute, including snapshotting and loading,
 against the lesser of the configured `sandbox.perCallSeconds` and remaining
-phase compute. Successful history loads are cached at the trusted runner for
-the current cutoff and charged once; later calls reuse them. Failed loads are
-not cached, and moving to another cutoff discards the old cache. A timeout returns `complete:false`, `error:"compute_limit"`, and
+phase compute. History loads belong to the runner lifetime and are cached for
+the current cutoff. A tool deadline stops waiting without aborting or discarding
+the load; later calls reuse the pending or completed load. Calls pay only for
+their waiting time. Failed loads are not cached. Moving to another cutoff cancels
+the old load, and closing the runner cancels any outstanding load. A timeout returns `complete:false`, `error:"compute_limit"`, and
 scores only for completed windows, with their count and `eligibleWindows`; if
 loading did not finish, `eligibleWindows` is null because eligibility has not yet
 been established. It does not
-silently sample the history. Windows run newest game first so partial results
-include the most recent games. Slow packages can still exceed the per-call limit. Temporary snapshots are removed after the call. The runner records
+silently sample the history. Batches are selected newest game first so partial
+results include recent games, but each container executes its states oldest
+game and earliest window first to prevent cross-window lookahead. Slow packages can still exceed the per-call limit. Temporary snapshots are removed after the call. The runner records
 `backtest_start` and `package_backtest` with the package receipt, data hashes,
 roster provenance, results and compute charge. Tool definitions are included in
 the harness hash.
