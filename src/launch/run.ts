@@ -1,5 +1,10 @@
 import { StarterBacktestCache } from "../starter/backtest.js";
 import {
+  RESEARCH_PROMPT_CONTRACT,
+  isResearchPromptSet,
+  type PromptSet,
+} from "../harness/prompts.js";
+import {
   starterIdentity,
   starterPredictor,
   type fitStarter,
@@ -32,6 +37,21 @@ import { REPLAY_VERSIONS, type DecisionDataset } from "../replay/types.js";
 /** Pilot and scored runs use the v3 research prompts (SPO-855). Scored runs stay
  * refused here until the pilot's budget profile is approved, which is the
  * brief's one Open decision; the manifest also requires it. */
+/** A research prompt set describes one Jev contract; refuse a run that pairs it
+ * with the other (SPO-874). Infrastructure prompts carry no contract. */
+export function checkPromptContract(
+  promptSet: PromptSet,
+  contract: "jev-contract-v2" | "jev-contract-v3",
+) {
+  if (
+    isResearchPromptSet(promptSet) &&
+    RESEARCH_PROMPT_CONTRACT[promptSet] !== contract
+  )
+    throw Error(
+      `Prompt set ${promptSet} describes ${RESEARCH_PROMPT_CONTRACT[promptSet]}, not ${contract}`,
+    );
+}
+
 export function validateLaunch(
   purpose: RunConfig["purpose"],
   assemblerImage: string,

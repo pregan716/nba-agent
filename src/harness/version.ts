@@ -13,6 +13,7 @@ import {
   SYSTEM_PROMPT,
   memoryInstructions,
   memoryPermissionInstructions,
+  isResearchPromptSet,
   promptTexts,
   type PromptSet,
 } from "./prompts.js";
@@ -108,10 +109,10 @@ export function harnessConfig(
   options: HarnessConfigOptions,
 ): RunConfig["harness"] {
   const loop = { ...DEFAULT_LOOP, ...options.loop };
-  const research = options.promptSet === "research-v3";
+  const research = isResearchPromptSet(options.promptSet);
   if (research && !isMemoryV3(options.memory))
     throw Error("The research-v3 prompt set requires v3 memory permissions");
-  const texts = promptTexts(research ? "research-v3" : "infrastructure");
+  const texts = promptTexts(research ? options.promptSet! : "infrastructure");
   return {
     identity: research
       ? options.implementation === "pi"

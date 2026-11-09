@@ -6,12 +6,18 @@ import { memoryVariant } from "../src/env/memory.js";
 import { harnessConfig } from "../src/harness/version.js";
 import {
   RESEARCH_PHASE_PROMPTS_V3,
+  RESEARCH_PHASE_PROMPTS_V3_CODE,
   RESEARCH_SYSTEM_PROMPT_V3,
+  RESEARCH_SYSTEM_PROMPT_V3_CODE,
+  WINDOWS_TEXT,
+  SIZE_LIMIT_TEXT,
+  STATE_SECTION,
+  EVIDENCE_AND_DATA_SECTION,
   memoryPermissionInstructions,
   promptTexts,
 } from "../src/harness/prompts.js";
 import { presetConfig } from "../src/harness/presets.js";
-import { diagnosticSelection } from "../src/launch/run.js";
+import { checkPromptContract, diagnosticSelection } from "../src/launch/run.js";
 
 const VARIANTS = ["M0", "M1", "M2", "M3", "M4"] as const;
 const base = (variant: (typeof VARIANTS)[number]) =>
@@ -327,4 +333,116 @@ test("the prompt describes jev-contract-v2 (SPO-867)", () => {
   assert.doesNotMatch(p, /ordered levels none, one, two, three_or_more/);
   assert.doesNotMatch(p, /keys substitution, count, exit, entry/);
   assert.doesNotMatch(p, /scaled to sum to k/);
+});
+
+test("research-v3-code describes jev-contract-v3 and the starter model (SPO-874)", () => {
+  const code = harnessConfig({
+    implementation: "pi",
+    promptSet: "research-v3-code",
+    memory: memoryVariant("M0"),
+    effort: "high",
+    thinking: "adaptive",
+    sandboxImage: `none@sha256:${"0".repeat(64)}`,
+    codeRevision: "test",
+  });
+  assert.equal(code.identity, "pi-research-v3");
+  assert.equal(code.prompts.system, RESEARCH_SYSTEM_PROMPT_V3_CODE);
+  assert.equal(code.prompts.pregame, RESEARCH_PHASE_PROMPTS_V3_CODE.pregame);
+  assert.equal(code.prompts.postgame, RESEARCH_PHASE_PROMPTS_V3_CODE.postgame);
+  // A new harness version, with the memory texts unchanged.
+  assert.notEqual(digest(code), digest(base("M0")));
+  assert.equal(
+    code.memoryInstructions,
+    memoryPermissionInstructions(memoryVariant("M0")),
+  );
+  const p = RESEARCH_SYSTEM_PROMPT_V3_CODE;
+  for (const term of [
+    "prediction",
+    'defer: {"reason": "<why>"}',
+    "from nba_starter import predict",
+    "/starter/model.json",
+    "backtest_package",
+    "in-sample",
+    "shadow answer",
+    "Deferral should be earned by evidence",
+    "summary.code",
+    "result.code",
+    "regret",
+    "jev_state",
+    "criteria",
+    "candidates",
+    "diagnostics",
+    "manifest.json",
+    "freeze_package",
+    "validate_package",
+    "read_feedback",
+    "512 MiB",
+    "NumPy",
+    "other_argmax",
+    "/workspace/feedback/<game_id>/trace.json",
+  ])
+    assert.ok(p.includes(term), term);
+  // What the v2 prompt said that is no longer true under v3.
+  assert.doesNotMatch(p, /You never make the predictions yourself/);
+  assert.doesNotMatch(p, /standard library only/);
+  assert.doesNotMatch(p, /128 MiB/);
+  assert.doesNotMatch(p, /At every window Jev answers/);
+  // The starter is shared, refit and not memory; deferral needs shadow evidence.
+  assert.match(p, /same model for every run being compared/);
+  assert.match(p, /It is not your memory/);
+  assert.match(p, /Before any trace exists.*no evidence that deferring helps/);
+  assert.match(p, /never the score of what you deploy/);
+  assert.match(p, /Read your package against it on the same windows/);
+  assert.match(RESEARCH_PHASE_PROMPTS_V3_CODE.pregame, /backtest_package/);
+  assert.match(
+    RESEARCH_PHASE_PROMPTS_V3_CODE.postgame,
+    /result\.code\.package\.scores against result\.code\.jev\.scores/,
+  );
+  // Shared sections are word for word the same in both prompt sets.
+  for (const section of [
+    WINDOWS_TEXT,
+    SIZE_LIMIT_TEXT,
+    STATE_SECTION,
+    EVIDENCE_AND_DATA_SECTION,
+  ]) {
+    assert.ok(p.includes(section));
+    assert.ok(RESEARCH_SYSTEM_PROMPT_V3.includes(section));
+  }
+  assert.ok(p.endsWith(EVIDENCE_AND_DATA_SECTION));
+});
+
+test("the code prompt names no team members and prescribes no checklist", () => {
+  const curated = JSON.parse(
+    readFileSync("config/celtics-transactions-2025-26.json", "utf8"),
+  );
+  const texts = [
+    RESEARCH_SYSTEM_PROMPT_V3_CODE,
+    ...Object.values(RESEARCH_PHASE_PROMPTS_V3_CODE),
+  ].join("\n");
+  for (const p of [...curated.openingRoster, ...curated.players]) {
+    assert.ok(!texts.includes(p.name), p.name);
+    const surname = p.name.split(" ").at(-1)!;
+    assert.doesNotMatch(texts, new RegExp(`\\b${surname}\\b`), surname);
+  }
+  assert.doesNotMatch(texts, /Mazzulla/);
+  assert.doesNotMatch(texts, /typically|usually|tends to/);
+  assert.doesNotMatch(texts, /checklist|step 1|first, |then, /i);
+});
+
+test("a research prompt set runs only with the contract it describes", () => {
+  checkPromptContract("research-v3", "jev-contract-v2");
+  checkPromptContract("research-v3-code", "jev-contract-v3");
+  checkPromptContract("infrastructure", "jev-contract-v3");
+  assert.throws(
+    () => checkPromptContract("research-v3", "jev-contract-v3"),
+    /describes jev-contract-v2/,
+  );
+  assert.throws(
+    () => checkPromptContract("research-v3-code", "jev-contract-v2"),
+    /describes jev-contract-v3/,
+  );
+  assert.equal(
+    promptTexts("research-v3-code").postgame_mandated,
+    RESEARCH_PHASE_PROMPTS_V3_CODE.postgame,
+  );
 });

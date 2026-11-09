@@ -109,9 +109,12 @@ doppler run --project nba-agent --config prd -- npm run launch -- \
 ```
 
 `--games=N` (1 to 10) limits a run to the first N development games.
-`--prompts=research-v3|infrastructure` overrides the default, which is
-`research-v3` for pilots and `infrastructure` for fixtures; a fixture run may
-select `research-v3` for a smoke test. A pilot refuses the infrastructure
+`--prompts=research-v3|research-v3-code|infrastructure` overrides the default,
+which is `research-v3-code` for pilots with `--code-predictions`, `research-v3`
+for other pilots and `infrastructure` for fixtures; a fixture run may select a
+research set for a smoke test. A research set must match the contract:
+`research-v3` with `jev-contract-v2`, `research-v3-code` with `jev-contract-v3`
+(SPO-874). A pilot refuses the infrastructure
 prompts. **Scored launches are refused** until a research budget profile is
 approved (the brief's one Open decision); they also refuse a `local@` assembler
 image and keep the manifest's probe, persistent-host and checkpoint-sink checks.

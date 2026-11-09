@@ -336,6 +336,74 @@ never": a listed candidate at 0.03 or less that happens (four of thirteen
 hits in stage 6). Tests assert each of these. The two-game re-check is a
 live run and needs the user's approval of the spend.
 
+## Prompt set `research-v3-code` for jev-contract-v3 (SPO-874)
+
+The brief section "Code-first prediction and the starter model" (Agreed
+Nov 8, 2026, PR #79) makes the package's own `prediction` the scored answer,
+gives every variant the same environment-fitted starter model, sends every
+request to Jev in shadow, lets the package defer windows to Jev, and adds
+`backtest_package`. The `research-v3` prompt describes the old job ("you
+never make the predictions yourself", standard library only, 128 MiB), so the
+new contract gets its own prompt set rather than an edit:
+
+- `research-v3` is unchanged byte for byte and still runs with
+  `jev-contract-v2`. `research-v3-code` runs with `jev-contract-v3`.
+  `npm run launch -- --code-predictions` selects it by default, and the
+  launcher refuses either set with the other contract (`checkPromptContract`).
+  The harness identity stays `pi-research-v3`; the prompt texts are in the
+  harness hash, so the new set is a new harness version.
+- The two prompts share four sections verbatim (the window definition, the
+  size limit, the observable state, and evidence plus the data reference);
+  they are exported constants and a test holds both prompts to them.
+
+What the new system prompt says, section by section:
+
+- **Task.** The package predicts; it starts from the starter model; the job is
+  to do better than it where possible and to hand Jev the windows where
+  Jev does better.
+- **Scoring.** The scored answer is the prediction unless deferred. Same set
+  score and `other` expansion as before. Instead of the pilot's
+  miss-rate figures, it notes that the starter's own `other` is already the model's
+  residual mass and must move if the list or probabilities change. An invalid
+  prediction on a non-deferred window is the degenerate form.
+- **The starter model.** What it is trained on, that it is identical across
+  variants, refit every game and not memory, its four parts, the
+  `predict(state)` API and its result keys, the read-only `/starter` mount,
+  and that `predict` works on released Celtics states from `decision_windows`.
+  It states what the model cannot see (media sessions, beat reporting,
+  injuries beyond eligibility, the opponent, role changes) and the ways the
+  agent may use it (as is, adjusted, different candidates, its own fitted
+  models shipped in the package, or ignored), without a feature list or a
+  procedure. The all-teams training rows are not mounted, and the prompt says so.
+- **Checking the package.** `backtest_package` is package-only and ignores
+  deferral. Its starter scores are in-sample, so read the package
+  against the starter on the same windows, not either level. An adjustment
+  fitted on those windows is in-sample too. It also gives the cost (about 90
+  seconds of compute with the starter at every window, per SPO-876) and the
+  `compute_limit` result.
+- **Jev and deferral.** Shadow Jev at every window; `defer: {"reason"}`
+  covers both questions; the existing guidance on Jev echoing asserted
+  numbers, which now includes the starter's numbers. Deferral should be earned
+  by the trace's shadow evidence, and before any trace there is none.
+- **The package.** The `prediction` and `defer` shapes, the numerical
+  runtime (NumPy, pandas, SciPy, scikit-learn, `nba_starter`, 512 MiB,
+  15 s), the 8 MB / 256-file limit, and the backtest among the tools.
+- **Feedback.** `summary.code` (deferrals, `packageOnly`, `jevOnly`, regret)
+  and `result.code` (source, defer, `invalidPrediction`, both answers'
+  scores, regret with its sign).
+
+The pregame phase prompt names `backtest_package` as the check before
+freezing. The postgame prompt points the agent to the comparison between the
+package and shadow Jev in the trace, after checking that the requests did not
+state the package's own probabilities.
+
+The `context` and `execute_code` tool descriptions mention the starter
+mount. Memory-permission instructions are unchanged. Tests cover the
+contract terms, the removed v2 statements, the shared sections, the absence
+of team names and checklist wording, and the contract pairing. The M0 smoke
+game the issue requires is a live run and needs the user's approval of the
+spend.
+
 ## Not in this change
 
 No live model call was made. The probes, the pilot, the double replay and the
