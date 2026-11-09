@@ -5,6 +5,10 @@ host sends the next only after the response. Each child has fresh module/random
 state, closed input, and an empty scratch directory, just like worker.py.
 """
 import ctypes
+import contextlib
+import importlib.util
+import pathlib
+import random
 import json
 import os
 import select
@@ -28,9 +32,6 @@ def execute(message):
         os.close(write_fd)
         try:
             # Match the single-state entrypoint, in a fresh child each time.
-            import contextlib
-            import importlib.util
-            import random
             random.seed(0)
             with contextlib.redirect_stdout(sys.stderr):
                 spec = importlib.util.spec_from_file_location("policy", "/package/assemble.py")
