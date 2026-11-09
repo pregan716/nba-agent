@@ -116,3 +116,56 @@ test(
     }
   },
 );
+
+test(
+  "batch assembler isolates module and scratch state and bounds each item",
+  { skip: !image },
+  async () => {
+    const root = mkdtempSync(join(tmpdir(), "assembler-batch-"));
+    const sandbox = new DockerAssembler(image!, { ...limits, wallSeconds: 1 });
+    try {
+      writeFileSync(
+        join(root, "assemble.py"),
+        `import os, random
+count = 0
+def assemble(state):
+ global count
+ count += 1
+ fresh = not os.path.exists('/scratch/marker')
+ open('/scratch/marker','w').write('present')
+ if state.get('hang'):
+  while True: pass
+ if state.get('large'): return 'x' * 200000
+ return {'count':count,'fresh':fresh,'random':random.random(),'id':state['id']}
+`,
+      );
+      const states = [{ id: 1 }, { id: 2 }];
+      const individual = [];
+      for (const state of states)
+        individual.push({
+          value: (await sandbox.run(root, state, signal())).value,
+        });
+      assert.deepEqual(
+        await sandbox.runBatch(root, states, signal()),
+        individual,
+      );
+      const results = await sandbox.runBatch(
+        root,
+        [{ hang: true }, { large: true }, { id: 3 }],
+        signal(),
+      );
+      assert.match(results[0].error!, /wall-clock/);
+      assert.match(results[1].error!, /output limit/);
+      assert.deepEqual(results[2].value, {
+        ...(individual[0].value as object),
+        id: 3,
+      });
+      await assert.rejects(
+        sandbox.runBatch(root, [{ hang: true }], AbortSignal.timeout(100)),
+        /abort|timeout/i,
+      );
+    } finally {
+      remove(root);
+    }
+  },
+);

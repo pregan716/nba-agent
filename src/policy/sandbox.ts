@@ -16,7 +16,14 @@ export interface AssemblyResult {
   value: unknown;
   computeSeconds: number;
 }
+export type BatchAssemblyResult =
+  { value: unknown; error?: never } | { error: string; value?: never };
 export interface Assembler {
+  runBatch?(
+    path: string,
+    states: unknown[],
+    signal: AbortSignal,
+  ): Promise<BatchAssemblyResult[]>;
   image: string;
   limits: AssemblerLimits;
   run(
@@ -43,15 +50,34 @@ export class DockerAssembler implements Assembler {
     )
       throw Error("Invalid assembler limits");
   }
+  async runBatch(
+    path: string,
+    states: unknown[],
+    signal: AbortSignal,
+  ): Promise<BatchAssemblyResult[]> {
+    if (!states.length) return [];
+    const result = await this.execute(path, states, signal, "batch");
+    return result.value as BatchAssemblyResult[];
+  }
   async run(
     path: string,
     state: unknown,
     signal: AbortSignal,
     mode: "load" | "assemble" = "assemble",
   ): Promise<AssemblyResult> {
+    return this.execute(path, state, signal, mode);
+  }
+  private async execute(
+    path: string,
+    state: unknown,
+    signal: AbortSignal,
+    mode: "load" | "assemble" | "batch",
+  ): Promise<AssemblyResult> {
     signal.throwIfAborted();
     const name = `nba-assembler-${randomUUID()}`,
       start = performance.now();
+    const batch = mode === "batch" ? (state as unknown[]) : null;
+    const wallSeconds = this.limits.wallSeconds * (batch?.length ?? 1);
     const args = [
       "create",
       "--interactive",
@@ -77,6 +103,7 @@ export class DockerAssembler implements Assembler {
       "--mount",
       `type=bind,source=${resolve(path)},target=/package,readonly`,
       this.image.replace(/^local@/, ""),
+      ...(batch ? ["--batch"] : []),
     ];
     let child: ReturnType<typeof spawn> | undefined;
     let primaryError: unknown;
@@ -86,8 +113,7 @@ export class DockerAssembler implements Assembler {
         signal,
       });
       signal.throwIfAborted();
-      const remaining =
-        this.limits.wallSeconds * 1000 - (performance.now() - start);
+      const remaining = wallSeconds * 1000 - (performance.now() - start);
       if (remaining <= 0)
         throw new PackageExecutionError("Assembler wall-clock limit");
       const value = await new Promise<unknown>((accept, reject) => {
@@ -97,6 +123,20 @@ export class DockerAssembler implements Assembler {
         let stdout = "",
           stderr = "",
           size = 0;
+        const results: BatchAssemblyResult[] = [];
+        let next = 0;
+        const sendNext = () => {
+          if (!batch) return;
+          if (next === batch.length) child!.stdin!.end();
+          else
+            child!.stdin!.write(
+              JSON.stringify({
+                state: batch[next++],
+                wallSeconds: this.limits.wallSeconds,
+                outputBytes: this.limits.outputBytes,
+              }) + "\n",
+            );
+        };
         const fail = (error: Error) => {
           reject(error);
           child?.kill("SIGKILL");
@@ -109,10 +149,38 @@ export class DockerAssembler implements Assembler {
         );
         child.on("error", () => fail(Error("Assembler launch failed")));
         child.stdout!.on("data", (b) => {
-          size += b.length;
-          if (size > this.limits.outputBytes)
-            fail(new PackageExecutionError("Assembler output limit"));
-          else stdout += b.toString();
+          if (batch) {
+            stdout += b.toString();
+            if (Buffer.byteLength(stdout) > this.limits.outputBytes + 128) {
+              fail(new PackageExecutionError("Assembler batch output limit"));
+              return;
+            }
+            const newline = stdout.indexOf("\n");
+            if (newline >= 0) {
+              try {
+                const row = JSON.parse(stdout.slice(0, newline));
+                if (
+                  !row ||
+                  typeof row !== "object" ||
+                  !(
+                    Object.hasOwn(row, "value") || typeof row.error === "string"
+                  )
+                )
+                  throw Error();
+                results.push(row);
+                stdout = stdout.slice(newline + 1);
+                if (results.length > batch.length) throw Error();
+                sendNext();
+              } catch {
+                fail(new PackageExecutionError("Invalid assembler batch JSON"));
+              }
+            }
+          } else {
+            size += b.length;
+            if (size > this.limits.outputBytes)
+              fail(new PackageExecutionError("Assembler output limit"));
+            else stdout += b.toString();
+          }
         });
         child.stderr!.on("data", (b) => {
           size += b.length;
@@ -147,13 +215,18 @@ export class DockerAssembler implements Assembler {
             }
           } else
             try {
-              accept(JSON.parse(stdout));
+              if (batch) {
+                if (results.length !== batch.length || stdout.trim())
+                  throw Error();
+                accept(results);
+              } else accept(JSON.parse(stdout));
             } catch {
               reject(new PackageExecutionError("Invalid assembler JSON"));
             }
         });
         child.stdin!.on("error", () => {});
-        child.stdin!.end(JSON.stringify({ mode, state }));
+        if (batch) sendNext();
+        else child.stdin!.end(JSON.stringify({ mode, state }));
       });
       return { value, computeSeconds: (performance.now() - start) / 1000 };
     } catch (error) {

@@ -36,6 +36,21 @@ export type BacktestSource = (
   cutoff: string,
   signal: AbortSignal,
 ) => Promise<BacktestData>;
+/** Retain only the current cutoff, shared across calls and sessions for one runner.
+ * A completed load is charged once; failed/aborted loads are never reused. */
+export function cachedBacktestSource(source: BacktestSource): BacktestSource {
+  let cached: { cutoff: string; data: Promise<BacktestData> } | undefined;
+  return (cutoff, signal) => {
+    signal.throwIfAborted();
+    if (cached?.cutoff === cutoff) return cached.data;
+    const entry = { cutoff, data: source(cutoff, signal) };
+    cached = entry;
+    void entry.data.catch(() => {
+      if (cached === entry) cached = undefined;
+    });
+    return entry.data;
+  };
+}
 /** A trusted future starter-model integration; never an agent-supplied predictor. */
 export interface BacktestStarter {
   hash: string;
@@ -122,6 +137,7 @@ export async function backtestPackage(options: {
     deferred: WindowResult[] = [],
     rest: WindowResult[] = [],
     starterRows: WindowResult[] = [];
+  const starterErrors: { windowId: string; reason: string }[] = [];
   const invalid: Record<string, number> = {},
     wouldDefer: Record<string, number> = {};
   const details: {
@@ -170,7 +186,7 @@ export async function backtestPackage(options: {
       })
       .sort(
         (a, b) =>
-          a.scheduledStart.localeCompare(b.scheduledStart) ||
+          b.scheduledStart.localeCompare(a.scheduledStart) ||
           a.dataset.gameId.localeCompare(b.dataset.gameId),
       );
     skipped = (data.skipped ?? []).filter(
@@ -189,22 +205,43 @@ export async function backtestPackage(options: {
       ),
     );
     total = eligible.length;
-    for (const w of eligible) {
+    const batchSize = 256;
+    let first: import("./sandbox.js").BatchAssemblyResult[] = [],
+      second: import("./sandbox.js").BatchAssemblyResult[] = [];
+    for (let index = 0; index < eligible.length; index++) {
+      const w = eligible[index];
+      if (assembler.runBatch && index % batchSize === 0) {
+        const states = eligible
+          .slice(index, index + batchSize)
+          .map((w) => w.state);
+        try {
+          const path = join(temporary.path(options.gameId), "package");
+          first = await assembler.runBatch(path, states, deadline);
+          second = await assembler.runBatch(path, states, deadline);
+          if (first.length !== states.length || second.length !== states.length)
+            throw Error("Incomplete assembler batch");
+        } catch (e) {
+          deadline.throwIfAborted();
+          if (e instanceof AssemblerInfrastructureError) throw e;
+          first = second = states.map(() => ({
+            error: "Assembler batch failed",
+          }));
+        }
+      }
       deadline.throwIfAborted();
       let assembly: any = null,
         reasons: string[] = [],
         would = false;
       try {
-        const a = await assembler.run(
-          join(temporary.path(options.gameId), "package"),
-          w.state,
-          deadline,
-        );
-        const b = await assembler.run(
-          join(temporary.path(options.gameId), "package"),
-          w.state,
-          deadline,
-        );
+        const path = join(temporary.path(options.gameId), "package");
+        const a = assembler.runBatch
+          ? first[index % batchSize]
+          : await assembler.run(path, w.state, deadline);
+        const b = assembler.runBatch
+          ? second[index % batchSize]
+          : await assembler.run(path, w.state, deadline);
+        if (("error" in a && a.error) || ("error" in b && b.error))
+          throw Error("Assembler failed");
         deadline.throwIfAborted();
         if (canonicalJson(a.value) !== canonicalJson(b.value))
           reasons.push("nondeterministic_assembly");
@@ -229,12 +266,22 @@ export async function backtestPackage(options: {
         : scored.result;
       // Score the starter on exactly the same completed windows, before committing this row.
       let starterResult: WindowResult | undefined;
-      if (options.starter)
-        starterResult = scorePackage(
-          w,
-          await options.starter.predict(w.state!, deadline),
-          contract,
-        ).result;
+      if (options.starter) {
+        try {
+          starterResult = scorePackage(
+            w,
+            await options.starter.predict(w.state!, deadline),
+            contract,
+          ).result;
+        } catch (e) {
+          deadline.throwIfAborted();
+          starterErrors.push({
+            windowId: w.id,
+            reason:
+              e instanceof Error ? e.message : "Starter prediction failed",
+          });
+        }
+      }
       deadline.throwIfAborted();
       rows.push(result);
       if (starterResult) starterRows.push(starterResult);
@@ -298,6 +345,8 @@ export async function backtestPackage(options: {
           label: "in-sample" as const,
           hash: options.starter.hash,
           summary: report(starterRows),
+          attemptedWindows: rows.length,
+          errors: starterErrors,
         }
       : {
           label: "unavailable" as const,

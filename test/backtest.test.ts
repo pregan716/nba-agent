@@ -407,3 +407,66 @@ test("a stalled history load is bounded and does not pretend the history is empt
     clean(s.root);
   }
 });
+
+test("batched execution matches individual scores and isolates starter errors", async () => {
+  const s = setup();
+  let batches = 0;
+  try {
+    const result = await backtestPackage({
+      ...s,
+      gameId: "current",
+      cutoff: "2025-11-03T00:00:00Z",
+      clock: () => "2025-11-02T23:59:59Z",
+      assembler: {
+        ...fixtureAssembler,
+        runBatch: async (_p, states) => {
+          batches++;
+          return states.map((state) => ({
+            value: assembly(state as ObservableState, true),
+          }));
+        },
+      },
+      source: async () => ({ games: s.games }),
+      allowance: 10,
+      signal: new AbortController().signal,
+      input: {},
+      starter: {
+        hash: "broken",
+        predict: async () => {
+          throw Error("starter failed");
+        },
+      },
+    });
+    assert.equal(batches, 2);
+    assert.equal(result.complete, true);
+    assert.equal(result.summary.scored, result.eligibleWindows);
+    assert.equal(result.split.nonDeferred.scored, 0);
+    assert.equal(result.starter.label, "in-sample");
+    if (result.starter.label === "in-sample") {
+      assert.equal(result.starter.summary.scored, 0);
+      assert.equal(result.starter.errors.length, result.summary.scored);
+      assert.equal(result.starter.attemptedWindows, result.summary.scored);
+    }
+  } finally {
+    clean(s.root);
+  }
+});
+
+test("history is loaded once for a cutoff, and aborted loads are not cached", async () => {
+  const { cachedBacktestSource } = await import("../src/policy/backtest.js");
+  let loads = 0;
+  const source = cachedBacktestSource(async (cutoff) => {
+    loads++;
+    if (cutoff === "bad") throw Error("failed");
+    return { games: [] };
+  });
+  const signal = new AbortController().signal;
+  await source("a", signal);
+  await source("a", signal);
+  assert.equal(loads, 1);
+  await source("b", signal);
+  assert.equal(loads, 2);
+  await assert.rejects(source("bad", signal));
+  await assert.rejects(source("bad", signal));
+  assert.equal(loads, 4);
+});

@@ -483,7 +483,11 @@ subsequent issues.
 `backtest_package({per_window?: boolean})` is a pregame research tool for a draft
 package under a swap contract (`jev-contract-v2` or `jev-contract-v3`). It snapshots
 `packages/<current game>/` without freezing the final submission, then executes
-the assembler twice per eligible prior window to check determinism. Only the
+the assembler in batches of up to 256 states, with a second pass to check
+determinism. Each state runs in a fresh child process with reset module/random
+state, closed input and clean scratch, preserving single-window behavior while
+amortizing Docker startup. Each state keeps the existing output and wall-clock
+limits, and the whole call keeps its deadline. Only the
 observable state crosses into the assembler; the evaluation scorer receives the
 outcome separately. No Jev or research-model calls are made by the tool.
 
@@ -509,12 +513,14 @@ package scores, never scores of the deployed package-plus-Jev policy.
 
 The call charges elapsed research compute, including snapshotting and loading,
 against the lesser of the configured `sandbox.perCallSeconds` and remaining
-phase compute. A timeout returns `complete:false`, `error:"compute_limit"`, and
+phase compute. Successful history loads are cached at the trusted runner for
+the current cutoff and charged once; later calls reuse them. Failed loads are
+not cached, and moving to another cutoff discards the old cache. A timeout returns `complete:false`, `error:"compute_limit"`, and
 scores only for completed windows, with their count and `eligibleWindows`; if
 loading did not finish, `eligibleWindows` is null because eligibility has not yet
 been established. It does not
-silently sample the history. Large histories or slow packages can exceed the
-per-call limit. Temporary snapshots are removed after the call. The runner records
+silently sample the history. Windows run newest game first so partial results
+include the most recent games. Slow packages can still exceed the per-call limit. Temporary snapshots are removed after the call. The runner records
 `backtest_start` and `package_backtest` with the package receipt, data hashes,
 roster provenance, results and compute charge. Tool definitions are included in
 the harness hash.
@@ -522,4 +528,7 @@ the harness hash.
 The starter model is not installed by this issue. Until SPO-873 provides it, the
 result explicitly reports `starter.label:"unavailable"`. The trusted integration
 accepts a model hash and predictor; when supplied, it scores exactly the same
-completed windows and labels those scores **in-sample**.
+completed windows and labels those scores **in-sample**. Starter exceptions are
+reported under `starter.errors`, with attempted and scored counts, without losing
+package scores. A v2 package without its own `prediction` receives degenerate
+scores at every window; this is not an estimate of its Jev policy.

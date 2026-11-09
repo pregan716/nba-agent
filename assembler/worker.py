@@ -5,6 +5,11 @@ import json
 import random
 import sys
 
+if "--batch" in sys.argv:
+    import runpy
+    runpy.run_path("/opt/batch.py", run_name="__main__")
+    sys.exit(0)
+
 random.seed(0)
 message = json.load(sys.stdin)
 with contextlib.redirect_stdout(sys.stderr):
