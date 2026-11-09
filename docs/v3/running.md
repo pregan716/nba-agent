@@ -741,3 +741,42 @@ and checks its scores against serial reference predictions on every window.
 `--artifact=<directory>` may reuse a verified cutoff-matching fitted artifact;
 `--probe` permits exploratory measurements but writes only to the local cache,
 never committed acceptance evidence. Formal evidence requires a clean revision.
+
+Clean-revision acceptance with image
+`local@sha256:22d5fd90c12183212964dfebc31284ccf84d1fe03c866720fbca2cd5e14ba66c`:
+
+| Cached-history target | Eligible/scored windows | Charged seconds | Result | Exact reference API comparisons |
+| --- | ---: | ---: | --- | ---: |
+| Midseason `0022501206` | 5,397 / 5,397 | 88.68 | `complete: true` | 5,397 |
+| Game 79 `0022501149` | 8,207 / 8,207 | 95.59 | `complete: true` | 8,207 |
+
+The [midseason evidence](../evidence/policy/backtest-spo876-0022501206.json)
+was recorded from clean `28df49ccef19a0c43057b447138ef15c103e21f1` while the
+development audit was also running. The
+[late-season evidence](../evidence/policy/backtest-spo876-0022501149.json)
+was recorded from clean `5d28914bd052b0e95cb9eb89e1aa0736f74c0243`, with no
+concurrent training fit during the timed call. Both use the same execution
+and runtime versions. The latter commit only adds temporary-export cleanup to
+the audit scripts.
+
+Both calls had zero invalid predictions and zero starter errors. Every full
+Python API result (including features and the complete set distribution) was
+compared byte-for-byte against the frozen serial reference, and every summary
+field matched serial scoring on the same windows. The prepared comparison
+scores also matched the package. Trusted preparation, including the initial
+history load, took 116.21 and 148.25 seconds respectively, outside the charged
+call. These timings are machine measurements, not a guarantee for arbitrary
+agent-authored packages; slower packages still return explicit partial results
+at the unchanged deadline.
+
+The [development rerun](../evidence/starter-model/spo876-scores.json), from clean
+`5d28914bd052b0e95cb9eb89e1aa0736f74c0243`, fully refitted all ten games and
+reproduced all ten SPO-873 model hashes and every per-game score summary
+exactly: **584 windows, timing Brier 0.16486313135424627, set log loss
+4.323299538360917**. Full API outputs matched the reference byte-for-byte on
+all 584 states. Validation also passed: 315 Node tests (16 optional-image
+skips), all six starter/assembler Docker tests, and all 15 research sandbox
+tests. The parallel tests check serial score parity, oldest-first execution,
+fresh children, shared-memory isolation, four-container concurrency, and
+cleanup after cancellation and timeout. Audit exports are removed after fitting
+to avoid accumulating large temporary copies.
