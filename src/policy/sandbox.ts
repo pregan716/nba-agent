@@ -99,6 +99,8 @@ export class DockerAssembler implements Assembler {
       "--interactive",
       "--name",
       name,
+      "--label",
+      `nba-assembler-package=${resolve(path)}`,
       "--network",
       "none",
       "--ipc",

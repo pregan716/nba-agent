@@ -1,3 +1,4 @@
+import { StarterBacktestCache } from "../starter/backtest.js";
 import {
   starterIdentity,
   starterPredictor,
@@ -167,6 +168,7 @@ export function chronologicalRunner(options: {
   const m = manifest(config, schedule);
   let backtestSource:
     import("../policy/backtest.js").BacktestSource | undefined;
+  const starterBacktests = new StarterBacktestCache();
   const prepared = new Map<string, Awaited<ReturnType<typeof fitStarter>>>();
   const gameAssembler = (id: string) => {
     const model = prepared.get(id);
@@ -224,11 +226,29 @@ export function chronologicalRunner(options: {
       model: starterIdentity(mount),
       ...timing,
     });
+    const predictor = starterPredictor(assembler.withStarter!(mount), root);
+    if (backtestSource) {
+      const cutoff = new Date(
+        Date.parse(game.scheduledStart) - 1,
+      ).toISOString();
+      const started = performance.now();
+      const history = await backtestSource(cutoff, signal);
+      const cached = await starterBacktests.prepare(
+        predictor,
+        history,
+        game.gameId,
+        cutoff,
+        signal,
+      );
+      starterPredictors.set(game.gameId, cached);
+      runner.record.append("starter_backtest_prepare", scope, {
+        hash: predictor.hash,
+        cutoff,
+        seconds: (performance.now() - started) / 1000,
+        chargedToAgent: false,
+      });
+    } else starterPredictors.set(game.gameId, predictor);
     prepared.set(game.gameId, result);
-    starterPredictors.set(
-      game.gameId,
-      starterPredictor(gameAssembler(game.gameId), root),
-    );
   };
   const environment: import("../runner/runner.js").EnvironmentFactory = async (
     context,

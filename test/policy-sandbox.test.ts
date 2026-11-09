@@ -213,3 +213,50 @@ def assemble(state):
     }
   },
 );
+
+test(
+  "parallel batches retain fresh children and no shared memory; abort joins every container",
+  { skip: !image },
+  async () => {
+    const { execFileSync } = await import("node:child_process");
+    const root = mkdtempSync(join(tmpdir(), "parallel-assembler-"));
+    chmodSync(root, 0o755);
+    const assembler = new DockerAssembler(image!, limits);
+    try {
+      writeFileSync(
+        join(root, "assemble.py"),
+        `import os, time\ncounter=0\ndef assemble(state):\n global counter\n counter+=1\n if state.get('hang'): time.sleep(60)\n assert not os.path.exists('/scratch/previous')\n open('/scratch/previous','w').write('yes')\n try:\n  open('/dev/shm/carry','w').write('secret')\n  raise RuntimeError('shared memory writable')\n except OSError: pass\n return counter\n`,
+      );
+      const result = await Promise.all(
+        Array.from({ length: 4 }, () =>
+          assembler.runBatch(root, [{}, {}], signal()),
+        ),
+      );
+      assert.deepEqual(
+        result,
+        Array.from({ length: 4 }, () => [{ value: 1 }, { value: 1 }]),
+      );
+      for (const abort of [
+        AbortSignal.timeout(1500),
+        AbortSignal.timeout(300),
+      ]) {
+        const cancelled = await Promise.allSettled(
+          Array.from({ length: 4 }, () =>
+            assembler.runBatch(root, [{ hang: true }], abort),
+          ),
+        );
+        assert.ok(cancelled.every((r) => r.status === "rejected"));
+        assert.equal(
+          execFileSync(
+            "docker",
+            ["ps", "-aq", "--filter", `label=nba-assembler-package=${root}`],
+            { encoding: "utf8" },
+          ).trim(),
+          "",
+        );
+      }
+    } finally {
+      remove(root);
+    }
+  },
+);

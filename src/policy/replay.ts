@@ -1,4 +1,5 @@
-import { starterIdentity } from "../starter/model.js";
+import { BACKTEST_EXECUTION } from "./execution.js";
+import { STARTER_RUNTIME, starterIdentity } from "../starter/model.js";
 import {
   CODE_CONTRACT,
   deferSchema,
@@ -55,6 +56,8 @@ export function policyHarness(
 ) {
   return {
     api: "assemble-v1",
+    backtest: BACKTEST_EXECUTION,
+    ...(assembler.starterSpec ? { starterRuntime: STARTER_RUNTIME } : {}),
     ...(assembler.starterSpec ? { starter: assembler.starterSpec } : {}),
     ...(swapContract ? { swapContract } : {}),
     assemblerImage: assembler.image,
@@ -71,6 +74,8 @@ export function policyVersion(
 ) {
   return {
     api: "assemble-v1",
+    backtest: BACKTEST_EXECUTION,
+    ...(assembler.starterSpec ? { starterRuntime: STARTER_RUNTIME } : {}),
     ...(assembler.starter
       ? { starter: starterIdentity(assembler.starter) }
       : {}),
@@ -111,6 +116,8 @@ export async function assembleRequest(
     image: assembler.image,
     limits: assembler.limits,
     api: "assemble-v1",
+    backtest: BACKTEST_EXECUTION,
+    ...(assembler.starterSpec ? { starterRuntime: STARTER_RUNTIME } : {}),
     ...(swapContract ? { swapContract } : {}),
     ...(validationOnly ? { validationOnly: true } : {}),
   };
