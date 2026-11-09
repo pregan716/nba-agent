@@ -1,7 +1,7 @@
 """Stream states through fresh forked interpreters, without restarting Docker.
 
 The supervisor never imports the package. It receives one state at a time; the
-host sends the next only after the response. Each child has fresh module/random
+host uses length-prefixed frames, so input is read without buffering later states. Each child has fresh module/random
 state, closed input, and an empty scratch directory, just like worker.py.
 """
 import ctypes
@@ -15,6 +15,7 @@ import select
 import shutil
 import signal
 import sys
+import struct
 import time
 
 # Prevent package children opening the supervisor's /proc/<pid>/fd descriptors.
@@ -100,8 +101,24 @@ def execute(message):
         return {"error": "Invalid assembler JSON"}
 
 
-for line in sys.stdin:
-    message = json.loads(line)
+def read_exact(size):
+    chunks = bytearray()
+    while len(chunks) < size:
+        part = os.read(0, size - len(chunks))
+        if not part:
+            if chunks:
+                raise ValueError("Truncated batch input")
+            return None
+        chunks.extend(part)
+    return chunks
+
+
+while True:
+    header = read_exact(4)
+    if header is None:
+        break
+    length = struct.unpack("!I", header)[0]
+    message = json.loads(read_exact(length))
     result = execute(message)
     print(json.dumps(result, separators=(",", ":"), allow_nan=False), flush=True)
-    del message, result, line
+    del message, result, header, length

@@ -124,19 +124,6 @@ export class DockerAssembler implements Assembler {
           stderr = "",
           size = 0;
         const results: BatchAssemblyResult[] = [];
-        let next = 0;
-        const sendNext = () => {
-          if (!batch) return;
-          if (next === batch.length) child!.stdin!.end();
-          else
-            child!.stdin!.write(
-              JSON.stringify({
-                state: batch[next++],
-                wallSeconds: this.limits.wallSeconds,
-                outputBytes: this.limits.outputBytes,
-              }) + "\n",
-            );
-        };
         const fail = (error: Error) => {
           reject(error);
           child?.kill("SIGKILL");
@@ -151,14 +138,16 @@ export class DockerAssembler implements Assembler {
         child.stdout!.on("data", (b) => {
           if (batch) {
             stdout += b.toString();
-            if (Buffer.byteLength(stdout) > this.limits.outputBytes + 128) {
-              fail(new PackageExecutionError("Assembler batch output limit"));
-              return;
-            }
-            const newline = stdout.indexOf("\n");
-            if (newline >= 0) {
+            let newline: number;
+            while ((newline = stdout.indexOf("\n")) >= 0) {
+              const line = stdout.slice(0, newline);
+              stdout = stdout.slice(newline + 1);
+              if (Buffer.byteLength(line) > this.limits.outputBytes + 128) {
+                fail(new PackageExecutionError("Assembler batch output limit"));
+                return;
+              }
               try {
-                const row = JSON.parse(stdout.slice(0, newline));
+                const row = JSON.parse(line);
                 if (
                   !row ||
                   typeof row !== "object" ||
@@ -168,13 +157,14 @@ export class DockerAssembler implements Assembler {
                 )
                   throw Error();
                 results.push(row);
-                stdout = stdout.slice(newline + 1);
                 if (results.length > batch.length) throw Error();
-                sendNext();
               } catch {
                 fail(new PackageExecutionError("Invalid assembler batch JSON"));
+                return;
               }
             }
+            if (Buffer.byteLength(stdout) > this.limits.outputBytes + 128)
+              fail(new PackageExecutionError("Assembler batch output limit"));
           } else {
             size += b.length;
             if (size > this.limits.outputBytes)
@@ -225,8 +215,24 @@ export class DockerAssembler implements Assembler {
             }
         });
         child.stdin!.on("error", () => {});
-        if (batch) sendNext();
-        else child.stdin!.end(JSON.stringify({ mode, state }));
+        if (batch) {
+          // Queue frames without per-state Docker round trips. The supervisor
+          // reads exact lengths (no read-ahead) and closes input in each child.
+          for (const state of batch) {
+            const body = Buffer.from(
+              JSON.stringify({
+                state,
+                wallSeconds: this.limits.wallSeconds,
+                outputBytes: this.limits.outputBytes,
+              }),
+            );
+            const header = Buffer.alloc(4);
+            header.writeUInt32BE(body.length);
+            child.stdin!.write(header);
+            child.stdin!.write(body);
+          }
+          child.stdin!.end();
+        } else child.stdin!.end(JSON.stringify({ mode, state }));
       });
       return { value, computeSeconds: (performance.now() - start) / 1000 };
     } catch (error) {
