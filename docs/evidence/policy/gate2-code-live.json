@@ -1,0 +1,862 @@
+{
+  "codeRevision": "e406a827b751040724f9c9bc90f3bbee964749d0",
+  "swapContract": {
+    "version": "jev-contract-v3",
+    "sizePrior": [
+      0.631578947368421, 0.2789473684210526, 0.05789473684210526,
+      0.02631578947368421, 0.005263157894736842
+    ],
+    "training": [
+      {
+        "gameId": "0022500049",
+        "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+      },
+      {
+        "gameId": "0022500060",
+        "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+      },
+      {
+        "gameId": "0022500193",
+        "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+      },
+      {
+        "gameId": "0022500209",
+        "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+      },
+      {
+        "gameId": "0022500216",
+        "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+      },
+      {
+        "gameId": "0022500233",
+        "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+      },
+      {
+        "gameId": "0022500250",
+        "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+      },
+      {
+        "gameId": "0022500277",
+        "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+      },
+      {
+        "gameId": "0022500293",
+        "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+      },
+      {
+        "gameId": "0022500302",
+        "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+      }
+    ]
+  },
+  "live": true,
+  "gameId": "0022500083",
+  "release": {
+    "bucket": "sports-nba-data",
+    "key": "nba/releases/spo-839-full-v1-2025-26/manifest.json",
+    "sha256": "04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+    "bytes": 2386079
+  },
+  "datasetVersion": "windows-v2:04fbacd31661a86dcb992dfc23c758dce889ff26e546ad5f9fb4210327824b3b",
+  "inputHash": "07f1c02cdcad3ab6db40f7512a6858da82b4fe6bb39fa9dfbd9f7cb0ebf8d025",
+  "versions": {
+    "handwritten": {
+      "api": "assemble-v1",
+      "swapContract": {
+        "version": "jev-contract-v3",
+        "sizePrior": [
+          0.631578947368421, 0.2789473684210526, 0.05789473684210526,
+          0.02631578947368421, 0.005263157894736842
+        ],
+        "training": [
+          {
+            "gameId": "0022500049",
+            "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+          },
+          {
+            "gameId": "0022500060",
+            "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+          },
+          {
+            "gameId": "0022500193",
+            "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+          },
+          {
+            "gameId": "0022500209",
+            "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+          },
+          {
+            "gameId": "0022500216",
+            "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+          },
+          {
+            "gameId": "0022500233",
+            "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+          },
+          {
+            "gameId": "0022500250",
+            "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+          },
+          {
+            "gameId": "0022500277",
+            "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+          },
+          {
+            "gameId": "0022500293",
+            "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+          },
+          {
+            "gameId": "0022500302",
+            "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+          }
+        ]
+      },
+      "replay": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "image": "local@sha256:22540ab4b00142daca3bb5dc1619770223eb161836cbd2af8b77dcb345b1d0b9",
+      "limits": {
+        "wallSeconds": 15,
+        "memoryBytes": 134217728,
+        "outputBytes": 256000
+      },
+      "jev": {
+        "model": "jev-1.14.0",
+        "inputUsdPerMillion": 0.042,
+        "retries": 1,
+        "maxRetryAfterMs": 60000,
+        "perQuestionTokens": 32000,
+        "contextGuard": "utf8-bytes-plus-1024-v1",
+        "requestTokens": 64000,
+        "answerMapping": "score-index-v1"
+      },
+      "package": {
+        "gameId": "0022500083",
+        "packageHash": "e5189b73866ee79ea890ac4b7789c0bac2b591cf19993ac6e385eb741c4f0508",
+        "manifestHash": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650",
+        "stateVersion": "state-v1",
+        "files": {
+          "assemble.py": "046027d403eb7db30069a64229e25c671a4f003aec1bd7eae0c216edd9be759c",
+          "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+          "manifest.json": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650"
+        }
+      },
+      "codeRevision": "e406a827b751040724f9c9bc90f3bbee964749d0",
+      "baseline": null,
+      "determinism": "double-run-and-content-cache-v1"
+    },
+    "generic": {
+      "api": "assemble-v1",
+      "swapContract": {
+        "version": "jev-contract-v3",
+        "sizePrior": [
+          0.631578947368421, 0.2789473684210526, 0.05789473684210526,
+          0.02631578947368421, 0.005263157894736842
+        ],
+        "training": [
+          {
+            "gameId": "0022500049",
+            "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+          },
+          {
+            "gameId": "0022500060",
+            "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+          },
+          {
+            "gameId": "0022500193",
+            "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+          },
+          {
+            "gameId": "0022500209",
+            "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+          },
+          {
+            "gameId": "0022500216",
+            "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+          },
+          {
+            "gameId": "0022500233",
+            "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+          },
+          {
+            "gameId": "0022500250",
+            "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+          },
+          {
+            "gameId": "0022500277",
+            "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+          },
+          {
+            "gameId": "0022500293",
+            "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+          },
+          {
+            "gameId": "0022500302",
+            "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+          }
+        ]
+      },
+      "replay": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "image": "local@sha256:22540ab4b00142daca3bb5dc1619770223eb161836cbd2af8b77dcb345b1d0b9",
+      "limits": {
+        "wallSeconds": 15,
+        "memoryBytes": 134217728,
+        "outputBytes": 256000
+      },
+      "jev": {
+        "model": "jev-1.14.0",
+        "inputUsdPerMillion": 0.042,
+        "retries": 1,
+        "maxRetryAfterMs": 60000,
+        "perQuestionTokens": 32000,
+        "contextGuard": "utf8-bytes-plus-1024-v1",
+        "requestTokens": 64000,
+        "answerMapping": "score-index-v1"
+      },
+      "package": null,
+      "codeRevision": "e406a827b751040724f9c9bc90f3bbee964749d0",
+      "baseline": "generic-jev-v1",
+      "determinism": "double-run-and-content-cache-v1"
+    }
+  },
+  "package": {
+    "gameId": "0022500083",
+    "packageHash": "e5189b73866ee79ea890ac4b7789c0bac2b591cf19993ac6e385eb741c4f0508",
+    "manifestHash": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650",
+    "stateVersion": "state-v1",
+    "files": {
+      "assemble.py": "046027d403eb7db30069a64229e25c671a4f003aec1bd7eae0c216edd9be759c",
+      "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+      "manifest.json": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650"
+    }
+  },
+  "probe": {
+    "contract": "jev-contract-v2",
+    "request": {
+      "model": "jev-1.14.0",
+      "state": "Contract-shape probe: players 100–104 are on court; 200 and 201 are eligible bench players.",
+      "questions": {
+        "swap": {
+          "type": "choice",
+          "instructions": "Conditional on a substitution, assign probabilities to these eight candidate swaps and other.",
+          "criteria": {
+            "out:100|in:200": "out:100|in:200",
+            "out:100|in:201": "out:100|in:201",
+            "out:101|in:200": "out:101|in:200",
+            "out:101|in:201": "out:101|in:201",
+            "out:102|in:200": "out:102|in:200",
+            "out:102|in:201": "out:102|in:201",
+            "out:103|in:200": "out:103|in:200",
+            "out:103|in:201": "out:103|in:201",
+            "other": "Any unlisted legal swap."
+          }
+        }
+      }
+    },
+    "response": {
+      "response": {
+        "model": "jev-1.14.0",
+        "answers": {
+          "swap": {
+            "type": "choice",
+            "choice": "other",
+            "confidence": 0.4,
+            "probabilities": {
+              "out:100|in:200": 0.13,
+              "out:100|in:201": 0.07,
+              "out:101|in:200": 0.07,
+              "out:101|in:201": 0.05,
+              "out:102|in:200": 0.07,
+              "out:102|in:201": 0.04,
+              "out:103|in:200": 0.06,
+              "out:103|in:201": 0.04,
+              "other": 0.47
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 596,
+          "output_tokens": 160
+        }
+      },
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 160
+      },
+      "usd": 0.000025032,
+      "latencyMs": 176.81624999999622,
+      "attempt": 0,
+      "modelValid": true,
+      "usageValid": true
+    },
+    "expectedKeys": [
+      "other",
+      "out:100|in:200",
+      "out:100|in:201",
+      "out:101|in:200",
+      "out:101|in:201",
+      "out:102|in:200",
+      "out:102|in:201",
+      "out:103|in:200",
+      "out:103|in:201"
+    ],
+    "returnedKeys": [
+      "other",
+      "out:100|in:200",
+      "out:100|in:201",
+      "out:101|in:200",
+      "out:101|in:201",
+      "out:102|in:200",
+      "out:102|in:201",
+      "out:103|in:200",
+      "out:103|in:201"
+    ],
+    "valid": true
+  },
+  "reports": [
+    {
+      "predictorId": "handwritten",
+      "summary": {
+        "n": 66,
+        "timingBrier": 0.22026212121212124,
+        "timingConstantBrier": 0.22704315886134066,
+        "timingSkillVsConstant": 0.029866734074822876,
+        "timingSkillVsConstantReason": null,
+        "timingSkillVsStatistical": null,
+        "timingSkillVsStatisticalReason": "baseline_not_supplied",
+        "meanPredicted": 0.2637878787878788,
+        "observedRate": 0.3484848484848485,
+        "brierDecomposition": {
+          "bins": 10,
+          "pooling": "window-weighted within-game deciles",
+          "reliability": 0.013412722462722461,
+          "resolution": 0.020212952031133852,
+          "uncertainty": 0.22704315886134066,
+          "binningError": 0.00001919191919197427
+        },
+        "setLogLoss": 5.2528338969747415,
+        "setLogLossClips": 5,
+        "candidateHitRate": 0.043478260869565216,
+        "setTop1": 0,
+        "meanCandidates": 2,
+        "otherMass": 0.5756521739130432,
+        "setN": 23,
+        "playerN": 23,
+        "exitBrier": 0.248236240864085,
+        "entryBrier": 0.09973632357391839,
+        "exitTop1": 0.13043478260869565,
+        "entryTop1": 0.2608695652173913,
+        "exitTopK": 0.043478260869565216,
+        "entryTopK": 0.2608695652173913,
+        "exitLogLoss": 1.9405069570637623,
+        "entryLogLoss": 2.013657316689724,
+        "exitMRR": 0.3518115942028985,
+        "entryMRR": 0.5198067632850242,
+        "exitLogLossClips": 0,
+        "entryLogLossClips": 0,
+        "midPeriod": {
+          "n": 63,
+          "timingBrier": 0.22123015873015872,
+          "timingConstantBrier": 0.21667926429831194,
+          "timingSkillVsConstant": -0.021002906976744118,
+          "timingSkillVsConstantReason": null,
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": 0.25,
+          "observedRate": 0.31746031746031744,
+          "brierDecomposition": {
+            "bins": 10,
+            "pooling": "window-weighted within-game deciles",
+            "reliability": 0.004550894431846811,
+            "resolution": 0,
+            "uncertainty": 0.21667926429831194,
+            "binningError": -2.7755575615628914e-17
+          },
+          "setLogLoss": 5.1572385140862504,
+          "setLogLossClips": 4,
+          "candidateHitRate": 0.05,
+          "setTop1": 0,
+          "meanCandidates": 2,
+          "otherMass": 0.5999999999999999,
+          "setN": 20,
+          "playerN": 20,
+          "exitBrier": 0.2383716386948959,
+          "entryBrier": 0.09838673602417257,
+          "exitTop1": 0.15,
+          "entryTop1": 0.25,
+          "exitTopK": 0.05,
+          "entryTopK": 0.25,
+          "exitLogLoss": 1.9390037143724754,
+          "entryLogLoss": 2.0800192944413363,
+          "exitMRR": 0.34708333333333335,
+          "entryMRR": 0.5047222222222223,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0
+        },
+        "byStoppage": {
+          "between_periods": {
+            "n": 3,
+            "timingBrier": 0.1999333333333333,
+            "timingConstantBrier": 0,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "zero_reference_loss",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.5533333333333333,
+            "observedRate": 1,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.1995111111111111,
+              "resolution": 0,
+              "uncertainty": 0,
+              "binningError": 0.000422222222222185
+            },
+            "setLogLoss": 5.890136449564692,
+            "setLogLossClips": 1,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.41333333333333333,
+            "setN": 3,
+            "playerN": 3,
+            "exitBrier": 0.31400025532534565,
+            "entryBrier": 0.10873357390555742,
+            "exitTop1": 0,
+            "entryTop1": 0.3333333333333333,
+            "exitTopK": 0,
+            "entryTopK": 0.3333333333333333,
+            "exitLogLoss": 1.9505285750056718,
+            "entryLogLoss": 1.5712441316789765,
+            "exitMRR": 0.3833333333333333,
+            "entryMRR": 0.6203703703703703,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "dead_ball_turnover": {
+            "n": 7,
+            "timingBrier": 0.13392857142857142,
+            "timingConstantBrier": 0.12244897959183675,
+            "timingSkillVsConstant": -0.09374999999999978,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.14285714285714285,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.011479591836734696,
+              "resolution": 0,
+              "uncertainty": 0.12244897959183675,
+              "binningError": -2.7755575615628914e-17
+            },
+            "setLogLoss": 1.6094379124341003,
+            "setLogLossClips": 0,
+            "candidateHitRate": 1,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.6,
+            "setN": 1,
+            "playerN": 1,
+            "exitBrier": 0.08497141393680432,
+            "entryBrier": 0.03782311783422438,
+            "exitTop1": 1,
+            "entryTop1": 1,
+            "exitTopK": 1,
+            "entryTopK": 1,
+            "exitLogLoss": 0.9592303557927483,
+            "entryLogLoss": 1.1480042612845298,
+            "exitMRR": 1,
+            "entryMRR": 1,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "foul": {
+            "n": 43,
+            "timingBrier": 0.20203488372093023,
+            "timingConstantBrier": 0.20118983234180637,
+            "timingSkillVsConstant": -0.004200268817204256,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.27906976744186046,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.0008450513791238505,
+              "resolution": 0,
+              "uncertainty": 0.20118983234180637,
+              "binningError": 0
+            },
+            "setLogLoss": 5.422154382413652,
+            "setLogLossClips": 3,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.5999999999999999,
+            "setN": 12,
+            "playerN": 12,
+            "exitBrier": 0.2450593579931415,
+            "entryBrier": 0.10429239329414519,
+            "exitTop1": 0.16666666666666666,
+            "entryTop1": 0.25,
+            "exitTopK": 0,
+            "entryTopK": 0.25,
+            "exitLogLoss": 1.9501845733894072,
+            "entryLogLoss": 2.14299878146573,
+            "exitMRR": 0.3354166666666667,
+            "entryMRR": 0.4787037037037037,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "jump_ball": {
+            "n": 4,
+            "timingBrier": 0.1875,
+            "timingConstantBrier": 0.1875,
+            "timingSkillVsConstant": 0,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.25,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0,
+              "resolution": 0,
+              "uncertainty": 0.1875,
+              "binningError": 0
+            },
+            "setLogLoss": 4.959341999708705,
+            "setLogLossClips": 0,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.6,
+            "setN": 1,
+            "playerN": 1,
+            "exitBrier": 0.24204245218817041,
+            "entryBrier": 0.10921904431211799,
+            "exitTop1": 0,
+            "entryTop1": 0,
+            "exitTopK": 0,
+            "entryTopK": 0,
+            "exitLogLoss": 2.1132023767739825,
+            "entryLogLoss": 2.901659737138253,
+            "exitMRR": 0.3333333333333333,
+            "entryMRR": 0.3333333333333333,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "timeout": {
+            "n": 8,
+            "timingBrier": 0.4375,
+            "timingConstantBrier": 0.1875,
+            "timingSkillVsConstant": -1.3333333333333335,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.75,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.25,
+              "resolution": 0,
+              "uncertainty": 0.1875,
+              "binningError": 0
+            },
+            "setLogLoss": 5.251689630103062,
+            "setLogLossClips": 1,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.6,
+            "setN": 6,
+            "playerN": 6,
+            "exitBrier": 0.24995110197587408,
+            "entryBrier": 0.09486397313456106,
+            "exitTop1": 0,
+            "entryTop1": 0.16666666666666666,
+            "exitTopK": 0,
+            "entryTopK": 0.16666666666666666,
+            "exitLogLoss": 2.050904445701645,
+            "entryLogLoss": 1.9724560854691975,
+            "exitMRR": 0.2638888888888889,
+            "entryMRR": 0.5027777777777778,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "violation": {
+            "n": 1,
+            "timingBrier": 0.0625,
+            "timingConstantBrier": 0,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "zero_reference_loss",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.0625,
+              "resolution": 0,
+              "uncertainty": 0,
+              "binningError": 0
+            },
+            "setLogLoss": null,
+            "setLogLossClips": 0,
+            "candidateHitRate": null,
+            "setTop1": null,
+            "meanCandidates": null,
+            "otherMass": null,
+            "setN": 0,
+            "playerN": 0,
+            "exitBrier": null,
+            "entryBrier": null,
+            "exitTop1": null,
+            "entryTop1": null,
+            "exitTopK": null,
+            "entryTopK": null,
+            "exitLogLoss": null,
+            "entryLogLoss": null,
+            "exitMRR": null,
+            "entryMRR": null,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          }
+        },
+        "code": {
+          "primaryN": 66,
+          "eligibleN": 66,
+          "invalidPrediction": 0,
+          "deferred": {
+            "between_periods": 3
+          },
+          "shadowProviderFailures": 0,
+          "shadowProviderFailureRate": 0,
+          "missingShadow": 0,
+          "counterfactualFlag": false,
+          "packageOnly": {
+            "n": 66,
+            "primaryN": 66,
+            "excluded": {},
+            "primary": {
+              "timing": {
+                "n": 66,
+                "mean": 0.22026212121212124
+              },
+              "setLogLoss": {
+                "n": 23,
+                "mean": 5.2528338969747415
+              },
+              "exit": {
+                "n": 23,
+                "mean": 0.248236240864085
+              },
+              "entry": {
+                "n": 23,
+                "mean": 0.09973632357391839
+              }
+            },
+            "alternative": {
+              "timing": {
+                "n": 66,
+                "mean": 0.23674242424242425
+              },
+              "setLogLoss": {
+                "n": 23,
+                "mean": 5.216139546092371
+              },
+              "exit": {
+                "n": 23,
+                "mean": 0.2430038660716743
+              },
+              "entry": {
+                "n": 23,
+                "mean": 0.10014338610920222
+              }
+            }
+          },
+          "jevOnly": {
+            "n": 66,
+            "primaryN": 66,
+            "excluded": {},
+            "primary": {
+              "timing": {
+                "n": 66,
+                "mean": 0.22026212121212124
+              },
+              "setLogLoss": {
+                "n": 23,
+                "mean": 5.2528338969747415
+              },
+              "exit": {
+                "n": 23,
+                "mean": 0.248236240864085
+              },
+              "entry": {
+                "n": 23,
+                "mean": 0.09973632357391839
+              }
+            },
+            "alternative": {
+              "timing": {
+                "n": 66,
+                "mean": 0.25276515151515166
+              },
+              "setLogLoss": {
+                "n": 23,
+                "mean": 5.373470571156848
+              },
+              "exit": {
+                "n": 23,
+                "mean": 0.27196586127703126
+              },
+              "entry": {
+                "n": 23,
+                "mean": 0.09880244281797933
+              }
+            }
+          },
+          "regret": {
+            "n": 66,
+            "primaryN": 66,
+            "excluded": {},
+            "metrics": {
+              "timing": {
+                "n": 66,
+                "mean": -0.04898333333333334
+              },
+              "setLogLoss": {
+                "n": 23,
+                "mean": -0.08394232329973456
+              },
+              "exit": {
+                "n": 23,
+                "mean": -0.018497245620535622
+              },
+              "entry": {
+                "n": 23,
+                "mean": 0.0005268182206552768
+              }
+            }
+          }
+        },
+        "windows": 75,
+        "eligible": 66,
+        "scored": 66,
+        "actualSubstitutions": 23,
+        "excluded": {
+          "ambiguous_equal_clock_run": 7,
+          "ambiguous_stoppage": 9,
+          "multiple_whistles": 7
+        },
+        "informational": {},
+        "failures": {},
+        "providerFailureRate": 0,
+        "providerFailureFlag": false,
+        "invalidQuestions": {},
+        "invalidActions": 0,
+        "timingLogLoss": 0.6344493755523882,
+        "clipped": 0,
+        "precision": 1,
+        "recall": 0.13043478260869565,
+        "exactAction": 0.6515151515151515,
+        "partialOverlap": 0.041304347826086954,
+        "calibration": [
+          {
+            "lower": 0,
+            "upper": 0.1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 63,
+            "predicted": 0.25,
+            "observed": 0.31746031746031744
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 3,
+            "predicted": 0.5533333333333333,
+            "observed": 1
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.9,
+            "upper": 1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          }
+        ],
+        "assertedEstimates": 0,
+        "jevAgreementWithDiagnostics": null
+      },
+      "usage": {
+        "input_tokens": 377759,
+        "output_tokens": 7962,
+        "usd": 0.015865877999999996,
+        "latencyMs": 8844.003626000005
+      },
+      "windows": 75
+    }
+  ]
+}
