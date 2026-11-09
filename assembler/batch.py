@@ -18,6 +18,10 @@ import sys
 import struct
 import time
 
+if os.environ.get("STARTER_MODEL") == "1":
+    import nba_starter
+    nba_starter.load()
+
 # Prevent package children opening the supervisor's /proc/<pid>/fd descriptors.
 ctypes.CDLL(None).prctl(4, 0, 0, 0, 0)  # PR_SET_DUMPABLE
 

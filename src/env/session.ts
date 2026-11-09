@@ -215,6 +215,16 @@ export class Session {
     const { horizon, revision, process, windowGames } =
       this.#config.profile.memory;
     return {
+      ...(this.policyTools?.assembler.starter
+        ? {
+            starter: {
+              hash: this.policyTools.assembler.starter.hash,
+              cutoff: this.policyTools.assembler.starter.cutoff,
+              api: "nba_starter.predict(state)" as const,
+              path: "/starter/model.json" as const,
+            },
+          }
+        : {}),
       team: this.#team(BOS),
       season: "2025-26",
       game: {
@@ -902,6 +912,7 @@ export function sessionEnvironment(
   } = {},
 ): EnvironmentFactory {
   return async (context, trusted) => {
+    const policy = hooks.policy?.(context, trusted);
     const session = new Session(
       config,
       context.game,
@@ -910,7 +921,7 @@ export function sessionEnvironment(
       source,
       trusted.workspace,
       trusted.root,
-      hooks.policy?.(context, trusted),
+      policy,
       trusted.countMemory,
     );
     let sandbox: DockerSandbox | undefined;
@@ -943,6 +954,7 @@ export function sessionEnvironment(
             (directory, abort) => session.exportTo(directory, abort),
             session.workspaceForSandbox(),
             trusted.root,
+            policy?.assembler.starter,
           );
           return sandbox.execute(program, limits, signal);
         }),

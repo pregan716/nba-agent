@@ -1,3 +1,4 @@
+import { StarterService } from "../src/starter/model.js";
 import { pinSwapContract } from "../src/replay/swap.js";
 // Trusted launcher: provider credentials never enter the research process.
 import { readFileSync } from "node:fs";
@@ -81,11 +82,17 @@ if (mode !== "analyst" && mode !== "baselines") throw Error("Unknown mode");
 const memory = memoryVariant(
   arg("memory", "M0") as MemoryPermissions["variant"],
 );
-const assembler = new DockerAssembler(image, {
-  wallSeconds: 15,
-  memoryBytes: 128 * 1024 * 1024,
-  outputBytes: 256000,
-});
+const starterEnabled = !scripted && process.argv.includes("--code-predictions");
+const assembler = new DockerAssembler(
+  image,
+  {
+    wallSeconds: 15,
+    memoryBytes: (starterEnabled ? 512 : 128) * 1024 * 1024,
+    outputBytes: 256000,
+  },
+  undefined,
+  starterEnabled,
+);
 const codeExecution = !scripted && mode !== "baselines";
 const sandboxImage = codeExecution ? localSandboxImage() : null;
 if (codeExecution && !sandboxImage)
@@ -115,6 +122,7 @@ try {
           training: [training],
           priorTraining: [],
           backtestSource: undefined,
+          starterService: undefined,
           validationSamples: [],
         };
       })()
@@ -160,6 +168,20 @@ try {
         return {
           source,
           schedule,
+          starterService: starterEnabled
+            ? new StarterService(
+                resolve(
+                  root,
+                  arg(
+                    "run-id",
+                    `fixture-${mode}${mode === "analyst" ? `-${memory.variant}` : ""}`,
+                  )!,
+                  arg("replicate", "r1")!,
+                ),
+                image,
+                corpus,
+              )
+            : undefined,
           backtestSource: (cutoff: string, signal: AbortSignal) =>
             loadBacktestData(corpus, cutoff, signal),
           priorTraining: mode === "baselines" ? priorDatasets : [],
@@ -183,6 +205,7 @@ try {
     priorTraining,
     validationSamples,
     backtestSource,
+    starterService,
   } = inputs;
   const config = presetConfig({
     harness: "pi",
@@ -247,6 +270,10 @@ try {
       );
       try {
         await runBaselines({
+          root: record.root,
+          prepareStarter: starterService
+            ? (game, signal) => starterService.prepare(game, signal)
+            : undefined,
           config,
           schedule,
           datasets,
@@ -275,6 +302,9 @@ try {
       }
     } else {
       const runner = chronologicalRunner({
+        prepareStarter: starterService
+          ? (game, _root, signal) => starterService.prepare(game, signal)
+          : undefined,
         backtestSource,
         validationSamples,
         root,

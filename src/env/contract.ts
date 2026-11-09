@@ -156,6 +156,12 @@ export interface MemoryUsage {
   cap: number;
 }
 export interface ContextResult {
+  starter?: {
+    hash: string;
+    cutoff: string;
+    api: "nba_starter.predict(state)";
+    path: "/starter/model.json";
+  };
   memoryUsage?: MemoryUsage;
   team: TeamRef;
   season: "2025-26";

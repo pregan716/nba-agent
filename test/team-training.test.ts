@@ -193,6 +193,23 @@ test("all-teams training filters before indexed reads, retains DNPs, reports gap
       new Date(Date.parse(at) + 1).toISOString(),
       { seasons: [season], batchSize: 1 },
     );
+    const streamed: typeof result.datasets = [];
+    const streamedResult = await loadAllTeamsTraining(
+      corpus,
+      new Date(Date.parse(at) + 1).toISOString(),
+      {
+        seasons: [season],
+        collect: false,
+        batchSize: 1,
+        onDataset: async (dataset, scheduledStart) => {
+          assert.equal(scheduledStart, tip);
+          streamed.push(dataset);
+        },
+      },
+    );
+    assert.deepEqual(streamed, result.datasets);
+    assert.deepEqual(streamedResult.datasets, []);
+    assert.deepEqual(streamedResult.skipped, result.skipped);
     assert.equal(result.datasets.length, 2);
     assert.ok(
       result.datasets.every(

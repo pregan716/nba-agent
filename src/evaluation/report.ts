@@ -198,8 +198,8 @@ const displayMetrics = [
 ];
 function metricTable(m: EvaluationReport["runs"][number]["totals"]) {
   const lines = [
-    "\n| Scope | Metric | Scored / substitutions | Run | constant | statistical | generic-jev |",
-    "| --- | --- | --- | --- | --- | --- | --- |",
+    "\n| Scope | Metric | Scored / substitutions | Run | constant | statistical | generic-jev | starter |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- |",
   ];
   const groups = [
     ["full", m],
@@ -220,7 +220,7 @@ function metricTable(m: EvaluationReport["runs"][number]["totals"]) {
     ]) {
       const cells = [
         value,
-        ...["constant", "statistical", "generic-jev"].map(
+        ...["constant", "statistical", "generic-jev", "starter"].map(
           (name) => value.baselines[name]?.metrics,
         ),
       ];
@@ -339,13 +339,13 @@ export function markdown(report: EvaluationReport) {
   out.push(
     "\n## Learning curves on common games",
     "Y-axis: timing skill (higher is better); raw Brier remains the headline metric. Decomposition uses within-game deciles pooled by scored windows; signed binning error is Brier minus reliability plus resolution minus uncertainty.",
-    "\n| Game | Index (1-based) | Tag | Run | Timing skill vs constant | Timing skill vs statistical | Mid-period skill vs constant | constant skill | statistical skill | generic-jev skill |",
-    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+    "\n| Game | Index (1-based) | Tag | Run | Timing skill vs constant | Timing skill vs statistical | Mid-period skill vs constant | constant skill | statistical skill | generic-jev skill | starter skill |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
   );
   for (const point of report.learningCurves)
     for (const run of point.runs)
       out.push(
-        `| ${cell(point.game.gameId)} | ${point.game.index + 1} | ${point.game.tag} | ${cell(run.id)} | ${number(run.scores.timingSkillVsConstant)} | ${number(run.scores.timingSkillVsStatistical)} | ${number(run.midPeriod.timingSkillVsConstant)} | ${["constant", "statistical", "generic-jev"].map((name) => number(run.baselines[name]?.metrics?.timingSkillVsConstant)).join(" | ")} |`,
+        `| ${cell(point.game.gameId)} | ${point.game.index + 1} | ${point.game.tag} | ${cell(run.id)} | ${number(run.scores.timingSkillVsConstant)} | ${number(run.scores.timingSkillVsStatistical)} | ${number(run.midPeriod.timingSkillVsConstant)} | ${["constant", "statistical", "generic-jev", "starter"].map((name) => number(run.baselines[name]?.metrics?.timingSkillVsConstant)).join(" | ")} |`,
       );
   out.push(
     "\nLearning-curve omissions:",
