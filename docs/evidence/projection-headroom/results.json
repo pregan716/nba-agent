@@ -1,0 +1,209 @@
+{
+ "big_overs": {
+  "active": {
+   "auc_played": 0.5414234641762732,
+   "picks": 210,
+   "top3_hit_rate": 0.2761904761904762,
+   "top3_hit_rate_excluding_voids": 0.2761904761904762,
+   "void_picks": 0
+  },
+  "base": {
+   "auc_played": 0.5255805590877822,
+   "picks": 210,
+   "top3_hit_rate": 0.24285714285714285,
+   "top3_hit_rate_excluding_voids": 0.24401913875598086,
+   "void_picks": 1
+  },
+  "base_rate_offered": 0.19718309859154928,
+  "base_rate_played": 0.1981981981981982,
+  "market_p_over_auc_played": 0.5486374580475705,
+  "minutes_above_projection": {
+   "big_overs": 2.2551254773531633,
+   "big_overs_with_4_or_more": 0.3538961038961039,
+   "others": -1.4319427337131647
+  },
+  "offered": 1562,
+  "offered_player_did_not_play": 8,
+  "oracle": {
+   "auc_played": 0.6847131600341874,
+   "picks": 210,
+   "top3_hit_rate": 0.36666666666666664,
+   "top3_hit_rate_excluding_voids": 0.36666666666666664,
+   "void_picks": 0
+  },
+  "per_game": 4.4,
+  "start": {
+   "auc_played": 0.541978487002564,
+   "picks": 210,
+   "top3_hit_rate": 0.26666666666666666,
+   "top3_hit_rate_excluding_voids": 0.26666666666666666,
+   "void_picks": 0
+  }
+ },
+ "brier_base_minus_market": {
+  "interval90": [
+   0.011546943281474225,
+   0.020302918699968114
+  ],
+  "mean": 0.015849973730734213
+ },
+ "brier_oracle_minus_market": {
+  "interval90": [
+   -0.02790574497365183,
+   -0.013751413534792926
+  ],
+  "mean": -0.020799381420323757
+ },
+ "dispersion_phi": {
+  "assists": 1.0846165949942215,
+  "points": 2.3311584397003955,
+  "rebounds": 1.094547637414006
+ },
+ "fantasy_points_played": {
+  "min": -0.5,
+  "negative": 3,
+  "player_games": 757
+ },
+ "games": {
+  "change": 39,
+  "scored": 70
+ },
+ "injury_games_without_pregame_report": [],
+ "injury_unmatched_names": [],
+ "league_2025_26_minutes_mae": {
+  "model": 5.6446065019519835,
+  "recent_minutes_redistributed": 5.713324652382879
+ },
+ "minutes": {
+  "active": {
+   "all": 26.767037301659855,
+   "change": 28.076056118219284,
+   "rotation_mae": 4.80434002850305,
+   "stable": 25.120207177601213
+  },
+  "base": {
+   "all": 34.616434155538535,
+   "change": 35.66962682665629,
+   "rotation_mae": 5.525332046487115,
+   "stable": 33.291449827358115
+  },
+  "inact": {
+   "all": 33.77541217724352,
+   "change": 34.50326210891314,
+   "rotation_mae": 5.466042549742654,
+   "stable": 32.859730005143
+  },
+  "naive": {
+   "all": 34.17775565125641,
+   "change": 34.21379562619472,
+   "rotation_mae": 5.567493316020654,
+   "stable": 34.13241503762433
+  },
+  "start": {
+   "all": 31.77432729255577,
+   "change": 32.01793981461146,
+   "rotation_mae": 5.143524701556388,
+   "stable": 31.467847022872814
+  }
+ },
+ "minutes_baseline_minus_active": {
+  "interval90": [
+   6.067999847622339,
+   9.815905701116979
+  ],
+  "mean": 7.849396853878677
+ },
+ "minutes_baseline_per_game_sd": 13.02249641164009,
+ "minutes_by_tier": {
+  "core (26+)": {
+   "mae": 4.2175,
+   "played": 1.0,
+   "player_games": 240,
+   "share_of_error": 0.2089
+  },
+  "deep bench (<5)": {
+   "mae": 4.153,
+   "played": 0.3158,
+   "player_games": 209,
+   "share_of_error": 0.1791
+  },
+  "fringe (5-15)": {
+   "mae": 6.4198,
+   "played": 0.8039,
+   "player_games": 204,
+   "share_of_error": 0.2702
+  },
+  "rotation (15-26)": {
+   "mae": 5.6924,
+   "played": 0.9863,
+   "player_games": 291,
+   "share_of_error": 0.3418
+  }
+ },
+ "production": {
+  "active": {
+   "brier": 0.26244151495165924,
+   "change": 0.26541730441854394,
+   "mae": 3.048622796567961,
+   "right_side": 0.5122265122265123,
+   "stable": 0.25870558187639753
+  },
+  "base": {
+   "brier": 0.2643187399225207,
+   "change": 0.26617924684301414,
+   "mae": 3.0711861461321535,
+   "right_side": 0.4922779922779923,
+   "stable": 0.2619829801457038
+  },
+  "market": {
+   "brier": 0.24846876619178648,
+   "change": 0.24916546609806542,
+   "mae": 2.9356499356499355,
+   "right_side": null,
+   "stable": 0.2475940994008848
+  },
+  "oracle": {
+   "brier": 0.22766938477146276,
+   "change": 0.22922302064480501,
+   "mae": 2.687045300842507,
+   "right_side": 0.6126126126126126,
+   "stable": 0.22571888400159176
+  },
+  "props": 1554,
+  "start": {
+   "brier": 0.26182598728095774,
+   "change": 0.2626219739691101,
+   "mae": 3.0458690744377446,
+   "right_side": 0.5128700128700129,
+   "stable": 0.26082667162747175
+  }
+ },
+ "production_by_stat": {
+  "assists": {
+   "b_base": 0.2599360120830697,
+   "b_market": 0.24216689689094922,
+   "b_oracle": 0.23975632295160293,
+   "n": 478
+  },
+  "points": {
+   "b_base": 0.275646541076714,
+   "b_market": 0.2511004060945794,
+   "b_oracle": 0.2244085126033019,
+   "n": 540
+  },
+  "rebounds": {
+   "b_base": 0.2568148803777319,
+   "b_market": 0.25143743779307753,
+   "b_oracle": 0.22017556857873852,
+   "n": 536
+  }
+ },
+ "props_offered": {
+  "all": 1562,
+  "player_not_on_game_roster": 0
+ },
+ "rotation_player_games_off_by": {
+  "10_or_more": 0.15512820512820513,
+  "6_or_more": 0.37564102564102564
+ }
+}
