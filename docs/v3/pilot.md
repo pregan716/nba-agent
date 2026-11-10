@@ -12,24 +12,24 @@ price list before any budget claim is final.
 
 ## Runs
 
-| Run id                     | Memory | Games | Code revision | Prompt                      | Cost   | Wall clock | Outcome                                                                |
-| -------------------------- | ------ | ----- | ------------- | --------------------------- | ------ | ---------- | ---------------------------------------------------------------------- |
-| `pilot-m3-smoke`           | M3     | 1     | pre-SPO-857   | first `research-v3`         | $8.83  | —          | completed; six calls spent on manifest hashes                          |
-| `pilot-m3-smoke2`          | M3     | 1     | —             | —                           | $4.90  | —          | failed: stale assembler image pin (SPO-858, SPO-859)                   |
-| `pilot-m3-smoke3`          | M3     | 1     | `d314c44`     | after SPO-857               | $4.98  | 25 min     | completed                                                              |
-| `pilot-m3` (stage 3)       | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                                     |
-| `pilot-m3b`                | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                                     |
-| `pilot-m0` (stage 4)       | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                                     |
-| `pilot-m0-10`              | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                                     |
-| `baselines-dev`            | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                                     |
-| `pilot-m3-v2` (stage 5)    | M3     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $27.11 | 2 h 11 min | completed, no halt                                                     |
-| `pilot-m0-v2` (stage 5)    | M0     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $17.88 | 1 h 30 min | completed, no halt                                                     |
-| `pilot-m0-swap` (stage 6)  | M0     | 2     | `807adac`     | `jev-contract-v2` (PR #74)  | $9.70  | 38 min     | completed, no halt; first attempt failed at session start (PR #75), $0 |
-| `pilot-m0-swap2` (stage 7) | M0     | 2     | `b661208`     | after SPO-868 (PR #77)      | $7.92  | 36 min     | completed, no halt                                                     |
-| `pilot-m0-code-smoke`      | M0     | 1     | `67e8798`     | `research-v3-code` (PR #85) | $2.98  | 26 min     | completed, no halt                                                     |
-| `baselines-dev-v3`         | —      | 10    | `8f6ac1b`     | baselines mode + starter    | $0.13  | 1 h 24 min | constant, statistical, starter, generic-Jev                            |
-| `pilot-m0-dev-v3` (stage 8) | M0    | 10    | `8f6ac1b`     | `research-v3-code`          | $25.00 | 4 h 01 min | completed, no halt                                                     |
-| `pilot-m3-dev-v3` (stage 8) | M3    | 10    | `8f6ac1b`     | `research-v3-code`          | $48.24 | 7 h 01 min | host disk filled in game 1 postgame; resumed with the same command, completed |
+| Run id                      | Memory | Games | Code revision | Prompt                      | Cost   | Wall clock | Outcome                                                                       |
+| --------------------------- | ------ | ----- | ------------- | --------------------------- | ------ | ---------- | ----------------------------------------------------------------------------- |
+| `pilot-m3-smoke`            | M3     | 1     | pre-SPO-857   | first `research-v3`         | $8.83  | —          | completed; six calls spent on manifest hashes                                 |
+| `pilot-m3-smoke2`           | M3     | 1     | —             | —                           | $4.90  | —          | failed: stale assembler image pin (SPO-858, SPO-859)                          |
+| `pilot-m3-smoke3`           | M3     | 1     | `d314c44`     | after SPO-857               | $4.98  | 25 min     | completed                                                                     |
+| `pilot-m3` (stage 3)        | M3     | 10    | `f8ff26e`     | after third smoke           | $47.78 | 4 h 23 min | completed, no halt                                                            |
+| `pilot-m3b`                 | M3     | 5     | `b743e79`     | after PR #62 (Jev briefing) | $25.77 | 2 h 07 min | completed, no halt                                                            |
+| `pilot-m0` (stage 4)        | M0     | 2     | `b743e79`     | after PR #62                | $6.17  | 34 min     | completed, no halt                                                            |
+| `pilot-m0-10`               | M0     | 10    | `b743e79`     | after PR #62                | $28.96 | 2 h 46 min | completed, no halt                                                            |
+| `baselines-dev`             | —      | 10    | `390ecf5`     | baselines mode              | <$0.10 | 4 min      | constant, statistical, generic-Jev                                            |
+| `pilot-m3-v2` (stage 5)     | M3     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $27.11 | 2 h 11 min | completed, no halt                                                            |
+| `pilot-m0-v2` (stage 5)     | M0     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $17.88 | 1 h 30 min | completed, no halt                                                            |
+| `pilot-m0-swap` (stage 6)   | M0     | 2     | `807adac`     | `jev-contract-v2` (PR #74)  | $9.70  | 38 min     | completed, no halt; first attempt failed at session start (PR #75), $0        |
+| `pilot-m0-swap2` (stage 7)  | M0     | 2     | `b661208`     | after SPO-868 (PR #77)      | $7.92  | 36 min     | completed, no halt                                                            |
+| `pilot-m0-code-smoke`       | M0     | 1     | `67e8798`     | `research-v3-code` (PR #85) | $2.98  | 26 min     | completed, no halt                                                            |
+| `baselines-dev-v3`          | —      | 10    | `8f6ac1b`     | baselines mode + starter    | $0.13  | 1 h 24 min | constant, statistical, starter, generic-Jev                                   |
+| `pilot-m0-dev-v3` (stage 8) | M0     | 10    | `8f6ac1b`     | `research-v3-code`          | $25.00 | 4 h 01 min | completed, no halt                                                            |
+| `pilot-m3-dev-v3` (stage 8) | M3     | 10    | `8f6ac1b`     | `research-v3-code`          | $48.24 | 7 h 01 min | host disk filled in game 1 postgame; resumed with the same command, completed |
 
 All runs: Jev `jev-1.14.0`, analyst `claude-opus-4-6` at effort `high` with
 adaptive thinking, Pi harness with prompt caching (`ephemeral-5m`) and
@@ -530,8 +530,8 @@ refit uses only releases before the game's scheduled start.
 
 By stoppage kind (windows; timing; set log loss):
 
-| Kind               | Windows | Starter     | M0          | M3          |
-| ------------------ | ------- | ----------- | ----------- | ----------- |
+| Kind               | Windows | Starter      | M0           | M3           |
+| ------------------ | ------- | ------------ | ------------ | ------------ |
 | Foul               | 380     | .1831; 4.386 | .1842; 4.386 | .1843; 4.354 |
 | Dead-ball turnover | 84      | .0984; 2.956 | .0985; 2.956 | .0988; 2.785 |
 | Timeout            | 68      | .2202; 4.228 | .2180; 4.228 | .2213; 4.061 |
@@ -541,18 +541,18 @@ By stoppage kind (windows; timing; set log loss):
 
 Per game, in play order (timing; set log loss):
 
-| # | Game       | Starter       | M0            | M3            | M3 − M0 set | Cost M0 / M3 |
-| - | ---------- | ------------- | ------------- | ------------- | ----------- | ------------ |
-| 1 | 0022500083 | .1983; 4.149  | .1983; 4.149  | .2055; 4.149  | .000        | $2.23 / $4.93 |
-| 2 | 0022500018 | .1483; 3.594  | .1519; 3.594  | .1491; 3.446  | −.148       | $3.28 / $4.72 |
-| 3 | 0022500106 | .1416; 4.751  | .1416; 4.751  | .1416; 4.678  | −.073       | $2.40 / $5.32 |
-| 4 | 0022500117 | .1583; 4.034  | .1583; 4.034  | .1583; 3.828  | −.205       | $2.03 / $4.99 |
-| 5 | 0022500128 | .1846; 4.703  | .1846; 4.703  | .1846; 4.640  | −.063       | $2.51 / $4.50 |
-| 6 | 0022500021 | .1980; 4.007  | .1980; 4.007  | .1980; 3.846  | −.161       | $3.12 / $7.04 |
-| 7 | 0022500146 | .1527; 4.556  | .1527; 4.556  | .1527; 4.774  | +.218       | $2.45 / $3.80 |
-| 8 | 0022500158 | .2031; 5.006  | .2031; 5.006  | .2031; 5.081  | +.075       | $2.08 / $3.90 |
-| 9 | 0022500174 | .1409; 4.468  | .1409; 4.468  | .1409; 4.272  | −.196       | $2.27 / $4.94 |
-| 10 | 0022500028 | .1304; 3.985 | .1304; 3.985  | .1304; 3.604  | −.381       | $2.61 / $4.08 |
+| #   | Game       | Starter      | M0           | M3           | M3 − M0 set | Cost M0 / M3  |
+| --- | ---------- | ------------ | ------------ | ------------ | ----------- | ------------- |
+| 1   | 0022500083 | .1983; 4.149 | .1983; 4.149 | .2055; 4.149 | .000        | $2.23 / $4.93 |
+| 2   | 0022500018 | .1483; 3.594 | .1519; 3.594 | .1491; 3.446 | −.148       | $3.28 / $4.72 |
+| 3   | 0022500106 | .1416; 4.751 | .1416; 4.751 | .1416; 4.678 | −.073       | $2.40 / $5.32 |
+| 4   | 0022500117 | .1583; 4.034 | .1583; 4.034 | .1583; 3.828 | −.205       | $2.03 / $4.99 |
+| 5   | 0022500128 | .1846; 4.703 | .1846; 4.703 | .1846; 4.640 | −.063       | $2.51 / $4.50 |
+| 6   | 0022500021 | .1980; 4.007 | .1980; 4.007 | .1980; 3.846 | −.161       | $3.12 / $7.04 |
+| 7   | 0022500146 | .1527; 4.556 | .1527; 4.556 | .1527; 4.774 | +.218       | $2.45 / $3.80 |
+| 8   | 0022500158 | .2031; 5.006 | .2031; 5.006 | .2031; 5.081 | +.075       | $2.08 / $3.90 |
+| 9   | 0022500174 | .1409; 4.468 | .1409; 4.468 | .1409; 4.272 | −.196       | $2.27 / $4.94 |
+| 10  | 0022500028 | .1304; 3.985 | .1304; 3.985 | .1304; 3.604 | −.381       | $2.61 / $4.08 |
 
 **Lift over the starter.** M0 has none: nine of ten packages pass the
 starter through unchanged, and the tenth (game 2) applied a Platt timing
