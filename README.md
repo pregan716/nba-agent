@@ -1,12 +1,18 @@
-# NBA coaching policy agent
+# NBA team expert projection agent
 
-A chronological Boston Celtics replay experiment studying which kinds of accumulated
-knowledge help a research agent get better at encoding the head coach's substitution
-tendencies into a decision policy for a second model. The design lives in
-[the v3 implementation brief](docs/NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md),
-with Agreed, Proposed and Open status on every decision. This repository currently
-contains the reused data, replay, runner and harness infrastructure; the v3 replay,
-package and scoring behaviour is not yet implemented.
+A chronological Boston Celtics replay experiment asking whether an AI agent that
+builds expertise in one team adds value to DFS players and bettors by projecting
+each player's minutes and production before every game. The design lives in
+[the v4 implementation brief](docs/NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md),
+with Agreed, Proposed and Open status on every decision, and starts from
+[an offline headroom check](docs/v4/headroom-check.md).
+
+The repository contains the data, runner, harness, memory and evaluation
+infrastructure the v4 task reuses, and the complete v3 substitution-policy system
+(decision windows, policy packages, the starter model, Jev), which
+[the v3 brief](docs/NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md)
+describes and [its pilot](docs/v3/pilot.md) evaluated. The v4 forecast, scoring and
+reference projection are not yet implemented.
 [V1 records are archived](docs/archive/v1-props/README.md), as is
 [the original v2 research proposal](docs/archive/v2_agent_spec.md).
 

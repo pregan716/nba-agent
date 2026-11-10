@@ -2,6 +2,8 @@
 
 Nov 4, 2026 · @Patrick Regan · Revised Nov 4, 2026 after the first review (SPO-836)
 
+> **Superseded Nov 10, 2026 by [the v4 brief](NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md) (SPO-878).** The task, scoring, memory design and experiment below are no longer the plan. The sections the v4 brief lists as carried by reference (data contracts and temporal access rules, isolation, the harness contract, the research budget structure, the experiment record) remain in force.
+
 ## Purpose and research question
 
 Build a chronological NBA replay system that tests which kinds of accumulated knowledge help an autonomous research agent get better at a specialised job over repeated episodes. The job is to encode the Boston Celtics head coach's substitution tendencies into a decision policy. Before every game the research agent studies the team from time-restricted sources and writes a frozen policy package: prompt components plus deterministic assembly code. During a replay of the real game, at every substitution-eligible window, the assembly code builds a prompt from the observable game state and a fast, inexpensive decision model ("Jev") returns calibrated probabilities for whether the coach substituted and who came in and out. From `jev-contract-v3` (Agreed Nov 8, 2026; see Code-first prediction and the starter model) the package's own code returns those probabilities, starting from an environment-provided starter model it may adjust; Jev answers the windows the package defers and runs in shadow at every window. The predictions are scored against what the coach actually did. After the game the research agent sees a detailed trace of how its package performed and may reflect.
