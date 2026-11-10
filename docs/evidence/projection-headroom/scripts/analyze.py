@@ -7,10 +7,19 @@ Run export.ts first, then from the repository root:
   uv run --with pandas --with numpy --with scikit-learn \
     python docs/evidence/projection-headroom/scripts/analyze.py
 
-Celtics games 71-82 (the holdout) are never scored. Results are written to
-docs/evidence/projection-headroom/results.json.
+Holdout rule: every row from a 2025-26 game that tips at or after the Celtics'
+71st game is dropped straight after loading, before anything is computed. That
+covers Celtics games 71-82, for both teams, and the rest of the league in that
+period. export.ts already withholds those rows; the filter here is the second
+guard. --plant-holdout adds fabricated rows for the held-out Celtics games
+before the filter; the results file must come out byte-identical:
+
+  ... analyze.py --plant-holdout --out /tmp/planted.json
+  cmp /tmp/planted.json docs/evidence/projection-headroom/results.json
+
+Results are written to docs/evidence/projection-headroom/results.json.
 """
-import json, re, unicodedata
+import argparse, json, re, unicodedata
 from collections import defaultdict
 from math import erf, sqrt
 
@@ -19,8 +28,12 @@ import pandas as pd
 from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
 from sklearn.metrics import roc_auc_score
 
-H = ".cache/projection-headroom"
-OUT = "docs/evidence/projection-headroom/results.json"
+args = argparse.ArgumentParser()
+args.add_argument("--cache", default=".cache/projection-headroom")
+args.add_argument("--out", default="docs/evidence/projection-headroom/results.json")
+args.add_argument("--plant-holdout", action="store_true")
+args = args.parse_args()
+H, OUT = args.cache, args.out
 BOS = "1610612738"
 SEASONS = ("2024-25", "2025-26")
 LAST_SCORED_GAME = 70
@@ -36,11 +49,31 @@ def note(key, value, text=None):
 # ---------- load ----------
 games = pd.concat([pd.DataFrame(json.load(open(f"{H}/games-{s}.json"))) for s in SEASONS])
 games["tip"] = pd.to_datetime(games.scheduled_tipoff, utc=True)
+# The Celtics schedule (no outcomes) fixes the holdout before any result is read.
+bg = games[(games.season == "2025-26") & ((games.home_team_id == BOS) | (games.away_team_id == BOS))].sort_values("tip").reset_index(drop=True)
+bg["idx"] = np.arange(1, len(bg) + 1)
+holdout_start = bg[bg.idx == LAST_SCORED_GAME + 1].tip.iloc[0]
+withheld = set(games[(games.season == "2025-26") & (games.tip >= holdout_start)].game_id)
+held_celtics = list(bg[bg.idx > LAST_SCORED_GAME].game_id)
+bg = bg[bg.idx <= LAST_SCORED_GAME].reset_index(drop=True)
+
 BOX = "game_id player_id team_id sec pts reb ast stl blk tov fg3m".split()
+SUMMARY = "game_id player_id team_id starter status".split()
 box = pd.concat([pd.DataFrame([json.loads(l) for l in open(f"{H}/player_box_scores-{s}.jsonl")], columns=BOX) for s in SEASONS])
-summary = pd.concat(
-    [pd.DataFrame([json.loads(l) for l in open(f"{H}/v_player_game_summary-{s}.jsonl")], columns="game_id player_id team_id starter status".split()) for s in SEASONS]
-)
+summary = pd.concat([pd.DataFrame([json.loads(l) for l in open(f"{H}/v_player_game_summary-{s}.jsonl")], columns=SUMMARY) for s in SEASONS])
+injury_rows = json.load(open(f"{H}/injuries-bos.json"))
+props = pd.DataFrame(json.load(open(f"{H}/props.json")), columns="game_id player_id stat line p_over".split())
+if args.plant_holdout:  # fabricated held-out rows; the filter below must remove every trace
+    players = list(box[box.team_id == BOS].player_id.unique()[:10])
+    for g in held_celtics:
+        box = pd.concat([box, pd.DataFrame([[g, p, BOS, 2880, 99, 99, 99, 9, 9, 9, 9] for p in players], columns=BOX)])
+        summary = pd.concat([summary, pd.DataFrame([[g, p, BOS, i < 5, "active"] for i, p in enumerate(players)], columns=SUMMARY)])
+        props = pd.concat([props, pd.DataFrame([[g, p, "points", 0.5, 0.5] for p in players], columns=props.columns)])
+        injury_rows = injury_rows + [dict(injury_rows[0], game_id=g, availableAt="2025-10-01T00:00:00Z", status="Out")]
+before = len(box), len(summary), len(props), len(injury_rows)
+box, summary, props = (d[~d.game_id.isin(withheld)].reset_index(drop=True) for d in (box, summary, props))
+injury_rows = [r for r in injury_rows if r["game_id"] not in withheld]
+print("holdout rows dropped (box, summary, props, injuries):", [b - a for b, a in zip(before, (len(box), len(summary), len(props), len(injury_rows)))])
 df = box.merge(summary, on=["game_id", "player_id", "team_id"], how="left").merge(games[["game_id", "season", "tip"]], on="game_id")
 for col in "sec pts reb ast".split():
     df[col] = pd.to_numeric(df[col]).fillna(0.0)
@@ -51,8 +84,6 @@ df["inactive"] = ((df.status == "inactive") & (df.played == 0)).astype(int)
 df = df.sort_values(["tip", "game_id", "team_id", "player_id"]).reset_index(drop=True)
 
 # ---------- Celtics schedule and the last pregame injury report ----------
-bg = games[(games.season == "2025-26") & ((games.home_team_id == BOS) | (games.away_team_id == BOS))].sort_values("tip").reset_index(drop=True)
-bg["idx"] = np.arange(1, len(bg) + 1)
 game_index, game_tip = dict(zip(bg.game_id, bg.idx)), dict(zip(bg.game_id, bg.tip))
 
 
@@ -66,7 +97,7 @@ names = dict(json.load(open(f"{H}/names.json")))
 celtics_ids = set(df[(df.team_id == BOS) & (df.season == "2025-26")].player_id)
 name_to_id = {norm(names[p]): p for p in celtics_ids if p in names}
 reports = defaultdict(list)
-for row in json.load(open(f"{H}/injuries-bos.json")):
+for row in injury_rows:
     g = row["game_id"]
     if g in game_tip and pd.Timestamp(row["availableAt"]) < game_tip[g] and row["status"] != "NOT YET SUBMITTED":
         reports[g].append((pd.Timestamp(row["availableAt"]), row))
@@ -184,7 +215,7 @@ note(
 # ---------- Celtics minutes ----------
 c = df[(df.team_id == BOS) & (df.season == "2025-26")].copy()
 c["idx"] = c.game_id.map(game_index)
-c = c[c.idx <= LAST_SCORED_GAME].copy()
+assert c.idx.notna().all() and c.idx.max() <= LAST_SCORED_GAME
 c["out_pre"] = [int(p in listed_out[g]) for g, p in zip(c.game_id, c.player_id)]
 c["out_all"] = np.maximum(c.out_pre, c.inactive)  # the release marks some injured players dnp, not inactive
 c = team_features(team_features(c, "out_pre", "_pre"), "out_all", "_all")
@@ -210,6 +241,15 @@ def boot(per_game, n=5000):
     v = per_game.to_numpy()
     means = [v[rng.integers(0, len(v), len(v))].mean() for _ in range(n)]
     return [float(x) for x in np.percentile(means, [5, 95])]
+
+
+def boot_pooled(total, count, n=5000):
+    """Interval for a mean over props: resample games, divide summed loss by summed prop count."""
+    t, k, draws = total.to_numpy(), count.to_numpy(), []
+    for _ in range(n):
+        i = rng.integers(0, len(t), len(t))
+        draws.append(t[i].sum() / k[i].sum())
+    return [float(x) for x in np.percentile(draws, [5, 95])]
 
 
 def misplaced(col, sub=None):
@@ -248,11 +288,13 @@ R["minutes_by_tier"] = tiers.drop(columns="total").round(4).to_dict("index")
 
 # ---------- production against the prop market at scheduled tip ----------
 STAT = {"points": ("pts", "r_pts"), "rebounds": ("reb", "r_reb"), "assists": ("ast", "r_ast")}
-props = pd.DataFrame(json.load(open(f"{H}/props.json")), columns="game_id player_id stat line p_over".split())
-m = props.merge(c, on=["game_id", "player_id"], how="inner")
-m = m[m.played == 1].reset_index(drop=True)
-m["actual"] = [row[STAT[s][0]] for s, (_, row) in zip(m.stat, m.iterrows())]
-m["rate"] = [row[STAT[s][1]] for s, (_, row) in zip(m.stat, m.iterrows())]
+# `offered` is every prop with a consensus at the scheduled-start snapshot: the pregame
+# candidate pool. `m` is the subset where the player played, for scores given that he plays.
+offered = props.merge(c, on=["game_id", "player_id"], how="left", indicator=True)
+note("props_offered", {"all": int(len(offered)), "player_not_on_game_roster": int((offered._merge != "both").sum())})
+offered = offered[offered._merge == "both"].drop(columns="_merge").sort_values(["game_id", "player_id", "stat"]).reset_index(drop=True)
+offered["actual"] = [row[STAT[s][0]] for s, (_, row) in zip(offered.stat, offered.iterrows())]
+offered["rate"] = [row[STAT[s][1]] for s, (_, row) in zip(offered.stat, offered.iterrows())]
 # Spread of a stat around its expectation, from 2024-25: Var = phi * mean.
 phi, t = {}, df[(df.season == "2024-25") & (df.played == 1) & (df.rate_w > 200)]
 for s, (actual_col, rate_col) in STAT.items():
@@ -262,16 +304,20 @@ note("dispersion_phi", phi)
 
 
 def prob_at_least(mu, threshold, stat):
-    z = (threshold - mu) / np.sqrt(np.maximum(mu, 0.3) * m.stat.map(phi) if stat is None else phi[stat])
+    z = (threshold - mu) / np.sqrt(np.maximum(mu, 0.3) * stat.map(phi))
     return 1 - 0.5 * (1 + np.vectorize(erf)(z / sqrt(2)))
 
 
+offered["sd_line"] = np.sqrt(offered.line * offered.stat.map(phi))
+# Pregame chance of playing under each variant (the two oracles know who played).
+safe = lambda a, b: np.clip(np.where(offered[b] > 0, offered[a] / offered[b], 0.0), 0, 1)
+P_PLAY = {"base": safe("base", "base_c"), "start": safe("start", "start_c"), "active": offered.played.to_numpy().astype(float), "oracle": offered.played.to_numpy().astype(float)}
+m = offered[offered.played == 1].reset_index(drop=True)
 m["y"] = (m.actual > m.line).astype(int)
-m["sd_line"] = np.sqrt(m.line * m.stat.map(phi))
 VARIANTS = [("base", "base_c", "Baseline: projected minutes x recent per-minute rate"), ("start", "start_c", "  knowing the actual starters"), ("active", "active_c", "  knowing starters and who played"), ("oracle", "min", "  with the minutes actually played")]
 for tag, minutes_col, _ in VARIANTS:
     m["mu_" + tag] = m.rate * m[minutes_col]
-    m["po_" + tag] = prob_at_least(m["mu_" + tag], m.line, None)
+    m["po_" + tag] = prob_at_least(m["mu_" + tag], m.line, m.stat)
     m["b_" + tag] = (m["po_" + tag] - m.y) ** 2
 m["b_market"] = (m.p_over - m.y) ** 2
 print(f"\nPRODUCTION against the market: {len(m)} props over {m.game_id.nunique()} games (player played)")
@@ -290,23 +336,50 @@ production_row("market", "Market consensus", None)
 for tag, _, label in VARIANTS:
     production_row(tag, label, m["mu_" + tag])
 for tag in ("base", "oracle"):
-    diff = (m["b_" + tag] - m.b_market).groupby(m.game_id).mean()
-    note(f"brier_{tag}_minus_market", {"mean": float((m["b_" + tag] - m.b_market).mean()), "interval90": boot(diff)})
+    diff = (m["b_" + tag] - m.b_market).groupby(m.game_id)
+    note(f"brier_{tag}_minus_market", {"mean": float((m["b_" + tag] - m.b_market).mean()), "interval90": boot_pooled(diff.sum(), diff.size())})
 R["production_by_stat"] = {s: {k: float(d[k].mean()) for k in ("b_market", "b_base", "b_oracle")} | {"n": int(len(d))} for s, d in m.groupby("stat")}
 m["min_err"] = m["min"] - m.base_c
 
 # ---------- big overs: at least one standard deviation over the line ----------
+# The event is pregame and unconditional: the player plays and clears line + SD. The three
+# picks per game are frozen from every prop offered, before anyone knows who played. A
+# pick on a player who then sits is a void: it is never replaced and counts as a miss.
 m["big"] = (m.actual >= m.line + m.sd_line).astype(int)
-big = {"base_rate": float(m.big.mean()), "per_game": float(m.big.sum() / m.game_id.nunique()), "market_p_over_auc": float(roc_auc_score(m.big, m.p_over))}
-print(f"\nBIG OVERS (actual at least one SD over the line): base rate {big['base_rate']:.3f}, {big['per_game']:.1f} per game")
-for tag, _, label in VARIANTS:
-    score = prob_at_least(m["mu_" + tag], m.line + m.sd_line, None)
-    picks = m.assign(score=score).sort_values("score", ascending=False).groupby("game_id").head(3)
-    big[tag] = {"auc": float(roc_auc_score(m.big, score)), "top3_per_game_hit_rate": float(picks.big.mean()), "picks": int(len(picks))}
-    print("%-56s AUC %.3f  top three per game hit %.3f" % (label, big[tag]["auc"], big[tag]["top3_per_game_hit_rate"]))
+offered["big"] = ((offered.played == 1) & (offered.actual >= offered.line + offered.sd_line)).astype(int)
+big = {
+    "offered": int(len(offered)),
+    "offered_player_did_not_play": int((offered.played == 0).sum()),
+    "base_rate_offered": float(offered.big.mean()),
+    "base_rate_played": float(m.big.mean()),
+    "per_game": float(m.big.sum() / m.game_id.nunique()),
+    "market_p_over_auc_played": float(roc_auc_score(m.big, m.p_over)),
+}
+print(f"\nBIG OVERS: {big['offered']} props offered, {big['offered_player_did_not_play']} on players who sat; base rate {big['base_rate_offered']:.3f} of offered, {big['base_rate_played']:.3f} of played")
+for tag, minutes_col, label in VARIANTS:
+    given_play = prob_at_least(offered.rate * offered[minutes_col], offered.line + offered.sd_line, offered.stat)
+    ranked = offered.assign(score=P_PLAY[tag] * given_play).sort_values(["score", "player_id", "stat"], ascending=[False, True, True], kind="mergesort")
+    picks = ranked.groupby("game_id").head(3)
+    voids = int((picks.played == 0).sum())
+    big[tag] = {
+        "auc_played": float(roc_auc_score(m.big, prob_at_least(m["mu_" + tag], m.line + m.sd_line, m.stat))),
+        "picks": int(len(picks)),
+        "void_picks": voids,
+        "top3_hit_rate": float(picks.big.mean()),
+        "top3_hit_rate_excluding_voids": float(picks[picks.played == 1].big.mean()),
+    }
+    print("%-56s picks %d, void %d, hit %.3f (excluding voids %.3f)" % (label, len(picks), voids, big[tag]["top3_hit_rate"], big[tag]["top3_hit_rate_excluding_voids"]))
 big["minutes_above_projection"] = {"big_overs": float(m[m.big == 1].min_err.mean()), "others": float(m[m.big == 0].min_err.mean()), "big_overs_with_4_or_more": float((m[m.big == 1].min_err >= 4).mean())}
 R["big_overs"] = big
 print("minutes above projection:", big["minutes_above_projection"])
+
+# Fantasy points under the brief's proposed weights can be negative.
+played = c[c.played == 1].merge(box[["game_id", "player_id", "stl", "blk", "tov", "fg3m"]], on=["game_id", "player_id"], suffixes=("", "_b"))
+for col in "stl blk tov fg3m".split():
+    played[col] = pd.to_numeric(played[col]).fillna(0)
+doubles = sum((played[k] >= 10).astype(int) for k in "pts reb ast stl blk".split())
+fp = played.pts + 0.5 * played.fg3m + 1.25 * played.reb + 1.5 * played.ast + 2 * played.stl + 2 * played.blk - 0.5 * played.tov + 1.5 * (doubles >= 2) + 3 * (doubles >= 3)
+note("fantasy_points_played", {"player_games": int(len(fp)), "negative": int((fp < 0).sum()), "min": float(fp.min())})
 
 json.dump(R, open(OUT, "w"), indent=1, sort_keys=True)
 print("\nwrote", OUT)

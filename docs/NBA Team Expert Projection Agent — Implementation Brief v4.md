@@ -73,9 +73,9 @@ Status: Proposed. Before the cutoff the agent writes one forecast for the game a
 
 Fantasy points use DraftKings classic NBA scoring: point 1, made three 0.5, rebound 1.25, assist 1.5, steal 2, block 2, turnover −0.5, double-double 1.5, triple-double 3. Verify against DraftKings' published rules when the scorer is built.
 
-Validation: every roster player present, probabilities in [0, 1], percentiles non-decreasing and non-negative, minutes at most 58. A failed freeze returns the reason and may be retried before the cutoff. Nothing is repaired.
+Validation: every roster player present, probabilities in [0, 1], percentiles non-decreasing, minutes at most 58. Percentiles for minutes, points, rebounds and assists are non-negative. Fantasy-point percentiles may be negative, because turnovers score −0.5 (3 of 757 Celtics player-games in games 1–70 finished below zero); they must be at least −10. A failed freeze returns the reason and may be retried before the cutoff. Nothing is repaired.
 
-The environment turns each range into a full distribution by straight-line interpolation between the stated percentiles, closed at zero below and at the 95th percentile plus the gap between the 90th and 95th above. Every probability the scorer needs comes from that one distribution.
+The environment turns each range into a full distribution by straight-line interpolation between the stated percentiles. Above, it is closed at the 95th percentile plus the gap between the 90th and 95th. Below, minutes, points, rebounds and assists are closed at zero; fantasy points are closed at the 5th percentile minus the gap between the 5th and 10th, the mirror of the upper rule. Every probability the scorer needs comes from that one distribution.
 
 ### Reference projection
 
@@ -115,7 +115,8 @@ Reported beside them: misplaced minutes per game (half the summed absolute error
 Status: Proposed. Computed by the evaluator from the frozen forecast and the pinned prop consensus at the scheduled-start snapshot, on props where the player played.
 
 - **Over probability.** The agent's probability of clearing each line, from its distribution, clipped to [0.02, 0.98]. Brier score against the market's and the reference projection's on the same props.
-- **Blend.** A logistic regression of the result on the market's and the agent's log-odds, fitted leaving one game out. The reported quantity is the change in log loss from adding the agent to the market alone, with the game bootstrap interval. A reliably negative change means the agent knows something the market does not.
+- **Blend.** A logistic regression of the result on the market's and the agent's log-odds, fitted leaving one game out. The reported quantity is the change in log loss from adding the agent to the market alone, with the game bootstrap interval.
+- **Averages and intervals.** Every market-test figure is a mean over props. Its interval resamples games and divides the summed loss of the drawn games by their summed prop count, so the interval describes the same quantity as the estimate. A reliably negative change means the agent knows something the market does not.
 
 The market test is a stretch result, not the headline. The headroom check found a plain projection has no edge on the market at all.
 
@@ -123,20 +124,26 @@ The market test is a stretch result, not the headline. The headroom check found 
 
 Status: included by the user (Agreed Nov 10, 2026); the definitions are Proposed.
 
-- **Big over.** A result at least one standard deviation above the prop line, where the standard deviation is the square root of the line times a per-stat constant fixed from 2024–25 (points 2.33, rebounds 1.09, assists 1.08). On games 1–70 that is 19.8 % of props, 4.4 per game.
-- **Ceiling game.** A fantasy-points result above the reference projection's 85th percentile for that player. It needs no line, covers players with no props, and may be shown to the agent.
-- **Scores.** For each: the hit rate of the agent's three likeliest per game, against the base rate and the reference projection's three; and the Brier score of the agent's probability of the event.
-- **Limit.** Three picks over 50 scored games resolve a hit rate to about ±5 points. The headroom check puts a plain projection at 25 % on big overs and perfect minutes foresight at 37 %.
+Both are pregame events: the player plays and reaches the mark. A player who does not play is a miss, never a removal. The agent's probability of either event is `p_play` times the chance of reaching the mark from its distribution given that he plays.
+
+- **Big over.** A result at least one standard deviation above the prop line, where the standard deviation is the square root of the line times a per-stat constant fixed from 2024–25 (points 2.33, rebounds 1.09, assists 1.08). The candidate pool is every prop with a usable consensus at the scheduled-start snapshot, whether or not the player then plays. On games 1–70 that is 1,562 props, 19.7 % of them big overs.
+- **Ceiling game.** A fantasy-points result above the reference projection's 85th percentile (given that he plays) for that player. The candidate pool is every roster player not listed Out or Doubtful on the last pregame injury report. It needs no line, covers players with no props, and may be shown to the agent.
+- **Picks.** The three candidates per game with the highest event probability, fixed from the frozen forecast before any result is read. Ties go to the lower player id, then the stat name. A pick on a player who does not play is a void: it is not replaced, it counts as a miss, and the denominator is the picks made. Void counts and the hit rate without voids are reported beside it. A game with fewer than three candidates contributes the candidates it has.
+- **Scores.** For each event, the hit rate of the agent's picks and the Brier score of its event probability over the whole pool.
+- **Benchmarks, big overs.** The pool's base rate, and the reference projection's picks made the same way.
+- **Benchmarks, ceiling games.** The reference gives every candidate the same 15 % chance of passing its own 85th percentile if he plays, so its event probability is 0.15 times its `p_play` and it has no meaningful three likeliest. Its benchmark is defined instead as the expected hit rate of a pick drawn in proportion to those probabilities: the sum over candidates of the reference's `p_play` times the outcome, divided by the sum of its `p_play`, pooled over games. The no-memory arm's picks are the other comparison.
+- **Limit.** Three picks over 50 scored games resolve a hit rate to about ±5 points. The headroom check puts a plain projection at 24 % on big overs and perfect minutes foresight at 37 %.
 
 ### Invalid and missing forecasts
 
 Status: Proposed.
 
-| Case                                                  | Handling                                                                                            |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| No forecast frozen before the cutoff                  | Session status `no_forecast`; the game is scored on the reference projection's forecast and flagged |
-| Game postponed or cancelled                           | Session voided; replayed on the rescheduled date's data                                             |
-| Prop with no usable consensus, or player did not play | Excluded from the market test and counted                                                           |
+| Case                                 | Handling                                                                                            |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| No forecast frozen before the cutoff | Session status `no_forecast`; the game is scored on the reference projection's forecast and flagged |
+| Game postponed or cancelled          | Session voided; replayed on the rescheduled date's data                                             |
+| Prop with no usable consensus        | Excluded from the market test and the big-over pool, and counted                                    |
+| Prop offered, player did not play    | Excluded from the market test and counted; stays in the big-over pool as a miss                     |
 
 Flagged games stay visible in every report and are shown with and without in each comparison.
 
@@ -211,7 +218,8 @@ Run before this brief, with no agent ([report](v4/headroom-check.md)).
 - The pinned sources hold no DFS salaries or ownership, so the DFS test is projection accuracy and ceiling games, not lineup profit.
 - There is one forecast time, scheduled tip. Bettors often act earlier; an earlier cutoff is a later extension.
 - Main-line bets pay the same for a narrow over as a big one. Whether the book-level quotes hold enough alternate lines to price a big over has not been checked.
-- The headroom check read results for games 1–70. It involved no agent, but the big-over definition and the tier split were chosen after seeing them. Games 71–82 are untouched.
+- The headroom check read results for games 1–70. It involved no agent, but the big-over definition and the tier split were chosen after seeing them.
+- The holdout is not perfectly clean. The first version of the headroom check computed one league-wide minutes-error figure that included holdout-period games and noted that game 79 has no pregame injury report ([record](v4/headroom-check.md#holdout-access-in-the-first-version)). No Celtics player result from games 71–82 was reported or used, and the scripts now drop the period before computing anything.
 - Development games are never evidence (carried).
 
 ## Decisions
@@ -242,7 +250,9 @@ Run before this brief, with no agent ([report](v4/headroom-check.md)).
 | Feedback contents, and withholding everything market-relative                                    | Feedback                      |
 | Primary scores and the reported diagnostics                                                      | Scoring                       |
 | Market test: Brier at the line and the leave-one-game-out blend                                  | Market test                   |
-| Big-over and ceiling-game definitions and the three-picks rule                                   | Big overs and ceiling games   |
+| Big-over and ceiling-game definitions, candidate pools, the three-picks rule and void handling   | Big overs and ceiling games   |
+| Ceiling-game benchmark drawn in proportion to the reference's `p_play`                           | Big overs and ceiling games   |
+| Fantasy-point percentiles may be negative, with a mirrored lower tail                            | The forecast                  |
 | `no_forecast` scored on the reference projection                                                 | Invalid and missing forecasts |
 | Two arms, two replicates each; second stage only if the first shows an effect                    | Arms                          |
 | No coach-agnostic boundary or audit for these arms; `code/` capped at 8 MB                       | Arms                          |

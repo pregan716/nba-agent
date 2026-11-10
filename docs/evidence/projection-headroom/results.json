@@ -1,45 +1,56 @@
 {
  "big_overs": {
   "active": {
-   "auc": 0.5414234641762732,
+   "auc_played": 0.5414234641762732,
    "picks": 210,
-   "top3_per_game_hit_rate": 0.2761904761904762
+   "top3_hit_rate": 0.2761904761904762,
+   "top3_hit_rate_excluding_voids": 0.2761904761904762,
+   "void_picks": 0
   },
   "base": {
-   "auc": 0.5255805590877822,
+   "auc_played": 0.5255805590877822,
    "picks": 210,
-   "top3_per_game_hit_rate": 0.2523809523809524
+   "top3_hit_rate": 0.24285714285714285,
+   "top3_hit_rate_excluding_voids": 0.24401913875598086,
+   "void_picks": 1
   },
-  "base_rate": 0.1981981981981982,
-  "market_p_over_auc": 0.5486374580475705,
+  "base_rate_offered": 0.19718309859154928,
+  "base_rate_played": 0.1981981981981982,
+  "market_p_over_auc_played": 0.5486374580475705,
   "minutes_above_projection": {
    "big_overs": 2.2551254773531633,
    "big_overs_with_4_or_more": 0.3538961038961039,
    "others": -1.4319427337131647
   },
+  "offered": 1562,
+  "offered_player_did_not_play": 8,
   "oracle": {
-   "auc": 0.6847131600341874,
+   "auc_played": 0.6847131600341874,
    "picks": 210,
-   "top3_per_game_hit_rate": 0.36666666666666664
+   "top3_hit_rate": 0.36666666666666664,
+   "top3_hit_rate_excluding_voids": 0.36666666666666664,
+   "void_picks": 0
   },
   "per_game": 4.4,
   "start": {
-   "auc": 0.541978487002564,
+   "auc_played": 0.541978487002564,
    "picks": 210,
-   "top3_per_game_hit_rate": 0.2619047619047619
+   "top3_hit_rate": 0.26666666666666666,
+   "top3_hit_rate_excluding_voids": 0.26666666666666666,
+   "void_picks": 0
   }
  },
  "brier_base_minus_market": {
   "interval90": [
-   0.011861198858200785,
-   0.020477332237326406
+   0.011546943281474225,
+   0.020302918699968114
   ],
-  "mean": 0.015849973730734216
+  "mean": 0.015849973730734213
  },
  "brier_oracle_minus_market": {
   "interval90": [
-   -0.027513954866220512,
-   -0.01342859352679665
+   -0.02790574497365183,
+   -0.013751413534792926
   ],
   "mean": -0.020799381420323757
  },
@@ -48,17 +59,20 @@
   "points": 2.3311584397003955,
   "rebounds": 1.094547637414006
  },
+ "fantasy_points_played": {
+  "min": -0.5,
+  "negative": 3,
+  "player_games": 757
+ },
  "games": {
   "change": 39,
   "scored": 70
  },
- "injury_games_without_pregame_report": [
-  "0022501149"
- ],
+ "injury_games_without_pregame_report": [],
  "injury_unmatched_names": [],
  "league_2025_26_minutes_mae": {
-  "model": 5.711110045297099,
-  "recent_minutes_redistributed": 5.849025599085523
+  "model": 5.6446065019519835,
+  "recent_minutes_redistributed": 5.713324652382879
  },
  "minutes": {
   "active": {
@@ -130,14 +144,14 @@
   "active": {
    "brier": 0.26244151495165924,
    "change": 0.26541730441854394,
-   "mae": 3.0486227965679604,
+   "mae": 3.048622796567961,
    "right_side": 0.5122265122265123,
    "stable": 0.25870558187639753
   },
   "base": {
    "brier": 0.2643187399225207,
    "change": 0.26617924684301414,
-   "mae": 3.071186146132153,
+   "mae": 3.0711861461321535,
    "right_side": 0.4922779922779923,
    "stable": 0.2619829801457038
   },
@@ -146,18 +160,18 @@
    "change": 0.24916546609806542,
    "mae": 2.9356499356499355,
    "right_side": null,
-   "stable": 0.24759409940088475
+   "stable": 0.2475940994008848
   },
   "oracle": {
-   "brier": 0.22766938477146273,
-   "change": 0.229223020644805,
-   "mae": 2.6870453008425064,
+   "brier": 0.22766938477146276,
+   "change": 0.22922302064480501,
+   "mae": 2.687045300842507,
    "right_side": 0.6126126126126126,
-   "stable": 0.2257188840015918
+   "stable": 0.22571888400159176
   },
   "props": 1554,
   "start": {
-   "brier": 0.2618259872809577,
+   "brier": 0.26182598728095774,
    "change": 0.2626219739691101,
    "mae": 3.0458690744377446,
    "right_side": 0.5128700128700129,
@@ -166,15 +180,15 @@
  },
  "production_by_stat": {
   "assists": {
-   "b_base": 0.25993601208306966,
+   "b_base": 0.2599360120830697,
    "b_market": 0.24216689689094922,
    "b_oracle": 0.23975632295160293,
    "n": 478
   },
   "points": {
-   "b_base": 0.27564654107671394,
+   "b_base": 0.275646541076714,
    "b_market": 0.2511004060945794,
-   "b_oracle": 0.22440851260330189,
+   "b_oracle": 0.2244085126033019,
    "n": 540
   },
   "rebounds": {
@@ -183,6 +197,10 @@
    "b_oracle": 0.22017556857873852,
    "n": 536
   }
+ },
+ "props_offered": {
+  "all": 1562,
+  "player_not_on_game_roster": 0
  },
  "rotation_player_games_off_by": {
   "10_or_more": 0.15512820512820513,
