@@ -122,7 +122,7 @@ The market test is a stretch result, not the headline. The headroom check found 
 
 ### Big overs and ceiling games
 
-Status: included by the user (Agreed Nov 10, 2026); the definitions are Proposed.
+Status: included by the user (Agreed Nov 10, 2026). The ceiling-game threshold, the reference projection's own 85th percentile, and its benchmark are Agreed (Nov 10, 2026). The other definitions are Proposed.
 
 Both are pregame events: the player plays and reaches the mark. A player who does not play is a miss, never a removal. The agent's probability of either event is `p_play` times the chance of reaching the mark from its distribution given that he plays.
 
@@ -226,12 +226,13 @@ Run before this brief, with no agent ([report](v4/headroom-check.md)).
 
 ### Agreed on Nov 10, 2026
 
-| Decision       | Resolution                                                                                                                                                                 |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Goal           | Single-team expert agent adding value to DFS players and bettors through minutes and production projections. The substitution-policy task and game simulation are dropped. |
-| Prop lines     | The agent is blind to player prop lines. Game spread and total stay visible.                                                                                               |
-| Headroom check | Run before any build. Done.                                                                                                                                                |
-| Big-over score | Included.                                                                                                                                                                  |
+| Decision       | Resolution                                                                                                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Goal           | Single-team expert agent adding value to DFS players and bettors through minutes and production projections. The substitution-policy task and game simulation are dropped.                              |
+| Prop lines     | The agent is blind to player prop lines. Game spread and total stay visible.                                                                                                                            |
+| Headroom check | Run before any build. Done.                                                                                                                                                                             |
+| Big-over score | Included.                                                                                                                                                                                               |
+| Ceiling game   | The threshold is the reference projection's 85th percentile for the player, so the score measures upside the reference misses. The reference's benchmark is a pick drawn in proportion to its `p_play`. |
 
 ### Open
 
@@ -251,7 +252,6 @@ Run before this brief, with no agent ([report](v4/headroom-check.md)).
 | Primary scores and the reported diagnostics                                                      | Scoring                       |
 | Market test: Brier at the line and the leave-one-game-out blend                                  | Market test                   |
 | Big-over and ceiling-game definitions, candidate pools, the three-picks rule and void handling   | Big overs and ceiling games   |
-| Ceiling-game benchmark drawn in proportion to the reference's `p_play`                           | Big overs and ceiling games   |
 | Fantasy-point percentiles may be negative, with a mirrored lower tail                            | The forecast                  |
 | `no_forecast` scored on the reference projection                                                 | Invalid and missing forecasts |
 | Two arms, two replicates each; second stage only if the first shows an effect                    | Arms                          |
