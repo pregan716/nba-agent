@@ -124,7 +124,7 @@ The market test is a stretch result, not the headline. The headroom check found 
 
 Status: included by the user (Agreed Nov 10, 2026). The ceiling-game threshold, the reference projection's own 85th percentile, and its benchmark are Agreed (Nov 10, 2026). The other definitions are Proposed.
 
-Both are pregame events: the player plays and reaches the mark. A player who does not play is a miss, never a removal. The agent's probability of either event is `p_play` times the chance of reaching the mark from its distribution given that he plays.
+Both are pregame events: the player plays and his result meets the event's definition below. A player who does not play is a miss, never a removal. The agent's probability of either event is `p_play` times the chance of that result from its distribution given that he plays.
 
 - **Big over.** A result at least one standard deviation above the prop line, where the standard deviation is the square root of the line times a per-stat constant fixed from 2024–25 (points 2.33, rebounds 1.09, assists 1.08). The candidate pool is every prop with a usable consensus at the scheduled-start snapshot, whether or not the player then plays. On games 1–70 that is 1,562 props, 19.7 % of them big overs.
 - **Ceiling game.** A fantasy-points result above the reference projection's 85th percentile (given that he plays) for that player. The candidate pool is every roster player not listed Out or Doubtful on the last pregame injury report. It needs no line, covers players with no props, and may be shown to the agent.
