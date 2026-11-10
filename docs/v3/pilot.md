@@ -26,6 +26,10 @@ price list before any budget claim is final.
 | `pilot-m0-v2` (stage 5)    | M0     | 5     | `542907c`     | after SPO-863/865 (PR #67)  | $17.88 | 1 h 30 min | completed, no halt                                                     |
 | `pilot-m0-swap` (stage 6)  | M0     | 2     | `807adac`     | `jev-contract-v2` (PR #74)  | $9.70  | 38 min     | completed, no halt; first attempt failed at session start (PR #75), $0 |
 | `pilot-m0-swap2` (stage 7) | M0     | 2     | `b661208`     | after SPO-868 (PR #77)      | $7.92  | 36 min     | completed, no halt                                                     |
+| `pilot-m0-code-smoke`      | M0     | 1     | `67e8798`     | `research-v3-code` (PR #85) | $2.98  | 26 min     | completed, no halt                                                     |
+| `baselines-dev-v3`         | —      | 10    | `8f6ac1b`     | baselines mode + starter    | $0.13  | 1 h 24 min | constant, statistical, starter, generic-Jev                            |
+| `pilot-m0-dev-v3` (stage 8) | M0    | 10    | `8f6ac1b`     | `research-v3-code`          | $25.00 | 4 h 01 min | completed, no halt                                                     |
+| `pilot-m3-dev-v3` (stage 8) | M3    | 10    | `8f6ac1b`     | `research-v3-code`          | $48.24 | 7 h 01 min | host disk filled in game 1 postgame; resumed with the same command, completed |
 
 All runs: Jev `jev-1.14.0`, analyst `claude-opus-4-6` at effort `high` with
 adaptive thinking, Pi harness with prompt caching (`ephemeral-5m`) and
@@ -499,6 +503,116 @@ frequency in the `other` description and re-check on two games, or to stop
 iterating here and carry the `other` mass as an open item into the scored
 run. Either is the user's call.
 
+### Stage 8: `jev-contract-v3` with the starter model (SPO-875)
+
+Nov 9, 2026, on `8f6ac1b` (SPO-873 starter, SPO-874 prompt set
+`research-v3-code`, SPO-876 backtest). The package's code now writes the
+scored prediction; `defer` hands a window to Jev; shadow Jev answers every
+window so the deferral counterfactual is always scored. The starter
+`starter-hgb-e-v1` is refit before each pregame (420–485 s of data
+preparation, 28–41 s of fitting). Same ten development games, 584 windows,
+192 substitutions.
+
+| Development games 1–10 | Timing Brier | Set log loss | Candidate hit | Set top-1 | Exit / entry Brier |
+| ---------------------- | ------------ | ------------ | ------------- | --------- | ------------------ |
+| Constant               | .2208        | 5.174        | .000          | .000      | .208 / .138        |
+| Statistical            | .2031        | 5.083        | .177          | .021      | .210 / .136        |
+| Generic Jev            | .2240        | 5.587        | .021          | .000      | .265 / .158        |
+| Starter                | **.1649**    | 4.323        | .484          | .156      | .176 / .116        |
+| M0                     | .1653        | 4.323        | .484          | .156      | .176 / .116        |
+| M3                     | .1658        | **4.238**    | .495          | .156      | .173 / .112        |
+| Shadow Jev, M0 run     | .1896        | 4.634        |               |           |                    |
+| Shadow Jev, M3 run     | .2185        | 4.670        |               |           |                    |
+
+The starter column reproduces the SPO-876 acceptance numbers exactly
+(.1649, 4.323). Starter scores here are out-of-sample for each game: the
+refit uses only releases before the game's scheduled start.
+
+By stoppage kind (windows; timing; set log loss):
+
+| Kind               | Windows | Starter     | M0          | M3          |
+| ------------------ | ------- | ----------- | ----------- | ----------- |
+| Foul               | 380     | .1831; 4.386 | .1842; 4.386 | .1843; 4.354 |
+| Dead-ball turnover | 84      | .0984; 2.956 | .0985; 2.956 | .0988; 2.785 |
+| Timeout            | 68      | .2202; 4.228 | .2180; 4.228 | .2213; 4.061 |
+| Between periods    | 30      | .0400; 4.650 | .0389; 4.650 | .0391; 4.498 |
+| Jump ball          | 18      | .1071; 3.639 | .1071; 3.639 | .1072; 3.529 |
+| Violation          | 4       | .0827; 6.908 | .0826; 6.908 | .0809; 6.908 |
+
+Per game, in play order (timing; set log loss):
+
+| # | Game       | Starter       | M0            | M3            | M3 − M0 set | Cost M0 / M3 |
+| - | ---------- | ------------- | ------------- | ------------- | ----------- | ------------ |
+| 1 | 0022500083 | .1983; 4.149  | .1983; 4.149  | .2055; 4.149  | .000        | $2.23 / $4.93 |
+| 2 | 0022500018 | .1483; 3.594  | .1519; 3.594  | .1491; 3.446  | −.148       | $3.28 / $4.72 |
+| 3 | 0022500106 | .1416; 4.751  | .1416; 4.751  | .1416; 4.678  | −.073       | $2.40 / $5.32 |
+| 4 | 0022500117 | .1583; 4.034  | .1583; 4.034  | .1583; 3.828  | −.205       | $2.03 / $4.99 |
+| 5 | 0022500128 | .1846; 4.703  | .1846; 4.703  | .1846; 4.640  | −.063       | $2.51 / $4.50 |
+| 6 | 0022500021 | .1980; 4.007  | .1980; 4.007  | .1980; 3.846  | −.161       | $3.12 / $7.04 |
+| 7 | 0022500146 | .1527; 4.556  | .1527; 4.556  | .1527; 4.774  | +.218       | $2.45 / $3.80 |
+| 8 | 0022500158 | .2031; 5.006  | .2031; 5.006  | .2031; 5.081  | +.075       | $2.08 / $3.90 |
+| 9 | 0022500174 | .1409; 4.468  | .1409; 4.468  | .1409; 4.272  | −.196       | $2.27 / $4.94 |
+| 10 | 0022500028 | .1304; 3.985 | .1304; 3.985  | .1304; 3.604  | −.381       | $2.61 / $4.08 |
+
+**Lift over the starter.** M0 has none: nine of ten packages pass the
+starter through unchanged, and the tenth (game 2) applied a Platt timing
+recalibration fitted in-sample, which cost .0036 on that game (the smoke
+run did the same on game 1, .1983 → .2046). M3 gains on the set score,
+−.085 nats over 192 substitutions, with the gain spread across every
+stoppage kind except violations (four windows). Its timing equals the
+starter's to four decimals from game 3 on; games 1–2 are slightly worse.
+
+**M3 − M0.** Set log loss lower in 7 of 10 games, mean −.093 per game,
+game-resampled 90 % interval about −.175 to −.010. Timing is a tie
+(+.0005). Ten development games are diagnostics, not evidence; the
+interval is reported only to show the size of the noise.
+
+**How the agent used the tools.** Both arms wrote packages around
+`from nba_starter import predict` from the first game. M0 ran
+`backtest_package` once per game (twice on game 2) and froze. M3 ran it
+twice on eight games, comparing variants, and recorded the lesson in
+`best_practices.md`: "Aggressive timing adjustments HURT on backtest. Keep
+minimal … pass through starter timing", and "Starter scores are in-sample".
+Its set gain comes from two code changes it built and kept from game 5–6
+on: raising the `other` mass to a per-stoppage target (about .22) with the
+starter's residual as a floor, and replacing the lowest candidates with
+multi-player sets at timeouts and between periods. It also wrote, but had
+not implemented by game 10, a role-pair rule (center↔center, forward↔forward)
+and a garbage-time timing suppression.
+
+M3's memory attributes game-level variation to its own changes ("G10 had
+BEST timing ever (0.130) with minimal adjustments"); M0 and the starter
+scored the same .1304 on that game. The agent cannot see the starter's
+per-game score after the fact, only its own; it reads game difficulty as
+skill.
+
+The agent also logged a "CRITICAL BUG": `model['other']` (residual mass
+outside every set, about .005) differs from
+`model['prediction']['swap']['probabilities']['other']` (mass outside the
+top eight candidates, about .44). Both are as designed (`nba_starter.py`
+lines 236 and 239), but the API does not explain the difference.
+
+**Deferral.** Neither arm deferred any window. That was correct: shadow Jev
+was worse than the package on set log loss in all ten M3 games and 9 of 10
+M0 games, and on timing in 9 of 10 M3 games and 8 of 10 M0 games. Shadow Jev scored worse in the
+M3 run (.2185) than in M0 (.1896) because the M3 package writes different
+Jev requests; from game 3 on, M3 described players qualitatively and its
+requests asserted no estimates (the agent tracked this itself). No regret
+was available to collect. M3's memory concludes "NO evidence for deferral
+after 10 games".
+
+**Cost.** M0 $2.50 per game ($1.45 pregame, $1.05 postgame); M3 $4.82
+($2.18, $2.65). M3's postgame is the difference: 178 memory edits, 55
+listings, 49 reads and 41 writes over ten games. The starter refit adds
+about eight minutes of wall clock per game before the agent starts and no
+model cost. Baselines including generic Jev cost $0.13.
+
+**Incident.** The host disk filled during M3's game 1 postgame (the run
+record could not be opened; the Docker engine hung). After space was freed
+and Docker restarted, the identical launch command resumed the run without
+repeating any completed call; the starter refit matched its recorded hash.
+$2.18 was spent before the stop. The record passed an integrity check.
+
 ## Jev
 
 **Determinism (double replay, Agreed Nov 4, 2026).** Game 0022500083's 66
@@ -529,6 +643,31 @@ did not change it. Whether the environment should fix the framing is a design
 question for the user.
 
 ## Open items arising
+
+Stage 8 (SPO-875), for the user:
+
+- Package backtests are in-sample: the starter was trained on the games
+  `backtest_package` scores, so any change the agent tests against the
+  starter is judged on the starter's own training data. M0's in-sample
+  recalibration made game 2 worse. Whether to offer an out-of-sample
+  backtest (for example a starter fit with the backtested games held out)
+  is a design decision.
+- Deferral was never used, and shadow Jev was worse than the package on
+  nearly every game. Keep deferral and the every-window shadow Jev as
+  designed, or change them for the scored run.
+- The agent cannot see the starter's score on a finished game, so it reads
+  game difficulty as the effect of its own changes. Whether feedback should
+  include the starter's per-game scores is a design decision.
+- The starter API's two `other` fields (residual outside every set against
+  mass outside the top eight) are undocumented; the agent called it a bug.
+  A description in `context` would remove the confusion.
+- M3 costs about twice M0 per game ($4.82 against $2.50), all of it in
+  the postgame memory work. The budget profile has not been revised for
+  `jev-contract-v3`.
+- The host disk filled during the M3 run; heavier runs belong on the cloud
+  host (SPO-877).
+
+Earlier stages:
 
 - Calibration drift in fresh sessions (stage 4): the agent cannot see how Jev
   reads its wording before the game. SPO-863 lets `validate_package` return
