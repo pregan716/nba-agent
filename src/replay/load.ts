@@ -299,6 +299,7 @@ export async function auditPregames(
   identityMappings: Row[],
   root = process.cwd(),
   signal?: AbortSignal,
+  options?: { throughReportDay: string; omitLineups: boolean },
 ): Promise<Pregame[]> {
   signal?.throwIfAborted();
   const membership = await loadSeasonRoster(root);
@@ -317,7 +318,10 @@ export async function auditPregames(
     );
   };
   const latest = new Map<string, RecordEnvelope>();
-  for await (const batch of c.injuries.partitions("teams")) {
+  for await (const batch of c.injuries.partitions(
+    "teams",
+    options?.throughReportDay,
+  )) {
     signal?.throwIfAborted();
     for (const r of batch.filter(eligible)) {
       const prev = latest.get(r.data.game_id);
@@ -330,7 +334,10 @@ export async function auditPregames(
     }
   }
   const reports = new Map<string, RecordEnvelope[]>();
-  for await (const batch of c.injuries.partitions("players")) {
+  for await (const batch of c.injuries.partitions(
+    "players",
+    options?.throughReportDay,
+  )) {
     signal?.throwIfAborted();
     for (const r of batch.filter(eligible)) {
       const team = latest.get(r.data.game_id);
@@ -345,7 +352,9 @@ export async function auditPregames(
     }
   }
   signal?.throwIfAborted();
-  const announcements = await c.celticsLineups.records();
+  const announcements = options?.omitLineups
+    ? []
+    : await c.celticsLineups.records();
   return games.map((g) => {
     const roster = membership.at(g.data.scheduled_tipoff);
     const resolveName = (name: string) => {

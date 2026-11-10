@@ -368,10 +368,16 @@ export class InjuryAdapter {
   constructor(readonly release: Release) {}
   async *partitions(
     kind: "teams" | "players" = "teams",
+    throughReportDay?: string,
   ): AsyncGenerator<RecordEnvelope[]> {
     for (const part of this.release.manifest[
       kind === "teams" ? "team_snapshot_partitions" : "partitions"
     ]) {
+      if (throughReportDay) {
+        const day = /\/report_date=(\d{4}-\d{2}-\d{2})\//.exec(part.key)?.[1];
+        if (!day) throw Error("Missing injury partition date");
+        if (day > throughReportDay) continue;
+      }
       const ref = this.release.ref(part.key),
         records: RecordEnvelope[] = [];
       for (const row of await this.release.rows(part.key)) {
