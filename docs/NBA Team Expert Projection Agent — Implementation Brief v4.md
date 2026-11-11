@@ -73,7 +73,7 @@ Status: Proposed. Before the cutoff the agent writes one forecast for the game a
 
 Fantasy points use DraftKings classic NBA scoring: point 1, made three 0.5, rebound 1.25, assist 1.5, steal 2, block 2, turnover −0.5, double-double 1.5, triple-double 3. Verify against DraftKings' published rules when the scorer is built.
 
-Validation: every roster player present, probabilities in [0, 1], percentiles non-decreasing, minutes at most 58. Percentiles for minutes, points, rebounds and assists are non-negative. Fantasy-point percentiles may be negative, because turnovers score −0.5 (3 of 757 Celtics player-games in games 1–70 finished below zero); they must be at least −10. A failed freeze returns the reason and may be retried before the cutoff. Nothing is repaired.
+Validation: every roster player present, probabilities in [0, 1], `p_start` at most `p_play` (Agreed Nov 11, 2026), percentiles non-decreasing, minutes at most 58. Percentiles for minutes, points, rebounds and assists are non-negative. Fantasy-point percentiles may be negative, because turnovers score −0.5 (3 of 757 Celtics player-games in games 1–70 finished below zero); they must be at least −10. A failed freeze returns the reason and may be retried before the cutoff. Nothing is repaired.
 
 The environment turns each range into a full distribution by straight-line interpolation between the stated percentiles. Above, it is closed at the 95th percentile plus the gap between the 90th and 95th. Below, minutes, points, rebounds and assists are closed at zero; fantasy points are closed at the 5th percentile minus the gap between the 5th and 10th, the mirror of the upper rule. Every probability the scorer needs comes from that one distribution.
 
@@ -234,6 +234,12 @@ Run before this brief, with no agent ([report](v4/headroom-check.md)).
 | Headroom check | Run before any build. Done.                                                                                                                                                                             |
 | Big-over score | Included.                                                                                                                                                                                               |
 | Ceiling game   | The threshold is the reference projection's 85th percentile for the player, so the score measures upside the reference misses. The reference's benchmark is a pick drawn in proportion to its `p_play`. |
+
+### Agreed on Nov 11, 2026
+
+| Decision          | Resolution                                                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Start probability | Validation rejects a forecast with `p_start` above `p_play` for any player, since a player cannot start without playing. |
 
 ### Open
 
