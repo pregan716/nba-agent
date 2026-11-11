@@ -3,8 +3,8 @@ import type { Corpus } from "../data/corpus.js";
 import type { RecordEnvelope } from "../data/contracts.js";
 import { before } from "../data/time.js";
 import { releaseTime } from "../env/visibility.js";
-import { auditPregames } from "../replay/load.js";
-import { BOS } from "../replay/types.js";
+import { auditPregames } from "./pregame.js";
+import { BOS } from "./roster-types.js";
 import type { Quantity } from "./forecast.js";
 
 export class ExcludedOutcome extends Error {

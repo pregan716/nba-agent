@@ -2,9 +2,7 @@ import { execFileSync } from "node:child_process";
 
 /** Local preflight only: never pull an image or start a paid session to test it. */
 export function verifyLaunchImages(
-  images: ({ assembler: string } | { projection: string }) & {
-    sandbox?: string | null;
-  },
+  images: { projection: string; sandbox?: string | null },
   inspect: (image: string) => string = (image) =>
     execFileSync("docker", ["image", "inspect", image, "--format", "{{.Id}}"], {
       encoding: "utf8",

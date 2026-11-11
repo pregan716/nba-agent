@@ -1,4 +1,3 @@
-import { fixtureStarter, starterState } from "./fixtures/starter.js";
 import { gunzipSync } from "node:zlib";
 import { readFileSync, realpathSync } from "node:fs";
 import { existsSync, readdirSync } from "node:fs";
@@ -108,18 +107,11 @@ dockerTest(
       (dir, abort) => s.session.exportTo(dir, abort),
       s.session.workspaceForSandbox(),
       s.root,
-      fixtureStarter(s.root),
     );
     try {
       writeFileSync(join(s.root, "future-secret"), "FUTURE SECRET");
       let result = await sandbox.execute(
         `import os, sqlite3, numpy, pandas, scipy, sklearn, pickle, nba_data
-from nba_starter import predict
-assert predict(${JSON.stringify(starterState)})['timing'] == 0.5
-try:
-    open('/starter/model.json','w').write('bad')
-    raise AssertionError('writable starter')
-except OSError: pass
 assert len(nba_data.table("games")) > 0
 from sklearn.linear_model import LinearRegression
 os.mkdir('/workspace/models')
@@ -895,7 +887,6 @@ dockerTest(
         s.f.source,
         workspace,
         s.root,
-        undefined,
         async (files) =>
           Object.values(files).reduce((n, text) => n + text.length, 0),
       );
@@ -933,7 +924,7 @@ for path in paths:
 assert ('memory' in os.listdir('/workspace')) == bool(allowed)
 assert 'skills' not in os.listdir('/workspace')
 open('/workspace/scratch/session.txt','w').write('scratch')
-open('/workspace/packages/current/a','w').write('current')
+assert 'packages' not in os.listdir('/workspace')
 print('gate checks passed')`,
           limits,
           signal(),

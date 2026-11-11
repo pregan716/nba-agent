@@ -7,13 +7,11 @@ each player's minutes and production before every game. The design lives in
 with Agreed, Proposed and Open status on every decision, and starts from
 [an offline headroom check](docs/v4/headroom-check.md).
 
-The repository contains the data, runner, harness, memory and evaluation
-infrastructure the v4 task reuses, and the complete v3 substitution-policy system
-(decision windows, policy packages, the starter model, Jev), which
-[the v3 brief](docs/NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md)
-describes and [its pilot](docs/v3/pilot.md) evaluated. The [v4 reference projection](docs/v4/reference-projection.md) produces pregame forecasts and released forecast histories.
-[V1 records are archived](docs/archive/v1-props/README.md), as is
-[the original v2 research proposal](docs/archive/v2_agent_spec.md).
+For the current experiment, see the [forecast arms](docs/v4/forecast-arms.md),
+[reference projection](docs/v4/reference-projection.md) and
+[forecast evaluation](docs/v4/forecast-evaluation.md). The
+[substitution-policy archive](docs/archive/v3/README.md) contains the earlier
+pilot write-ups, evidence links and Jev integration.
 
 ## Data adapters (SPO-776)
 
@@ -75,10 +73,7 @@ availability conventions, limitations, and the player-reference release decision
 | `npm run runner:fixture` | Synthetic runner smoke test, no model calls |
 | `npm run sandbox:build` / `npm run test:sandbox` | Build pinned Docker image / run isolation tests |
 | `npm run probe` | Model contamination probe |
-| `npm run launch -- --infrastructure-only --mode=analyst --purpose=pilot --run-id=infra-pilot` | Explicit, unscored infrastructure diagnostic using the metered model |
-
-Live model commands require the Anthropic credential under Doppler. The launcher
-requires `--infrastructure-only` because the task has not been installed yet;
-its placeholder prompt does not produce predictions. The former prop-task
-commands and null baselines are removed. Old v1 manifests are intentionally
-incompatible; use the corresponding historical code revision for those records.
+| `npm run projection:build` / `npm run projection` | Build the numerical image / produce pregame reference tables |
+| `npm run forecast:run` | Run a development forecast arm with pinned sandbox and projection images |
+| `npm run forecast:capture` / `npm run forecast:capture-check` | Capture pregame consensus / verify the capture against the cached export |
+| `npm run forecast:evaluate` | Score and compare recorded forecast runs |

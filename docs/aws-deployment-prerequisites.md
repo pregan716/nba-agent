@@ -42,7 +42,7 @@ npm run test:sandbox
 ```
 
 Use Linux hosts matching the build platform, with Docker, cgroup v2 and `/dev/fuse`
-as described in [P3](p3-sandbox.md). The launcher reads the saved pin for `--code`;
+as described in [P3](p3-sandbox.md). Pass the saved pin as the sandbox argument to `forecast:run`;
 verify `harness.sandboxImage` in the generated run configuration is that registry
 reference. The sandbox does not pull images during budgeted execution. Reusing the
 image avoids host-specific rebuild identities; other harness fields (including
@@ -65,49 +65,13 @@ store (the default Docker builder does this); this workflow inspects that local
 image before pushing. A custom `docker-container` builder without local loading
 is not a drop-in replacement. See also the [structured registry inspection API](https://docs.docker.com/reference/cli/docker/buildx/imagetools/inspect/#json-output).
 
-## Put the shard cache on the persistent volume and prewarm it
+## Put the shard cache on the persistent volume
 
-Use a per-host EBS-backed persistent volume by default and prewarm each host's
-cache. If choosing a shared EFS cache, prewarm it once before starting the run hosts;
-concurrent cold builds would duplicate work despite UUID staging and atomic rename.
-Neither volume setup is provisioned or validated by these scripts. Mount the volume
-before setup, and ensure the service user can write to it. Set an absolute path in the environment used by **both** prewarming and the run
-service; an interactive shell export alone does not configure a service:
+Mount the volume and give the run user write access. Set the same absolute directory in the environment of every forecast run that should reuse the released game shards.
 
 ```sh
 export NBA_HISTORY_EXPORT_CACHE=/mnt/nba-agent/history-export-v2
 mkdir -p "$NBA_HISTORY_EXPORT_CACHE"
-doppler run --project nba-agent --config prd -- npx tsx scripts/export-benchmark.ts "$NBA_HISTORY_EXPORT_CACHE" 82
 ```
 
-The benchmark logs the resolved shard-cache directory and measures a first pass
-and a warm pass at game 82 postgame. This warms the prior-season and current-season
-released game shards without starting a runner or spending an agent's budget.
-Complete it successfully before any budgeted run. Retain its timings, shard counts
-and size output with deployment validation. Keep the same absolute environment
-value when launching, for example:
-
-```sh
-doppler run --project nba-agent --config prd -- npm run launch -- --mode=analyst --memory=season --purpose=pilot --run-id=aws-pilot --code --root=/mnt/nba-agent/runs
-```
-
-The environment selects operational storage only; it does not enter the run or
-harness identity. Cache keys still bind dataset versions, game identity and export
-format. Re-prewarm after changing those inputs or after code changes to the game
-envelope or export projection. In particular, PR #26 added `status` to game envelopes
-and invalidated keys warmed before that revision. Existing compatible cached shards
-are reused. Check the mount is present after restart before running: creating a
-path on the root filesystem is not proof that a persistent volume is mounted.
-
-`corpusSource` defaults to `.cache/history-export-v2` resolved from the checkout.
-`NBA_HISTORY_EXPORT_CACHE` overrides that default. The benchmark's positional cache
-path takes precedence over the environment; with neither, it keeps its isolated
-cold-cache benchmark behavior. Environment paths must be absolute; relative values
-are rejected rather than silently selecting storage under the checkout. Explicit
-benchmark paths may be relative. Empty paths are rejected. The first pass is labeled
-“configured shard cache” when a cache was selected, which does not imply it was warm.
-
-Warm caches do not remove per-session shard copying or evidence-table construction.
-That setup still counts against the existing wall budget; no timer or run semantics
-change here. Measure it on the AWS host before approving budgets. The verified
-object cache remains `.cache/objects`, separate from the shard cache.
+The forecast environment fills the cache as games become eligible. Cache keys bind the dataset versions, game identity and export format. The verified object cache lives separately under `.cache/objects`. For the launcher arguments and image pins, see [Running the forecast arms](v4/forecast-arms.md).

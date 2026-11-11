@@ -193,7 +193,7 @@ async function twoGames(arm: ForecastArm, image?: string, excluded = false) {
         await assert.rejects(call(t), /unavailable/);
       await assert.rejects(
         call("query_game_history", { table: "decision_windows", game_id: id }),
-        /Unknown history/,
+        { code: "invalid_input" },
       );
       await assert.rejects(
         call("read_feedback", { game_id: games[0].gameId }),
@@ -465,7 +465,6 @@ test("code cap counts binary bytes and serializes competing writes; notes use th
       path,
       new WorkspacePolicy(config.profile.memory, () => "pregame"),
       root,
-      undefined,
       async (files) => Object.values(files).join("").length,
     );
     await w.mutate("write", "code/m", Buffer.alloc(CODE_BYTE_CAP - 1, 255));

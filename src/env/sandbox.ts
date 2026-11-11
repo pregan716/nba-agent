@@ -1,4 +1,3 @@
-import { starterMountArgs, type StarterMount } from "../starter/model.js";
 import { capCodeOutput } from "./code-output.js";
 import { sandboxLabels } from "../runner/orphans.js";
 import { spawn, execFile } from "node:child_process";
@@ -41,7 +40,6 @@ export class DockerSandbox {
     ) => Promise<unknown>,
     workspace?: WorkspacePort,
     private runRoot?: string,
-    private starter?: StarterMount,
     prepareData?: (directory: string) => void,
   ) {
     this.#port = workspace;
@@ -71,9 +69,7 @@ export class DockerSandbox {
     this.#abort.signal.throwIfAborted();
     this.#limits = limits;
     const persistent =
-      (this.config.profile.memory.horizon !== "stateless" ||
-        !!this.config.harness.policy) &&
-      !!this.#port;
+      this.config.profile.memory.horizon !== "stateless" && !!this.#port;
     const args = [
       "create",
       "--interactive",
@@ -126,7 +122,7 @@ export class DockerSandbox {
     if (this.runRoot)
       for (const label of sandboxLabels(this.runRoot))
         args.push("--label", label);
-    args.push(...starterMountArgs(this.starter), image);
+    args.push(image);
     this.#creation = command("docker", args, { timeout: 30000 });
     await this.#creation;
     this.#abort.signal.throwIfAborted();

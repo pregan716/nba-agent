@@ -35,7 +35,7 @@ This brief supersedes [the v3 brief](NBA%20Coaching%20Policy%20Agent%20%E2%80%94
 
 ### What changed from v3
 
-The v3 task asked the agent to write a substitution policy scored stoppage by stoppage. Its last pilot stage ([stage 8](v3/pilot.md), SPO-875) found the agent adding almost nothing to the environment's fitted model, and an inspection of that run showed why: per-stoppage decisions are driven by in-game state a model reads directly, the agent's only yardstick was biased toward the model, and its code could not persist. On Nov 10, 2026 the user returned to the original goal.
+The v3 task asked the agent to write a substitution policy scored stoppage by stoppage. Its last pilot stage ([stage 8](archive/v3/pilot.md), SPO-875) found the agent adding almost nothing to the environment's fitted model, and an inspection of that run showed why: per-stoppage decisions are driven by in-game state a model reads directly, the agent's only yardstick was biased toward the model, and its code could not persist. On Nov 10, 2026 the user returned to the original goal.
 
 - The deliverable changes from a substitution policy to a pregame forecast of every player's minutes and production.
 - The substitution windows, the policy package, the assembler sandbox, the starter model, the backtest tool and game simulation are dropped.

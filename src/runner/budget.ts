@@ -97,12 +97,8 @@ export class Budget {
   }
   get stage(): Phase {
     return this.phase === "pregame" &&
-      ((this.config.profile.memory.version === "memory-permissions-v1" &&
-        this.record.events("package_freeze", this.scope.split(":")[0])
-          .length) ||
-        (this.config.profile.memory.version === "forecast-memory-v1" &&
-          this.record.events("forecast_freeze", this.scope.split(":")[0])
-            .length))
+      this.config.profile.memory.version === "forecast-memory-v1" &&
+      this.record.events("forecast_freeze", this.scope.split(":")[0]).length
       ? "commit"
       : this.phase;
   }

@@ -26,10 +26,6 @@ export type Phase = "pregame" | "commit" | "postgame";
 
 export const TOOL_NAMES = [
   "context",
-  "freeze_package",
-  "validate_package",
-  "backtest_package",
-  "read_feedback",
   "search_evidence",
   "list_evidence",
   "fetch_evidence",
@@ -61,10 +57,6 @@ export const CAPABILITY_TOOLS = {
  */
 export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
   context: null,
-  freeze_package: null,
-  validate_package: "code_execution",
-  backtest_package: "code_execution",
-  read_feedback: null,
   search_evidence: "search_and_fetch",
   list_evidence: "search_and_fetch",
   fetch_evidence: "search_and_fetch",
@@ -87,10 +79,6 @@ export const TOOL_CAPABILITY: Record<ToolName, string | null> = {
  */
 export const TOOL_PHASES: Record<ToolName, readonly Phase[]> = {
   context: ["pregame", "commit", "postgame"],
-  freeze_package: ["pregame"],
-  validate_package: ["pregame"],
-  backtest_package: ["pregame"],
-  read_feedback: ["pregame", "postgame"],
   search_evidence: ["pregame", "postgame"],
   list_evidence: ["pregame", "postgame"],
   fetch_evidence: ["pregame", "postgame"],
@@ -159,12 +147,6 @@ export interface ContextResult {
   forecastArm?: "full-memory" | "no-memory";
   game_lines?: { celtics_spread: number | null; game_total: number | null };
   codeUsage?: { bytes: number; cap: number };
-  starter?: {
-    hash: string;
-    cutoff: string;
-    api: "nba_starter.predict(state)";
-    path: "/starter/model.json";
-  };
   memoryUsage?: MemoryUsage;
   team: TeamRef;
   season: "2025-26";
@@ -271,8 +253,6 @@ export const GAME_HISTORY_TABLES = [
   "player_game_summary",
   "team_game_summary",
   "possessions",
-  "decision_windows",
-  "unanchored_substitutions",
 ] as const;
 export type GameHistoryTable = (typeof GAME_HISTORY_TABLES)[number];
 /**
@@ -434,32 +414,9 @@ export interface WorkspaceMutationResult {
 // ---------------------------------------------------------------------------
 
 export interface ToolContract {
-  backtest_package: {
-    input: import("../policy/backtest.js").BacktestInput;
-    result: import("../policy/backtest.js").BacktestResult;
-  };
   workspace_edit: {
     input: WorkspaceEditInput;
     result: WorkspaceMutationResult;
-  };
-  freeze_package: {
-    input: {};
-    result:
-      | import("../policy/package.js").PackageReceipt
-      | { status: "invalid_package"; reason: string };
-  };
-  validate_package: {
-    input: import("../policy/validation.js").ValidationInput;
-    result: import("../policy/validation.js").ValidationResult;
-  };
-  read_feedback: {
-    input: {
-      game_id?: string;
-      cursor?: number;
-      window_id?: string;
-      offset?: number;
-    };
-    result: import("../policy/feedback.js").FeedbackPage;
   };
   context: { input: ContextInput; result: ContextResult };
   search_evidence: { input: SearchEvidenceInput; result: SearchEvidenceResult };

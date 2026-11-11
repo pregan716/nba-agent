@@ -12,7 +12,7 @@ import {
   projectionModel,
   referenceTables,
 } from "../src/projection/reference.js";
-import { BOS } from "../src/replay/types.js";
+import { BOS } from "../src/projection/roster-types.js";
 import type { Corpus } from "../src/data/corpus.js";
 import {
   quantities,

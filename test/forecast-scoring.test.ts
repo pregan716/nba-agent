@@ -7,7 +7,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { releaseTime } from "../src/env/visibility.js";
-import { BOS } from "../src/replay/types.js";
+import { BOS } from "../src/projection/roster-types.js";
 import { distribution, minutes } from "../src/projection/distribution.js";
 import type { Forecast, Range } from "../src/projection/forecast.js";
 import type { Game } from "../src/projection/input.js";

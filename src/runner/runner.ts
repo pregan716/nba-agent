@@ -1,15 +1,6 @@
 import { forecastTool } from "../projection/tools.js";
 import { codeBytes } from "../env/workspace.js";
-import type {
-  ValidationInput,
-  ValidationJev,
-  ValidationResult,
-} from "../policy/validation.js";
-import { AssemblerInfrastructureError } from "../policy/errors.js";
 import { capCodeOutput } from "../env/code-output.js";
-import { restoreMemoryArtifacts } from "./memory-artifacts.js";
-import { writeBlob } from "./blobs.js";
-import { PackageStore } from "../policy/package.js";
 import { isMemoryV3 } from "../env/memory.js";
 import {
   recordedMemoryCounter,
@@ -99,17 +90,6 @@ export interface Environment {
     },
     signal: AbortSignal,
   ): Promise<CodeResult>;
-  backtestPackage?(
-    allowance: number,
-    signal: AbortSignal,
-    input?: import("../policy/backtest.js").BacktestInput,
-  ): Promise<import("../policy/backtest.js").BacktestResult>;
-  validatePackage?(
-    allowance: number,
-    signal: AbortSignal,
-    input?: ValidationInput,
-    jev?: ValidationJev,
-  ): Promise<ValidationResult>;
   workspace?: WorkspacePort;
   workspaceChanges?(): WorkspaceChange[];
   boundaryAudit?(): Promise<unknown>;
@@ -155,21 +135,11 @@ export class Runner {
     private proxy: MeteringProxy,
     private environment: EnvironmentFactory,
     private sink?: CheckpointSink,
-    private replayGame?: (
-      game: Game,
-      trusted: { root: string; record: RecordStore; proxy: MeteringProxy },
-    ) => Promise<void>,
   ) {
     const validated = makeManifest(manifest.config, manifest.games);
     if (digest(validated) !== digest(manifest))
       throw Error("Invalid manifest derivation");
     this.manifest = validated;
-    if (
-      isMemoryV3(validated.config.profile.memory) &&
-      validated.config.harness.policy &&
-      !replayGame
-    )
-      throw Error("V3 policy runs require trusted replay integration");
     if (
       validated.config.profile.memory.version === "memory-v1" &&
       validated.config.purpose !== "fixture"
@@ -210,20 +180,8 @@ export class Runner {
       const state = this.record
         .events()
         .reverse()
-        .find((e) => ["session_end", "session_start"].includes(e.kind));
-      const publishedFreeze =
-        state?.kind === "session_start" &&
-        state.scope.endsWith(":pregame") &&
-        isMemoryV3(manifest.config.profile.memory) &&
-        manifest.config.harness.policy
-          ? new PackageStore(join(this.root, "frozen-packages")).receipt(
-              state.scope.split(":")[0],
-            )
-          : null;
-      // A receipt can be atomically published just before the runner records it.
-      // Preserve that live committed workspace; ordinary interrupted research
-      // still rolls back to the session's starting snapshot.
-      if (state && !publishedFreeze)
+        .find((e) => e.kind === "session_start" || e.kind === "session_end");
+      if (state)
         restore(
           this.root,
           this.workspace,
@@ -263,74 +221,19 @@ export class Runner {
           }),
         );
       }
-      if (isMemoryV3(this.manifest.config.profile.memory))
-        restoreMemoryArtifacts(this.root, this.record);
       // Retry publication before advancing after a previous sync failure.
       await this.checkpoint();
       for (const game of this.manifest.games) {
-        // Keep season indexes/tags intact while executing only the pinned selection.
-        const selected = this.manifest.config.replay?.datasets;
-        if (selected && !selected.some((d) => d.gameId === game.gameId))
-          continue;
         if (this.manifest.config.purpose === "pilot" && !game.development)
           continue;
         if (this.record.events("game_end", game.gameId).length) continue;
         for (const phase of ["pregame", "postgame"] as const) {
           const scope = `${game.gameId}:${phase}`;
-          if (
-            phase === "postgame" &&
-            isMemoryV3(this.manifest.config.profile.memory) &&
-            this.manifest.config.harness.policy
-          ) {
-            if (!this.replayGame)
-              throw Error("V3 policy runs require trusted replay integration");
-            if (!this.record.events("replay_completed", game.gameId).length) {
-              const path = join(this.root, "feedback", game.gameId + ".json");
-              if (!existsSync(path))
-                await this.replayGame(game, {
-                  root: this.root,
-                  record: this.record,
-                  proxy: this.proxy,
-                });
-              const trace = JSON.parse(readFileSync(path, "utf8"));
-              if (
-                trace.gameId !== game.gameId ||
-                trace.releaseAt !== game.release
-              )
-                throw Error("Replay feedback identity mismatch");
-              this.record.append("replay_completed", game.gameId, {
-                feedbackHash: digest(trace),
-                feedbackBlob: writeBlob(this.root, readFileSync(path)),
-              });
-            }
-          }
           if (this.record.events("phase_end", scope).length) continue;
-          const previousEnd = this.record
-            .events("session_end", scope)
-            .at(-1)?.seq;
           await this.session(game, phase, harness);
-          const end = this.record.events("session_end", scope).at(-1);
-          // Halt only for a failure produced by this invocation. An explicit
-          // resume skips the failed session and continues at the next step.
-          if (
-            end &&
-            end.seq !== previousEnd &&
-            end.data.failureKind === "assembler_infrastructure"
-          ) {
-            this.record.append("run_halted", "run", {
-              gameId: game.gameId,
-              phase,
-              failureKind: "assembler_infrastructure",
-              sessionEndSeq: end.seq,
-            });
-            await this.checkpoint();
-            return;
-          }
           await this.checkpoint();
         }
         this.record.append("game_end", game.gameId, {
-          ...(this.record.events("policy_game_end", game.gameId).at(-1)?.data ??
-            {}),
           ...(this.manifest.config.profile.memory.version ===
           "forecast-memory-v1"
             ? {
@@ -409,57 +312,6 @@ export class Runner {
         return;
       }
     }
-    if (
-      phase === "pregame" &&
-      isMemoryV3(this.manifest.config.profile.memory) &&
-      this.manifest.config.harness.policy
-    ) {
-      const receipt = new PackageStore(
-        join(this.root, "frozen-packages"),
-      ).receipt(game.gameId);
-      if (receipt) {
-        // Receipt publication is the durable commit. Never restart research or
-        // restore a pre-freeze workspace after this boundary.
-        const committed = this.record
-          .events("package_freeze", game.gameId)
-          .at(-1);
-        if (committed)
-          restore(this.root, this.workspace, committed.data.workspace);
-        rmSync(join(this.workspace, "scratch"), {
-          recursive: true,
-          force: true,
-        });
-        const after = snapshot(this.root, this.workspace);
-        if (!committed)
-          this.record.append("package_freeze", game.gameId, {
-            receipt,
-            workspace: after,
-            recovered: true,
-          });
-        if (!this.record.events("session_end", scope).length)
-          this.record.append("session_end", scope, {
-            attempt: prior?.data.attempt ?? 1,
-            status: "completed",
-            limit: null,
-            before: prior?.data.before ?? after,
-            after,
-            diff: diff(prior?.data.before ?? after, after),
-            memorySize: await measureMemory(
-              this.workspace,
-              this.counter(scope),
-            ),
-            usage: budget.totals(),
-            elapsedMs: 0,
-            recoveredFreeze: true,
-          });
-        this.record.append("phase_end", scope, {
-          status: "completed",
-          limit: null,
-          recoveredFreeze: true,
-        });
-        return;
-      }
-    }
     const durableEnd =
       prior &&
       this.record
@@ -524,12 +376,7 @@ export class Runner {
       if (isMemoryV3(this.manifest.config.profile.memory)) {
         const memory = this.manifest.config.profile.memory;
         const current = snapshot(this.root, this.workspace);
-        const policy = new WorkspacePolicy(
-          memory,
-          () => phase,
-          true,
-          game.gameId,
-        );
+        const policy = new WorkspacePolicy(memory, () => phase);
         current.files = Object.fromEntries(
           Object.entries(current.files).filter(
             ([path]) => !path.startsWith("scratch/") && policy.visible(path),
@@ -640,7 +487,6 @@ export class Runner {
       busy = false;
     let pending: Promise<unknown> | undefined;
     const harnessCleanup: Array<() => Promise<void>> = [];
-    let assemblerFailure = false;
     let status: Status = "completed",
       limit: Limit = null;
     const previousElapsed = budget
@@ -754,103 +600,18 @@ export class Runner {
               };
             };
             if (name === "context") return env.context(remaining());
-            if (
-              name.startsWith("workspace_") &&
-              !(
-                isMemoryV3(this.manifest.config.profile.memory) &&
-                ["workspace_list", "workspace_read"].includes(name) &&
-                ((args as { path?: string }).path ?? "").split("/")[0] ===
-                  "feedback"
-              )
-            )
+            if (name.startsWith("workspace_"))
               new WorkspacePolicy(
                 this.manifest.config.profile.memory,
                 () => budget.stage,
-                !!this.manifest.config.harness.policy,
-                game.gameId,
               ).authorize(
                 name === "workspace_edit"
                   ? "write"
                   : (name.slice(10) as WorkspaceOperation),
                 false,
-                (args as { path?: string })?.path ||
-                  (name === "workspace_list" &&
-                  this.manifest.config.harness.policy &&
-                  !isMemoryV3(this.manifest.config.profile.memory)
-                    ? "packages"
-                    : ""),
+                (args as { path?: string })?.path ?? "",
               );
             budget.tool(name, args);
-            if (name === "backtest_package") {
-              if (!env.backtestPackage)
-                throw new SessionError(
-                  "capability_disabled",
-                  "Package backtest unavailable",
-                );
-              const allowance = Math.min(
-                this.manifest.config.budget.sandbox.perCallSeconds,
-                budget.remaining().compute,
-              );
-              if (allowance <= 0) budget.block("compute");
-              const reservation = budget.reserve(0, allowance, "code");
-              this.record.append("backtest_start", scope, {
-                reservation,
-                input: args ?? {},
-                allowance,
-              });
-              const result = await env.backtestPackage(
-                allowance,
-                controller.signal,
-                (args ?? {}) as import("../policy/backtest.js").BacktestInput,
-              );
-              if (
-                !Number.isFinite(result.computeSeconds) ||
-                result.computeSeconds < 0
-              )
-                throw Error("Invalid backtest meter");
-              this.record.append("package_backtest", scope, result);
-              budget.settle(reservation, 0, result.computeSeconds, result);
-              return result;
-            }
-            if (name === "validate_package") {
-              if (!env.validatePackage)
-                throw new SessionError(
-                  "capability_disabled",
-                  "Package validation unavailable",
-                );
-              const allowance = Math.min(
-                this.manifest.config.budget.sandbox.perCallSeconds,
-                budget.remaining().compute,
-              );
-              if (allowance <= 0) budget.block("compute");
-              const reservation = budget.reserve(0, allowance, "code");
-              const validationScope = `${scope}:validation:${this.record.events("validation_start", scope).length + 1}`;
-              this.record.append("validation_start", scope, {
-                validationScope,
-                input: args ?? {},
-              });
-              const result = await env.validatePackage(
-                allowance,
-                controller.signal,
-                (args ?? {}) as ValidationInput,
-                async (request, signal) => {
-                  const response = await this.proxy.jev(
-                    request,
-                    this.record,
-                    validationScope,
-                    signal,
-                  );
-                  return response.response.answers;
-                },
-              );
-              if (
-                !Number.isFinite(result.computeSeconds) ||
-                result.computeSeconds < 0
-              )
-                throw Error("Invalid validation meter");
-              budget.settle(reservation, 0, result.computeSeconds, result);
-              return result;
-            }
             if (name === "execute_code") {
               const program = (args as { program: string }).program;
               const sandbox = this.manifest.config.budget.sandbox;
@@ -916,20 +677,6 @@ export class Runner {
           pending = work();
           try {
             const result = await pending;
-            if (
-              name === "freeze_package" &&
-              isMemoryV3(this.manifest.config.profile.memory) &&
-              result &&
-              typeof result === "object" &&
-              "packageHash" in result
-            ) {
-              await env.transition("commit", game.scheduledStart);
-              if (!this.record.events("package_freeze", game.gameId).length)
-                this.record.append("package_freeze", game.gameId, {
-                  receipt: result,
-                  workspace: snapshot(this.root, this.workspace),
-                });
-            }
             this.record.append("tool_result", scope, {
               name,
               args: args ?? null,
@@ -937,8 +684,6 @@ export class Runner {
             });
             return result;
           } catch (e) {
-            if (e instanceof AssemblerInfrastructureError)
-              assemblerFailure = true;
             this.record.append("tool_error", scope, {
               name,
               message: e instanceof Error ? e.message : String(e),
@@ -972,18 +717,13 @@ export class Runner {
       const modelFailure = budget
         .events("model_error")
         .some((e) => !e.data.limit && e.data.terminal !== false);
-      status = assemblerFailure
-        ? "infrastructure_failure"
-        : last
-          ? "budget_exhausted"
-          : modelFailure
-            ? "infrastructure_failure"
-            : "completed";
-      limit = assemblerFailure
-        ? "infrastructure"
-        : (last?.data.limit ?? (modelFailure ? "infrastructure" : null));
+      status = last
+        ? "budget_exhausted"
+        : modelFailure
+          ? "infrastructure_failure"
+          : "completed";
+      limit = last?.data.limit ?? (modelFailure ? "infrastructure" : null);
     } catch (e) {
-      if (e instanceof AssemblerInfrastructureError) assemblerFailure = true;
       status =
         e instanceof LimitError
           ? "budget_exhausted"
@@ -1048,9 +788,6 @@ export class Runner {
     const after = snapshot(this.root, this.workspace);
     this.record.append("session_end", scope, {
       attempt,
-      ...(assemblerFailure
-        ? { retryable: false, failureKind: "assembler_infrastructure" }
-        : {}),
       status,
       limit,
       before,
@@ -1073,7 +810,6 @@ export class Runner {
     });
     if (
       status === "infrastructure_failure" &&
-      !assemblerFailure &&
       attempt < (this.manifest.config.recovery?.maxSessionAttempts ?? 2)
     ) {
       await this.session(game, phase, harness);
