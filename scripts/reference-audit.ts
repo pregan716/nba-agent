@@ -10,7 +10,7 @@ import {
   referenceTables,
 } from "../src/projection/reference.js";
 import { quantities } from "../src/projection/forecast.js";
-import { minutes } from "../src/projection/distribution.js";
+import { distribution, minutes } from "../src/projection/distribution.js";
 import { BOS } from "../src/replay/types.js";
 
 const [image, output, root = ".cache/reference-projection", count = "70"] =
@@ -54,8 +54,19 @@ try {
     quantities.map((q) => [q, { n: 0, inside1090: 0, inside2575: 0 }]),
   );
   const conditionalMinutes = { n: 0, inside1090: 0, inside2575: 0 };
+  // Given that he played: which side the misses fall on, and the realised rate strictly
+  // above the interpolated 85th percentile (the ceiling-game mark for fantasy points).
+  // `all` is games 1-70; `scored` is games 21-70.
+  const tailCounts = () =>
+    Object.fromEntries(
+      quantities.map((q) => [
+        q,
+        { n: 0, below10: 0, above90: 0, above85: 0, inside1090: 0 },
+      ]),
+    );
+  const tails = { all: tailCounts(), scored: tailCounts() };
   const perGame = [];
-  for (const game of games) {
+  for (const [gameNumber, game] of games.entries()) {
     const record = forecasts.get(game.gameId)!;
     // Read only this game's outcomes at release. Never open game 71 to score game 70.
     const actual = (
@@ -92,6 +103,21 @@ try {
           f.minutes[2] <= a.minutes && a.minutes <= f.minutes[4],
         );
       }
+      if (a?.played)
+        for (const q of quantities) {
+          const y = a[q],
+            r = f[q],
+            mark85 = distribution(q, r).quantile(0.85);
+          for (const t of gameNumber >= 20
+            ? [tails.all, tails.scored]
+            : [tails.all]) {
+            t[q].n++;
+            t[q].below10 += Number(y < r[1]);
+            t[q].above90 += Number(y > r[5]);
+            t[q].above85 += Number(y > mark85);
+            t[q].inside1090 += Number(r[1] <= y && y <= r[5]);
+          }
+        }
       for (const q of quantities) {
         if (q !== "minutes" && !a?.played) continue;
         const y = a?.[q] ?? 0,
@@ -124,6 +150,7 @@ try {
           perGame.reduce((s, g) => s + g.medianRoster, 0) / games.length,
         coverage,
         conditionalMinutes,
+        tails,
         initialSeconds,
         warmSeconds,
         perGame,

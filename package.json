@@ -26,6 +26,7 @@
     "projection": "tsx scripts/reference-projection.ts",
     "forecast:run": "tsx scripts/forecast-run.ts",
     "forecast:capture": "tsx scripts/forecast-capture.ts",
+    "forecast:capture-check": "tsx scripts/forecast-capture-check.ts",
     "forecast:evaluate": "tsx scripts/forecast-evaluate.ts"
   },
   "dependencies": {

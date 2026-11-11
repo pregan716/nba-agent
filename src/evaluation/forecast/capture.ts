@@ -45,6 +45,9 @@ export function snapshots(games: Game[], ids: Identities, rows: Row[]) {
       snapshot.unavailable++;
       continue;
     }
+    // p_over on an integer line is conditional on no push; the scorer treats a push as an under.
+    if (r.probability_basis !== "unconditional")
+      throw Error("Consensus is not an unconditional probability " + key);
     if (
       !Number.isFinite(r.selected_line) ||
       r.selected_line < 0 ||

@@ -86,13 +86,13 @@ the median: a player with a 40% chance of playing and 20 minutes if he plays
 has 8 expected minutes and a median of zero.
 
 | Forecast population and quantity | Player-games | Inside 10th–90th | Inside 25th–75th |
-| --- | ---: | ---: | ---: |
-| Minutes, entire dated roster | 1,160 | 88.4% | 67.6% |
-| Minutes, given playing | 757 | 77.9% | 47.7% |
-| Points, given playing | 757 | 79.0% | 48.5% |
-| Rebounds, given playing | 757 | 72.4% | 48.3% |
-| Assists, given playing | 757 | 85.7% | 49.8% |
-| Fantasy points, given playing | 757 | 78.2% | 45.8% |
+| -------------------------------- | -----------: | ---------------: | ---------------: |
+| Minutes, entire dated roster     |        1,160 |            88.4% |            67.6% |
+| Minutes, given playing           |          757 |            77.9% |            47.7% |
+| Points, given playing            |          757 |            79.0% |            48.5% |
+| Rebounds, given playing          |          757 |            72.4% |            48.3% |
+| Assists, given playing           |          757 |            85.7% |            49.8% |
+| Fantasy points, given playing    |          757 |            78.2% |            45.8% |
 
 Coverage includes observations equal to either endpoint. The nominal targets
 are 80% and 50%. Rebounds had the lowest outer-interval coverage, with 548 of
@@ -137,3 +137,11 @@ coverage is reported both over dated rosters using the mixture and over players
 who played using the conditional ranges. All four production coverage figures
 are conditional on playing. The output records the denominators, hits, per-game
 hashes, and elapsed time to build game 70's tables and to retrieve them again.
+
+The audit also records `tails` (SPO-886). For players who played, each quantity
+has the count of results below the 10th percentile, above the 90th, and
+strictly above the interpolated 85th, for games 1–70 and separately for games
+21–70. The rate above the 85th fantasy-point percentile is the realised base
+rate of a ceiling game given that the player plays. These figures are not in
+the committed evidence yet: the rerun reuses the 70 receipts retained on the
+audit host and is recorded when that host is next started.
