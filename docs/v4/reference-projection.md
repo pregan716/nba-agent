@@ -74,15 +74,40 @@ same inputs returns the original receipt. Conflicting inputs fail explicitly.
 
 ## Comparison with the headroom check
 
-The [34.6 misplaced minutes per game](headroom-check.md) are the mean for a
-single fit on 2024–25, over **retrospective box-score membership** on games
-1–70. That calculation scores expected minutes (probability of playing times
-the conditional center). The V4 diagnostic scores the median of the mixture
-that includes DNPs. For a player with a 40% chance of playing and 20 minutes
-if he plays, those two point estimates are 8 and 0. V1 also uses the dated
-roster, incorporates newly released games at each refit, and calibrates
-conditional ranges on later historical games. The 34.6 figure is the
-published comparator. This implementation has no measured 70-game V4 score yet.
+On Celtics games 1–70, the reference misplaced **33.14 minutes per game**
+using expected minutes over box-score membership. The [headroom study](headroom-check.md)
+reported **34.6** on that measure. Both used the same 70 games. The reference
+refits before each game and projects the dated pregame roster. This comparison
+measures the overall difference across those choices.
+
+The V4 diagnostic, using the median of the minutes distribution over the dated
+roster, was **31.22 misplaced minutes per game**. The DNP probability changes
+the median: a player with a 40% chance of playing and 20 minutes if he plays
+has 8 expected minutes and a median of zero.
+
+| Forecast population and quantity | Player-games | Inside 10th–90th | Inside 25th–75th |
+| --- | ---: | ---: | ---: |
+| Minutes, entire dated roster | 1,160 | 88.4% | 67.6% |
+| Minutes, given playing | 757 | 77.9% | 47.7% |
+| Points, given playing | 757 | 79.0% | 48.5% |
+| Rebounds, given playing | 757 | 72.4% | 48.3% |
+| Assists, given playing | 757 | 85.7% | 49.8% |
+| Fantasy points, given playing | 757 | 78.2% | 45.8% |
+
+Coverage includes observations equal to either endpoint. The nominal targets
+are 80% and 50%. Rebounds had the lowest outer-interval coverage, with 548 of
+757 played rows inside. Whole-roster minutes include the probability mass at
+zero. These figures measure calibration across all sources of forecast error;
+they cannot isolate the effect of using retrospective inactive flags.
+
+A fresh c8g.4xlarge built all 70 pregame tables in 509.8 seconds. In a separate
+process with the first 69 receipts available, building game 70's tables took
+39.6 seconds, including its refit. Repeating the call with all receipts and
+the in-memory caches warm took 3.5 seconds. The fresh fit reproduced game
+70's model hash. All per-game errors, model hashes and aggregate coverage
+counts matched across both runs. The audit selected outcomes through game 70.
+[Per-game results and coverage counts](../evidence/reference-projection/games1-70.json)
+· [Machine, revision and timing](../evidence/reference-projection/graviton-run.json).
 
 Development verification used a planted cutoff fixture, independent refits in
 the pinned numerical image, and a synthetic current-season target with the real

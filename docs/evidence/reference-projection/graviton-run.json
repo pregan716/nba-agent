@@ -1,0 +1,21 @@
+{
+  "revision": "a22741afa78eae2be8090144935fd6a7f1a0443d",
+  "date": "2026-11-11",
+  "region": "us-east-1",
+  "instanceType": "c8g.4xlarge",
+  "architecture": "arm64",
+  "os": "Ubuntu 24.04.5 LTS",
+  "kernel": "7.0.0-1014-aws",
+  "docker": "29.1.3",
+  "dockerCPUs": 16,
+  "dockerMemoryBytes": 33012973568,
+  "node": "v22.22.3",
+  "image": "local@sha256:e09010072eb4a094ff8f612bdf51fe836bfbf4c87a2386e7bb638401f8a3451b",
+  "game70": {
+    "gameId": "0022501019",
+    "priorReceipts": 69,
+    "newProcessSeconds": 39.573814936999995,
+    "warmRepeatSeconds": 3.4964168229999997,
+    "reproducedModelHash": "90fe20642385eb29c762af9b6a7d81b4f965d04f02f6569dae71ccc3d466dba9"
+  }
+}
