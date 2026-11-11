@@ -224,7 +224,11 @@ test("pregame tables return immutable earlier forecasts paired only with release
   };
   const root = await mkdtemp(join(tmpdir(), "reference-test-"));
   try {
-    const tables = await referenceTables(source, "today", root, model);
+    const [tables, secondArm] = await Promise.all([
+      referenceTables(source, "today", root, model),
+      referenceTables(source, "today", root, model),
+    ]);
+    assert.deepEqual(tables, secondArm);
     assert.equal(tables.history.length, 1);
     assert.equal(
       tables.history[0].errors[0].conditionalMedianError!.fantasy_points,

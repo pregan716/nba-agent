@@ -7,6 +7,15 @@ import { auditPregames } from "../replay/load.js";
 import { BOS } from "../replay/types.js";
 import type { Quantity } from "./forecast.js";
 
+export class ExcludedOutcome extends Error {
+  constructor(
+    readonly gameId: string,
+    readonly reason: string,
+  ) {
+    super("Excluded outcomes: " + gameId + " " + reason);
+  }
+}
+
 export interface Game {
   gameId: string;
   tip: string;
@@ -178,13 +187,11 @@ export async function projectionSource(c: Corpus) {
         throw Error("Game outcomes unavailable before release");
       await loadReleased([game], cutoff);
       const result = cache.get(game.gameId);
-      if (!result)
-        throw Error(
-          "Missing outcomes: " +
-            game.gameId +
-            " " +
-            exclusions.get(game.gameId),
-        );
+      if (!result) {
+        const reason = exclusions.get(game.gameId);
+        if (reason) throw new ExcludedOutcome(game.gameId, reason);
+        throw Error("Missing outcomes: " + game.gameId);
+      }
       return result;
     },
     async input(target: Game): Promise<ModelInput> {

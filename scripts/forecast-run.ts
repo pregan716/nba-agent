@@ -66,6 +66,7 @@ try {
     source,
     projectionModel(projectionImage),
     await openingGameLines(corpus.odds, ids),
+    resolve(".cache/reference-projection"),
   );
   const runner = new Runner(
     resolve(base),

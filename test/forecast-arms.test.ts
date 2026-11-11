@@ -1,3 +1,4 @@
+import { ExcludedOutcome } from "../src/projection/input.js";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtempSync, rmSync, mkdirSync } from "node:fs";
@@ -23,7 +24,12 @@ import { MeteringProxy } from "../src/runner/proxy.js";
 import type { Forecast, Range } from "../src/projection/forecast.js";
 
 const pin = "fixture@sha256:" + "a".repeat(64);
-function setup(arm: ForecastArm, image = pin) {
+function setup(
+  arm: ForecastArm,
+  referenceRoot: string,
+  image = pin,
+  excluded = false,
+) {
   const { source, schedule } = fixtureCorpus(false);
   source.odds = async () => {
     throw Error("Player consensus read");
@@ -86,14 +92,22 @@ function setup(arm: ForecastArm, image = pin) {
       roster: [{ playerId: "1", inactive: false }],
       history: games.filter((h) => h.tip < g.tip).map(result),
     }),
-    outcomes: async (g: (typeof games)[number]) => result(g),
+    outcomes: async (g: (typeof games)[number]) => {
+      if (excluded && g === games[0])
+        throw new ExcludedOutcome(g.gameId, "incomplete product");
+      return result(g);
+    },
   };
+  let referenceReads = 0;
   const model = {
-    identity: async () => ({
-      version: "fixture",
-      source: "fixture",
-      image: pin,
-    }),
+    identity: async () => {
+      referenceReads++;
+      return {
+        version: "fixture",
+        source: "fixture",
+        image: pin,
+      };
+    },
     fit: (i: { gameId: string }) => ({
       modelHash: "fixture",
       forecast: forecast(i.gameId),
@@ -103,19 +117,26 @@ function setup(arm: ForecastArm, image = pin) {
     config,
     games,
     forecast,
+    referenceReads: () => referenceReads,
     environment: forecastEnvironment(
       config,
       source,
       projections,
       model,
       () => ({ celtics_spread: -2, game_total: 210 }),
+      referenceRoot,
     ),
   };
 }
 
-async function twoGames(arm: ForecastArm, image?: string) {
-  const { config, games, environment, forecast } = setup(arm, image);
+async function twoGames(arm: ForecastArm, image?: string, excluded = false) {
   const base = mkdtempSync(join(tmpdir(), "forecast-arms-"));
+  const { config, games, environment, forecast, referenceReads } = setup(
+    arm,
+    join(base, "reference"),
+    image,
+    excluded,
+  );
   const proxy = new MeteringProxy(provider);
   await proxy.listen();
   const runner = new Runner(
@@ -178,7 +199,17 @@ async function twoGames(arm: ForecastArm, image?: string) {
       }
       const feedback = await call("read_feedback");
       if (first) assert.equal(feedback.status, "unavailable");
-      else assert.equal(feedback.gameId, games[0].gameId);
+      else {
+        assert.equal(feedback.gameId, games[0].gameId);
+        if (excluded)
+          assert.deepEqual(feedback, {
+            gameId: games[0].gameId,
+            status: "excluded",
+            reason: "incomplete product",
+          });
+      }
+      const preparedReads = referenceReads();
+      await call("reference_projection", { list: true });
       assert.deepEqual(
         (await call("reference_projection")).forecast,
         forecast(id),
@@ -189,6 +220,7 @@ async function twoGames(arm: ForecastArm, image?: string) {
             .errors.length,
           1,
         );
+      assert.equal(referenceReads(), preparedReads);
       if (arm === "full-memory") {
         assert.deepEqual(
           (await call("workspace_list")).entries.map(
@@ -256,14 +288,33 @@ assert not names.intersection({'odds','prop_consensus','decision_windows','unanc
       runner.record.events("session_error").map((e) => e.data.message),
       [],
     );
-    assert.equal(phases, 4);
+    assert.equal(phases, arm === "full-memory" ? 4 : 2);
+    for (const g of games) {
+      const reference = runner.record.events("reference_forecast", g.gameId)[0];
+      assert.ok(
+        reference.seq <
+          runner.record.events("session_start", g.gameId + ":pregame")[0].seq,
+      );
+      if (arm === "no-memory") {
+        assert.equal(
+          runner.record.events("session_start", g.gameId + ":postgame").length,
+          0,
+        );
+        assert.equal(
+          runner.record.events("phase_end", g.gameId + ":postgame")[0].data
+            .status,
+          "skipped",
+        );
+      }
+    }
+    assert.equal(runner.record.events("forecast_feedback").length, 2);
     assert.equal(runner.record.events("forecast_freeze").length, 1);
     assert.equal(runner.record.events("forecast_missing").length, 1);
     assert.equal(runner.record.events("reference_forecast").length, 2);
     assert.equal(runner.record.events("boundary_audit").length, 0);
     assert.deepEqual(
       runner.record.events("game_end").map((e) => e.data.forecastStatus),
-      ["frozen", "no_forecast"],
+      [excluded ? "excluded" : "frozen", "no_forecast"],
     );
     if (image && arm === "full-memory")
       assert.ok(runner.record.events("session_end").at(-1)!.data.codeBytes > 0);
@@ -285,7 +336,7 @@ for (const arm of ["no-memory", "full-memory"] as const) {
   );
 }
 test("code cap counts binary bytes and serializes competing writes; notes use the pinned memory counter", async () => {
-  const { config } = setup("full-memory");
+  const { config } = setup("full-memory", tmpdir());
   const root = mkdtempSync(join(tmpdir(), "forecast-quota-"));
   const path = join(root, "workspace");
   mkdirSync(path);
@@ -325,8 +376,11 @@ test("code cap counts binary bytes and serializes competing writes; notes use th
 
 test("Pi registers and invokes only the forecast arm's phase tools", async () => {
   const { piHarness } = await import("../src/harness/pi.js");
-  const { config, games, environment, forecast } = setup("no-memory");
   const base = mkdtempSync(join(tmpdir(), "forecast-pi-"));
+  const { config, games, environment, forecast } = setup(
+    "full-memory",
+    join(base, "reference"),
+  );
   const id = games[0].gameId;
   const toolsSeen: string[][] = [];
   const proxy = new MeteringProxy({
@@ -374,11 +428,11 @@ test("Pi registers and invokes only the forecast arm's phase tools", async () =>
     assert.equal(runner.record.events("forecast_feedback").length, 1);
     assert.deepEqual(
       new Set(toolsSeen[0]),
-      new Set(forecastTools("pregame", false).map((t) => t.name)),
+      new Set(forecastTools("pregame", true).map((t) => t.name)),
     );
     assert.deepEqual(
       new Set(toolsSeen.at(-1)),
-      new Set(forecastTools("postgame", false).map((t) => t.name)),
+      new Set(forecastTools("postgame", true).map((t) => t.name)),
     );
   } finally {
     runner.close();
@@ -386,3 +440,6 @@ test("Pi registers and invokes only the forecast arm's phase tools", async () =>
     rmSync(base, { recursive: true, force: true });
   }
 });
+
+test("excluded current outcomes release a reason and allow the next game", () =>
+  twoGames("no-memory", undefined, true));

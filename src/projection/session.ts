@@ -4,7 +4,7 @@ import { before } from "../data/time.js";
 import { releaseTime } from "../env/visibility.js";
 import { digest } from "../runner/config.js";
 import type { Forecast } from "./forecast.js";
-import type { Game, projectionSource } from "./input.js";
+import { ExcludedOutcome, type Game, type projectionSource } from "./input.js";
 import { projectionModel, recordReference } from "./reference.js";
 import { scoreGame, type Metering } from "./scoring.js";
 import { validateForecast, type Pregame } from "./validation.js";
@@ -146,10 +146,21 @@ export async function forecastSession(options: {
       const release = releaseTime(game.tip);
       if (Temporal.Instant.compare(game.release, release) !== 0)
         throw Error("Unexpected game release");
-      const box = await source.outcomes(
-        game,
-        Temporal.Instant.from(release).add({ milliseconds: 1 }).toString(),
-      );
+      let box;
+      try {
+        box = await source.outcomes(
+          game,
+          Temporal.Instant.from(release).add({ milliseconds: 1 }).toString(),
+        );
+      } catch (error) {
+        if (error instanceof ExcludedOutcome && error.gameId === game.gameId)
+          return {
+            gameId: game.gameId,
+            status: "excluded" as const,
+            reason: error.reason,
+          };
+        throw error;
+      }
       return scoreGame(
         pre,
         record.finalized(pre, context),

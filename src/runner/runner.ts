@@ -564,11 +564,49 @@ export class Runner {
       }
       before = snapshot(this.root, this.workspace);
     }
+    const controller = new AbortController();
+    const initialize = () =>
+      this.environment(
+        {
+          game,
+          phase: budget.stage,
+          cutoff: phase === "pregame" ? game.scheduledStart : game.release,
+          capabilities: this.manifest.config.profile.capabilities.enabled,
+          memory: this.manifest.config.profile.memory,
+          dataSources: this.manifest.config.profile.dataSources,
+        },
+        {
+          root: this.root,
+          workspace: this.workspace,
+          record: this.record,
+          signal: controller.signal,
+          ...(this.manifest.config.profile.memory.version !== "memory-v1"
+            ? { countMemory: this.counter(scope, controller.signal) }
+            : {}),
+        },
+      );
+    // Reference fitting and feedback release are host work, outside analyst time.
+    let environment: Environment | undefined;
+    let initializationFailure: { cause: unknown } | undefined;
+    if (this.manifest.config.profile.memory.version === "forecast-memory-v1") {
+      try {
+        environment = await initialize();
+      } catch (cause) {
+        initializationFailure = { cause };
+      }
+    }
     if (
+      !initializationFailure &&
       phase === "postgame" &&
-      this.manifest.config.profile.memory.version !== "forecast-memory-v1" &&
       this.manifest.config.profile.memory.horizon === "stateless"
     ) {
+      if (environment) {
+        try {
+          await environment.transition("checkpoint", game.release);
+        } finally {
+          await environment.close();
+        }
+      }
       this.record.append("clock", scope, { phase, cutoff: game.release });
       this.record.append("phase_end", scope, {
         status: "skipped",
@@ -596,10 +634,8 @@ export class Runner {
         : {}),
       cutoff: phase === "pregame" ? game.scheduledStart : game.release,
     });
-    const controller = new AbortController();
     const started = Date.now();
-    let environment: Environment | undefined,
-      endpoint: ModelEndpoint | undefined,
+    let endpoint: ModelEndpoint | undefined,
       active = true,
       busy = false;
     let pending: Promise<unknown> | undefined;
@@ -623,25 +659,8 @@ export class Runner {
     });
     try {
       const executeSession = async () => {
-        environment = await this.environment(
-          {
-            game,
-            phase: budget.stage,
-            cutoff: phase === "pregame" ? game.scheduledStart : game.release,
-            capabilities: this.manifest.config.profile.capabilities.enabled,
-            memory: this.manifest.config.profile.memory,
-            dataSources: this.manifest.config.profile.dataSources,
-          },
-          {
-            root: this.root,
-            workspace: this.workspace,
-            record: this.record,
-            signal: controller.signal,
-            ...(this.manifest.config.profile.memory.version !== "memory-v1"
-              ? { countMemory: this.counter(scope, controller.signal) }
-              : {}),
-          },
-        );
+        if (initializationFailure) throw initializationFailure.cause;
+        environment ??= await initialize();
         const env = environment;
         if (
           this.manifest.config.profile.memory.horizon === "window" &&

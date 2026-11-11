@@ -1,3 +1,4 @@
+import { gameLineVersion } from "./game-lines.js";
 import type { DatasetVersion } from "../env/contract.js";
 import { presetConfig } from "../harness/presets.js";
 import { forecastDefinitions, forecastPrompts } from "./tools.js";
@@ -17,6 +18,7 @@ export function forecastProfile(o: {
   const full = o.arm === "full-memory";
   const config = presetConfig({
     ...o,
+    dataSources: [...o.dataSources, gameLineVersion],
     harness: "pi",
     memory: {
       version: "forecast-memory-v1",

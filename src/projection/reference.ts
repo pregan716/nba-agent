@@ -1,12 +1,14 @@
 import { execFileSync } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import {
-  link,
-  mkdir,
-  mkdtemp,
-  readFile,
-  rm,
-  writeFile,
-} from "node:fs/promises";
+  readFileSync,
+  mkdirSync,
+  mkdtempSync,
+  writeFileSync,
+  linkSync,
+  rmSync,
+} from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { sha256 } from "../data/store.js";
@@ -101,8 +103,8 @@ export async function recordReference(
   const harnessHash = digest(await model.identity()),
     inputHash = digest(input);
   const path = resolve(root, harnessHash, input.gameId + ".json");
-  const load = async () => {
-    const { record, checksum } = JSON.parse(await readFile(path, "utf8")) as {
+  const load = () => {
+    const { record, checksum } = JSON.parse(readFileSync(path, "utf8")) as {
       record: ReferenceRecord;
       checksum: string;
     };
@@ -117,35 +119,47 @@ export async function recordReference(
     return record;
   };
   try {
-    return await load();
+    return load();
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
   }
-  const fitted = model.fit(input);
-  const record = {
-    ...fitted,
-    exclusions: input.exclusions ?? [],
-    gameId: input.gameId,
-    cutoff: input.tip,
-    inputHash,
-    harnessHash,
-    modelHash: digest([harnessHash, fitted.modelHash]),
-  };
-  await mkdir(dirname(path), { recursive: true });
-  const tmp = await mkdtemp(join(dirname(path), ".fit-"));
+  // Serialize cold fits across launcher processes. SQLite releases the lock on
+  // process exit. Keep this section synchronous so callers in one process cannot
+  // block their own lock holder while it is awaiting filesystem I/O.
+  mkdirSync(dirname(path), { recursive: true });
+  const lock = new DatabaseSync(path + ".lock.sqlite");
   try {
-    const file = join(tmp, "receipt");
-    await writeFile(file, JSON.stringify({ record, checksum: digest(record) }));
+    lock.exec("PRAGMA busy_timeout=300000; BEGIN IMMEDIATE");
     try {
-      await link(file, path);
-    } catch (e) {
-      if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
-      if (digest(await load()) !== digest(record))
-        throw Error("Concurrent reference fits differ");
+      return load();
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }
-    return record;
+    const fitted = model.fit(input);
+    const record = {
+      ...fitted,
+      exclusions: input.exclusions ?? [],
+      gameId: input.gameId,
+      cutoff: input.tip,
+      inputHash,
+      harnessHash,
+      modelHash: digest([harnessHash, fitted.modelHash]),
+    };
+    const tmp = mkdtempSync(join(dirname(path), ".fit-"));
+    try {
+      const file = join(tmp, "receipt");
+      writeFileSync(
+        file,
+        JSON.stringify({ record, checksum: digest(record) }),
+        { flush: true },
+      );
+      linkSync(file, path);
+      return record;
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
   } finally {
-    await rm(tmp, { recursive: true, force: true });
+    lock.close();
   }
 }
 

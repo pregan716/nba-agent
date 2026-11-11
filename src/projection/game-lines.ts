@@ -1,8 +1,28 @@
+import { sha256 } from "../data/store.js";
 import type { Row } from "../data/contracts.js";
 import type { OddsAdapter } from "../data/adapters.js";
 import type { Identities } from "../data/identity.js";
 import { instant } from "../data/time.js";
 
+export const GAME_LINE_METHOD = {
+  version: "game-lines-v1",
+  pairing:
+    "Same book, market, team/handicap, snapshot_at and last_update; reject conflicting or incomplete prices; no DFS or indicative prices.",
+  selection:
+    "One main line per book nearest proportional p=0.5; ties lower overround then line. Offered main line nearest median; ties main votes, complete pairs, lower line. Median probability at selected line.",
+  total:
+    "Sum each book's selected Celtics and opponent team-total lines, then select an offered sum nearest their median; ties vote count then lower sum. No game-total probability is inferred.",
+  implied:
+    "Celtics=(total-spread)/2; opponent=(total+spread)/2. Counts use intersection of contributing books. Minimum one book for every value.",
+};
+export const gameLineMethodHash = sha256(
+  Buffer.from(JSON.stringify(GAME_LINE_METHOD)),
+);
+export const gameLineVersion = {
+  source: "gameLines",
+  release: GAME_LINE_METHOD.version,
+  manifest_sha256: gameLineMethodHash,
+};
 // Team-line calculation carried from SPO-829 (game-lines-v1).
 type Pair = { book: string; line: number; p: number; overround: number };
 const median = (a: number[]) => {
@@ -95,7 +115,7 @@ function pairs(rows: Row[], market: string, team: string): Pair[] {
   }
   return result;
 }
-function buildGameLines(quotes: Row[]) {
+export function buildGameLines(quotes: Row[]) {
   const groups = Map.groupBy(quotes, (r) =>
     JSON.stringify([r.espn_event_id, instant(r.requested_at)]),
   );

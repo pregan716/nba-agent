@@ -1,4 +1,4 @@
-import { join } from "node:path";
+import { gameLineVersion } from "./game-lines.js";
 import { Temporal } from "@js-temporal/polyfill";
 import { sessionEnvironment } from "../env/session.js";
 import type { SessionSource } from "../env/source.js";
@@ -25,13 +25,17 @@ export function forecastEnvironment(
     id: string,
     tip: string,
   ) => { celtics_spread: number | null; game_total: number | null },
+  referenceRoot: string,
 ): EnvironmentFactory {
-  const research = sessionEnvironment(config, data);
+  const research = sessionEnvironment(config, {
+    ...data,
+    versions: [...data.versions, gameLineVersion],
+  });
   return async (context, trusted) => {
     const { record, root, workspace } = trusted,
       { game } = context;
     let phase = context.phase;
-    const referenceRoot = join(root, "reference");
+
     const find = (id: string) =>
       record.events("forecast_freeze", id)[0] ??
       record.events("forecast_missing", id)[0];
@@ -96,8 +100,14 @@ export function forecastEnvironment(
       return feedback;
     }
     if (phase === "postgame") await releasedFeedback();
+    const { history } = await referenceTables(
+      source,
+      game.gameId,
+      referenceRoot,
+      model,
+    );
     const base = await research(context, trusted);
-    let tables: ReturnType<typeof referenceTables> | undefined;
+
     return {
       ...base,
       context: async (budget) => ({
@@ -158,13 +168,6 @@ export function forecastEnvironment(
               (!input.game_id || input.game_id === game.gameId)
             )
               return service.reference;
-            tables ??= referenceTables(
-              source,
-              game.gameId,
-              referenceRoot,
-              model,
-            );
-            const { history } = await tables;
             if (input.list)
               return {
                 tonight: game.gameId,
