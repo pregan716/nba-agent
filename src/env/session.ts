@@ -241,7 +241,18 @@ export class Session {
       cutoff: this.#cutoff,
       budget: structuredClone(budget),
       capabilities: [...this.#config.profile.capabilities.enabled].sort(),
-      ...(isMemoryV3(this.#config.profile.memory) && this.#workspace
+      ...(this.#config.profile.memory.version === "forecast-memory-v1"
+        ? {
+            forecastArm:
+              this.#config.profile.memory.horizon === "season"
+                ? ("full-memory" as const)
+                : ("no-memory" as const),
+          }
+        : {}),
+      ...((isMemoryV3(this.#config.profile.memory) ||
+        (this.#config.profile.memory.version === "forecast-memory-v1" &&
+          this.#config.profile.memory.horizon === "season")) &&
+      this.#workspace
         ? { memoryUsage: await this.#workspace.memoryUsage() }
         : {}),
       memory: isMemoryV3(this.#config.profile.memory)
@@ -345,6 +356,11 @@ export class Session {
     _signal?: AbortSignal,
   ): Promise<QueryGameHistoryResult> {
     this.#check("query_game_history", input);
+    if (
+      this.#config.profile.memory.version === "forecast-memory-v1" &&
+      decisionTable(input.table)
+    )
+      throw new SessionError("invalid_input", "Unknown history table");
     const ref = isReference(input.table);
     if (
       ref
@@ -830,7 +846,12 @@ export class Session {
         games,
         this.#cutoff,
         signal,
-        { cutoff: this.#game.scheduledStart, currentGameId: this.#game.gameId },
+        {
+          cutoff: this.#game.scheduledStart,
+          currentGameId: this.#game.gameId,
+          forecast:
+            this.#config.profile.memory.version === "forecast-memory-v1",
+        },
       );
     }
     return writeSessionExport(directory, this.#exportBatches(signal), signal);
@@ -881,7 +902,11 @@ export class Session {
   /** Trusted P3f integration; all calls use the same service and live policy as tools. */
   workspaceForSandbox() {
     const w = this.#workspace;
-    if (!w || !this.#config.profile.capabilities.enabled.includes("workspace"))
+    if (
+      !w ||
+      (w.policy.forecast && w.policy.stateless) ||
+      !this.#config.profile.capabilities.enabled.includes("workspace")
+    )
       return undefined;
     return Object.freeze({
       authorize: w.authorize.bind(w),

@@ -156,6 +156,9 @@ export interface MemoryUsage {
   cap: number;
 }
 export interface ContextResult {
+  forecastArm?: "full-memory" | "no-memory";
+  game_lines?: { celtics_spread: number | null; game_total: number | null };
+  codeUsage?: { bytes: number; cap: number };
   starter?: {
     hash: string;
     cutoff: string;

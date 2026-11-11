@@ -111,7 +111,7 @@ export class DockerSandbox {
         "--env",
         "WORKSPACE_MOUNT=1",
       );
-    else
+    else if (this.config.profile.memory.version !== "forecast-memory-v1")
       args.push(
         "--tmpfs",
         `/workspace:rw,nosuid,nodev,size=${limits.memoryBytes},uid=1000,gid=1000,mode=755`,

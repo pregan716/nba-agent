@@ -1,3 +1,5 @@
+import { forecastTool } from "../projection/tools.js";
+import { codeBytes } from "../env/workspace.js";
 import type {
   ValidationInput,
   ValidationJev,
@@ -51,7 +53,7 @@ import {
   diff,
   type Snapshot,
 } from "./record.js";
-import { Budget, LimitError } from "./budget.js";
+import { Budget, LimitError, gameMetering } from "./budget.js";
 import { MeteringProxy, type ModelEndpoint } from "./proxy.js";
 import { checkpoint, type CheckpointSink } from "./sync.js";
 import {
@@ -118,6 +120,7 @@ export type EnvironmentFactory = (
   trusted: {
     workspace: string;
     root: string;
+    record: RecordStore;
     countMemory?: MemoryCounter;
     signal?: AbortSignal;
   },
@@ -168,7 +171,7 @@ export class Runner {
     )
       throw Error("V3 policy runs require trusted replay integration");
     if (
-      !isMemoryV3(validated.config.profile.memory) &&
+      validated.config.profile.memory.version === "memory-v1" &&
       validated.config.purpose !== "fixture"
     )
       throw Error(
@@ -328,6 +331,16 @@ export class Runner {
         this.record.append("game_end", game.gameId, {
           ...(this.record.events("policy_game_end", game.gameId).at(-1)?.data ??
             {}),
+          ...(this.manifest.config.profile.memory.version ===
+          "forecast-memory-v1"
+            ? {
+                forecastStatus:
+                  this.record.events("forecast_feedback", game.gameId)[0]?.data
+                    .status ?? "unavailable",
+                ...gameMetering(this.record, game.gameId),
+                codeBytes: codeBytes(this.workspace),
+              }
+            : {}),
           development: game.development,
         });
         await this.checkpoint();
@@ -370,6 +383,32 @@ export class Runner {
     const scope = `${game.gameId}:${phase}`,
       budget = new Budget(this.record, scope, this.manifest.config, phase);
     const prior = this.record.events("session_start", scope).at(-1);
+    if (
+      phase === "pregame" &&
+      this.manifest.config.profile.memory.version === "forecast-memory-v1"
+    ) {
+      const lock = this.record.events("forecast_freeze", game.gameId)[0];
+      if (lock) {
+        restore(this.root, this.workspace, lock.data.workspace);
+        if (!this.record.events("session_end", scope).length)
+          this.record.append("session_end", scope, {
+            attempt: prior?.data.attempt ?? 1,
+            status: "completed",
+            limit: null,
+            before: prior?.data.before ?? lock.data.workspace,
+            after: lock.data.workspace,
+            usage: budget.totals(),
+            elapsedMs: 0,
+            recoveredFreeze: true,
+          });
+        this.record.append("phase_end", scope, {
+          status: "completed",
+          limit: null,
+          recoveredFreeze: true,
+        });
+        return;
+      }
+    }
     if (
       phase === "pregame" &&
       isMemoryV3(this.manifest.config.profile.memory) &&
@@ -527,6 +566,7 @@ export class Runner {
     }
     if (
       phase === "postgame" &&
+      this.manifest.config.profile.memory.version !== "forecast-memory-v1" &&
       this.manifest.config.profile.memory.horizon === "stateless"
     ) {
       this.record.append("clock", scope, { phase, cutoff: game.release });
@@ -595,8 +635,9 @@ export class Runner {
           {
             root: this.root,
             workspace: this.workspace,
+            record: this.record,
             signal: controller.signal,
-            ...(isMemoryV3(this.manifest.config.profile.memory)
+            ...(this.manifest.config.profile.memory.version !== "memory-v1"
               ? { countMemory: this.counter(scope, controller.signal) }
               : {}),
           },
@@ -632,6 +673,38 @@ export class Runner {
             );
           busy = true;
           const work = async () => {
+            if (
+              this.manifest.config.profile.memory.version ===
+              "forecast-memory-v1"
+            ) {
+              forecastTool(
+                name,
+                budget.stage,
+                this.manifest.config.profile.memory.horizon === "season",
+              );
+              if (
+                [
+                  "reference_projection",
+                  "validate_forecast",
+                  "freeze_forecast",
+                  "read_feedback",
+                ].includes(name)
+              ) {
+                budget.tool(name, args);
+                const result = await env.call(
+                  name,
+                  args ?? {},
+                  controller.signal,
+                );
+                if (
+                  name === "freeze_forecast" &&
+                  (result as { ok: boolean }).ok
+                ) {
+                  await env.transition("commit", game.scheduledStart);
+                }
+                return result;
+              }
+            }
             validateInput(name, args ?? {});
             if (!Object.hasOwn(TOOL_PHASES, name))
               throw new SessionError("invalid_input", "Unknown tool");
@@ -965,6 +1038,9 @@ export class Runner {
       after,
       diff: diff(before, after),
       workspaceChanges: environment?.workspaceChanges?.() ?? [],
+      ...(this.manifest.config.profile.memory.version === "forecast-memory-v1"
+        ? { codeBytes: codeBytes(this.workspace) }
+        : {}),
       ...(isMemoryV3(this.manifest.config.profile.memory)
         ? {
             memorySize: await measureMemory(

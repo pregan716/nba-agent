@@ -40,6 +40,17 @@ export const configSchema = z.strictObject({
         revision: z.enum(["editable", "append-only"]),
         process: z.enum(["voluntary", "mandated-reflection"]),
       }),
+      z.strictObject({
+        variant: z.never().optional(),
+        coachProfile: z.never().optional(),
+        bestPractices: z.never().optional(),
+        skills: z.never().optional(),
+        version: z.literal("forecast-memory-v1"),
+        horizon: z.enum(["stateless", "season"]),
+        windowGames: z.number().int().min(1).max(82).optional(),
+        revision: z.literal("editable"),
+        process: z.literal("voluntary"),
+      }),
     ]),
     dataSources: z
       .array(
@@ -125,6 +136,10 @@ export const configSchema = z.strictObject({
     accessMethod: z.literal("anthropic-sdk-via-metering-proxy"),
     sdkVersion: name,
     pi: z.record(name, z.unknown()).optional(),
+    projectionImage: z
+      .string()
+      .regex(/@sha256:[a-f0-9]{64}$/)
+      .optional(),
     sandboxImage: z.string().regex(/@sha256:[a-f0-9]{64}$/),
     policy: z
       .strictObject({
@@ -236,6 +251,19 @@ export function manifest(
   schedule: ScheduledGame[],
 ): Manifest {
   const c = configSchema.parse(config);
+  if (c.profile.memory.version === "forecast-memory-v1") {
+    if (
+      c.profile.modelRoles.jev ||
+      c.harness.policy ||
+      c.replay ||
+      !c.budget.memory ||
+      !c.harness.projectionImage ||
+      c.harness.identity !== "pi-forecast-v4" ||
+      !c.profile.capabilities.enabled.includes("player_forecasts")
+    )
+      throw Error("Invalid forecast arm, harness or model roles");
+  } else if (c.profile.capabilities.enabled.includes("player_forecasts"))
+    throw Error("Forecast tools require a forecast profile");
   if (isMemoryV3(c.profile.memory)) {
     validateMemory(c.profile.memory);
     if (!c.budget.memory)
