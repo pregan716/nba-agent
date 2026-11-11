@@ -1,0 +1,2364 @@
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       193G  4.3G  189G   3% /
+
+> nba-agent@0.1.0 check
+> tsc --noEmit
+
+
+> nba-agent@0.1.0 format:check
+> prettier --check src scripts test/*.ts package.json tsconfig.json
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> nba-agent@0.1.0 test
+> tsx --test test/*.test.ts
+
+TAP version 13
+# Subtest: committed audit covers the complete season and required samples
+ok 1 - committed audit covers the complete season and required samples
+  ---
+  duration_ms: 30.008805
+  type: 'test'
+  ...
+# Subtest: qualitative audit judgments match the exact sampled content
+ok 2 - qualitative audit judgments match the exact sampled content
+  ---
+  duration_ms: 4.204178
+  type: 'test'
+  ...
+# Subtest: boundary inventory lists unique records at valid timestamps and matches its totals
+ok 3 - boundary inventory lists unique records at valid timestamps and matches its totals
+  ---
+  duration_ms: 56.151519
+  type: 'test'
+  ...
+# Subtest: audit sample is stable across ordering and rejects duplicate identities
+ok 4 - audit sample is stable across ordering and rejects duplicate identities
+  ---
+  duration_ms: 28.730897
+  type: 'test'
+  ...
+# Subtest: consensus audit independently checks normalization, main lines and alternate contributions
+ok 5 - consensus audit independently checks normalization, main lines and alternate contributions
+  ---
+  duration_ms: 0.765041
+  type: 'test'
+  ...
+# Subtest: audit resolution distinguishes missing evidence, DNP and push; boundaries are inclusive
+ok 6 - audit resolution distinguishes missing evidence, DNP and push; boundaries are inclusive
+  ---
+  duration_ms: 0.225719
+  type: 'test'
+  ...
+# (node:8090) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: backtest part: scorer parity, all windows and deferral splits
+ok 7 - backtest part: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 99.423749
+  type: 'test'
+  ...
+# Subtest: backtest all: scorer parity, all windows and deferral splits
+ok 8 - backtest all: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 48.620773
+  type: 'test'
+  ...
+# Subtest: backtest invalid: scorer parity, all windows and deferral splits
+ok 9 - backtest invalid: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 51.927982
+  type: 'test'
+  ...
+# Subtest: backtest candidates: scorer parity, all windows and deferral splits
+ok 10 - backtest candidates: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 45.948385
+  type: 'test'
+  ...
+# Subtest: strict release cutoff, no future counts, and aggregate scorer parity
+ok 11 - strict release cutoff, no future counts, and aggregate scorer parity
+  ---
+  duration_ms: 49.019151
+  type: 'test'
+  ...
+# Subtest: compute deadline stops assembly and identifies incomplete results
+ok 12 - compute deadline stops assembly and identifies incomplete results
+  ---
+  duration_ms: 42.899415
+  type: 'test'
+  ...
+# Subtest: tool schema changes harness hash and rejects selection or Jev arguments
+ok 13 - tool schema changes harness hash and rejects selection or Jev arguments
+  ---
+  duration_ms: 1.255579
+  type: 'test'
+  ...
+# Subtest: runner records each package backtest and charges compute with no Jev calls
+ok 14 - runner records each package backtest and charges compute with no Jev calls
+  ---
+  duration_ms: 2598.133813
+  type: 'test'
+  ...
+# Subtest: a stalled history load is bounded and does not pretend the history is empty
+ok 15 - a stalled history load is bounded and does not pretend the history is empty
+  ---
+  duration_ms: 35.610788
+  type: 'test'
+  ...
+# Subtest: batched execution matches individual scores and isolates starter errors
+ok 16 - batched execution matches individual scores and isolates starter errors
+  ---
+  duration_ms: 32.414833
+  type: 'test'
+  ...
+# Subtest: history is loaded once for a cutoff, and aborted loads are not cached
+ok 17 - history is loaded once for a cutoff, and aborted loads are not cached
+  ---
+  duration_ms: 0.688073
+  type: 'test'
+  ...
+# Subtest: each batch executes oldest first and maps results back to the selected windows
+ok 18 - each batch executes oldest first and maps results back to the selected windows
+  ---
+  duration_ms: 31.872894
+  type: 'test'
+  ...
+# Subtest: a call timeout retains the in-flight history load; runner shutdown aborts it
+ok 19 - a call timeout retains the in-flight history load; runner shutdown aborts it
+  ---
+  duration_ms: 231.576714
+  type: 'test'
+  ...
+# Subtest: four concurrent batch containers preserve serial scores and join cancellation
+ok 20 - four concurrent batch containers preserve serial scores and join cancellation
+  ---
+  duration_ms: 428.981626
+  type: 'test'
+  ...
+# Subtest: starter comparison is prepared once per hash/cutoff and fails closed on unknown states
+ok 21 - starter comparison is prepared once per hash/cutoff and fails closed on unknown states
+  ---
+  duration_ms: 14.349874
+  type: 'test'
+  ...
+# Subtest: failed starter cache preparation joins workers and retries without a poisoned entry
+ok 22 - failed starter cache preparation joins workers and retries without a poisoned entry
+  ---
+  duration_ms: 18.56557
+  type: 'test'
+  ...
+# (node:8091) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: three checkpoints share blob bytes locally and upload each immutable blob once
+ok 23 - three checkpoints share blob bytes locally and upload each immutable blob once
+  ---
+  duration_ms: 221.509231
+  type: 'test'
+  ...
+# Subtest: failed marker upload retries after reopen, reuses uploaded blobs, and restores only indexed objects
+ok 24 - failed marker upload retries after reopen, reuses uploaded blobs, and restores only indexed objects
+  ---
+  duration_ms: 89.775373
+  type: 'test'
+  ...
+# Subtest: restore rejects corrupted bytes and unsafe index paths without publishing a partial root
+ok 25 - restore rejects corrupted bytes and unsafe index paths without publishing a partial root
+  ---
+  duration_ms: 76.348316
+  type: 'test'
+  ...
+# Subtest: legacy v1 checkpoint restore and same-head checkpoint upgrade
+ok 26 - legacy v1 checkpoint restore and same-head checkpoint upgrade
+  ---
+  duration_ms: 105.787735
+  type: 'test'
+  ...
+# Subtest: R2 blob existence distinguishes missing objects from permission/network failures
+ok 27 - R2 blob existence distinguishes missing objects from permission/network failures
+  ---
+  duration_ms: 0.749493
+  type: 'test'
+  ...
+# Subtest: host sweep removes only exited containers in verified idle roots and holds a cleanup claim
+ok 28 - host sweep removes only exited containers in verified idle roots and holds a cleanup claim
+  ---
+  duration_ms: 57.223196
+  type: 'test'
+  ...
+# Subtest: lost publication acknowledgement retries identical checkpoint bytes
+ok 29 - lost publication acknowledgement retries identical checkpoint bytes
+  ---
+  duration_ms: 221.585355
+  type: 'test'
+  ...
+# Subtest: runner refuses a root claimed for sandbox cleanup
+ok 30 - runner refuses a root claimed for sandbox cleanup
+  ---
+  duration_ms: 184.000247
+  type: 'test'
+  ...
+# Subtest: own-root restart removes running, created and exited orphans under its runner lock
+ok 31 - own-root restart removes running, created and exited orphans under its runner lock
+  ---
+  duration_ms: 11.422358
+  type: 'test'
+  ...
+# (node:8097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: v3 selects the scored answer and preserves failures, pair counts and regret
+ok 32 - v3 selects the scored answer and preserves failures, pair counts and regret
+  ---
+  duration_ms: 30.310714
+  type: 'test'
+  ...
+# Subtest: v3 policy replay records, resumes, validates and evaluates trusted package/shadow answers
+ok 33 - v3 policy replay records, resumes, validates and evaluates trusted package/shadow answers
+  ---
+  duration_ms: 3003.544746
+  type: 'test'
+  ...
+# Subtest: hash and size verification refuses tampered roots, objects, and cached bytes
+ok 34 - hash and size verification refuses tampered roots, objects, and cached bytes
+  ---
+  duration_ms: 26.387589
+  type: 'test'
+  ...
+# Subtest: odds consumes published probabilities and exposes only the v1 projection
+ok 35 - odds consumes published probabilities and exposes only the v1 projection
+  ---
+  duration_ms: 5.433839
+  type: 'test'
+  ...
+# Subtest: Eastern release times handle both DST transitions; equality is not before cutoff
+ok 36 - Eastern release times handle both DST transitions; equality is not before cutoff
+  ---
+  duration_ms: 6.129191
+  type: 'test'
+  ...
+# Subtest: injuries expose observed PDF state, exclude retrospective interpretation, and choose the later DST fold
+ok 37 - injuries expose observed PDF state, exclude retrospective interpretation, and choose the later DST fold
+  ---
+  duration_ms: 0.797012
+  type: 'test'
+  ...
+# Subtest: edited posts never fall back to original publication time
+ok 38 - edited posts never fall back to original publication time
+  ---
+  duration_ms: 2.16119
+  type: 'test'
+  ...
+# Subtest: lineups select a preferred announcement and reject conflicting unselected fives
+ok 39 - lineups select a preferred announcement and reject conflicting unselected fives
+  ---
+  duration_ms: 0.730778
+  type: 'test'
+  ...
+# Subtest: transcripts use publication, livestream end, or Eastern day end, with review exclusions
+ok 40 - transcripts use publication, livestream end, or Eastern day end, with review exclusions
+  ---
+  duration_ms: 0.870637
+  type: 'test'
+  ...
+# Subtest: transcript payload hashes are verified before serving and audio is never fetched
+ok 41 - transcript payload hashes are verified before serving and audio is never fetched
+  ---
+  duration_ms: 1.19775
+  type: 'test'
+  ...
+# Subtest: canonical joins fail on collisions instead of selecting the first match
+ok 42 - canonical joins fail on collisions instead of selecting the first match
+  ---
+  duration_ms: 0.845988
+  type: 'test'
+  ...
+# Subtest: Parquet decoding returns JSON-safe published values; reference tables forbid archive access
+ok 43 - Parquet decoding returns JSON-safe published values; reference tables forbid archive access
+  ---
+  duration_ms: 14.585832
+  type: 'test'
+  ...
+# Subtest: PBP suppresses partial products before reading their files; trusted schedule retains status but omits scores
+ok 44 - PBP suppresses partial products before reading their files; trusted schedule retains status but omits scores
+  ---
+  duration_ms: 12.629706
+  type: 'test'
+  ...
+# Subtest: injury name joins retain original provider spelling and reject ambiguous or unknown names
+ok 45 - injury name joins retain original provider spelling and reject ambiguous or unknown names
+  ---
+  duration_ms: 2.350541
+  type: 'test'
+  ...
+# Subtest: injury and transcript exclusion logs remain stable across repeated reads
+ok 46 - injury and transcript exclusion logs remain stable across repeated reads
+  ---
+  duration_ms: 0.889869
+  type: 'test'
+  ...
+# Subtest: published guest identity exceptions cannot re-enter NBA name joins
+ok 47 - published guest identity exceptions cannot re-enter NBA name joins
+  ---
+  duration_ms: 0.22103
+  type: 'test'
+  ...
+# Subtest: decoded row cache is immutable, content-addressed, bounded LRU and coalesces loads
+ok 48 - decoded row cache is immutable, content-addressed, bounded LRU and coalesces loads
+  ---
+  duration_ms: 0.924332
+  type: 'test'
+  ...
+# Subtest: decoded row cache enforces its byte bound and retries integrity/parse failures
+ok 49 - decoded row cache enforces its byte bound and retries integrity/parse failures
+  ---
+  duration_ms: 0.786523
+  type: 'test'
+  ...
+# Subtest: bulk history export reads each partition once and matches individual eligible envelopes
+ok 50 - bulk history export reads each partition once and matches individual eligible envelopes
+  ---
+  duration_ms: 10.00568
+  type: 'test'
+  ...
+# (node:8109) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: decision facts project every window and ledger row with complete descriptions
+ok 51 - decision facts project every window and ledger row with complete descriptions
+  ---
+  duration_ms: 27.735506
+  type: 'test'
+  ...
+# Subtest: query and shards expose prior seasons but never current or future decision facts, including postgame
+ok 52 - query and shards expose prior seasons but never current or future decision facts, including postgame
+  ---
+  duration_ms: 230.232844
+  type: 'test'
+  ...
+# Subtest: local builds preserve the image-ID pin without pushing
+ok 53 - local builds preserve the image-ID pin without pushing
+  ---
+  duration_ms: 1.22479
+  type: 'test'
+  ...
+# Subtest: registry builds pin the pushed manifest digest and verify the exact pulled artifact
+ok 54 - registry builds pin the pushed manifest digest and verify the exact pulled artifact
+  ---
+  duration_ms: 0.469273
+  type: 'test'
+  ...
+# Subtest: publish refuses failed pushes, missing/ambiguous digests and mismatched images
+ok 55 - publish refuses failed pushes, missing/ambiguous digests and mismatched images
+  ---
+  duration_ms: 0.714354
+  type: 'test'
+  ...
+# Subtest: publish requires explicit registry/tag and one supported platform before running Docker
+ok 56 - publish requires explicit registry/tag and one supported platform before running Docker
+  ---
+  duration_ms: 0.320331
+  type: 'test'
+  ...
+# Subtest: invalid build arguments leave a previously recorded pin untouched
+ok 57 - invalid build arguments leave a previously recorded pin untouched
+  ---
+  duration_ms: 226.029564
+  type: 'test'
+  ...
+# Subtest: persistent cache placement honors explicit path, deployment environment, and local default
+ok 58 - persistent cache placement honors explicit path, deployment environment, and local default
+  ---
+  duration_ms: 0.283972
+  type: 'test'
+  ...
+# Subtest: non-classic push output resolves the structured remote manifest and verifies it
+ok 59 - non-classic push output resolves the structured remote manifest and verifies it
+  ---
+  duration_ms: 0.600037
+  type: 'test'
+  ...
+# Subtest: every tool has exactly one definition, a phase list and a capability entry
+ok 60 - every tool has exactly one definition, a phase list and a capability entry
+  ---
+  duration_ms: 1.463622
+  type: 'test'
+  ...
+# Subtest: every capability in the brief's Environment tools table maps to one tool
+ok 61 - every capability in the brief's Environment tools table maps to one tool
+  ---
+  duration_ms: 0.131893
+  type: 'test'
+  ...
+# Subtest: phase legality: research and workspace tools are locked in commit
+ok 62 - phase legality: research and workspace tools are locked in commit
+  ---
+  duration_ms: 0.230997
+  type: 'test'
+  ...
+# Subtest: definitions serialize deterministically and the hash is stable under key and array order
+ok 63 - definitions serialize deterministically and the hash is stable under key and array order
+  ---
+  duration_ms: 18.43603
+  type: 'test'
+  ...
+# Subtest: no definition or visibility rule uses a type value the metering proxy rejects
+ok 64 - no definition or visibility rule uses a type value the metering proxy rejects
+  ---
+  duration_ms: 0.387945
+  type: 'test'
+  ...
+# Subtest: SessionError serializes to the stable error shape
+ok 65 - SessionError serializes to the stable error shape
+  ---
+  duration_ms: 0.16049
+  type: 'test'
+  ...
+# Subtest: visibility rules cover every source in the brief's datasets table, including the static player reference
+ok 66 - visibility rules cover every source in the brief's datasets table, including the static player reference
+  ---
+  duration_ms: 0.133155
+  type: 'test'
+  ...
+# Subtest: cutoff equality: release-timed sources are eligible at equality, publication-timed sources are not
+ok 67 - cutoff equality: release-timed sources are eligible at equality, publication-timed sources are not
+  ---
+  duration_ms: 0.254506
+  type: 'test'
+  ...
+# Subtest: retired task tools are rejected at the untrusted boundary
+ok 68 - retired task tools are rejected at the untrusted boundary
+  ---
+  duration_ms: 102.073266
+  type: 'test'
+  ...
+# Subtest: assertion heuristic covers decimal and percentage estimates in either order
+ok 69 - assertion heuristic covers decimal and percentage estimates in either order
+  ---
+  duration_ms: 2.391105
+  type: 'test'
+  ...
+# Subtest: counts windows once, scans each request text surface, and keeps diagnostics private
+ok 70 - counts windows once, scans each request text surface, and keeps diagnostics private
+  ---
+  duration_ms: 0.868139
+  type: 'test'
+  ...
+# Subtest: agreement excludes missing, invalid and fallback answers and uses one stable eligible diagnostic
+ok 71 - agreement excludes missing, invalid and fallback answers and uses one stable eligible diagnostic
+  ---
+  duration_ms: 3.058374
+  type: 'test'
+  ...
+# (node:8134) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: record-only constant baseline matches hand Brier, scale-by-k selection and top-k
+ok 72 - record-only constant baseline matches hand Brier, scale-by-k selection and top-k
+  ---
+  duration_ms: 287.434883
+  type: 'test'
+  ...
+# Subtest: unscored or missing windows are dropped from both comparison sides with reasons
+ok 73 - unscored or missing windows are dropped from both comparison sides with reasons
+  ---
+  duration_ms: 1020.070018
+  type: 'test'
+  ...
+# Subtest: comparison refuses dataset/state/Jev mismatches and flags harness/budget changes
+ok 74 - comparison refuses dataset/state/Jev mismatches and flags harness/budget changes
+  ---
+  duration_ms: 2917.694095
+  type: 'test'
+  ...
+# Subtest: baseline profiles and comparison axes distinguish predictors from memory variants
+ok 75 - baseline profiles and comparison axes distinguish predictors from memory variants
+  ---
+  duration_ms: 2112.448874
+  type: 'test'
+  ...
+# Subtest: bootstrap is deterministic; constant per-game differences have zero-width intervals
+ok 76 - bootstrap is deterministic; constant per-game differences have zero-width intervals
+  ---
+  duration_ms: 789.094667
+  type: 'test'
+  ...
+# Subtest: failures, exclusions, clipping and invalid-question reasons use existing scoring
+ok 77 - failures, exclusions, clipping and invalid-question reasons use existing scoring
+  ---
+  duration_ms: 2354.698979
+  type: 'test'
+  ...
+# Subtest: holdout is refused before report output; development/warm-up never enter headline
+ok 78 - holdout is refused before report output; development/warm-up never enter headline
+  ---
+  duration_ms: 1188.144609
+  type: 'test'
+  ...
+# Subtest: matched replicate spread and empty human annotation slots are deterministic
+ok 79 - matched replicate spread and empty human annotation slots are deterministic
+  ---
+  duration_ms: 835.256811
+  type: 'test'
+  ...
+# Subtest: report command needs only copied SQLite, not the run manifest file, source tree or caches
+ok 80 - report command needs only copied SQLite, not the run manifest file, source tree or caches
+  ---
+  duration_ms: 699.6458
+  type: 'test'
+  ...
+# Subtest: hash-chain tampering is refused and committed gate summaries are not mistaken for window records
+ok 81 - hash-chain tampering is refused and committed gate summaries are not mistaken for window records
+  ---
+  duration_ms: 425.663117
+  type: 'test'
+  ...
+# Subtest: a resumed Jev attempt cannot price or time its interrupted predecessor
+ok 82 - a resumed Jev attempt cannot price or time its interrupted predecessor
+  ---
+  duration_ms: 424.465139
+  type: 'test'
+  ...
+# Subtest: sensitivity reports the five largest game influences and incomplete cost is explicit
+ok 83 - sensitivity reports the five largest game influences and incomplete cost is explicit
+  ---
+  duration_ms: 2318.127076
+  type: 'test'
+  ...
+# Subtest: marginal loss reductions use signed extra dollars and hours, with undefined zero/unknown deltas
+ok 84 - marginal loss reductions use signed extra dollars and hours, with undefined zero/unknown deltas
+  ---
+  duration_ms: 778.933337
+  type: 'test'
+  ...
+# Subtest: extended estimate summaries preserve completeness and comparisons with legacy records
+ok 85 - extended estimate summaries preserve completeness and comparisons with legacy records
+  ---
+  duration_ms: 774.925075
+  type: 'test'
+  ...
+# Subtest: report attaches baseline reference columns, statistical skill and mid-period bootstrap
+ok 86 - report attaches baseline reference columns, statistical skill and mid-period bootstrap
+  ---
+  duration_ms: 1109.162577
+  type: 'test'
+  ...
+# Subtest: legacy scoring fields are checked while new reports are recomputed
+ok 87 - legacy scoring fields are checked while new reports are recomputed
+  ---
+  duration_ms: 380.546601
+  type: 'test'
+  ...
+# Subtest: matched mid-period bootstrap excludes boundary windows on both sides
+ok 88 - matched mid-period bootstrap excludes boundary windows on both sides
+  ---
+  duration_ms: 716.052253
+  type: 'test'
+  ...
+# (node:8141) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: browse defaults to previous team cutoff, clamps to cutoff, and pages newest first
+ok 89 - browse defaults to previous team cutoff, clamps to cutoff, and pages newest first
+  ---
+  duration_ms: 54.816533
+  type: 'test'
+  ...
+# Subtest: ranked search uses OR semantics, English stemming, deterministic ranking and eligible-only statistics
+ok 90 - ranked search uses OR semantics, English stemming, deterministic ranking and eligible-only statistics
+  ---
+  duration_ms: 26.514396
+  type: 'test'
+  ...
+# Subtest: names resolve to player tags and text, full names disambiguate, and explicit IDs filter
+ok 91 - names resolve to player tags and text, full names disambiguate, and explicit IDs filter
+  ---
+  duration_ms: 10.311439
+  type: 'test'
+  ...
+# Subtest: lineup starters are searchable by surname and starting lineup without rewriting published text
+ok 92 - lineup starters are searchable by surname and starting lineup without rewriting published text
+  ---
+  duration_ms: 16.582371
+  type: 'test'
+  ...
+# Subtest: browse is offered and callable only in research phases with the evidence capability
+ok 93 - browse is offered and callable only in research phases with the evidence capability
+  ---
+  duration_ms: 12.313422
+  type: 'test'
+  ...
+# Subtest: opening player profiles supply names absent from aliases; future profiles cannot affect retrieval
+ok 94 - opening player profiles supply names absent from aliases; future profiles cannot affect retrieval
+  ---
+  duration_ms: 7.973855
+  type: 'test'
+  ...
+# Subtest: persisted scoped injury-name identities remain searchable
+ok 95 - persisted scoped injury-name identities remain searchable
+  ---
+  duration_ms: 60.424133
+  type: 'test'
+  ...
+# Subtest: common-word surnames boost players without hiding ordinary lexical matches
+ok 96 - common-word surnames boost players without hiding ordinary lexical matches
+  ---
+  duration_ms: 8.055171
+  type: 'test'
+  ...
+# Subtest: tagged records also resolve other players named in their text
+ok 97 - tagged records also resolve other players named in their text
+  ---
+  duration_ms: 8.681922
+  type: 'test'
+  ...
+# Subtest: accented and ASCII names retrieve the same entities without rewriting evidence
+ok 98 - accented and ASCII names retrieve the same entities without rewriting evidence
+  ---
+  duration_ms: 6.790588
+  type: 'test'
+  ...
+# Subtest: OR search ignores function words and preserves exact snippet anchors
+ok 99 - OR search ignores function words and preserves exact snippet anchors
+  ---
+  duration_ms: 9.51014
+  type: 'test'
+  ...
+# (node:8159) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P1 postponed status stays hidden until release
+ok 100 - P1 postponed status stays hidden until release
+  ---
+  duration_ms: 149.554597
+  type: 'test'
+  ...
+# Subtest: P1 cancelled status stays hidden until release
+ok 101 - P1 cancelled status stays hidden until release
+  ---
+  duration_ms: 112.817991
+  type: 'test'
+  ...
+# Subtest: P1 canceled status stays hidden until release
+ok 102 - P1 canceled status stays hidden until release
+  ---
+  duration_ms: 79.493108
+  type: 'test'
+  ...
+# Subtest: P1 final status stays hidden until release
+ok 103 - P1 final status stays hidden until release
+  ---
+  duration_ms: 85.017928
+  type: 'test'
+  ...
+# Subtest: P1 completed status stays hidden until release
+ok 104 - P1 completed status stays hidden until release
+  ---
+  duration_ms: 113.095885
+  type: 'test'
+  ...
+# Subtest: P1 missing status stays hidden until release
+ok 105 - P1 missing status stays hidden until release
+  ---
+  duration_ms: 72.599841
+  type: 'test'
+  ...
+# Subtest: P1 scheduled status stays hidden until release
+ok 106 - P1 scheduled status stays hidden until release
+  ---
+  duration_ms: 67.306075
+  type: 'test'
+  ...
+# Subtest: P1 in_progress status stays hidden until release
+ok 107 - P1 in_progress status stays hidden until release
+  ---
+  duration_ms: 62.339949
+  type: 'test'
+  ...
+# Subtest: P1 unknown status stays hidden until release
+ok 108 - P1 unknown status stays hidden until release
+  ---
+  duration_ms: 63.309014
+  type: 'test'
+  ...
+# Subtest: P1 suspended status stays hidden until release
+ok 109 - P1 suspended status stays hidden until release
+  ---
+  duration_ms: 58.922802
+  type: 'test'
+  ...
+# (node:8162) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tool loop preserves thinking, returns tool errors, and starts a fresh postgame conversation
+ok 110 - tool loop preserves thinking, returns tool errors, and starts a fresh postgame conversation
+  ---
+  duration_ms: 1198.305247
+  type: 'test'
+  ...
+# Subtest: stateless loop offers no workspace, stops normally and skips postgame
+ok 111 - stateless loop offers no workspace, stops normally and skips postgame
+  ---
+  duration_ms: 724.312498
+  type: 'test'
+  ...
+# Subtest: prompt caching places two breakpoints without mutating history and can be disabled
+ok 112 - prompt caching places two breakpoints without mutating history and can be disabled
+  ---
+  duration_ms: 1514.453093
+  type: 'test'
+  ...
+# Subtest: offeredTools follows phase, capability groups and memory horizon
+ok 113 - offeredTools follows phase, capability groups and memory horizon
+  ---
+  duration_ms: 0.273624
+  type: 'test'
+  ...
+# Subtest: harness version changes with any prompt, tool definition, loop parameter
+ok 114 - harness version changes with any prompt, tool definition, loop parameter
+  ---
+  duration_ms: 15.831427
+  type: 'test'
+  ...
+# Subtest: persistent memory instructions name durable working aids; stateless does not
+ok 115 - persistent memory instructions name durable working aids; stateless does not
+  ---
+  duration_ms: 0.30353
+  type: 'test'
+  ...
+# Subtest: a tool call cut at max_tokens is retried with a larger allowance, never committed unmatched, then dropped with a nudge
+ok 116 - a tool call cut at max_tokens is retried with a larger allowance, never committed unmatched, then dropped with a nudge
+  ---
+  duration_ms: 826.470562
+  type: 'test'
+  ...
+# Subtest: probe record round-trip: the writer's shape projects to the strict manifest field
+ok 117 - probe record round-trip: the writer's shape projects to the strict manifest field
+  ---
+  duration_ms: 8.288737
+  type: 'test'
+  ...
+# Subtest: I1 resolves the exact injury spelling without introducing a general alias
+ok 118 - I1 resolves the exact injury spelling without introducing a general alias
+  ---
+  duration_ms: 1.601992
+  type: 'test'
+  ...
+# Subtest: I2 uses the adapter's retained team and survives mapping serialization with its scope
+ok 119 - I2 uses the adapter's retained team and survives mapping serialization with its scope
+  ---
+  duration_ms: 4.083943
+  type: 'test'
+  ...
+# Subtest: non-OKC Jaylin rows cannot reuse an OKC cached result; Dillon remains refused
+ok 120 - non-OKC Jaylin rows cannot reuse an OKC cached result; Dillon remains refused
+  ---
+  duration_ms: 0.39778
+  type: 'test'
+  ...
+# Subtest: statement polarity is independent of the outcome
+ok 121 - statement polarity is independent of the outcome
+  ---
+  duration_ms: 2.11401
+  type: 'test'
+  ...
+# Subtest: appearance facts state played or did not play against the truth
+ok 122 - appearance facts state played or did not play against the truth
+  ---
+  duration_ms: 0.230001
+  type: 'test'
+  ...
+# Subtest: appearance selection keeps only players whose participation is uncertain
+ok 123 - appearance selection keeps only players whose participation is uncertain
+  ---
+  duration_ms: 1.343957
+  type: 'test'
+  ...
+# Subtest: probe groups report chance-referenced statistics
+ok 124 - probe groups report chance-referenced statistics
+  ---
+  duration_ms: 0.469795
+  type: 'test'
+  ...
+# Subtest: an outcome-blind predictor that knows the win rate discriminates, and the reference accounts for it
+ok 125 - an outcome-blind predictor that knows the win rate discriminates, and the reference accounts for it
+  ---
+  duration_ms: 311.090524
+  type: 'test'
+  ...
+# Subtest: per-subject rates give a stricter reference for appearance facts
+ok 126 - per-subject rates give a stricter reference for appearance facts
+  ---
+  duration_ms: 13.911075
+  type: 'test'
+  ...
+# Subtest: image preflight checks local IDs and registry digest references without pulling
+ok 127 - image preflight checks local IDs and registry digest references without pulling
+  ---
+  duration_ms: 1.523411
+  type: 'test'
+  ...
+# Subtest: launcher refuses missing images before data access or provider setup
+ok 128 - launcher refuses missing images before data access or provider setup
+  ---
+  duration_ms: 5247.757369
+  type: 'test'
+  ...
+# (node:8488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: launcher requires research-v3 prompts for pilots and still refuses scored runs
+ok 129 - launcher requires research-v3 prompts for pilots and still refuses scored runs
+  ---
+  duration_ms: 1.130722
+  type: 'test'
+  ...
+# Subtest: Pi M0: full chronological lifecycle and baselines share windows
+ok 130 - Pi M0: full chronological lifecycle and baselines share windows
+  ---
+  duration_ms: 10448.239566
+  type: 'test'
+  ...
+# Subtest: Pi M3: full chronological lifecycle and baselines share windows
+ok 131 - Pi M3: full chronological lifecycle and baselines share windows
+  ---
+  duration_ms: 9557.400427
+  type: 'test'
+  ...
+# Subtest: SIGKILL during pregame resumes without duplicating frozen receipts or Jev answers
+ok 132 - SIGKILL during pregame resumes without duplicating frozen receipts or Jev answers
+  ---
+  duration_ms: 9755.244166
+  type: 'test'
+  ...
+# Subtest: SIGKILL during freeze resumes without duplicating frozen receipts or Jev answers
+ok 133 - SIGKILL during freeze resumes without duplicating frozen receipts or Jev answers
+  ---
+  duration_ms: 7927.105226
+  type: 'test'
+  ...
+# Subtest: SIGKILL during replay resumes without duplicating frozen receipts or Jev answers
+ok 134 - SIGKILL during replay resumes without duplicating frozen receipts or Jev answers
+  ---
+  duration_ms: 8993.512208
+  type: 'test'
+  ...
+# Subtest: SIGKILL during postgame resumes without duplicating frozen receipts or Jev answers
+ok 135 - SIGKILL during postgame resumes without duplicating frozen receipts or Jev answers
+  ---
+  duration_ms: 10275.339104
+  type: 'test'
+  ...
+# Subtest: first-window invalid package records game status and continues to next game
+ok 136 - first-window invalid package records game status and continues to next game
+  ---
+  duration_ms: 8244.030721
+  type: 'test'
+  ...
+# Subtest: corpus diagnostics keep season tags and never replay or train on holdout games
+ok 137 - corpus diagnostics keep season tags and never replay or train on holdout games
+  ---
+  duration_ms: 4614.266836
+  type: 'test'
+  ...
+# Subtest: assembler infrastructure failure halts the run; resume skips failed pregame
+ok 138 - assembler infrastructure failure halts the run; resume skips failed pregame
+  ---
+  duration_ms: 931.623298
+  type: 'test'
+  ...
+# Subtest: validation Jev calls use pregame scopes and costs without analyst tokens
+ok 139 - validation Jev calls use pregame scopes and costs without analyst tokens
+  ---
+  duration_ms: 1117.107122
+  type: 'test'
+  ...
+# Subtest: starter refits before each pregame and binds frozen packages and replay
+ok 140 - starter refits before each pregame and binds frozen packages and replay
+  ---
+  duration_ms: 7581.641944
+  type: 'test'
+  ...
+# (node:8490) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: v3 profiles pin separate rights, reject mixed legacy modes and refuse all second-stage values
+ok 141 - v3 profiles pin separate rights, reject mixed legacy modes and refuse all second-stage values
+  ---
+  duration_ms: 69.590121
+  type: 'test'
+  ...
+# Subtest: workspace tools hide every gated-off tree even when planted on the host
+ok 142 - workspace tools hide every gated-off tree even when planted on the host
+  ---
+  duration_ms: 244.661666
+  type: 'test'
+  ...
+# Subtest: cap enforcement is atomic across writes/appends, counts only allowed memory, and leaves skills uncapped
+ok 143 - cap enforcement is atomic across writes/appends, counts only allowed memory, and leaves skills uncapped
+  ---
+  duration_ms: 69.21965
+  type: 'test'
+  ...
+# Subtest: token-count records cache exact inputs across reconstruction without inference or research spend
+ok 144 - token-count records cache exact inputs across reconstruction without inference or research spend
+  ---
+  duration_ms: 157.007126
+  type: 'test'
+  ...
+# Subtest: boundary audit flags player, staff and game names without modifying any file
+ok 145 - boundary audit flags player, staff and game names without modifying any file
+  ---
+  duration_ms: 113.644213
+  type: 'test'
+  ...
+# Subtest: boundary audit scans literal and separator-normalized paths without editing files
+ok 146 - boundary audit scans literal and separator-normalized paths without editing files
+  ---
+  duration_ms: 5.535625
+  type: 'test'
+  ...
+# Subtest: postgame harness failure records an audit or explicit gap
+ok 147 - postgame harness failure records an audit or explicit gap
+  ---
+  duration_ms: 1022.583924
+  type: 'test'
+  ...
+# Subtest: postgame environment failure records an audit or explicit gap
+ok 148 - postgame environment failure records an audit or explicit gap
+  ---
+  duration_ms: 803.912489
+  type: 'test'
+  ...
+# Subtest: postgame audit failure records an audit or explicit gap
+ok 149 - postgame audit failure records an audit or explicit gap
+  ---
+  duration_ms: 818.411708
+  type: 'test'
+  ...
+# Subtest: M0 two games: reflection, previous feedback, memory persistence and checkpoint sizes
+ok 150 - M0 two games: reflection, previous feedback, memory persistence and checkpoint sizes
+  ---
+  duration_ms: 1866.997648
+  type: 'test'
+  ...
+# Subtest: M3 two games: reflection, previous feedback, memory persistence and checkpoint sizes
+ok 151 - M3 two games: reflection, previous feedback, memory persistence and checkpoint sizes
+  ---
+  duration_ms: 1914.678122
+  type: 'test'
+  ...
+# Subtest: M4 two games: reflection, previous feedback, memory persistence and checkpoint sizes
+ok 152 - M4 two games: reflection, previous feedback, memory persistence and checkpoint sizes
+  ---
+  duration_ms: 2069.347428
+  type: 'test'
+  ...
+# Subtest: SIGKILL after freeze receipt resumes with one receipt and one replay, preserving committed memory
+ok 153 - SIGKILL after freeze receipt resumes with one receipt and one replay, preserving committed memory
+  ---
+  duration_ms: 1546.925064
+  type: 'test'
+  ...
+# Subtest: SIGKILL after freeze record resumes with one receipt and one replay, preserving committed memory
+ok 154 - SIGKILL after freeze record resumes with one receipt and one replay, preserving committed memory
+  ---
+  duration_ms: 1459.03893
+  type: 'test'
+  ...
+# Subtest: existing analyst loop operates v3 workspace tools and receives optional postgame reflection
+ok 155 - existing analyst loop operates v3 workspace tools and receives optional postgame reflection
+  ---
+  duration_ms: 816.316752
+  type: 'test'
+  ...
+# Subtest: record and blobs restore frozen packages and released feedback after checkpoint relocation
+ok 156 - record and blobs restore frozen packages and released feedback after checkpoint relocation
+  ---
+  duration_ms: 169.530814
+  type: 'test'
+  ...
+# Subtest: a phase change during token counting refuses the pending write
+ok 157 - a phase change during token counting refuses the pending write
+  ---
+  duration_ms: 3.105867
+  type: 'test'
+  ...
+# Subtest: exact edits are atomic and memory mutations report retained usage
+ok 158 - exact edits are atomic and memory mutations report retained usage
+  ---
+  duration_ms: 31.080006
+  type: 'test'
+  ...
+# Subtest: boundary audit catches case-sensitive surnames, suffixes and compound names
+ok 159 - boundary audit catches case-sensitive surnames, suffixes and compound names
+  ---
+  duration_ms: 15.931008
+  type: 'test'
+  ...
+# Subtest: accent-insensitive audit preserves original matches and UTF-16 offsets
+ok 160 - accent-insensitive audit preserves original matches and UTF-16 offsets
+  ---
+  duration_ms: 6.811941
+  type: 'test'
+  ...
+# (node:8525) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Pi starts fresh phases and records tool calls, results and usage
+ok 161 - Pi starts fresh phases and records tool calls, results and usage
+  ---
+  duration_ms: 4285.848483
+  type: 'test'
+  ...
+# Subtest: Pi excludes host credentials, discovery, builtins, and stateless workspace tools
+ok 162 - Pi excludes host credentials, discovery, builtins, and stateless workspace tools
+  ---
+  duration_ms: 1885.236401
+  type: 'test'
+  ...
+# Subtest: Pi aborts on proxy budget refusal and preserves the recorded limit
+ok 163 - Pi aborts on proxy budget refusal and preserves the recorded limit
+  ---
+  duration_ms: 1849.674211
+  type: 'test'
+  ...
+# Subtest: Pi pairs truncated tool calls without executing them
+ok 164 - Pi pairs truncated tool calls without executing them
+  ---
+  duration_ms: 3501.355665
+  type: 'test'
+  ...
+# Subtest: Pi turn safeguard bounds a model that keeps calling tools
+ok 165 - Pi turn safeguard bounds a model that keeps calling tools
+  ---
+  duration_ms: 1985.133473
+  type: 'test'
+  ...
+# Subtest: Pi configuration, package version, and prompt changes alter harness version
+ok 166 - Pi configuration, package version, and prompt changes alter harness version
+  ---
+  duration_ms: 5.012414
+  type: 'test'
+  ...
+# Subtest: Pi stops on session tool budget errors without making another model call
+ok 167 - Pi stops on session tool budget errors without making another model call
+  ---
+  duration_ms: 1929.136062
+  type: 'test'
+  ...
+# Subtest: runner wall timeout closes Pi before finalizing the record
+ok 168 - runner wall timeout closes Pi before finalizing the record
+  ---
+  duration_ms: 5369.338747
+  type: 'test'
+  ...
+# Subtest: Pi propagates tool infrastructure failures instead of completing silently
+ok 169 - Pi propagates tool infrastructure failures instead of completing silently
+  ---
+  duration_ms: 3102.608717
+  type: 'test'
+  ...
+# Subtest: multi-MB Pi history is recorded before session closing events
+ok 170 - multi-MB Pi history is recorded before session closing events
+  ---
+  duration_ms: 3181.990747
+  type: 'test'
+  ...
+# Subtest: late recorder failure rejects Pi completion for a large final snapshot
+ok 171 - late recorder failure rejects Pi completion for a large final snapshot
+  ---
+  duration_ms: 5101.491778
+  type: 'test'
+  ...
+# Subtest: Pi runs the research-v3 system and phase prompts when selected
+ok 172 - Pi runs the research-v3 system and phase prompts when selected
+  ---
+  duration_ms: 1520.617015
+  type: 'test'
+  ...
+# Subtest: real assembler: isolation, readonly package, fresh scratch, determinism and timeout
+ok 173 - real assembler: isolation, readonly package, fresh scratch, determinism and timeout # SKIP
+  ---
+  duration_ms: 0.579804
+  type: 'test'
+  ...
+# Subtest: batch assembler isolates module and scratch state and bounds each item
+ok 174 - batch assembler isolates module and scratch state and bounds each item # SKIP
+  ---
+  duration_ms: 0.081399
+  type: 'test'
+  ...
+# Subtest: shared-memory files cannot carry states between batch children
+ok 175 - shared-memory files cannot carry states between batch children # SKIP
+  ---
+  duration_ms: 0.054726
+  type: 'test'
+  ...
+# Subtest: parallel batches retain fresh children and no shared memory; abort joins every container
+ok 176 - parallel batches retain fresh children and no shared memory; abort joins every container # SKIP
+  ---
+  duration_ms: 0.045961
+  type: 'test'
+  ...
+# (node:8567) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: request keys fixed, numeric score mapping exact, invalid entry falls back alone, size guard
+ok 177 - request keys fixed, numeric score mapping exact, invalid entry falls back alone, size guard
+  ---
+  duration_ms: 6.734278
+  type: 'test'
+  ...
+# Subtest: freeze is atomic, idempotent, hash checked, cutoff enforced, and workspace tools cannot change it
+ok 178 - freeze is atomic, idempotent, hash checked, cutoff enforced, and workspace tools cannot change it
+  ---
+  duration_ms: 20.372007
+  type: 'test'
+  ...
+# Subtest: proxy records mismatch and usage, retries once on 429, refuses analyst route for Jev
+ok 179 - proxy records mismatch and usage, retries once on 429, refuses analyst route for Jev
+  ---
+  duration_ms: 215.532455
+  type: 'test'
+  ...
+# Subtest: feedback permits only previous pregame/current postgame after release, validation samples only prior games and no Jev
+ok 180 - feedback permits only previous pregame/current postgame after release, validation samples only prior games and no Jev
+  ---
+  duration_ms: 87.097754
+  type: 'test'
+  ...
+# Subtest: policy replay scores per-question fallback and resumes without another provider call; probe hides truth
+ok 181 - policy replay scores per-question fallback and resumes without another provider call; probe hides truth
+  ---
+  duration_ms: 423.883654
+  type: 'test'
+  ...
+# Subtest: stateless policy workspace exposes only current package; legacy stateless remains closed
+ok 182 - stateless policy workspace exposes only current package; legacy stateless remains closed
+  ---
+  duration_ms: 23.390025
+  type: 'test'
+  ...
+# Subtest: freeze failure leaves no receipt and package stays editable
+ok 183 - freeze failure leaves no receipt and package stays editable
+  ---
+  duration_ms: 41.778865
+  type: 'test'
+  ...
+# Subtest: first assembler exception invalidates the game; later exception scores fallback; oversized first request is assembler_error
+ok 184 - first assembler exception invalidates the game; later exception scores fallback; oversized first request is assembler_error
+  ---
+  duration_ms: 1153.421645
+  type: 'test'
+  ...
+# Subtest: session exposes policy tools under pinned harness and blocks writes after freeze
+ok 185 - session exposes policy tools under pinned harness and blocks writes after freeze
+  ---
+  duration_ms: 62.394113
+  type: 'test'
+  ...
+# Subtest: nondeterministic assembly is refused before any Jev request
+ok 186 - nondeterministic assembly is refused before any Jev request
+  ---
+  duration_ms: 23.647114
+  type: 'test'
+  ...
+# Subtest: cancelled assembly/Jev and Docker infrastructure failure leave replay resumable
+ok 187 - cancelled assembly/Jev and Docker infrastructure failure leave replay resumable
+  ---
+  duration_ms: 1470.441889
+  type: 'test'
+  ...
+# Subtest: feedback is paged and full window detail can be reconstructed without a large tool result
+ok 188 - feedback is paged and full window detail can be reconstructed without a large tool result
+  ---
+  duration_ms: 162.940238
+  type: 'test'
+  ...
+# Subtest: empty bench is a window-level environment error, not invalid_package
+ok 189 - empty bench is a window-level environment error, not invalid_package
+  ---
+  duration_ms: 0.417773
+  type: 'test'
+  ...
+# Subtest: excessive Retry-After fails without retrying early
+ok 190 - excessive Retry-After fails without retrying early
+  ---
+  duration_ms: 149.581064
+  type: 'test'
+  ...
+# Subtest: minimal manifests are hashed by the harness and supplied hashes remain checked
+ok 191 - minimal manifests are hashed by the harness and supplied hashes remain checked
+  ---
+  duration_ms: 26.124604
+  type: 'test'
+  ...
+# Subtest: first-game validation uses only released prior-season fallback states
+ok 192 - first-game validation uses only released prior-season fallback states
+  ---
+  duration_ms: 44.29038
+  type: 'test'
+  ...
+# (node:8656) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: P1 mapping reaches browse, search and fetch with stable account provenance and cutoff filtering
+ok 193 - P1 mapping reaches browse, search and fetch with stable account provenance and cutoff filtering
+  ---
+  duration_ms: 46.398883
+  type: 'test'
+  ...
+# Subtest: mapping content changes data-source identity even without changing its release label
+ok 194 - mapping content changes data-source identity even without changing its release label
+  ---
+  duration_ms: 23.447591
+  type: 'test'
+  ...
+# Subtest: author mapping rejects malformed or duplicate identities
+ok 195 - author mapping rejects malformed or duplicate identities
+  ---
+  duration_ms: 2.30676
+  type: 'test'
+  ...
+# Subtest: release verification reports all unmapped accounts, including excluded posts
+ok 196 - release verification reports all unmapped accounts, including excluded posts
+  ---
+  duration_ms: 3.363022
+  type: 'test'
+  ...
+# (node:8693) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: prior loader reads only the prior Celtics regular season, preserves two gaps and marks retrospective rosters
+ok 197 - prior loader reads only the prior Celtics regular season, preserves two gaps and marks retrospective rosters
+  ---
+  duration_ms: 115.090413
+  type: 'test'
+  ...
+# Subtest: all 82 rosters match independent cross-check with strictly pre-tip membership times
+ok 198 - all 82 rosters match independent cross-check with strictly pre-tip membership times
+  ---
+  duration_ms: 19.27011
+  type: 'test'
+  ...
+# Subtest: trade, same-day signings, expiries and strict timestamp boundaries
+ok 199 - trade, same-day signings, expiries and strict timestamp boundaries
+  ---
+  duration_ms: 2.7431
+  type: 'test'
+  ...
+# Subtest: season pregame names use current roster and ignore planted same-game participants and box membership
+ok 200 - season pregame names use current roster and ignore planted same-game participants and box membership
+  ---
+  duration_ms: 3.279162
+  type: 'test'
+  ...
+# Subtest: silent edits to either roster evidence file fail integrity verification
+ok 201 - silent edits to either roster evidence file fail integrity verification
+  ---
+  duration_ms: 17.694481
+  type: 'test'
+  ...
+# (node:8707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: independent candidate, observable prefix, and outcome held separately
+ok 202 - independent candidate, observable prefix, and outcome held separately
+  ---
+  duration_ms: 5.419136
+  type: 'test'
+  ...
+# Subtest: feedback home/away identity comes from game metadata even at a tied score
+ok 203 - feedback home/away identity comes from game metadata even at a tied score
+  ---
+  duration_ms: 1.871618
+  type: 'test'
+  ...
+# Subtest: retrospective jump ball snapshots first substitution; other late markers exclude
+ok 204 - retrospective jump ball snapshots first substitution; other late markers exclude
+  ---
+  duration_ms: 0.957986
+  type: 'test'
+  ...
+# Subtest: adjacency is immediately previous independent bucket, up to two seconds; no chains
+ok 205 - adjacency is immediately previous independent bucket, up to two seconds; no chains
+  ---
+  duration_ms: 1.029695
+  type: 'test'
+  ...
+# Subtest: named partial summary nulls score; state failure still excludes
+ok 206 - named partial summary nulls score; state failure still excludes
+  ---
+  duration_ms: 2.126565
+  type: 'test'
+  ...
+# Subtest: question validation preserves valid answers and rejects illegal actions
+ok 207 - question validation preserves valid answers and rejects illegal actions
+  ---
+  duration_ms: 0.78491
+  type: 'test'
+  ...
+# Subtest: five-window hand calculation, including entry-only fallback
+ok 208 - five-window hand calculation, including entry-only fallback
+  ---
+  duration_ms: 2.84557
+  type: 'test'
+  ...
+# Subtest: failures, clipping, and constant baseline have explicit denominators
+ok 209 - failures, clipping, and constant baseline have explicit denominators
+  ---
+  duration_ms: 4.549281
+  type: 'test'
+  ...
+# Subtest: record keeps outcomes outside predictor, resumes, and verifies chain
+ok 210 - record keeps outcomes outside predictor, resumes, and verifies chain
+  ---
+  duration_ms: 234.533746
+  type: 'test'
+  ...
+# Subtest: audited jump prefixes: opener 25–28 and Brooklyn 199–206
+ok 211 - audited jump prefixes: opener 25–28 and Brooklyn 199–206
+  ---
+  duration_ms: 17.586104
+  type: 'test'
+  ...
+# Subtest: period boundary uses prior five and new clock, not next five
+ok 212 - period boundary uses prior five and new clock, not next five
+  ---
+  duration_ms: 0.818924
+  type: 'test'
+  ...
+# Subtest: provider failures flag games above five percent; invalid package stops all calls
+ok 213 - provider failures flag games above five percent; invalid package stops all calls
+  ---
+  duration_ms: 219.184027
+  type: 'test'
+  ...
+# Subtest: bench comes from frozen roster, injury status, fouls and ejections only
+ok 214 - bench comes from frozen roster, injury status, fouls and ejections only
+  ---
+  duration_ms: 0.887771
+  type: 'test'
+  ...
+# Subtest: adjacency cannot chain and state quality failures take precedence
+ok 215 - adjacency cannot chain and state quality failures take precedence
+  ---
+  duration_ms: 0.641114
+  type: 'test'
+  ...
+# Subtest: opening-clock substitutions are one net boundary history entry
+ok 216 - opening-clock substitutions are one net boundary history entry
+  ---
+  duration_ms: 0.812729
+  type: 'test'
+  ...
+# Subtest: live-ball events and non-opening whistles after an opener remain ambiguous
+ok 217 - live-ball events and non-opening whistles after an opener remain ambiguous
+  ---
+  duration_ms: 1.043505
+  type: 'test'
+  ...
+# Subtest: team rebounds never open windows, including restored deadball qualifiers
+ok 218 - team rebounds never open windows, including restored deadball qualifiers
+  ---
+  duration_ms: 0.759024
+  type: 'test'
+  ...
+# Subtest: named summary defects outside state-v1 leave windows scored without nulls or a summary flag
+ok 219 - named summary defects outside state-v1 leave windows scored without nulls or a summary flag
+  ---
+  duration_ms: 0.934387
+  type: 'test'
+  ...
+# Subtest: unparseable partial findings and failed summaries remain unqualified
+ok 220 - unparseable partial findings and failed summaries remain unqualified
+  ---
+  duration_ms: 2.074204
+  type: 'test'
+  ...
+# Subtest: jump-ball stoppage metadata does not inherit the preceding bucket
+ok 221 - jump-ball stoppage metadata does not inherit the preceding bucket
+  ---
+  duration_ms: 0.703782
+  type: 'test'
+  ...
+# Subtest: windows-v2 paired held-ball fixtures include observed play but exclude the decision
+ok 222 - windows-v2 paired held-ball fixtures include observed play but exclude the decision
+  ---
+  duration_ms: 2.202232
+  type: 'test'
+  ...
+# Subtest: jump-ball cutoff precedes opponent substitutions even when Celtics do not substitute
+ok 223 - jump-ball cutoff precedes opponent substitutions even when Celtics do not substitute
+  ---
+  duration_ms: 0.906141
+  type: 'test'
+  ...
+# Subtest: non-substitution rows between the first substitution and jump ball exclude the window
+ok 224 - non-substitution rows between the first substitution and jump ball exclude the window
+  ---
+  duration_ms: 0.571681
+  type: 'test'
+  ...
+# Subtest: released decision-history rows preserve built windows and ledger without scoring
+ok 225 - released decision-history rows preserve built windows and ledger without scoring
+  ---
+  duration_ms: 17.050219
+  type: 'test'
+  ...
+# (node:8772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: research-v3 harness config carries every prompt and instruction text
+ok 226 - research-v3 harness config carries every prompt and instruction text
+  ---
+  duration_ms: 2.660753
+  type: 'test'
+  ...
+# Subtest: any prompt or instruction wording change is a new harness version
+ok 227 - any prompt or instruction wording change is a new harness version
+  ---
+  duration_ms: 7.298279
+  type: 'test'
+  ...
+# Subtest: each variant's instructions name exactly its permitted directories
+ok 228 - each variant's instructions name exactly its permitted directories
+  ---
+  duration_ms: 0.647877
+  type: 'test'
+  ...
+# Subtest: research-v3 requires v3 memory permissions
+ok 229 - research-v3 requires v3 memory permissions
+  ---
+  duration_ms: 0.378169
+  type: 'test'
+  ...
+# Subtest: presets select research prompts and per-variant instructions
+ok 230 - presets select research prompts and per-variant instructions
+  ---
+  duration_ms: 5.663623
+  type: 'test'
+  ...
+# Subtest: research texts supply no team-specific names and state the contract
+ok 231 - research texts supply no team-specific names and state the contract
+  ---
+  duration_ms: 2.35032
+  type: 'test'
+  ...
+# Subtest: the pilot can be limited to the first development games
+ok 232 - the pilot can be limited to the first development games
+  ---
+  duration_ms: 0.918084
+  type: 'test'
+  ...
+# Subtest: the prompt describes the data, the trace file and the freeze lock
+ok 233 - the prompt describes the data, the trace file and the freeze lock
+  ---
+  duration_ms: 0.491917
+  type: 'test'
+  ...
+# Subtest: the prompt matches the SPO-857 environment
+ok 234 - the prompt matches the SPO-857 environment
+  ---
+  duration_ms: 1.981301
+  type: 'test'
+  ...
+# Subtest: the prompt describes jev-contract-v2 (SPO-867)
+ok 235 - the prompt describes jev-contract-v2 (SPO-867)
+  ---
+  duration_ms: 1.021571
+  type: 'test'
+  ...
+# Subtest: research-v3-code describes jev-contract-v3 and the starter model (SPO-874)
+ok 236 - research-v3-code describes jev-contract-v3 and the starter model (SPO-874)
+  ---
+  duration_ms: 8.488549
+  type: 'test'
+  ...
+# Subtest: the code prompt names no team members and prescribes no checklist
+ok 237 - the code prompt names no team members and prescribes no checklist
+  ---
+  duration_ms: 0.953401
+  type: 'test'
+  ...
+# Subtest: a research prompt set runs only with the contract it describes
+ok 238 - a research prompt set runs only with the contract it describes
+  ---
+  duration_ms: 0.204754
+  type: 'test'
+  ...
+# (node:8779) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: manifest pins all axes/descriptors and chronological 82-game schedule, first ten dev, DST release
+ok 239 - manifest pins all axes/descriptors and chronological 82-game schedule, first ten dev, DST release
+  ---
+  duration_ms: 106.985034
+  type: 'test'
+  ...
+# Subtest: record is append-only, hash-verified and manifest-bound
+ok 240 - record is append-only, hash-verified and manifest-bound
+  ---
+  duration_ms: 219.220314
+  type: 'test'
+  ...
+# Subtest: proxy works with Anthropic SDK, pins model/effort, records exact usage and revokes scoped keys
+ok 241 - proxy works with Anthropic SDK, pins model/effort, records exact usage and revokes scoped keys
+  ---
+  duration_ms: 353.290451
+  type: 'test'
+  ...
+# Subtest: budget has no rollover, counts all token classes and uncertain calls
+ok 242 - budget has no rollover, counts all token classes and uncertain calls
+  ---
+  duration_ms: 243.255625
+  type: 'test'
+  ...
+# Subtest: failed model transport is charged conservatively and cannot spend again concurrently
+ok 243 - failed model transport is charged conservatively and cannot spend again concurrently
+  ---
+  duration_ms: 223.739164
+  type: 'test'
+  ...
+# Subtest: runner preserves B workspace, resets A and hands harness only scoped handles
+ok 244 - runner preserves B workspace, resets A and hands harness only scoped handles
+  ---
+  duration_ms: 1858.691732
+  type: 'test'
+  ...
+# Subtest: exhaustion and infrastructure failure remain distinct; code records enforce truncation
+ok 245 - exhaustion and infrastructure failure remain distinct; code records enforce truncation
+  ---
+  duration_ms: 1846.100397
+  type: 'test'
+  ...
+# Subtest: SIGKILL during research rolls back partial memory and resumes the interrupted phase
+ok 246 - SIGKILL during research rolls back partial memory and resumes the interrupted phase
+  ---
+  duration_ms: 1693.081877
+  type: 'test'
+  ...
+# Subtest: checkpoints copy SQLite and blobs and publish index last; failed upload has no marker
+ok 247 - checkpoints copy SQLite and blobs and publish index last; failed upload has no marker
+  ---
+  duration_ms: 141.521988
+  type: 'test'
+  ...
+# Subtest: run and replicate directories cannot share state; an active runner cannot be opened twice
+ok 248 - run and replicate directories cannot share state; an active runner cannot be opened twice
+  ---
+  duration_ms: 644.5182
+  type: 'test'
+  ...
+# Subtest: proxy refuses concurrent calls
+ok 249 - proxy refuses concurrent calls
+  ---
+  duration_ms: 455.423735
+  type: 'test'
+  ...
+# Subtest: published checkpoint restores persistent workspace without copying a live workspace directory
+ok 250 - published checkpoint restores persistent workspace without copying a live workspace directory
+  ---
+  duration_ms: 761.026271
+  type: 'test'
+  ...
+# Subtest: a crash between session end and phase checkpoint neither reruns the phase nor upgrades failure
+ok 251 - a crash between session end and phase checkpoint neither reruns the phase nor upgrades failure
+  ---
+  duration_ms: 355.007296
+  type: 'test'
+  ...
+# Subtest: postgame budget stops are recorded even when a harness handles the model error
+ok 252 - postgame budget stops are recorded even when a harness handles the model error
+  ---
+  duration_ms: 451.443207
+  type: 'test'
+  ...
+# (node:8779) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: workspace snapshots preserve nested paths and refuse links to host data
+ok 253 - workspace snapshots preserve nested paths and refuse links to host data
+  ---
+  duration_ms: 103.484863
+  type: 'test'
+  ...
+# Subtest: resume charges observed attempt time but excludes a long outage and other scopes
+ok 254 - resume charges observed attempt time but excludes a long outage and other scopes
+  ---
+  duration_ms: 499.980025
+  type: 'test'
+  ...
+# Subtest: runner refusals use SessionError codes for memory, disabled capabilities and tool budget
+ok 255 - runner refusals use SessionError codes for memory, disabled capabilities and tool budget
+  ---
+  duration_ms: 2562.183686
+  type: 'test'
+  ...
+# Subtest: real workspace service carries season memory, expires k-window writes and journals checkpoints
+ok 256 - real workspace service carries season memory, expires k-window writes and journals checkpoints
+  ---
+  duration_ms: 3022.121715
+  type: 'test'
+  ...
+# Subtest: a manifest without cacheReadWeight keeps its digest, resumes at weight 1, and a weight change is a new run
+ok 257 - a manifest without cacheReadWeight keeps its digest, resumes at weight 1, and a weight change is a new run
+  ---
+  duration_ms: 128.162817
+  type: 'test'
+  ...
+# Subtest: cache reads count at the budget profile's weight: charge, preflight estimate, clamp and settlement (SPO-814)
+ok 258 - cache reads count at the budget profile's weight: charge, preflight estimate, clamp and settlement (SPO-814)
+  ---
+  duration_ms: 198.403341
+  type: 'test'
+  ...
+# Subtest: proxy retries transient failures in one reservation, records diagnostics and preserves legacy hashes
+ok 259 - proxy retries transient failures in one reservation, records diagnostics and preserves legacy hashes
+  ---
+  duration_ms: 155.92577
+  type: 'test'
+  ...
+# Subtest: proxy does not retry provider limits or client errors
+ok 260 - proxy does not retry provider limits or client errors
+  ---
+  duration_ms: 861.642238
+  type: 'test'
+  ...
+# Subtest: infrastructure retry rolls back workspace and starts fresh caps while retaining failed charges
+ok 261 - infrastructure retry rolls back workspace and starts fresh caps while retaining failed charges
+  ---
+  duration_ms: 572.203099
+  type: 'test'
+  ...
+# Subtest: infrastructure session attempts stop at default bound
+ok 262 - infrastructure session attempts stop at default bound
+  ---
+  duration_ms: 362.025708
+  type: 'test'
+  ...
+# Subtest: retry window refuses another attempt after a slow failure; cancellation starts no call
+ok 263 - retry window refuses another attempt after a slow failure; cancellation starts no call
+  ---
+  duration_ms: 61.204142
+  type: 'test'
+  ...
+# Subtest: SDK connection errors without a socket code are retryable
+ok 264 - SDK connection errors without a socket code are retryable
+  ---
+  duration_ms: 1.752787
+  type: 'test'
+  ...
+# Subtest: recovered postgame model errors do not trigger a session re-attempt
+ok 265 - recovered postgame model errors do not trigger a session re-attempt
+  ---
+  duration_ms: 360.188149
+  type: 'test'
+  ...
+# Subtest: upstream diagnostics redact quoted credential fields and SDK keys
+ok 266 - upstream diagnostics redact quoted credential fields and SDK keys
+  ---
+  duration_ms: 0.403749
+  type: 'test'
+  ...
+# Subtest: healthy generation outlives the retry window and settles once
+ok 267 - healthy generation outlives the retry window and settles once
+  ---
+  duration_ms: 189.293578
+  type: 'test'
+  ...
+# Subtest: session cancellation still interrupts an in-flight model call
+ok 268 - session cancellation still interrupts an in-flight model call
+  ---
+  duration_ms: 0.465485
+  type: 'test'
+  ...
+# Subtest: runner preserves stderr tail after oversized output
+ok 269 - runner preserves stderr tail after oversized output
+  ---
+  duration_ms: 397.702413
+  type: 'test'
+  ...
+# Subtest: assembler failure is non-retryable even across a crash after session_end
+ok 270 - assembler failure is non-retryable even across a crash after session_end
+  ---
+  duration_ms: 416.261083
+  type: 'test'
+  ...
+# (node:8889) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: session export is invariant to planted future evidence, preserves public projections and gates release
+ok 271 - session export is invariant to planted future evidence, preserves public projections and gates release
+  ---
+  duration_ms: 235.257353
+  type: 'test'
+  ...
+# Subtest: Docker isolates host data, blocks network/install/links, provides scientific packages and mediates workspace
+ok 272 - Docker isolates host data, blocks network/install/links, provides scientific packages and mediates workspace # SKIP
+  ---
+  duration_ms: 0.143319
+  type: 'test'
+  ...
+# Subtest: Docker append-only mount refuses truncation/deletion, limits output/compute/wall and discards scratch
+ok 273 - Docker append-only mount refuses truncation/deletion, limits output/compute/wall and discards scratch # SKIP
+  ---
+  duration_ms: 0.178962
+  type: 'test'
+  ...
+# Subtest: Docker reports memory exhaustion, aborts cleanly and gives stateless code an ephemeral workspace
+ok 274 - Docker reports memory exhaustion, aborts cleanly and gives stateless code an ephemeral workspace # SKIP
+  ---
+  duration_ms: 0.066308
+  type: 'test'
+  ...
+# Subtest: postgame exports release history at the shared boundary and disabled capabilities export no private source
+ok 275 - postgame exports release history at the shared boundary and disabled capabilities export no private source
+  ---
+  duration_ms: 183.742834
+  type: 'test'
+  ...
+# Subtest: production runner executes through the sandbox, meters compute and freezes code-written memory
+ok 276 - production runner executes through the sandbox, meters compute and freezes code-written memory # SKIP
+  ---
+  duration_ms: 0.103828
+  type: 'test'
+  ...
+# Subtest: cancellation during export waits for the exporter before removing its directory
+ok 277 - cancellation during export waits for the exporter before removing its directory
+  ---
+  duration_ms: 8.746081
+  type: 'test'
+  ...
+# Subtest: FUSE coalesces large streams and preserves read/write coherence
+ok 278 - FUSE coalesces large streams and preserves read/write coherence # SKIP
+  ---
+  duration_ms: 0.208683
+  type: 'test'
+  ...
+# Subtest: warm exports reuse pinned game shards while reapplying the game release gate
+ok 279 - warm exports reuse pinned game shards while reapplying the game release gate
+  ---
+  duration_ms: 175.730415
+  type: 'test'
+  ...
+# Subtest: bulk session projections match the schedule, injury and odds tools
+ok 280 - bulk session projections match the schedule, injury and odds tools
+  ---
+  duration_ms: 112.454989
+  type: 'test'
+  ...
+# Subtest: host classifies supervisor OOM and retains the full compute reservation
+ok 281 - host classifies supervisor OOM and retains the full compute reservation # SKIP
+  ---
+  duration_ms: 0.100646
+  type: 'test'
+  ...
+# Subtest: runner restart removes own running/created orphans and an idle-root exited sandbox, protecting other live roots
+ok 282 - runner restart removes own running/created orphans and an idle-root exited sandbox, protecting other live roots # SKIP
+  ---
+  duration_ms: 0.04544
+  type: 'test'
+  ...
+# Subtest: Pi executes only through the metered research sandbox in both phases
+ok 283 - Pi executes only through the metered research sandbox in both phases # SKIP
+  ---
+  duration_ms: 0.036201
+  type: 'test'
+  ...
+# Subtest: v3 M0-M3 gates are identical through workspace tools and the research mount
+ok 284 - v3 M0-M3 gates are identical through workspace tools and the research mount # SKIP
+  ---
+  duration_ms: 0.035132
+  type: 'test'
+  ...
+# Subtest: nba_data lean defaults preserve values without all-NA concat warnings
+ok 285 - nba_data lean defaults preserve values without all-NA concat warnings # SKIP
+  ---
+  duration_ms: 0.032763
+  type: 'test'
+  ...
+# Subtest: constant skill and game-weighted pooled Murphy decomposition
+ok 286 - constant skill and game-weighted pooled Murphy decomposition
+  ---
+  duration_ms: 4.250012
+  type: 'test'
+  ...
+# Subtest: breakdowns partition scores and mid-period excludes boundaries
+ok 287 - breakdowns partition scores and mid-period excludes boundaries
+  ---
+  duration_ms: 0.581397
+  type: 'test'
+  ...
+# Subtest: player log loss and reciprocal rank average movers then substitution windows
+ok 288 - player log loss and reciprocal rank average movers then substitution windows
+  ---
+  duration_ms: 8.021839
+  type: 'test'
+  ...
+# (node:8945) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: one visibility gate handles all sources, strict equality and static build cutoff
+ok 289 - one visibility gate handles all sources, strict equality and static build cutoff
+  ---
+  duration_ms: 20.221879
+  type: 'test'
+  ...
+# Subtest: adding future records cannot change any implemented read, total, columns or cursor
+ok 290 - adding future records cannot change any implemented read, total, columns or cursor
+  ---
+  duration_ms: 27.398432
+  type: 'test'
+  ...
+# Subtest: future and nonexistent games have identical empty history, odds, and gap metadata
+ok 291 - future and nonexistent games have identical empty history, odds, and gap metadata
+  ---
+  duration_ms: 16.886135
+  type: 'test'
+  ...
+# Subtest: latest absent team is unknown and carries no older player report forward
+ok 292 - latest absent team is unknown and carries no older player report forward
+  ---
+  duration_ms: 8.727364
+  type: 'test'
+  ...
+# Subtest: injury identity refusals remain null; printed states and rows are allowlisted
+ok 293 - injury identity refusals remain null; printed states and rows are allowlisted
+  ---
+  duration_ms: 6.638771
+  type: 'test'
+  ...
+# Subtest: static player reference computes age at replay, rejects time/game filters
+ok 294 - static player reference computes age at replay, rejects time/game filters
+  ---
+  duration_ms: 4.332728
+  type: 'test'
+  ...
+# Subtest: eligible coverage gaps are absent with reason and Dec 5 uses official box minutes
+ok 295 - eligible coverage gaps are absent with reason and Dec 5 uses official box minutes
+  ---
+  duration_ms: 4.534624
+  type: 'test'
+  ...
+# Subtest: context uses supplied budgets; run identity, pins, cutoff and cursors cannot be changed
+ok 296 - context uses supplied budgets; run identity, pins, cutoff and cursors cannot be changed
+  ---
+  duration_ms: 8.650601
+  type: 'test'
+  ...
+# Subtest: stable pagination is independent of source iteration order and rejects malformed input
+ok 297 - stable pagination is independent of source iteration order and rejects malformed input
+  ---
+  duration_ms: 9.276568
+  type: 'test'
+  ...
+# Subtest: injury window filters printed report time, not scheduled tipoff
+ok 298 - injury window filters printed report time, not scheduled tipoff
+  ---
+  duration_ms: 5.395074
+  type: 'test'
+  ...
+# Subtest: persisted I2 injury mapping resolves Jaylin Williams only for Oklahoma City
+ok 299 - persisted I2 injury mapping resolves Jaylin Williams only for Oklahoma City
+  ---
+  duration_ms: 27.337661
+  type: 'test'
+  ...
+# Subtest: player-grained history reads each eligible game once without loading membership boxes
+ok 300 - player-grained history reads each eligible game once without loading membership boxes
+  ---
+  duration_ms: 14.449563
+  type: 'test'
+  ...
+# Subtest: evidence search filters future records before counts, snippets and pages
+ok 301 - evidence search filters future records before counts, snippets and pages
+  ---
+  duration_ms: 14.619951
+  type: 'test'
+  ...
+# Subtest: fetch hides future, equality, superseded and unknown ids identically; references remain eligible
+ok 302 - fetch hides future, equality, superseded and unknown ids identically; references remain eligible
+  ---
+  duration_ms: 7.378743
+  type: 'test'
+  ...
+# Subtest: transcripts preserve published defects, speaker clusters and artifact provenance; titles never set time
+ok 303 - transcripts preserve published defects, speaker clusters and artifact provenance; titles never set time
+  ---
+  duration_ms: 7.567276
+  type: 'test'
+  ...
+# Subtest: lineup equality is unavailable even after release; eligible announcements retain starters
+ok 304 - lineup equality is unavailable even after release; eligible announcements retain starters
+  ---
+  duration_ms: 4.401232
+  type: 'test'
+  ...
+# Subtest: evidence index is deterministic under input order and future edits, cached per session
+ok 305 - evidence index is deterministic under input order and future edits, cached per session
+  ---
+  duration_ms: 6.665753
+  type: 'test'
+  ...
+# Subtest: history defaults to lean rows and names; metadata opt-in preserves descriptions
+ok 306 - history defaults to lean rows and names; metadata opt-in preserves descriptions
+  ---
+  duration_ms: 4.636506
+  type: 'test'
+  ...
+# Subtest: default schedule is current plus next, with bounded cutoff-bound pagination
+ok 307 - default schedule is current plus next, with bounded cutoff-bound pagination
+  ---
+  duration_ms: 15.261789
+  type: 'test'
+  ...
+# Subtest: a session under jev-contract-v2 accepts policy tools carrying the same swap contract
+ok 308 - a session under jev-contract-v2 accepts policy tools carrying the same swap contract
+  ---
+  duration_ms: 12.444831
+  type: 'test'
+  ...
+# Subtest: starter: native probability parity, deterministic full refit and planted future cutoff
+ok 309 - starter: native probability parity, deterministic full refit and planted future cutoff # SKIP
+  ---
+  duration_ms: 0.496796
+  type: 'test'
+  ...
+# Subtest: starter mount is read-only and batch children cannot mutate later predictions
+ok 310 - starter mount is read-only and batch children cannot mutate later predictions # SKIP
+  ---
+  duration_ms: 0.087985
+  type: 'test'
+  ...
+# (node:9002) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: swap expansion conserves total mass, counts and inclusion marginals
+ok 311 - swap expansion conserves total mass, counts and inclusion marginals
+  ---
+  duration_ms: 24.004038
+  type: 'test'
+  ...
+# Subtest: rounded probabilities normalize; invalid maps fall back per question
+ok 312 - rounded probabilities normalize; invalid maps fall back per question
+  ---
+  duration_ms: 34.461912
+  type: 'test'
+  ...
+# Subtest: exhaustive candidates, invalid fallback, zero prior support and empty bench
+ok 313 - exhaustive candidates, invalid fallback, zero prior support and empty bench
+  ---
+  duration_ms: 12.817471
+  type: 'test'
+  ...
+# Subtest: set scoring listed/unlisted swaps, perfect multi-player Brier and other argmax
+ok 314 - set scoring listed/unlisted swaps, perfect multi-player Brier and other argmax
+  ---
+  duration_ms: 10.284617
+  type: 'test'
+  ...
+# Subtest: candidate validation and request construction reject malformed sets with window errors
+ok 315 - candidate validation and request construction reject malformed sets with window errors
+  ---
+  duration_ms: 5.868648
+  type: 'test'
+  ...
+# Subtest: warm-up prior and baseline set distributions are pinned and normalized
+ok 316 - warm-up prior and baseline set distributions are pinned and normalized
+  ---
+  duration_ms: 20.951516
+  type: 'test'
+  ...
+# Subtest: v2 replay, resume, feedback, validation and evaluation use trusted candidates and pinned prior
+ok 317 - v2 replay, resume, feedback, validation and evaluation use trusted candidates and pinned prior
+  ---
+  duration_ms: 426.303148
+  type: 'test'
+  ...
+# Subtest: first-window invalid candidates score fallback without Jev; first-window execution raise invalidates game
+ok 318 - first-window invalid candidates score fallback without Jev; first-window execution raise invalidates game
+  ---
+  duration_ms: 1069.387399
+  type: 'test'
+  ...
+# Subtest: validate_package returns swap answers and derived marginals, or candidate reasons
+ok 319 - validate_package returns swap answers and derived marginals, or candidate reasons
+  ---
+  duration_ms: 64.871634
+  type: 'test'
+  ...
+# Subtest: generic swap candidates prefer rested rotation players over never-played entries
+ok 320 - generic swap candidates prefer rested rotation players over never-played entries
+  ---
+  duration_ms: 4.199701
+  type: 'test'
+  ...
+# Subtest: v2 statistical entry ranks prefer rested players while legacy ranks remain unchanged
+ok 321 - v2 statistical entry ranks prefer rested players while legacy ranks remain unchanged
+  ---
+  duration_ms: 8.244346
+  type: 'test'
+  ...
+# (node:9009) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: team parameter matches relabelling with real ids preserved, home and away
+ok 322 - team parameter matches relabelling with real ids preserved, home and away
+  ---
+  duration_ms: 101.551243
+  type: 'test'
+  ...
+# Subtest: all-teams training filters before indexed reads, retains DNPs, reports gaps and cannot be evaluated
+ok 323 - all-teams training filters before indexed reads, retains DNPs, reports gaps and cannot be evaluated
+  ---
+  duration_ms: 25.828331
+  type: 'test'
+  ...
+# Subtest: Boston backtest loader filters future shards and retains retrospective membership
+ok 324 - Boston backtest loader filters future shards and retains retrospective membership
+  ---
+  duration_ms: 4.920584
+  type: 'test'
+  ...
+# (node:9073) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: selection spreads types, halves and distinct games deterministically
+ok 325 - selection spreads types, halves and distinct games deterministically
+  ---
+  duration_ms: 6.389478
+  type: 'test'
+  ...
+# Subtest: validation returns prior-state answers, summaries, isolated failures and fallback note
+ok 326 - validation returns prior-state answers, summaries, isolated failures and fallback note
+  ---
+  duration_ms: 258.568612
+  type: 'test'
+  ...
+# Subtest: reader uses one expected Doppler project/config across all allowed buckets
+ok 327 - reader uses one expected Doppler project/config across all allowed buckets
+  ---
+  duration_ms: 540.014047
+  type: 'test'
+  ...
+# Subtest: reader refuses mismatched injection, unknown buckets, and endpoint fallback
+ok 328 - reader refuses mismatched injection, unknown buckets, and endpoint fallback
+  ---
+  duration_ms: 594.397818
+  type: 'test'
+  ...
+# (node:9160) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspace tools edit text, count UTF-8 bytes, list immediate entries and checkpoint special filenames
+ok 329 - workspace tools edit text, count UTF-8 bytes, list immediate entries and checkpoint special filenames
+  ---
+  duration_ms: 69.977723
+  type: 'test'
+  ...
+# Subtest: shared policy permits new scripts and appends but rejects replacement/delete, commit and stateless access
+ok 330 - shared policy permits new scripts and appends but rejects replacement/delete, commit and stateless access
+  ---
+  duration_ms: 47.401195
+  type: 'test'
+  ...
+# Subtest: workspace refuses traversal, absolute paths, symlinks and hard links without leaking host paths
+ok 331 - workspace refuses traversal, absolute paths, symlinks and hard links without leaking host paths
+  ---
+  duration_ms: 9.315955
+  type: 'test'
+  ...
+# Subtest: session routes workspace tools and revokes the shared service at commit and close
+ok 332 - session routes workspace tools and revokes the shared service at commit and close
+  ---
+  duration_ms: 44.686868
+  type: 'test'
+  ...
+# Subtest: window snapshots expire inherited prefixes and preserve recent binary writes and deletion
+ok 333 - window snapshots expire inherited prefixes and preserve recent binary writes and deletion
+  ---
+  duration_ms: 77.184646
+  type: 'test'
+  ...
+# Subtest: journal hashes deduplicate snapshot bytes and window replay rejects corrupt blobs
+ok 334 - journal hashes deduplicate snapshot bytes and window replay rejects corrupt blobs
+  ---
+  duration_ms: 84.537833
+  type: 'test'
+  ...
+1..334
+# tests 334
+# suites 0
+# pass 318
+# fail 0
+# cancelled 0
+# skipped 16
+# todo 0
+# duration_ms 81033.404323
+TAP version 13
+# (node:11938) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: backtest part: scorer parity, all windows and deferral splits
+ok 1 - backtest part: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 62.465733
+  type: 'test'
+  ...
+# Subtest: backtest all: scorer parity, all windows and deferral splits
+ok 2 - backtest all: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 26.618827
+  type: 'test'
+  ...
+# Subtest: backtest invalid: scorer parity, all windows and deferral splits
+ok 3 - backtest invalid: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 25.286266
+  type: 'test'
+  ...
+# Subtest: backtest candidates: scorer parity, all windows and deferral splits
+ok 4 - backtest candidates: scorer parity, all windows and deferral splits
+  ---
+  duration_ms: 24.026435
+  type: 'test'
+  ...
+# Subtest: strict release cutoff, no future counts, and aggregate scorer parity
+ok 5 - strict release cutoff, no future counts, and aggregate scorer parity
+  ---
+  duration_ms: 26.708459
+  type: 'test'
+  ...
+# Subtest: compute deadline stops assembly and identifies incomplete results
+ok 6 - compute deadline stops assembly and identifies incomplete results
+  ---
+  duration_ms: 37.893599
+  type: 'test'
+  ...
+# Subtest: tool schema changes harness hash and rejects selection or Jev arguments
+ok 7 - tool schema changes harness hash and rejects selection or Jev arguments
+  ---
+  duration_ms: 1.30318
+  type: 'test'
+  ...
+# Subtest: runner records each package backtest and charges compute with no Jev calls
+ok 8 - runner records each package backtest and charges compute with no Jev calls
+  ---
+  duration_ms: 1127.356549
+  type: 'test'
+  ...
+# Subtest: a stalled history load is bounded and does not pretend the history is empty
+ok 9 - a stalled history load is bounded and does not pretend the history is empty
+  ---
+  duration_ms: 27.941965
+  type: 'test'
+  ...
+# Subtest: batched execution matches individual scores and isolates starter errors
+ok 10 - batched execution matches individual scores and isolates starter errors
+  ---
+  duration_ms: 21.215079
+  type: 'test'
+  ...
+# Subtest: history is loaded once for a cutoff, and aborted loads are not cached
+ok 11 - history is loaded once for a cutoff, and aborted loads are not cached
+  ---
+  duration_ms: 0.963892
+  type: 'test'
+  ...
+# Subtest: each batch executes oldest first and maps results back to the selected windows
+ok 12 - each batch executes oldest first and maps results back to the selected windows
+  ---
+  duration_ms: 23.652646
+  type: 'test'
+  ...
+# Subtest: a call timeout retains the in-flight history load; runner shutdown aborts it
+ok 13 - a call timeout retains the in-flight history load; runner shutdown aborts it
+  ---
+  duration_ms: 220.43091
+  type: 'test'
+  ...
+# Subtest: four concurrent batch containers preserve serial scores and join cancellation
+ok 14 - four concurrent batch containers preserve serial scores and join cancellation
+  ---
+  duration_ms: 396.053312
+  type: 'test'
+  ...
+# Subtest: starter comparison is prepared once per hash/cutoff and fails closed on unknown states
+ok 15 - starter comparison is prepared once per hash/cutoff and fails closed on unknown states
+  ---
+  duration_ms: 15.575098
+  type: 'test'
+  ...
+# Subtest: failed starter cache preparation joins workers and retries without a poisoned entry
+ok 16 - failed starter cache preparation joins workers and retries without a poisoned entry
+  ---
+  duration_ms: 13.176935
+  type: 'test'
+  ...
+# Subtest: real assembler: isolation, readonly package, fresh scratch, determinism and timeout
+ok 17 - real assembler: isolation, readonly package, fresh scratch, determinism and timeout
+  ---
+  duration_ms: 3460.989718
+  type: 'test'
+  ...
+# Subtest: batch assembler isolates module and scratch state and bounds each item
+ok 18 - batch assembler isolates module and scratch state and bounds each item
+  ---
+  duration_ms: 2093.404163
+  type: 'test'
+  ...
+# Subtest: shared-memory files cannot carry states between batch children
+ok 19 - shared-memory files cannot carry states between batch children
+  ---
+  duration_ms: 821.383198
+  type: 'test'
+  ...
+# Subtest: parallel batches retain fresh children and no shared memory; abort joins every container
+ok 20 - parallel batches retain fresh children and no shared memory; abort joins every container
+  ---
+  duration_ms: 1940.261426
+  type: 'test'
+  ...
+# Subtest: starter: native probability parity, deterministic full refit and planted future cutoff
+ok 21 - starter: native probability parity, deterministic full refit and planted future cutoff
+  ---
+  duration_ms: 3138.708017
+  type: 'test'
+  ...
+# Subtest: starter mount is read-only and batch children cannot mutate later predictions
+ok 22 - starter mount is read-only and batch children cannot mutate later predictions
+  ---
+  duration_ms: 2348.070848
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8546.884787
+
+> nba-agent@0.1.0 test:sandbox
+> tsx scripts/sandbox-test.ts
+
+TAP version 13
+# (node:14815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: session export is invariant to planted future evidence, preserves public projections and gates release
+ok 1 - session export is invariant to planted future evidence, preserves public projections and gates release
+  ---
+  duration_ms: 107.77863
+  type: 'test'
+  ...
+# Subtest: Docker isolates host data, blocks network/install/links, provides scientific packages and mediates workspace
+ok 2 - Docker isolates host data, blocks network/install/links, provides scientific packages and mediates workspace
+  ---
+  duration_ms: 1267.864607
+  type: 'test'
+  ...
+# Subtest: Docker append-only mount refuses truncation/deletion, limits output/compute/wall and discards scratch
+ok 3 - Docker append-only mount refuses truncation/deletion, limits output/compute/wall and discards scratch
+  ---
+  duration_ms: 1162.243847
+  type: 'test'
+  ...
+# Subtest: Docker reports memory exhaustion, aborts cleanly and gives stateless code an ephemeral workspace
+ok 4 - Docker reports memory exhaustion, aborts cleanly and gives stateless code an ephemeral workspace
+  ---
+  duration_ms: 604.453795
+  type: 'test'
+  ...
+# Subtest: postgame exports release history at the shared boundary and disabled capabilities export no private source
+ok 5 - postgame exports release history at the shared boundary and disabled capabilities export no private source
+  ---
+  duration_ms: 88.413645
+  type: 'test'
+  ...
+# Subtest: production runner executes through the sandbox, meters compute and freezes code-written memory
+ok 6 - production runner executes through the sandbox, meters compute and freezes code-written memory
+  ---
+  duration_ms: 1130.210166
+  type: 'test'
+  ...
+# Subtest: cancellation during export waits for the exporter before removing its directory
+ok 7 - cancellation during export waits for the exporter before removing its directory
+  ---
+  duration_ms: 5.771504
+  type: 'test'
+  ...
+# {"mib": 8, "write_seconds": 0.17562899000000698, "read_seconds": 0.0964036080000028}
+# {"mib": 50, "write_seconds": 1.0744371309999963, "read_seconds": 0.6162685450000254}
+# Subtest: FUSE coalesces large streams and preserves read/write coherence
+ok 8 - FUSE coalesces large streams and preserves read/write coherence
+  ---
+  duration_ms: 2775.817697
+  type: 'test'
+  ...
+# Subtest: warm exports reuse pinned game shards while reapplying the game release gate
+ok 9 - warm exports reuse pinned game shards while reapplying the game release gate
+  ---
+  duration_ms: 91.735639
+  type: 'test'
+  ...
+# Subtest: bulk session projections match the schedule, injury and odds tools
+ok 10 - bulk session projections match the schedule, injury and odds tools
+  ---
+  duration_ms: 59.817854
+  type: 'test'
+  ...
+# Subtest: host classifies supervisor OOM and retains the full compute reservation
+ok 11 - host classifies supervisor OOM and retains the full compute reservation
+  ---
+  duration_ms: 2485.984336
+  type: 'test'
+  ...
+# Subtest: runner restart removes own running/created orphans and an idle-root exited sandbox, protecting other live roots
+ok 12 - runner restart removes own running/created orphans and an idle-root exited sandbox, protecting other live roots
+  ---
+  duration_ms: 1283.427148
+  type: 'test'
+  ...
+# Subtest: Pi executes only through the metered research sandbox in both phases
+ok 13 - Pi executes only through the metered research sandbox in both phases
+  ---
+  duration_ms: 3761.099315
+  type: 'test'
+  ...
+# Subtest: v3 M0-M3 gates are identical through workspace tools and the research mount
+ok 14 - v3 M0-M3 gates are identical through workspace tools and the research mount
+  ---
+  duration_ms: 1451.735898
+  type: 'test'
+  ...
+# Subtest: nba_data lean defaults preserve values without all-NA concat warnings
+ok 15 - nba_data lean defaults preserve values without all-NA concat warnings
+  ---
+  duration_ms: 619.940382
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17296.112539
+
+> nba-agent@0.1.0 launch
+> tsx scripts/run.ts --scripted --assembler-image=local@sha256:40fceea7e47c676d8c3c97a710d2d969d3006337330a5deb861fd0f68d774310 --root=.cache/cloud/runs-t2Le6n2E
+
+(node:17485) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"root":"/home/ubuntu/nba-agent/.cache/cloud/runs-t2Le6n2E/scripted-analyst-M0/r1","mode":"analyst","phases":[{"scope":"prior:pregame","status":"completed"},{"scope":"prior:postgame","status":"completed"},{"scope":"current:pregame","status":"completed"},{"scope":"current:postgame","status":"completed"}],"replays":2,"halted":false}
+true
+{"data":{"games":2446,"windows":135025,"totalWindows":146034,"skipped":[{"gameId":"0022400061","teamId":"1610612738","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400061","teamId":"1610612752","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400223","teamId":"1610612749","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400223","teamId":"1610612765","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_celtics_blocks, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400230","teamId":"1610612738","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"},{"gameId":"0022400230","teamId":"1610612761","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"},{"gameId":"0022400313","teamId":"1610612758","season":"2024-25","reason":"missing_box_score_roster"},{"gameId":"0022400313","teamId":"1610612759","season":"2024-25","reason":"missing_box_score_roster"},{"gameId":"0022400322","teamId":"1610612755","season":"2024-25","reason":"missing_box_score_roster"},{"gameId":"0022400322","teamId":"1610612753","season":"2024-25","reason":"missing_box_score_roster"},{"gameId":"0022400360","teamId":"1610612765","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, marker_after_decision, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unknown_prefix_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400360","teamId":"1610612762","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, marker_after_decision, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unknown_prefix_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400763","teamId":"1610612743","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unknown_boundary_lineup, unknown_lineup, unknown_prefix_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400763","teamId":"1610612757","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400903","teamId":"1610612747","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022400903","teamId":"1610612752","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, exit_reentry, invalid_lineups, invalid_stints, multiple_celtics_blocks, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"},{"gameId":"0022401162","teamId":"1610612762","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_boundary_lineup, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"},{"gameId":"0022401162","teamId":"1610612757","season":"2024-25","reason":"no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"}]},"loadSeconds":763.95583435}
+{"mount":{"path":"/home/ubuntu/nba-agent/.cache/starter-audit/artifact-tgAqRW","hash":"9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc","modelSha256":"b0a6b52d104a97f1064f72887e778f794faaa498512cfc14c9a18d989abc6659","apiSha256":"b104ea32a41e1d3905150eab6f7a8dc7f918077e7e6df9286f4806bafeaf2c09","cutoff":"2025-10-22T23:30:00.000Z","gameId":"0022500083"},"seconds":45.771392743000064,"rows":[675125,135025,38166,481442]}
+{"gameId":"0022500083","scheduledStart":"2025-10-22T23:30:00.000Z","hash":"9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc","seconds":51.68776544,"rows":[675125,135025,38166,481442],"parity":{"byteIdenticalStates":66},"summary":{"n":66,"timingBrier":0.19830504299725316,"timingConstantBrier":0.22704315886134066,"timingSkillVsConstant":0.12657556390694158,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2162528895615974,"observedRate":0.3484848484848485,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.07447019952146243,"resolution":0.10418470418470419,"uncertainty":0.22704315886134066,"binningError":0.0009763887991542375},"setLogLoss":4.148834414828917,"setLogLossClips":5,"candidateHitRate":0.5217391304347826,"setTop1":0.13043478260869565,"meanCandidates":8,"otherMass":0.3834477326669729,"setN":23,"playerN":23,"exitBrier":0.1641554388017307,"entryBrier":0.0844353254709769,"exitTop1":0.6521739130434783,"entryTop1":0.5217391304347826,"exitTopK":0.4782608695652174,"entryTopK":0.391304347826087,"exitLogLoss":1.361836034981204,"entryLogLoss":1.6629749983043276,"exitMRR":0.698671497584541,"entryMRR":0.6354727398205658,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":63,"timingBrier":0.20650268725492574,"timingConstantBrier":0.21667926429831194,"timingSkillVsConstant":0.04696608637813937,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.18621942157876542,"observedRate":0.31746031746031744,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.07684604538103319,"resolution":0.08797040701802608,"uncertainty":0.21667926429831194,"binningError":0.0009477845936066986},"setLogLoss":4.2004246252473125,"setLogLossClips":4,"candidateHitRate":0.5,"setTop1":0.15,"meanCandidates":8,"otherMass":0.367140748595674,"setN":20,"playerN":20,"exitBrier":0.16172432888443683,"entryBrier":0.08215412633937674,"exitTop1":0.65,"entryTop1":0.5,"exitTopK":0.5,"entryTopK":0.4,"exitLogLoss":1.384924204222536,"entryLogLoss":1.692099165921931,"exitMRR":0.7043055555555556,"entryMRR":0.6266269841269841,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.026154513586128667,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.8469557172010692,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.026091196973085845,"resolution":0,"uncertainty":0,"binningError":0.00006331661304282213},"setLogLoss":3.80489967870628,"setLogLossClips":1,"candidateHitRate":0.6666666666666666,"setTop1":0,"meanCandidates":8,"otherMass":0.4921609598089658,"setN":3,"playerN":3,"exitBrier":0.18036283825035668,"entryBrier":0.0996433196816448,"exitTop1":0.6666666666666666,"entryTop1":0.6666666666666666,"exitTopK":0.3333333333333333,"entryTopK":0.3333333333333333,"exitLogLoss":1.2079149067056565,"entryLogLoss":1.4688138808536404,"exitMRR":0.6611111111111111,"entryMRR":0.6944444444444445,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":7,"timingBrier":0.09636831448061815,"timingConstantBrier":0.12244897959183675,"timingSkillVsConstant":0.21299209840828515,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.0972068784664045,"observedRate":0.14285714285714285,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.09617047572608604,"resolution":0.12244897959183676,"uncertainty":0.12244897959183675,"binningError":0.00019783875453212307},"setLogLoss":1.7333442455774772,"setLogLossClips":0,"candidateHitRate":1,"setTop1":1,"meanCandidates":8,"otherMass":0.3659831066663297,"setN":1,"playerN":1,"exitBrier":0.10874195806127243,"entryBrier":0.03621420909936011,"exitTop1":1,"entryTop1":1,"exitTopK":1,"entryTopK":1,"exitLogLoss":1.0879683257982928,"entryLogLoss":1.0037226248887543,"exitMRR":1,"entryMRR":1,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":43,"timingBrier":0.20790254100155248,"timingConstantBrier":0.20118983234180637,"timingSkillVsConstant":-0.033365049225458465,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.17354099721162122,"observedRate":0.27906976744186046,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.0790075394256386,"resolution":0.07377616074208826,"uncertainty":0.20118983234180637,"binningError":0.0014813299761957666},"setLogLoss":4.642544510041356,"setLogLossClips":3,"candidateHitRate":0.3333333333333333,"setTop1":0.16666666666666666,"meanCandidates":8,"otherMass":0.35523954470743974,"setN":12,"playerN":12,"exitBrier":0.1953422676170771,"entryBrier":0.07650733304984948,"exitTop1":0.5,"entryTop1":0.6666666666666666,"exitTopK":0.3333333333333333,"entryTopK":0.5,"exitLogLoss":1.6369164442988575,"entryLogLoss":1.530114023575149,"exitMRR":0.5766203703703704,"entryMRR":0.7037037037037037,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":4,"timingBrier":0.2500501643572785,"timingConstantBrier":0.1875,"timingSkillVsConstant":-0.3336008765721521,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.027943606225338376,"observedRate":0.25,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.08405131724984997,"resolution":0.020833333333333332,"uncertainty":0.1875,"binningError":-0.0006678195592381697},"setLogLoss":5.059127870649388,"setLogLossClips":0,"candidateHitRate":0,"setTop1":0,"meanCandidates":8,"otherMass":0.472627399622539,"setN":1,"playerN":1,"exitBrier":0.06585258693896158,"entryBrier":0.09524111857672547,"exitTop1":1,"entryTop1":0,"exitTopK":1,"entryTopK":0,"exitLogLoss":0.8188545461450916,"entryLogLoss":2.8860608482380505,"exitMRR":1,"entryMRR":0.16666666666666666,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":8,"timingBrier":0.29753919662474043,"timingConstantBrier":0.1875,"timingSkillVsConstant":-0.586875715331949,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.4194770102086114,"observedRate":0.75,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.2323279536303999,"resolution":0.125,"uncertainty":0.1875,"binningError":0.0027112429943405014},"setLogLoss":3.584247711370517,"setLogLossClips":1,"candidateHitRate":0.8333333333333334,"setTop1":0,"meanCandidates":8,"otherMass":0.37355498818922267,"setN":6,"playerN":6,"exitBrier":0.1192974702139295,"entryBrier":0.09892320041887588,"exitTop1":0.8333333333333334,"entryTop1":0.16666666666666666,"exitTopK":0.6666666666666666,"entryTopK":0.16666666666666666,"exitLogLoss":1.0247773134868408,"entryLogLoss":1.9318052604016713,"exitMRR":0.861111111111111,"entryMRR":0.48690476190476195,"exitLogLossClips":0,"entryLogLossClips":0},"violation":{"n":1,"timingBrier":0.014767602202203462,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.1215220235274391,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.014767602202203462,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":66,"eligible":66,"scored":66,"actualSubstitutions":23,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.6271718321438499,"clipped":0,"precision":0.8571428571428571,"recall":0.2608695652173913,"exactAction":0.6363636363636364,"partialOverlap":0.09027777777777778,"calibration":[{"lower":0,"upper":0.1,"n":22,"predicted":0.02832627619010353,"observed":0.09090909090909091},{"lower":0.1,"upper":0.2,"n":15,"predicted":0.14423696344198011,"observed":0.26666666666666666},{"lower":0.2,"upper":0.3,"n":14,"predicted":0.23748686856944315,"observed":0.7142857142857143},{"lower":0.3,"upper":0.4,"n":6,"predicted":0.3489435098817999,"observed":0},{"lower":0.4,"upper":0.5,"n":2,"predicted":0.45221835083439177,"observed":0.5},{"lower":0.5,"upper":0.6,"n":1,"predicted":0.5526020157452649,"observed":0},{"lower":0.6,"upper":0.7,"n":2,"predicted":0.6343126860835069,"observed":1},{"lower":0.7,"upper":0.8,"n":1,"predicted":0.7738989656219474,"observed":1},{"lower":0.8,"upper":0.9,"n":3,"predicted":0.8559726362624805,"observed":1},{"lower":0.9,"upper":1,"n":0,"predicted":null,"observed":null}]}}
+{"gameId":"0022500018","scheduledStart":"2025-10-24T23:30:00.000Z","hash":"746ccbf65bd85f2e7abd7fc4148f380abb87b020fc0657761ab34ef45f4c475f","seconds":51.79843532399999,"rows":[684495,136899,38709,488168],"parity":{"byteIdenticalStates":64},"summary":{"n":64,"timingBrier":0.14825837957293095,"timingConstantBrier":0.2021484375,"timingSkillVsConstant":0.2665865667503319,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.29195476889680333,"observedRate":0.28125,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.031209627397928652,"resolution":0.0858169238339275,"uncertainty":0.2021484375,"binningError":0.0007172385089297961},"setLogLoss":3.5943243365379143,"setLogLossClips":3,"candidateHitRate":0.7222222222222222,"setTop1":0.1111111111111111,"meanCandidates":8,"otherMass":0.47137999716819423,"setN":18,"playerN":18,"exitBrier":0.17687848838301734,"entryBrier":0.090148135819574,"exitTop1":0.5,"entryTop1":0.5555555555555556,"exitTopK":0.3333333333333333,"entryTopK":0.5,"exitLogLoss":1.4665159419205673,"entryLogLoss":1.620709192754346,"exitMRR":0.6060185185185184,"entryMRR":0.6916060405643738,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":61,"timingBrier":0.15474820345785922,"timingConstantBrier":0.18543402311206664,"timingSkillVsConstant":0.16548106512073302,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2621361045328493,"observedRate":0.2459016393442623,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03200978379566297,"resolution":0.06338128746241681,"uncertainty":0.18543402311206664,"binningError":0.0006856840125464281},"setLogLoss":3.536870153739929,"setLogLossClips":2,"candidateHitRate":0.7333333333333333,"setTop1":0.06666666666666667,"meanCandidates":8,"otherMass":0.4553234929896105,"setN":15,"playerN":15,"exitBrier":0.17872895091789076,"entryBrier":0.08849861712507034,"exitTop1":0.4,"entryTop1":0.5333333333333333,"exitTopK":0.26666666666666666,"entryTopK":0.5333333333333333,"exitLogLoss":1.4966306465576795,"entryLogLoss":1.6222150146270387,"exitMRR":0.5827777777777778,"entryMRR":0.7146494708994708,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.01629862724605653,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.8982676109638691,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.015998732044814928,"resolution":0,"uncertainty":0,"binningError":0.0002998952012416012},"setLogLoss":3.8815952505278397,"setLogLossClips":1,"candidateHitRate":0.6666666666666666,"setTop1":0.3333333333333333,"meanCandidates":8,"otherMass":0.5516625180611128,"setN":3,"playerN":3,"exitBrier":0.16762617570865027,"entryBrier":0.09839572929209217,"exitTop1":1,"entryTop1":0.6666666666666666,"exitTopK":0.6666666666666666,"entryTopK":0.3333333333333333,"exitLogLoss":1.3159424187350068,"entryLogLoss":1.6131800833908823,"exitMRR":0.7222222222222222,"entryMRR":0.5763888888888888,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":14,"timingBrier":0.15625487006799488,"timingConstantBrier":0.1683673469387755,"timingSkillVsConstant":0.07194077171736368,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.12846757642949871,"observedRate":0.21428571428571427,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.039077205355842616,"resolution":0.05357142857142857,"uncertainty":0.1683673469387755,"binningError":0.0023817463448053133},"setLogLoss":2.6200096227817373,"setLogLossClips":0,"candidateHitRate":1,"setTop1":0,"meanCandidates":8,"otherMass":0.41111961672886127,"setN":3,"playerN":3,"exitBrier":0.15396572675659195,"entryBrier":0.05174063941156745,"exitTop1":0.3333333333333333,"entryTop1":0.6666666666666666,"exitTopK":0.3333333333333333,"entryTopK":0.6666666666666666,"exitLogLoss":1.434098710329911,"entryLogLoss":1.333582929038876,"exitMRR":0.6666666666666666,"entryMRR":0.75,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":39,"timingBrier":0.16913785440005688,"timingConstantBrier":0.16305062458908615,"timingSkillVsConstant":-0.03733337315518748,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.28092506866262734,"observedRate":0.20512820512820512,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.04479596165972973,"resolution":0.04021790175636329,"uncertainty":0.16305062458908615,"binningError":0.001509169907604302},"setLogLoss":3.645914946293628,"setLogLossClips":1,"candidateHitRate":0.75,"setTop1":0,"meanCandidates":8,"otherMass":0.42108704935103486,"setN":8,"playerN":8,"exitBrier":0.19739909876955075,"entryBrier":0.10187427389580635,"exitTop1":0.375,"entryTop1":0.375,"exitTopK":0.25,"entryTopK":0.375,"exitLogLoss":1.5652241941404452,"entryLogLoss":1.6853441726522722,"exitMRR":0.546875,"entryMRR":0.6316344246031746,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":1,"timingBrier":0.000001,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.001,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.000001,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":6,"timingBrier":0.10926771193995165,"timingConstantBrier":0.22222222222222224,"timingSkillVsConstant":0.5082952962702176,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.5375439866965662,"observedRate":0.6666666666666666,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.10926771193995165,"resolution":0.22222222222222224,"uncertainty":0.22222222222222224,"binningError":0},"setLogLoss":4.006425966851176,"setLogLossClips":1,"candidateHitRate":0.5,"setTop1":0.25,"meanCandidates":8,"otherMass":0.5569492874623234,"setN":4,"playerN":4,"exitBrier":0.15996107333554493,"entryBrier":0.08931578686872552,"exitTop1":0.5,"entryTop1":0.75,"exitTopK":0.25,"entryTopK":0.75,"exitLogLoss":1.4063425035629749,"entryLogLoss":1.7124307627676938,"exitMRR":0.5916666666666667,"entryMRR":0.8541666666666666,"exitLogLossClips":0,"entryLogLossClips":0},"violation":{"n":1,"timingBrier":0.00008863673555563121,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.009414708468966589,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.00008863673555563121,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":64,"eligible":64,"scored":64,"actualSubstitutions":18,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.4567707220897925,"clipped":0,"precision":0.9,"recall":0.5,"exactAction":0.734375,"partialOverlap":0.243859649122807,"calibration":[{"lower":0,"upper":0.1,"n":17,"predicted":0.03141820486107184,"observed":0.058823529411764705},{"lower":0.1,"upper":0.2,"n":10,"predicted":0.16201509657962057,"observed":0.3},{"lower":0.2,"upper":0.3,"n":11,"predicted":0.24398819391874113,"observed":0.2727272727272727},{"lower":0.3,"upper":0.4,"n":7,"predicted":0.359280405529797,"observed":0},{"lower":0.4,"upper":0.5,"n":9,"predicted":0.4522926901556155,"observed":0.2222222222222222},{"lower":0.5,"upper":0.6,"n":3,"predicted":0.5527510293373815,"observed":0.6666666666666666},{"lower":0.6,"upper":0.7,"n":1,"predicted":0.6229656189452666,"observed":1},{"lower":0.7,"upper":0.8,"n":3,"predicted":0.7459525016556349,"observed":1},{"lower":0.8,"upper":0.9,"n":1,"predicted":0.8394717125643024,"observed":1},{"lower":0.9,"upper":1,"n":2,"predicted":0.9514148266285501,"observed":1}]}}
+{"gameId":"0022500106","scheduledStart":"2025-10-26T19:30:00.000Z","hash":"824ce23fe7a95b4d0668aa16995cc9848ce32e4f92767df198b6cae906f64cc1","seconds":50.57343418600003,"rows":[695490,139098,39320,495705],"parity":{"byteIdenticalStates":59},"summary":{"n":59,"timingBrier":0.14156040521932467,"timingConstantBrier":0.19764435507038208,"timingSkillVsConstant":0.283761961383039,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.3128594330598533,"observedRate":0.2711864406779661,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.028382300083182703,"resolution":0.07959093955933945,"uncertainty":0.19764435507038208,"binningError":-0.00487531037490066},"setLogLoss":4.750847235595826,"setLogLossClips":6,"candidateHitRate":0.4375,"setTop1":0.0625,"meanCandidates":8,"otherMass":0.53577249372997,"setN":16,"playerN":16,"exitBrier":0.19524036286183463,"entryBrier":0.11549848427778357,"exitTop1":0.5625,"entryTop1":0.5,"exitTopK":0.25,"entryTopK":0.1875,"exitLogLoss":1.4685653362432698,"entryLogLoss":1.9291734984226736,"exitMRR":0.5880208333333333,"entryMRR":0.5192708333333333,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":56,"timingBrier":0.14852493914397216,"timingConstantBrier":0.17825255102040813,"timingSkillVsConstant":0.16677243442666045,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2813192755962929,"observedRate":0.23214285714285715,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.029301662261495505,"resolution":0.053874845392702535,"uncertainty":0.17825255102040813,"binningError":-0.005154428745228923},"setLogLoss":4.635625661843395,"setLogLossClips":4,"candidateHitRate":0.46153846153846156,"setTop1":0.07692307692307693,"meanCandidates":8,"otherMass":0.5384562187644033,"setN":13,"playerN":13,"exitBrier":0.18797008687210445,"entryBrier":0.10366917929905611,"exitTop1":0.46153846153846156,"entryTop1":0.38461538461538464,"exitTopK":0.23076923076923078,"entryTopK":0.23076923076923078,"exitLogLoss":1.4921686719560023,"entryLogLoss":1.9400889850797947,"exitMRR":0.5852564102564103,"entryMRR":0.511965811965812,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.011555771959238488,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.9016090390463156,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.011261962197201159,"resolution":0,"uncertainty":0,"binningError":0.00029380976203732985},"setLogLoss":5.250140721856353,"setLogLossClips":2,"candidateHitRate":0.3333333333333333,"setTop1":0,"meanCandidates":8,"otherMass":0.5241430185807597,"setN":3,"playerN":3,"exitBrier":0.22674489215066548,"entryBrier":0.16675880585226913,"exitTop1":1,"entryTop1":1,"exitTopK":0.3333333333333333,"entryTopK":0,"exitLogLoss":1.3662842148214291,"entryLogLoss":1.8818730562418156,"exitMRR":0.6,"entryMRR":0.5509259259259259,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":6,"timingBrier":0.01889379822659823,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.10937465219137359,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.01802415717529754,"resolution":0,"uncertainty":0,"binningError":0.0008696410513006902},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":43,"timingBrier":0.17333652437614322,"timingConstantBrier":0.17847485127095727,"timingSkillVsConstant":0.028790201298518725,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2753639031872902,"observedRate":0.23255813953488372,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.04499329063490363,"resolution":0.04475392103839914,"uncertainty":0.17847485127095727,"binningError":-0.0053776964913185565},"setLogLoss":4.852637256699892,"setLogLossClips":4,"candidateHitRate":0.4,"setTop1":0.1,"meanCandidates":8,"otherMass":0.5170470187475741,"setN":10,"playerN":10,"exitBrier":0.19456723793956737,"entryBrier":0.11136561192318721,"exitTop1":0.5,"entryTop1":0.4,"exitTopK":0.2,"entryTopK":0.2,"exitLogLoss":1.4742390168259918,"entryLogLoss":1.9241407666459822,"exitMRR":0.5775,"entryMRR":0.5155555555555555,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":2,"timingBrier":0.03656504213580648,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.13571194868761874,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03656504213580648,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":5,"timingBrier":0.13548663405141576,"timingConstantBrier":0.24000000000000005,"timingSkillVsConstant":0.4354723581191011,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.5971119571630886,"observedRate":0.6,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.13548663405141576,"resolution":0.24000000000000005,"uncertainty":0.24000000000000005,"binningError":0},"setLogLoss":3.9122536789884084,"setLogLossClips":0,"candidateHitRate":0.6666666666666666,"setTop1":0,"meanCandidates":8,"otherMass":0.609820218820501,"setN":3,"playerN":3,"exitBrier":0.16597958331389465,"entryBrier":0.07801440388528576,"exitTop1":0.3333333333333333,"entryTop1":0.3333333333333333,"exitTopK":0.3333333333333333,"entryTopK":0.3333333333333333,"exitLogLoss":1.5519341890560359,"entryLogLoss":1.9932497131925029,"exitMRR":0.611111111111111,"entryMRR":0.5,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":59,"eligible":59,"scored":59,"actualSubstitutions":16,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.42234046626980515,"clipped":0,"precision":0.5882352941176471,"recall":0.625,"exactAction":0.6101694915254238,"partialOverlap":0.10724637681159421,"calibration":[{"lower":0,"upper":0.1,"n":15,"predicted":0.028588637597903043,"observed":0},{"lower":0.1,"upper":0.2,"n":11,"predicted":0.14304315975827786,"observed":0.2727272727272727},{"lower":0.2,"upper":0.3,"n":8,"predicted":0.23791690256548234,"observed":0.25},{"lower":0.3,"upper":0.4,"n":4,"predicted":0.342721236199703,"observed":0.25},{"lower":0.4,"upper":0.5,"n":4,"predicted":0.4153477236141594,"observed":0},{"lower":0.5,"upper":0.6,"n":6,"predicted":0.5525995592941417,"observed":0.3333333333333333},{"lower":0.6,"upper":0.7,"n":5,"predicted":0.6344362429048545,"observed":0.4},{"lower":0.7,"upper":0.8,"n":2,"predicted":0.7492564055699968,"observed":1},{"lower":0.8,"upper":0.9,"n":2,"predicted":0.837523413755537,"observed":1},{"lower":0.9,"upper":1,"n":2,"predicted":0.9297264802511239,"observed":1}]}}
+{"gameId":"0022500117","scheduledStart":"2025-10-28T00:00:00.000Z","hash":"d979a8a2e712f4049b10acdd919f46a36c5acab4182627d217bd00417527a373","seconds":47.163604995,"rows":[701170,140234,39664,499932],"parity":{"byteIdenticalStates":62},"summary":{"n":62,"timingBrier":0.15834097895347807,"timingConstantBrier":0.22892819979188345,"timingSkillVsConstant":0.30833781466230714,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2929115881003944,"observedRate":0.3548387096774194,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03597457394212965,"resolution":0.10343301020501305,"uncertainty":0.22892819979188345,"binningError":-0.0031287845755219867},"setLogLoss":4.033638784426618,"setLogLossClips":6,"candidateHitRate":0.5909090909090909,"setTop1":0.3181818181818182,"meanCandidates":8,"otherMass":0.5052885836314911,"setN":22,"playerN":22,"exitBrier":0.15648698124492533,"entryBrier":0.10766238032069303,"exitTop1":0.8181818181818182,"entryTop1":0.6363636363636364,"exitTopK":0.6363636363636364,"entryTopK":0.4090909090909091,"exitLogLoss":1.276511062481155,"entryLogLoss":1.89503025929047,"exitMRR":0.7573232323232322,"entryMRR":0.6361111111111111,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":59,"timingBrier":0.16556584875740551,"timingConstantBrier":0.21832806664751508,"timingSkillVsConstant":0.2416648427308834,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2631882553385049,"observedRate":0.3220338983050847,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03700578883839877,"resolution":0.08645176572571905,"uncertainty":0.21832806664751508,"binningError":-0.0033162410027892664},"setLogLoss":4.047198800426266,"setLogLossClips":5,"candidateHitRate":0.5789473684210527,"setTop1":0.3157894736842105,"meanCandidates":8,"otherMass":0.4908938925806178,"setN":19,"playerN":19,"exitBrier":0.1487686357003449,"entryBrier":0.10406566950273205,"exitTop1":0.7894736842105263,"entryTop1":0.5789473684210527,"exitTopK":0.631578947368421,"entryTopK":0.42105263157894735,"exitLogLoss":1.255785317371452,"entryLogLoss":1.9199216684028861,"exitMRR":0.7754385964912281,"entryMRR":0.6394736842105262,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.01625187280957195,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.8774704657508915,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.015694014315503567,"resolution":0,"uncertainty":0,"binningError":0.0005578584940683848},"setLogLoss":3.9477586830955116,"setLogLossClips":1,"candidateHitRate":0.6666666666666666,"setTop1":0.3333333333333333,"meanCandidates":8,"otherMass":0.5964549602870218,"setN":3,"playerN":3,"exitBrier":0.20536983636060133,"entryBrier":0.13044154883444584,"exitTop1":1,"entryTop1":1,"exitTopK":0.6666666666666666,"entryTopK":0.3333333333333333,"exitLogLoss":1.4077741148426082,"entryLogLoss":1.7373846682451701,"exitMRR":0.6425925925925925,"entryMRR":0.6148148148148147,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":8,"timingBrier":0.009372725062169032,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.07259219667300099,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.008707213202735412,"resolution":0,"uncertainty":0,"binningError":0.0006655118594336203},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":41,"timingBrier":0.2031906964179714,"timingConstantBrier":0.2379535990481856,"timingSkillVsConstant":0.14609109830347522,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.27739318525381457,"observedRate":0.3902439024390244,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.04673206100682503,"resolution":0.07670698658206095,"uncertainty":0.2379535990481856,"binningError":-0.0047879770549782985},"setLogLoss":4.10143237476027,"setLogLossClips":5,"candidateHitRate":0.5625,"setTop1":0.3125,"meanCandidates":8,"otherMass":0.4703037488215726,"setN":16,"playerN":16,"exitBrier":0.14981542075953785,"entryBrier":0.10323976224769028,"exitTop1":0.75,"entryTop1":0.5625,"exitTopK":0.5625,"entryTopK":0.4375,"exitLogLoss":1.2516860492608095,"entryLogLoss":1.8624004513339192,"exitMRR":0.7489583333333333,"entryMRR":0.6427083333333333,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":1,"timingBrier":0.000001,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.001,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.000001,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":9,"timingBrier":0.15139819145030486,"timingConstantBrier":0.2222222222222222,"timingSkillVsConstant":0.3187081384736281,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.39702765513126415,"observedRate":0.3333333333333333,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.10375010797643179,"resolution":0.16666666666666666,"uncertainty":0.2222222222222222,"binningError":-0.007907472081682465},"setLogLoss":3.757953070644908,"setLogLossClips":0,"candidateHitRate":0.6666666666666666,"setTop1":0.3333333333333333,"meanCandidates":8,"otherMass":0.600707992628859,"setN":3,"playerN":3,"exitBrier":0.14318578205131594,"entryBrier":0.10847050819628806,"exitTop1":1,"entryTop1":0.6666666666666666,"exitTopK":1,"entryTopK":0.3333333333333333,"exitLogLoss":1.277648080628212,"entryLogLoss":2.22670149277071,"exitMRR":0.9166666666666666,"entryMRR":0.6222222222222222,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":62,"eligible":62,"scored":62,"actualSubstitutions":22,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.46848889002109684,"clipped":0,"precision":0.8333333333333334,"recall":0.45454545454545453,"exactAction":0.6451612903225806,"partialOverlap":0.18888888888888888,"calibration":[{"lower":0,"upper":0.1,"n":19,"predicted":0.041072144609045576,"observed":0.05263157894736842},{"lower":0.1,"upper":0.2,"n":6,"predicted":0.17785780266158469,"observed":0.16666666666666666},{"lower":0.2,"upper":0.3,"n":10,"predicted":0.24164183758981927,"observed":0.4},{"lower":0.3,"upper":0.4,"n":10,"predicted":0.3488322276562591,"observed":0.4},{"lower":0.4,"upper":0.5,"n":5,"predicted":0.45036030328039145,"observed":0.4},{"lower":0.5,"upper":0.6,"n":5,"predicted":0.5561204577039478,"observed":1},{"lower":0.6,"upper":0.7,"n":2,"predicted":0.6237805294427003,"observed":0},{"lower":0.7,"upper":0.8,"n":2,"predicted":0.7479419925812629,"observed":1},{"lower":0.8,"upper":0.9,"n":2,"predicted":0.8590242255892744,"observed":1},{"lower":0.9,"upper":1,"n":1,"predicted":0.9143629460741257,"observed":1}]}}
+{"gameId":"0022500128","scheduledStart":"2025-10-29T23:00:00.000Z","hash":"7d91c5582197d10ec1192bc6b768afc016c245ddd742b4901a2768a927fb7e8e","seconds":47.54352647299995,"rows":[711065,142213,40245,507105],"parity":{"byteIdenticalStates":52},"summary":{"n":52,"timingBrier":0.1845842029532114,"timingConstantBrier":0.2366863905325444,"timingSkillVsConstant":0.22013174252268186,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.3130531467017025,"observedRate":0.38461538461538464,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03772100879619743,"resolution":0.08867974973744205,"uncertainty":0.2366863905325444,"binningError":-0.00114344663808838},"setLogLoss":4.70322558565793,"setLogLossClips":8,"candidateHitRate":0.35,"setTop1":0.15,"meanCandidates":8,"otherMass":0.47985967663704204,"setN":20,"playerN":20,"exitBrier":0.17862838713387946,"entryBrier":0.13903087350114426,"exitTop1":0.8,"entryTop1":0.55,"exitTopK":0.55,"entryTopK":0.25,"exitLogLoss":1.3132004867076117,"entryLogLoss":1.7746279091811032,"exitMRR":0.7169444444444444,"entryMRR":0.5607341269841271,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":49,"timingBrier":0.19557803206881846,"timingConstantBrier":0.22657226155768434,"timingSkillVsConstant":0.13679622243155687,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2747169180857133,"observedRate":0.3469387755102041,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03972443724241047,"resolution":0.06950398969349406,"uncertainty":0.22657226155768434,"binningError":-0.0012146770377822746},"setLogLoss":4.68251988112859,"setLogLossClips":6,"candidateHitRate":0.35294117647058826,"setTop1":0.11764705882352941,"meanCandidates":8,"otherMass":0.474688229495244,"setN":17,"playerN":17,"exitBrier":0.17737558296506703,"entryBrier":0.140221281910635,"exitTop1":0.8235294117647058,"entryTop1":0.5294117647058824,"exitTopK":0.5882352941176471,"entryTopK":0.23529411764705882,"exitLogLoss":1.3448329417283331,"entryLogLoss":1.8394701001695726,"exitMRR":0.7315359477124183,"entryMRR":0.544140989729225,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.00501832739829617,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.9392115474295276,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.004998344174717666,"resolution":0,"uncertainty":0,"binningError":0.000019983223578504128},"setLogLoss":4.820557911324192,"setLogLossClips":2,"candidateHitRate":0.3333333333333333,"setTop1":0.3333333333333333,"meanCandidates":8,"otherMass":0.5091645437738976,"setN":3,"playerN":3,"exitBrier":0.1857276107571499,"entryBrier":0.13228522584736324,"exitTop1":0.6666666666666666,"entryTop1":0.6666666666666666,"exitTopK":0.3333333333333333,"entryTopK":0.3333333333333333,"exitLogLoss":1.1339499082568565,"entryLogLoss":1.40718882691311,"exitMRR":0.6342592592592592,"entryMRR":0.6547619047619047,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":5,"timingBrier":0.02286876308640529,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.11775062581916948,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.022371770333886515,"resolution":0,"uncertainty":0,"binningError":0.0004969927525187746},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":36,"timingBrier":0.21082187357311297,"timingConstantBrier":0.23070987654320987,"timingSkillVsConstant":0.08620351789045344,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.24618965428742484,"observedRate":0.3611111111111111,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.05549512017663043,"resolution":0.07361111111111109,"uncertainty":0.23070987654320987,"binningError":-0.0017720120356162494},"setLogLoss":5.081302562575631,"setLogLossClips":5,"candidateHitRate":0.23076923076923078,"setTop1":0.07692307692307693,"meanCandidates":8,"otherMass":0.4828075572952114,"setN":13,"playerN":13,"exitBrier":0.1886865037442716,"entryBrier":0.15498625680529357,"exitTop1":0.8461538461538461,"entryTop1":0.46153846153846156,"exitTopK":0.6153846153846154,"entryTopK":0.15384615384615385,"exitLogLoss":1.3807846226303035,"entryLogLoss":1.9811193561079474,"exitMRR":0.7373931623931623,"entryMRR":0.4743894993894993,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":1,"timingBrier":0.000001,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.001,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.000001,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":7,"timingBrier":0.2684844724725734,"timingConstantBrier":0.2448979591836735,"timingSkillVsConstant":-0.09631159592967453,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.5726497575366868,"observedRate":0.5714285714285714,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.11808661213083961,"resolution":0.10204081632653063,"uncertainty":0.2448979591836735,"binningError":0.007540717484590953},"setLogLoss":3.3864761664256964,"setLogLossClips":1,"candidateHitRate":0.75,"setTop1":0.25,"meanCandidates":8,"otherMass":0.4483004141453497,"setN":4,"playerN":4,"exitBrier":0.1406150904326522,"entryBrier":0.09223511350299475,"exitTop1":0.75,"entryTop1":0.75,"exitTopK":0.5,"entryTopK":0.5,"exitLogLoss":1.2279899787969297,"entryLogLoss":1.3791100183698548,"exitMRR":0.7125,"entryMRR":0.7708333333333334,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":52,"eligible":52,"scored":52,"actualSubstitutions":20,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.5392881362132935,"clipped":0,"precision":0.6363636363636364,"recall":0.35,"exactAction":0.5576923076923077,"partialOverlap":0.1393849206349206,"calibration":[{"lower":0,"upper":0.1,"n":13,"predicted":0.03530716407000066,"observed":0.07692307692307693},{"lower":0.1,"upper":0.2,"n":11,"predicted":0.1588129705893958,"observed":0.18181818181818182},{"lower":0.2,"upper":0.3,"n":8,"predicted":0.2488394536913202,"observed":0.375},{"lower":0.3,"upper":0.4,"n":2,"predicted":0.38370048918769417,"observed":1},{"lower":0.4,"upper":0.5,"n":7,"predicted":0.44537639162090265,"observed":0.7142857142857143},{"lower":0.5,"upper":0.6,"n":2,"predicted":0.5790846494332437,"observed":0.5},{"lower":0.6,"upper":0.7,"n":3,"predicted":0.6604898552959285,"observed":0.6666666666666666},{"lower":0.7,"upper":0.8,"n":3,"predicted":0.7466009876000146,"observed":0.3333333333333333},{"lower":0.8,"upper":0.9,"n":1,"predicted":0.8881604316962727,"observed":1},{"lower":0.9,"upper":1,"n":2,"predicted":0.9647371052961551,"observed":1}]}}
+{"gameId":"0022500021","scheduledStart":"2025-10-31T23:00:00.000Z","hash":"0803a88df7b507fc8493033077671533600ca260567083427dfbb3223f20c2ce","seconds":48.68749751300004,"rows":[719560,143912,40736,513156],"parity":{"byteIdenticalStates":52},"summary":{"n":52,"timingBrier":0.1979632587384543,"timingConstantBrier":0.2366863905325444,"timingSkillVsConstant":0.16360523183003062,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.32041684028530903,"observedRate":0.38461538461538464,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03989064309490002,"resolution":0.08102399737015122,"uncertainty":0.2366863905325444,"binningError":0.0024102224811611006},"setLogLoss":4.0065273329596796,"setLogLossClips":5,"candidateHitRate":0.55,"setTop1":0.2,"meanCandidates":8,"otherMass":0.41204760225456366,"setN":20,"playerN":20,"exitBrier":0.15881334953241133,"entryBrier":0.10607953760314599,"exitTop1":0.6,"entryTop1":0.6,"exitTopK":0.45,"entryTopK":0.5,"exitLogLoss":1.3362429075608084,"entryLogLoss":1.4978780573810655,"exitMRR":0.6568055555555555,"entryMRR":0.6736904761904762,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":49,"timingBrier":0.19162458226209877,"timingConstantBrier":0.23240316534777178,"timingSkillVsConstant":0.17546483510519872,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2810542953395695,"observedRate":0.3673469387755102,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03694430765497759,"resolution":0.08081586376047017,"uncertainty":0.23240316534777178,"binningError":0.0030929730198195893},"setLogLoss":4.008046385823593,"setLogLossClips":4,"candidateHitRate":0.5555555555555556,"setTop1":0.2222222222222222,"meanCandidates":8,"otherMass":0.4172948882463688,"setN":18,"playerN":18,"exitBrier":0.15970460917097717,"entryBrier":0.09831511167980592,"exitTop1":0.5555555555555556,"entryTop1":0.6666666666666666,"exitTopK":0.4444444444444444,"entryTopK":0.5555555555555556,"exitLogLoss":1.3839796253525483,"entryLogLoss":1.4817436024411075,"exitMRR":0.6458333333333334,"entryMRR":0.7051587301587301,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.3014949745189272,"timingConstantBrier":0.22222222222222224,"timingSkillVsConstant":-0.35672738533517223,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.963338407732388,"observedRate":0.6666666666666666,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.08801412194696641,"resolution":0,"uncertainty":0.22222222222222224,"binningError":-0.008741369650261455},"setLogLoss":3.9928558571844546,"setLogLossClips":1,"candidateHitRate":0.5,"setTop1":0,"meanCandidates":8,"otherMass":0.3648220283283172,"setN":2,"playerN":2,"exitBrier":0.15079201278531862,"entryBrier":0.17595937091320635,"exitTop1":1,"entryTop1":0,"exitTopK":0.5,"entryTopK":0,"exitLogLoss":0.9066124474351498,"entryLogLoss":1.6430881518406868,"exitMRR":0.7555555555555555,"entryMRR":0.3904761904761905,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":12,"timingBrier":0.2027806161304516,"timingConstantBrier":0.1875,"timingSkillVsConstant":-0.08149661936240848,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.12403260905597506,"observedRate":0.25,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.017845846279460564,"resolution":0.006944444444444444,"uncertainty":0.1875,"binningError":0.004379214295435474},"setLogLoss":2.1765069465602322,"setLogLossClips":0,"candidateHitRate":1,"setTop1":0.6666666666666666,"meanCandidates":8,"otherMass":0.32610585492887073,"setN":3,"playerN":3,"exitBrier":0.10169779899698317,"entryBrier":0.06286219892646343,"exitTop1":0.6666666666666666,"entryTop1":1,"exitTopK":0.6666666666666666,"entryTopK":1,"exitLogLoss":1.1042056261830793,"entryLogLoss":1.1520308355456976,"exitMRR":0.75,"entryMRR":1,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":30,"timingBrier":0.16825333978920626,"timingConstantBrier":0.23222222222222222,"timingSkillVsConstant":0.2754640870321261,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2733073355211711,"observedRate":0.36666666666666664,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.028561959416122756,"resolution":0.09191919191919193,"uncertainty":0.23222222222222222,"binningError":-0.0006116499299467781},"setLogLoss":4.0864388296900875,"setLogLossClips":2,"candidateHitRate":0.5454545454545454,"setTop1":0.18181818181818182,"meanCandidates":8,"otherMass":0.4395877353251649,"setN":11,"playerN":11,"exitBrier":0.17121132937593905,"entryBrier":0.0990321654129676,"exitTop1":0.45454545454545453,"entryTop1":0.6363636363636364,"exitTopK":0.36363636363636365,"entryTopK":0.5454545454545454,"exitLogLoss":1.480473139898927,"entryLogLoss":1.5071106743099043,"exitMRR":0.6022727272727274,"entryMRR":0.6948051948051948,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":1,"timingBrier":0.000001,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.001,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.000001,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":6,"timingBrier":0.3181059906002061,"timingConstantBrier":0.22222222222222224,"timingSkillVsConstant":-0.4314769577009274,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.6805081828886784,"observedRate":0.6666666666666666,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.1890770972458585,"resolution":0.11111111111111112,"uncertainty":0.22222222222222224,"binningError":0.01791778224323648},"setLogLoss":5.166121744638255,"setLogLossClips":2,"candidateHitRate":0.25,"setTop1":0,"meanCandidates":8,"otherMass":0.42438133376780296,"setN":4,"playerN":4,"exitBrier":0.1715662362378276,"entryBrier":0.12293289847861817,"exitTop1":0.75,"entryTop1":0.5,"exitTopK":0.5,"entryTopK":0.25,"exitLogLoss":1.328452959727108,"entryLogLoss":1.6592687299734759,"exitMRR":0.6875,"entryMRR":0.5125,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":52,"eligible":52,"scored":52,"actualSubstitutions":20,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.6036823575742891,"clipped":0,"precision":0.7142857142857143,"recall":0.5,"exactAction":0.5384615384615384,"partialOverlap":0.13958333333333334,"calibration":[{"lower":0,"upper":0.1,"n":18,"predicted":0.04169220916552951,"observed":0.1111111111111111},{"lower":0.1,"upper":0.2,"n":8,"predicted":0.16718250592978773,"observed":0.25},{"lower":0.2,"upper":0.3,"n":5,"predicted":0.272288524937093,"observed":0.4},{"lower":0.3,"upper":0.4,"n":2,"predicted":0.351134210919528,"observed":0.5},{"lower":0.4,"upper":0.5,"n":5,"predicted":0.47220512877040177,"observed":0.6},{"lower":0.5,"upper":0.6,"n":4,"predicted":0.5643457634305684,"observed":1},{"lower":0.6,"upper":0.7,"n":2,"predicted":0.6312591369501541,"observed":0.5},{"lower":0.7,"upper":0.8,"n":4,"predicted":0.7307520170021478,"observed":0.75},{"lower":0.8,"upper":0.9,"n":1,"predicted":0.8160945732133703,"observed":0},{"lower":0.9,"upper":1,"n":3,"predicted":0.963338407732388,"observed":0.6666666666666666}]}}
+{"gameId":"0022500146","scheduledStart":"2025-11-02T00:00:00.000Z","hash":"0a2948926fdcb66dfeb71c8a53a3a82dd939043d7551d78a55af0564ed5570ea","seconds":48.944768815000074,"rows":[724080,144816,41014,516528],"parity":{"byteIdenticalStates":59},"summary":{"n":59,"timingBrier":0.15274818937016518,"timingConstantBrier":0.2240735420856076,"timingSkillVsConstant":0.3183122471826346,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.3325249457397601,"observedRate":0.3389830508474576,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03777066398057635,"resolution":0.10901496601008236,"uncertainty":0.2240735420856076,"binningError":-0.0000810506859363902},"setLogLoss":4.555972767588931,"setLogLossClips":6,"candidateHitRate":0.4,"setTop1":0.15,"meanCandidates":8,"otherMass":0.5394029474363158,"setN":20,"playerN":20,"exitBrier":0.1812555896986638,"entryBrier":0.09977371723785242,"exitTop1":0.4,"entryTop1":0.5,"exitTopK":0.25,"entryTopK":0.45,"exitLogLoss":1.4104944919918012,"entryLogLoss":2.0564160520630312,"exitMRR":0.5918055555555555,"entryMRR":0.5480555555555555,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":56,"timingBrier":0.16079845106146698,"timingConstantBrier":0.2114158163265306,"timingSkillVsConstant":0.2394209011632572,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.29921775734900175,"observedRate":0.30357142857142855,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.03968200880399637,"resolution":0.09019338796124513,"uncertainty":0.2114158163265306,"binningError":-0.0001059861078148705},"setLogLoss":4.478848457552205,"setLogLossClips":4,"candidateHitRate":0.4117647058823529,"setTop1":0.11764705882352941,"meanCandidates":8,"otherMass":0.5205291474611077,"setN":17,"playerN":17,"exitBrier":0.17322940943781176,"entryBrier":0.0893584227854808,"exitTop1":0.35294117647058826,"entryTop1":0.5294117647058824,"exitTopK":0.23529411764705882,"entryTopK":0.47058823529411764,"exitLogLoss":1.4162739816090435,"entryLogLoss":2.0581904987565833,"exitMRR":0.5965686274509804,"entryMRR":0.5700980392156861,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.002476637799198551,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.9542591290339159,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.0020922272767359596,"resolution":0,"uncertainty":0,"binningError":0.0003844105224625914},"setLogLoss":4.993010524463708,"setLogLossClips":2,"candidateHitRate":0.3333333333333333,"setTop1":0.3333333333333333,"meanCandidates":8,"otherMass":0.6463544806291613,"setN":3,"playerN":3,"exitBrier":0.22673727784349185,"entryBrier":0.15879371913462473,"exitTop1":0.6666666666666666,"entryTop1":0.3333333333333333,"exitTopK":0.3333333333333333,"entryTopK":0.3333333333333333,"exitLogLoss":1.3777440508274272,"entryLogLoss":2.0463608541329052,"exitMRR":0.5648148148148149,"entryMRR":0.4231481481481481,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":10,"timingBrier":0.0584879957816636,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.18573231577699365,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.05761462738348039,"resolution":0,"uncertainty":0,"binningError":0.0008733683981832149},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":38,"timingBrier":0.17582836004438332,"timingConstantBrier":0.23268698060941825,"timingSkillVsConstant":0.24435669076163824,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.28783223183760276,"observedRate":0.3684210526315789,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.048883598429294885,"resolution":0.10574462471969398,"uncertainty":0.23268698060941825,"binningError":0.0000024057253641684984},"setLogLoss":4.37442565037816,"setLogLossClips":3,"candidateHitRate":0.42857142857142855,"setTop1":0.07142857142857142,"meanCandidates":8,"otherMass":0.5151397192480983,"setN":14,"playerN":14,"exitBrier":0.17003957248642693,"entryBrier":0.08899787792368606,"exitTop1":0.35714285714285715,"entryTop1":0.5,"exitTopK":0.21428571428571427,"entryTopK":0.42857142857142855,"exitLogLoss":1.4129993657083824,"entryLogLoss":2.0386291701417467,"exitMRR":0.5964285714285715,"entryMRR":0.5529761904761904,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":1,"timingBrier":0.000001,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.001,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.000001,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":6,"timingBrier":0.23910539910926057,"timingConstantBrier":0.22222222222222224,"timingSkillVsConstant":-0.07597429599167249,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.5852260729601357,"observedRate":0.3333333333333333,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.071892521135572,"resolution":0.05555555555555556,"uncertainty":0.22222222222222224,"binningError":0.000546211307021871},"setLogLoss":3.99535469705555,"setLogLossClips":0,"candidateHitRate":0.5,"setTop1":0.5,"meanCandidates":8,"otherMass":0.5971625252136744,"setN":2,"playerN":2,"exitBrier":0.12696027013120526,"entryBrier":0.08612236012764052,"exitTop1":0.5,"entryTop1":0.5,"exitTopK":0.5,"entryTopK":0.5,"exitLogLoss":1.2173007709439838,"entryLogLoss":2.460494280897349,"exitMRR":0.75,"entryMRR":0.6,"exitLogLossClips":0,"entryLogLossClips":0},"violation":{"n":1,"timingBrier":0.30372222528338255,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.4488900061844437,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.30372222528338255,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":6.907755278982137,"setLogLossClips":1,"candidateHitRate":0,"setTop1":0,"meanCandidates":8,"otherMass":0.4427143869381054,"setN":1,"playerN":1,"exitBrier":0.31042540537041213,"entryBrier":0.1008781761662879,"exitTop1":0,"entryTop1":1,"exitTopK":0,"entryTopK":1,"exitLogLoss":1.860065025548423,"entryLogLoss":1.527441535082759,"exitMRR":0.29166666666666663,"entryMRR":0.75,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":59,"eligible":59,"scored":59,"actualSubstitutions":20,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.47920506476114616,"clipped":0,"precision":0.75,"recall":0.45,"exactAction":0.6440677966101694,"partialOverlap":0.13664596273291926,"calibration":[{"lower":0,"upper":0.1,"n":11,"predicted":0.02599653196096664,"observed":0.09090909090909091},{"lower":0.1,"upper":0.2,"n":8,"predicted":0.1620831745464505,"observed":0},{"lower":0.2,"upper":0.3,"n":12,"predicted":0.25381785132100537,"observed":0.16666666666666666},{"lower":0.3,"upper":0.4,"n":7,"predicted":0.36185195093362715,"observed":0.14285714285714285},{"lower":0.4,"upper":0.5,"n":9,"predicted":0.4465922634656049,"observed":0.7777777777777778},{"lower":0.5,"upper":0.6,"n":5,"predicted":0.5372094501814159,"observed":0.8},{"lower":0.6,"upper":0.7,"n":2,"predicted":0.675964536214778,"observed":0.5},{"lower":0.7,"upper":0.8,"n":2,"predicted":0.7687412983436641,"observed":0.5},{"lower":0.8,"upper":0.9,"n":0,"predicted":null,"observed":null},{"lower":0.9,"upper":1,"n":3,"predicted":0.9542591290339159,"observed":1}]}}
+{"gameId":"0022500158","scheduledStart":"2025-11-04T00:30:00.000Z","hash":"278cfebbb3e7e17a630b99af8d086ad03d6fcc26f0ceb361a9edfe11fa5e950e","seconds":49.536657472999885,"rows":[732695,146539,41524,522891],"parity":{"byteIdenticalStates":53},"summary":{"n":53,"timingBrier":0.20306015008164782,"timingConstantBrier":0.23923104307582768,"timingSkillVsConstant":0.15119648574501676,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.3271294149823241,"observedRate":0.39622641509433965,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.060836133891383884,"resolution":0.09690837622485896,"uncertainty":0.23923104307582768,"binningError":-0.00009865066070477435},"setLogLoss":5.0060385639263165,"setLogLossClips":8,"candidateHitRate":0.2857142857142857,"setTop1":0.09523809523809523,"meanCandidates":8,"otherMass":0.4745403933545608,"setN":21,"playerN":21,"exitBrier":0.2035370182461038,"entryBrier":0.14447749432820373,"exitTop1":0.5714285714285714,"entryTop1":0.42857142857142855,"exitTopK":0.3333333333333333,"entryTopK":0.19047619047619047,"exitLogLoss":1.5704849147498587,"entryLogLoss":1.9647133149373528,"exitMRR":0.5950396825396824,"entryMRR":0.4848167044595616,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":50,"timingBrier":0.21504327240504978,"timingConstantBrier":0.2304,"timingSkillVsConstant":0.06665246351974918,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2897940007418838,"observedRate":0.36,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.06433259724254195,"resolution":0.07953797313797313,"uncertainty":0.2304,"binningError":-0.0001513516995190478},"setLogLoss":4.882849720706454,"setLogLossClips":6,"candidateHitRate":0.2777777777777778,"setTop1":0.1111111111111111,"meanCandidates":8,"otherMass":0.44852948928406033,"setN":18,"playerN":18,"exitBrier":0.20696477233353716,"entryBrier":0.14251033658360013,"exitTop1":0.5,"entryTop1":0.4444444444444444,"exitTopK":0.3333333333333333,"entryTopK":0.2222222222222222,"exitLogLoss":1.6152079770811523,"entryLogLoss":1.9847380925363316,"exitMRR":0.568287037037037,"entryMRR":0.4959104938271605,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.003341444691615198,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.9493863189896632,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.0025617447054161286,"resolution":0,"uncertainty":0,"binningError":0.0007796999861990695},"setLogLoss":5.74517162324549,"setLogLossClips":2,"candidateHitRate":0.3333333333333333,"setTop1":0,"meanCandidates":8,"otherMass":0.6306058177775631,"setN":3,"playerN":3,"exitBrier":0.18297049372150329,"entryBrier":0.15628044079582556,"exitTop1":1,"entryTop1":0.3333333333333333,"exitTopK":0.3333333333333333,"entryTopK":0,"exitLogLoss":1.302146540762098,"entryLogLoss":1.8445646493434795,"exitMRR":0.7555555555555555,"entryMRR":0.41825396825396827,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":4,"timingBrier":0.1194386072111401,"timingConstantBrier":0.1875,"timingSkillVsConstant":0.36299409487391954,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.16551617106259725,"observedRate":0.25,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.11936189072932912,"resolution":0.1875,"uncertainty":0.1875,"binningError":0.00007671648181097057},"setLogLoss":4.622559536651229,"setLogLossClips":0,"candidateHitRate":0,"setTop1":0,"meanCandidates":8,"otherMass":0.49793222555948263,"setN":1,"playerN":1,"exitBrier":0.1447691148503477,"entryBrier":0.13502777297689378,"exitTop1":1,"entryTop1":0,"exitTopK":1,"entryTopK":0,"exitLogLoss":1.4291618698666184,"entryLogLoss":2.494579534942349,"exitMRR":1,"entryMRR":0.25,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":35,"timingBrier":0.2135287346013927,"timingConstantBrier":0.20408163265306123,"timingSkillVsConstant":-0.046290799546824246,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.2811163403100141,"observedRate":0.2857142857142857,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.07486317252546403,"resolution":0.05916099773242631,"uncertainty":0.20408163265306123,"binningError":-0.006255072844706222},"setLogLoss":5.124333304497429,"setLogLossClips":3,"candidateHitRate":0.2,"setTop1":0,"meanCandidates":8,"otherMass":0.41641445181725334,"setN":10,"playerN":10,"exitBrier":0.23894533317789426,"entryBrier":0.16259750630161857,"exitTop1":0.3,"entryTop1":0.3,"exitTopK":0.2,"entryTopK":0.1,"exitLogLoss":1.8031626490607817,"entryLogLoss":2.2053727730098722,"exitMRR":0.44708333333333333,"entryMRR":0.3597222222222222,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":3,"timingBrier":0.2658522000713629,"timingConstantBrier":0.22222222222222224,"timingSkillVsConstant":-0.196334900321133,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.036465094106260275,"observedRate":0.3333333333333333,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.26585218512965164,"resolution":0.22222222222222224,"uncertainty":0.22222222222222224,"binningError":1.494171125715482e-8},"setLogLoss":2.2185499683075385,"setLogLossClips":0,"candidateHitRate":1,"setTop1":1,"meanCandidates":8,"otherMass":0.4384835674370791,"setN":1,"playerN":1,"exitBrier":0.13052521527296784,"entryBrier":0.058032091518652455,"exitTop1":1,"entryTop1":1,"exitTopK":1,"entryTopK":1,"exitLogLoss":1.2850638754577357,"entryLogLoss":1.1076765702312177,"exitMRR":1,"entryMRR":1,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":7,"timingBrier":0.28446929736152726,"timingConstantBrier":0.12244897959183677,"timingSkillVsConstant":-1.3231659284524717,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.5384774199438012,"observedRate":0.8571428571428571,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.17536034262075922,"resolution":0.027210884353741503,"uncertainty":0.12244897959183677,"binningError":0.01387085950267275},"setLogLoss":4.967808737130514,"setLogLossClips":3,"candidateHitRate":0.3333333333333333,"setTop1":0.16666666666666666,"meanCandidates":8,"otherMass":0.4954950826573317,"setN":6,"playerN":6,"exitBrier":0.1767697066835685,"entryBrier":0.12435852183217828,"exitTop1":0.6666666666666666,"entryTop1":0.6666666666666666,"exitTopK":0.3333333333333333,"entryTopK":0.3333333333333333,"exitLogLoss":1.387981891921428,"entryLogLoss":1.6782169717302813,"exitMRR":0.6263888888888889,"entryMRR":0.6798611111111111,"exitLogLossClips":0,"entryLogLossClips":0},"violation":{"n":1,"timingBrier":0.012061798614406741,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.10982622006791794,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.012061798614406741,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":53,"eligible":53,"scored":53,"actualSubstitutions":21,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.5702592522104935,"clipped":0,"precision":0.6666666666666666,"recall":0.38095238095238093,"exactAction":0.5471698113207547,"partialOverlap":0.128,"calibration":[{"lower":0,"upper":0.1,"n":7,"predicted":0.03360666911951508,"observed":0},{"lower":0.1,"upper":0.2,"n":13,"predicted":0.14330759198659468,"observed":0.15384615384615385},{"lower":0.2,"upper":0.3,"n":9,"predicted":0.23950934873567153,"observed":0.4444444444444444},{"lower":0.3,"upper":0.4,"n":7,"predicted":0.33522915227481803,"observed":0.7142857142857143},{"lower":0.4,"upper":0.5,"n":5,"predicted":0.4302644217747938,"observed":0.4},{"lower":0.5,"upper":0.6,"n":3,"predicted":0.5490917294164835,"observed":1},{"lower":0.6,"upper":0.7,"n":4,"predicted":0.6483427759587509,"observed":0.5},{"lower":0.7,"upper":0.8,"n":2,"predicted":0.7486490259643299,"observed":0},{"lower":0.8,"upper":0.9,"n":0,"predicted":null,"observed":null},{"lower":0.9,"upper":1,"n":3,"predicted":0.9493863189896632,"observed":1}]}}
+{"gameId":"0022500174","scheduledStart":"2025-11-06T00:30:00.000Z","hash":"10bceafdc3651b31016d6d86b7a3eb5f10afd92d80ba16beb3f52e81d1e9dc1f","seconds":49.91716795200016,"rows":[741655,148331,42051,529403],"parity":{"byteIdenticalStates":58},"summary":{"n":58,"timingBrier":0.14090719987383435,"timingConstantBrier":0.19173602853745544,"timingSkillVsConstant":0.2650979529060796,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.3446971637752859,"observedRate":0.25862068965517243,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.020482665247589904,"resolution":0.0719432733998727,"uncertainty":0.19173602853745544,"binningError":0.0006317794886617212},"setLogLoss":4.467833676927645,"setLogLossClips":4,"candidateHitRate":0.4666666666666667,"setTop1":0.06666666666666667,"meanCandidates":8,"otherMass":0.593127574554715,"setN":15,"playerN":15,"exitBrier":0.18917425004333902,"entryBrier":0.1420595569012777,"exitTop1":0.4,"entryTop1":0.4666666666666667,"exitTopK":0.26666666666666666,"entryTopK":0.3333333333333333,"exitLogLoss":1.4831905507846364,"entryLogLoss":1.931920324578827,"exitMRR":0.5348148148148149,"entryMRR":0.5547619047619048,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":55,"timingBrier":0.1479450984408604,"timingConstantBrier":0.18049586776859505,"timingSkillVsConstant":0.18034080076263248,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.3266053324277771,"observedRate":0.23636363636363636,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.0211610630903539,"resolution":0.05437098255280074,"uncertainty":0.18049586776859505,"binningError":0.0006591501347122108},"setLogLoss":4.351550192479593,"setLogLossClips":3,"candidateHitRate":0.46153846153846156,"setTop1":0.07692307692307693,"meanCandidates":8,"otherMass":0.5605004762457114,"setN":13,"playerN":13,"exitBrier":0.1764346262717266,"entryBrier":0.1319802133752633,"exitTop1":0.3076923076923077,"entryTop1":0.38461538461538464,"exitTopK":0.3076923076923077,"entryTopK":0.3076923076923077,"exitLogLoss":1.476824081222719,"entryLogLoss":1.9433076429301817,"exitMRR":0.5252136752136752,"entryMRR":0.5407509157509157,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.011879059478356796,"timingConstantBrier":0.22222222222222224,"timingSkillVsConstant":0.9465442323473944,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.6763807384796144,"observedRate":0.6666666666666666,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.011647816690884084,"resolution":0.22222222222222224,"uncertainty":0.22222222222222224,"binningError":0.0002312427874727272},"setLogLoss":5.223676325839994,"setLogLossClips":1,"candidateHitRate":0.5,"setTop1":0,"meanCandidates":8,"otherMass":0.805203713563238,"setN":2,"playerN":2,"exitBrier":0.2719818045588201,"entryBrier":0.20757528982037093,"exitTop1":1,"entryTop1":1,"exitTopK":0,"entryTopK":0.5,"exitLogLoss":1.5245726029370974,"entryLogLoss":1.8579027552950216,"exitMRR":0.5972222222222222,"entryMRR":0.6458333333333333,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":9,"timingBrier":0.15568297757765975,"timingConstantBrier":0.1728395061728395,"timingSkillVsConstant":0.09926277258639704,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.15706720916183892,"observedRate":0.2222222222222222,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.024346051640385988,"resolution":0.02839506172839506,"uncertainty":0.1728395061728395,"binningError":-0.013107518507170679},"setLogLoss":4.406388906508087,"setLogLossClips":0,"candidateHitRate":0.5,"setTop1":0,"meanCandidates":8,"otherMass":0.546492943752546,"setN":2,"playerN":2,"exitBrier":0.21075587740894336,"entryBrier":0.11153489017312065,"exitTop1":0,"entryTop1":0,"exitTopK":0,"entryTopK":0,"exitLogLoss":1.9959701010503694,"entryLogLoss":2.017467287893923,"exitMRR":0.375,"entryMRR":0.3333333333333333,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":36,"timingBrier":0.15540457918906267,"timingConstantBrier":0.1728395061728395,"timingSkillVsConstant":0.10087350612042312,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.34065587163074107,"observedRate":0.2222222222222222,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.026553920242817438,"resolution":0.047442680776014115,"uncertainty":0.1728395061728395,"binningError":0.0034538335494198324},"setLogLoss":4.191285026540379,"setLogLossClips":2,"candidateHitRate":0.5,"setTop1":0.125,"meanCandidates":8,"otherMass":0.49872379130474087,"setN":8,"playerN":8,"exitBrier":0.1748735452716117,"entryBrier":0.13077036430380334,"exitTop1":0.25,"entryTop1":0.625,"exitTopK":0.25,"entryTopK":0.5,"exitLogLoss":1.3728925508135363,"entryLogLoss":1.84047829844785,"exitMRR":0.5159722222222223,"entryMRR":0.671875,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":3,"timingBrier":0.019118006212382948,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.1000652162502208,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.01832949930773962,"resolution":0,"uncertainty":0,"binningError":0.0007885069046433268},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":7,"timingBrier":0.15484496380071144,"timingConstantBrier":0.24489795918367346,"timingSkillVsConstant":0.36771639781376164,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.5694116248019787,"observedRate":0.42857142857142855,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.0538263517435052,"resolution":0.1496598639455782,"uncertainty":0.24489795918367346,"binningError":0.005780516819110987},"setLogLoss":4.7423648256318325,"setLogLossClips":1,"candidateHitRate":0.3333333333333333,"setTop1":0,"meanCandidates":8,"otherMass":0.7345766577504103,"setN":3,"playerN":3,"exitBrier":0.15771667484722177,"entryBrier":0.14883669303391833,"exitTop1":0.6666666666666666,"entryTop1":0,"exitTopK":0.6666666666666666,"entryTopK":0,"exitLogLoss":1.4078774824287725,"entryLogLoss":2.168079464907239,"exitMRR":0.65,"entryMRR":0.32936507936507936,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":58,"eligible":58,"scored":58,"actualSubstitutions":15,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.4418382477764915,"clipped":0,"precision":0.6666666666666666,"recall":0.6666666666666666,"exactAction":0.6551724137931034,"partialOverlap":0.135,"calibration":[{"lower":0,"upper":0.1,"n":11,"predicted":0.051636042970736276,"observed":0.09090909090909091},{"lower":0.1,"upper":0.2,"n":10,"predicted":0.16310009668915085,"observed":0.1},{"lower":0.2,"upper":0.3,"n":7,"predicted":0.243633428855185,"observed":0},{"lower":0.3,"upper":0.4,"n":9,"predicted":0.34894804882528424,"observed":0.2222222222222222},{"lower":0.4,"upper":0.5,"n":6,"predicted":0.4496015698582056,"observed":0.16666666666666666},{"lower":0.5,"upper":0.6,"n":6,"predicted":0.5599393756423328,"observed":0.5},{"lower":0.6,"upper":0.7,"n":2,"predicted":0.6233825474204151,"observed":0.5},{"lower":0.7,"upper":0.8,"n":4,"predicted":0.7368631949397224,"observed":0.75},{"lower":0.8,"upper":0.9,"n":1,"predicted":0.8285894889515121,"observed":1},{"lower":0.9,"upper":1,"n":2,"predicted":0.9337092907143322,"observed":1}]}}
+{"gameId":"0022500028","scheduledStart":"2025-11-08T00:00:00.000Z","hash":"4da52de7056cdc02eeba9a4520202d8cb57d83cbb73516bc2f5a475900adcb05","seconds":52.692163183999945,"rows":[749030,149806,42481,534739],"parity":{"byteIdenticalStates":59},"summary":{"n":59,"timingBrier":0.13041997033087446,"timingConstantBrier":0.20511347313990233,"timingSkillVsConstant":0.3641569793812689,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.31986418968834657,"observedRate":0.288135593220339,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.0042124270480156925,"resolution":0.07362913826573693,"uncertainty":0.20511347313990233,"binningError":-0.0052767915913066454},"setLogLoss":3.984708471713656,"setLogLossClips":5,"candidateHitRate":0.5294117647058824,"setTop1":0.23529411764705882,"meanCandidates":8,"otherMass":0.5502195339172112,"setN":17,"playerN":17,"exitBrier":0.1574068960712961,"entryBrier":0.13719454042308896,"exitTop1":0.7058823529411765,"entryTop1":0.5882352941176471,"exitTopK":0.5294117647058824,"entryTopK":0.4117647058823529,"exitLogLoss":1.2646726829553865,"entryLogLoss":1.589949183289402,"exitMRR":0.7200980392156862,"entryMRR":0.6484477124183006,"exitLogLossClips":0,"entryLogLossClips":0,"midPeriod":{"n":56,"timingBrier":0.1371072607913424,"timingConstantBrier":0.1875,"timingSkillVsConstant":0.26876127577950726,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.28675224173819247,"observedRate":0.25,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.004139034790945535,"resolution":0.048971861471861465,"uncertainty":0.1875,"binningError":-0.005559912527741684},"setLogLoss":3.8064048465528293,"setLogLossClips":3,"candidateHitRate":0.5714285714285714,"setTop1":0.21428571428571427,"meanCandidates":8,"otherMass":0.5410042312413404,"setN":14,"playerN":14,"exitBrier":0.14663446718453196,"entryBrier":0.12746247594155974,"exitTop1":0.6428571428571429,"entryTop1":0.5,"exitTopK":0.5714285714285714,"entryTopK":0.35714285714285715,"exitLogLoss":1.2859420474666474,"entryLogLoss":1.636862179774569,"exitMRR":0.719047619047619,"entryMRR":0.634126984126984,"exitLogLossClips":0,"entryLogLossClips":0},"byStoppage":{"between_periods":{"n":3,"timingBrier":0.0055905484021401275,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.937953884757889,"observedRate":1,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.005582415846658616,"resolution":0,"uncertainty":0,"binningError":0.000008132555481511587},"setLogLoss":4.816792055797514,"setLogLossClips":2,"candidateHitRate":0.3333333333333333,"setTop1":0.3333333333333333,"meanCandidates":8,"otherMass":0.5932242797379407,"setN":3,"playerN":3,"exitBrier":0.2076782308761955,"entryBrier":0.18261084133689195,"exitTop1":1,"entryTop1":1,"exitTopK":0.3333333333333333,"entryTopK":0.6666666666666666,"exitLogLoss":1.165415648569502,"entryLogLoss":1.3710218663586229,"exitMRR":0.725,"entryMRR":0.7152777777777777,"exitLogLossClips":0,"entryLogLossClips":0},"dead_ball_turnover":{"n":9,"timingBrier":0.0223936525064211,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.11697247955180799,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.021581461143656864,"resolution":0,"uncertainty":0,"binningError":0.0008121913627642356},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"foul":{"n":39,"timingBrier":0.1507062477975337,"timingConstantBrier":0.19066403681788296,"timingSkillVsConstant":0.20957171413776288,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.29523914977807797,"observedRate":0.2564102564102564,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.018019116795548698,"resolution":0.05201934817319433,"uncertainty":0.19066403681788296,"binningError":-0.00595755764270367},"setLogLoss":3.5181436560598756,"setLogLossClips":2,"candidateHitRate":0.7,"setTop1":0.3,"meanCandidates":8,"otherMass":0.5369408135562816,"setN":10,"playerN":10,"exitBrier":0.14120568277997483,"entryBrier":0.12645247040828775,"exitTop1":0.7,"entryTop1":0.5,"exitTopK":0.6,"entryTopK":0.4,"exitLogLoss":1.2260823594396792,"entryLogLoss":1.601213576423476,"exitMRR":0.7566666666666666,"entryMRR":0.6461111111111111,"exitLogLossClips":0,"entryLogLossClips":0},"jump_ball":{"n":1,"timingBrier":0.000001174229477371149,"timingConstantBrier":0,"timingSkillVsConstant":null,"timingSkillVsConstantReason":"zero_reference_loss","timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.0010836186955618424,"observedRate":0,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.000001174229477371149,"resolution":0,"uncertainty":0,"binningError":0},"setLogLoss":null,"setLogLossClips":0,"candidateHitRate":null,"setTop1":null,"meanCandidates":null,"otherMass":null,"setN":0,"playerN":0,"exitBrier":null,"entryBrier":null,"exitTop1":null,"entryTop1":null,"exitTopK":null,"entryTopK":null,"exitLogLoss":null,"entryLogLoss":null,"exitMRR":null,"entryMRR":null,"exitLogLossClips":0,"entryLogLossClips":0},"timeout":{"n":7,"timingBrier":0.22841698477487035,"timingConstantBrier":0.2448979591836735,"timingSkillVsConstant":0.06729731216927948,"timingSkillVsConstantReason":null,"timingSkillVsStatistical":null,"timingSkillVsStatisticalReason":"baseline_not_supplied","meanPredicted":0.4985661087617001,"observedRate":0.5714285714285714,"brierDecomposition":{"bins":10,"pooling":"window-weighted within-game deciles","reliability":0.15595609451753406,"resolution":0.17346938775510204,"uncertainty":0.2448979591836735,"binningError":0.001032318828764811},"setLogLoss":4.527057822785213,"setLogLossClips":1,"candidateHitRate":0.25,"setTop1":0,"meanCandidates":8,"otherMass":0.5511627754539874,"setN":4,"playerN":4,"exitBrier":0.1602064281959248,"entryBrier":0.12998748977473965,"exitTop1":0.5,"entryTop1":0.5,"exitTopK":0.5,"entryTopK":0.25,"exitLogLoss":1.4355912675340678,"entryLogLoss":1.7259836881523012,"exitMRR":0.625,"entryMRR":0.6041666666666666,"exitLogLossClips":0,"entryLogLossClips":0}},"windows":59,"eligible":59,"scored":59,"actualSubstitutions":17,"excluded":{},"informational":{},"failures":{},"providerFailureRate":0,"providerFailureFlag":false,"invalidQuestions":{},"invalidActions":0,"timingLogLoss":0.4008420912242327,"clipped":0,"precision":0.6923076923076923,"recall":0.5294117647058824,"exactAction":0.6779661016949152,"partialOverlap":0.2119047619047619,"calibration":[{"lower":0,"upper":0.1,"n":13,"predicted":0.04063365175983288,"observed":0},{"lower":0.1,"upper":0.2,"n":11,"predicted":0.157685323052344,"observed":0.09090909090909091},{"lower":0.2,"upper":0.3,"n":11,"predicted":0.25540853202588376,"observed":0.2727272727272727},{"lower":0.3,"upper":0.4,"n":5,"predicted":0.3473019495413849,"observed":0.2},{"lower":0.4,"upper":0.5,"n":6,"predicted":0.446832447704331,"observed":0.5},{"lower":0.5,"upper":0.6,"n":2,"predicted":0.5660942376712315,"observed":0.5},{"lower":0.6,"upper":0.7,"n":5,"predicted":0.6551908474306265,"observed":0.6},{"lower":0.7,"upper":0.8,"n":3,"predicted":0.7200695040573125,"observed":0.6666666666666666},{"lower":0.8,"upper":0.9,"n":1,"predicted":0.879086314228415,"observed":1},{"lower":0.9,"upper":1,"n":2,"predicted":0.967387670022626,"observed":1}]}}
+167M	.cache/objects
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       193G  6.1G  187G   4% /
+{"historyLoads":1,"loadingSeconds":120.772589148,"games":104}
+{"call":"cold","complete":false,"error":"compute_limit","eligible":5397,"scored":0,"computeSeconds":121.057700583}
+{"call":"cached","complete":true,"error":null,"eligible":5397,"scored":5397,"computeSeconds":12.260101940999986}
+/home/ubuntu/nba-agent/scripts/backtest-audit.ts:115
+    throw Error("Full-history acceptance failed");
+          ^
+
+Error: Full-history acceptance failed
+    at <anonymous> (/home/ubuntu/nba-agent/scripts/backtest-audit.ts:115:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.22.3

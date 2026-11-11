@@ -783,3 +783,132 @@ tests. The parallel tests check serial score parity, oldest-first execution,
 fresh children, shared-memory isolation, four-container concurrency, and
 cleanup after cancellation and timeout. Audit exports are removed after fitting
 to avoid accumulating large temporary copies.
+
+## Running on EC2 Graviton (SPO-877)
+
+Before launch, approve EC2 spend and specify the AWS account and operator role on
+the PR. The proposed machine is an on-demand `c8g.4xlarge` in `us-east-1` with
+a 200 GiB encrypted gp3 root volume. Confirm the machine before any scored run.
+The acceptance workload uses scripted providers and offline scoring. Pilot or
+other live model calls require separate approval.
+
+### Launch and bootstrap
+
+On the workstation, select the approved CLI profile, a subnet with outbound
+HTTPS, a security group with **zero inbound rules**, and an EC2 key pair you
+control. Use an EC2-trusted instance profile limited to Session Manager
+(or the standard `AmazonSSMManagedInstanceCore` role with no additional policies).
+R2 access comes from Doppler. The operator needs permission to pass that profile,
+launch, tag, start and stop this instance, and start an SSM SSH session to it.
+Install the Session Manager plugin on the workstation.
+
+Set `AWS_PROFILE`, `APPROVED_ACCOUNT`, `SUBNET_ID`, `SG_ID`, `PROFILE_NAME`,
+`KEY_NAME` and `SSH_KEY` to those approved values. Run in Bash from the clean
+checkout. The pinned Canonical Ubuntu Server 24.04 arm64 image is the 20261023
+release in us-east-1. Recheck its owner and availability before launch.
+
+```bash
+set -euo pipefail
+export AWS_PROFILE AWS_REGION=us-east-1
+test "$(aws sts get-caller-identity --query Account --output text)" = "$APPROVED_ACCOUNT"
+aws sts get-caller-identity --query Arn --output text
+test "$(aws ec2 describe-security-groups --group-ids "$SG_ID" \
+  --query 'length(SecurityGroups[0].IpPermissions)' --output text)" = 0
+AMI=ami-09a93d801db0bafae
+device=$(aws ec2 describe-images --owners 099720109477 --image-ids "$AMI" \
+  --query "Images[?State=='available' && Architecture=='arm64'].RootDeviceName | [0]" --output text)
+test "$device" = /dev/sda1
+# Keep this token if retrying an ambiguous run-instances response.
+launch_token=$(uuidgen)
+instance=$(aws ec2 run-instances --image-id "$AMI" --instance-type c8g.4xlarge \
+  --client-token "$launch_token" --count 1 --key-name "$KEY_NAME" \
+  --subnet-id "$SUBNET_ID" --security-group-ids "$SG_ID" \
+  --iam-instance-profile "Name=$PROFILE_NAME" \
+  --metadata-options 'HttpTokens=required,HttpPutResponseHopLimit=1' \
+  --block-device-mappings "DeviceName=$device,Ebs={VolumeType=gp3,VolumeSize=200,Encrypted=true,DeleteOnTermination=false}" \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Project,Value=nba-agent},{Key=Name,Value=nba-agent-harness}]' \
+  'ResourceType=volume,Tags=[{Key=Project,Value=nba-agent}]' \
+  --query 'Instances[0].InstanceId' --output text)
+echo "$instance"
+aws ec2 wait instance-status-ok --instance-ids "$instance"
+```
+
+The Ubuntu AMI includes SSM Agent. Once the instance appears online in Systems
+Manager, use SSH and SCP over the SSM tunnel. Keep the connection options in
+the workstation shell for retrieval later. Bootstrap builds both images at the
+requested commit. Reconnect afterwards for Docker group membership.
+
+```bash
+revision=$(git rev-parse HEAD)
+ssh_opts=(-i "$SSH_KEY" -o 'ProxyCommand=aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p')
+ssh "${ssh_opts[@]}" "ubuntu@$instance" "bash -s -- $revision" < scripts/cloud/bootstrap.sh
+ssh "${ssh_opts[@]}" -t "ubuntu@$instance" 'tmux new-session -A -s nba'
+```
+
+### Run, retrieve and resume
+
+In tmux, enter the Doppler service token scoped to `nba-agent/prd` at the hidden
+prompt. First reads download pinned objects from R2 through the existing trusted
+reader, verify their hashes and populate `.cache/objects` on EBS. Later reads
+verify and reuse the cache. The acceptance log includes free space and cache
+size after the ten-game development pass.
+
+```bash
+cd ~/nba-agent
+read -rsp 'Doppler service token: ' DOPPLER_TOKEN; echo
+export DOPPLER_TOKEN
+bash scripts/cloud/acceptance.sh
+unset DOPPLER_TOKEN
+```
+
+Detach with Ctrl-B then D. Reconnect with the same tmux command, or follow the
+current log with `tail -f docs/evidence/cloud/<attempt>/acceptance.log`. A determinism
+failure ends the acceptance script immediately. Both independent backtest timings
+are collected before the script reports a backtest failure. Inspect the reported game, expected and actual
+hash or score before proceeding. Each attempt gets a separate evidence directory.
+The two backtests both target game `0022501206`.
+
+For a chronological run, use the launch commands in this guide inside tmux.
+Bootstrap disables Ubuntu’s unattended package upgrades and configures FUSE to
+load at boot. If an upgrade was already staged, reboot before the first run
+and check `test -c /dev/fuse` and `docker info`. Schedule security updates
+between experiments. To restore unattended upgrades, remove
+`/etc/apt/apt.conf.d/99-nba-agent-maintenance`.
+
+After reboot, re-enter the token and repeat the same launch command with the
+same run root, run ID and replicate. The SQLite record supplies the checkpoint.
+The machine descriptor and exact image pins participate in manifest matching.
+For a replacement, restore the checkout, run roots (including SQLite sidecars),
+and exact images on a matching instance type with the same Docker Engine
+version, CPU count and reported memory in bytes. A kernel or engine change
+that alters the manifest requires the original environment to resume.
+The stopped root volume retains all three. Alternatively, save and transfer
+the Docker images before replacement and load them on the new host:
+
+```bash
+docker save nba-agent-assembler:local nba-agent-sandbox:local | gzip > .cache/harness-images.tar.gz
+# On the replacement, after copying the archive and .cache/sandbox-image.json:
+gzip -dc .cache/harness-images.tar.gz | docker load
+```
+
+After the runner exits, copy the complete run roots and evidence to the
+workstation. Acceptance's scripted run lives under `.cache/cloud`. Include
+`.cache/runs` or the selected `--root` for other launches. Stop and verify the
+instance even if an audit failed. EBS storage remains billable while stopped. Terminating this instance also
+retains the root volume. Delete it separately when the saved runs and images
+are no longer needed.
+
+```bash
+mkdir -p .cache/ec2-return
+scp "${ssh_opts[@]}" -r "ubuntu@$instance:nba-agent/docs/evidence/cloud" .cache/ec2-return/evidence
+scp "${ssh_opts[@]}" -r "ubuntu@$instance:nba-agent/.cache/cloud" .cache/ec2-return/acceptance-runs
+# For a chronological launch with the default root:
+# scp "${ssh_opts[@]}" -r "ubuntu@$instance:nba-agent/.cache/runs" .cache/ec2-return/
+aws ec2 stop-instances --instance-ids "$instance"
+aws ec2 wait instance-stopped --instance-ids "$instance"
+```
+
+[Canonical AMI lookup](https://ubuntu.com/aws/docs/aws-how-to/instances/find-ubuntu-images/) ·
+[AWS SSH and SCP over Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started-enable-ssh-connections.html)
+
+The [Graviton acceptance report](../evidence/cloud/ed2b666d4c9a-G00XRggk/README.md) records exact starter parity and the cold and cached backtest timings.

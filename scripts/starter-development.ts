@@ -30,6 +30,11 @@ if (codeRevision.endsWith("-dirty"))
   throw Error("Commit implementation before recording acceptance evidence");
 const image = process.argv.find((a) => a.startsWith("--image="))?.slice(8);
 if (!image) throw Error("Pass --image");
+const macReference = process.argv.includes("--verify-spo873")
+  ? JSON.parse(
+      readFileSync("docs/evidence/starter-model/spo873-scores.json", "utf8"),
+    )
+  : undefined;
 const root = ".cache/starter-development";
 mkdirSync(root, { recursive: true });
 const signal = new AbortController().signal;
@@ -95,6 +100,15 @@ try {
       rmSync(input, { force: true });
       rmSync(current, { force: true });
     });
+    if (macReference) {
+      const expected = macReference.fits.find(
+        (f: { gameId: string }) => f.gameId === game.gameId,
+      )?.hash;
+      if (fit.mount.hash !== expected)
+        throw Error(
+          `Game ${game.gameId}: expected ${expected}, got ${fit.mount.hash}`,
+        );
+    }
     const assembler = new DockerAssembler(
       image,
       { wallSeconds: 15, memoryBytes: 512 * 1024 * 1024, outputBytes: 256000 },
@@ -157,10 +171,20 @@ try {
       ) + "\n",
     );
   }
-  if (fits.length !== 10 || summarize(results).n !== 584)
+  const summary = summarize(results);
+  if (fits.length !== 10 || summary.n !== 584)
     throw Error("Incomplete starter development acceptance");
+  if (
+    macReference &&
+    (summary.timingBrier !== macReference.summary.timingBrier ||
+      summary.setLogLoss !== macReference.summary.setLogLoss)
+  )
+    throw Error(
+      `Starter score mismatch: Brier ${summary.timingBrier}, set log loss ${summary.setLogLoss}`,
+    );
   writeFileSync(
-    "docs/evidence/starter-model/spo876-scores.json",
+    process.argv.find((a) => a.startsWith("--output="))?.slice(9) ??
+      "docs/evidence/starter-model/spo876-scores.json",
     readFileSync(join(root, "results.json")),
   );
 } finally {

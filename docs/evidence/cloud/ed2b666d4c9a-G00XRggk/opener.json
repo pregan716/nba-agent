@@ -1,0 +1,17 @@
+{
+  "mount": {
+    "path": "/home/ubuntu/nba-agent/.cache/starter-audit/artifact-tgAqRW",
+    "hash": "9b6e71e3ae2b0c465824864ec7381390209b7c9022ade4403c5c528c46b0f9fc",
+    "modelSha256": "b0a6b52d104a97f1064f72887e778f794faaa498512cfc14c9a18d989abc6659",
+    "apiSha256": "b104ea32a41e1d3905150eab6f7a8dc7f918077e7e6df9286f4806bafeaf2c09",
+    "cutoff": "2025-10-22T23:30:00.000Z",
+    "gameId": "0022500083"
+  },
+  "seconds": 45.771392743000064,
+  "rows": [
+    675125,
+    135025,
+    38166,
+    481442
+  ]
+}

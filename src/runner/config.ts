@@ -104,6 +104,15 @@ export const configSchema = z.strictObject({
     })
     .optional(),
   harness: z.strictObject({
+    machine: z
+      .strictObject({
+        instanceType: name,
+        architecture: name,
+        dockerVersion: name.optional(), // Manifests created before engine version recording omit this.
+        dockerCpus: integer,
+        dockerMemoryBytes: integer,
+      })
+      .optional(),
     identity: name,
     prompts: z.record(name, name),
     memoryInstructions: name,
@@ -255,6 +264,8 @@ export function manifest(
     throw Error(
       "Scored runs require pilot budget, contamination probe and AWS persistent storage",
     );
+  if (c.purpose === "scored" && !c.harness.machine)
+    throw Error("Scored runs require a recorded machine");
   if (
     !schedule.length ||
     new Set(schedule.map((g) => g.gameId)).size !== schedule.length
