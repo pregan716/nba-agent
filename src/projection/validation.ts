@@ -39,6 +39,11 @@ export function validateForecast(
         ok: false,
         reason: "Duplicate or unexpected player " + player.playerId,
       };
+    if (player.p_start > player.p_play)
+      return {
+        ok: false,
+        reason: "p_start for " + player.playerId + " must be at most p_play",
+      };
     for (const stat of quantities) {
       const r = player[stat];
       const label = stat + " for " + player.playerId;

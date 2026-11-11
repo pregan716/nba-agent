@@ -83,7 +83,12 @@ export async function forecastSession(options: {
     const input = await source.input(game);
     const receipt = await recordReference(options.referenceRoot, model, input);
     const pre = { gameId: input.gameId, tip: input.tip, roster: input.roster };
-    return { pre, reference: receipt.forecast, context: digest(receipt) };
+    return {
+      pre,
+      reference: receipt.forecast,
+      context: digest(receipt),
+      exclusions: receipt.exclusions,
+    };
   }
   const currentData = await prepare(current);
   return {
@@ -96,6 +101,15 @@ export async function forecastSession(options: {
       const game = phase === "postgame" ? current : season[index - 1];
       if (!game || before(now, releaseTime(game.tip)))
         throw Error("Feedback unavailable");
+      const exclusion = currentData.exclusions.find(
+        (e) => e.gameId === game.gameId,
+      );
+      if (exclusion)
+        return {
+          gameId: game.gameId,
+          status: "excluded" as const,
+          reason: exclusion.reason,
+        };
       const { pre, reference, context } =
         game === current ? currentData : await prepare(game);
       // The V1 data reader takes an exclusive bound. Only canonical release-time

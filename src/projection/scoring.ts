@@ -29,6 +29,12 @@ export function pinball(t: number, forecast: number, actual: number) {
     ? t * (actual - forecast)
     : (1 - t) * (forecast - actual);
 }
+function coverage(values: readonly number[], y: number) {
+  return {
+    coverage80: Number(y >= values[1] && y <= values[5]),
+    coverage50: Number(y >= values[2] && y <= values[4]),
+  };
+}
 function brier(p: number, event: boolean) {
   return (p - Number(event)) ** 2;
 }
@@ -115,8 +121,7 @@ function score(
               (s, v, i) => s + pinball(percentiles[i] / 100, v, y),
               0,
             ) / values.length,
-          coverage80: Number(y >= values[1] && y <= values[5]),
-          coverage50: Number(y >= values[2] && y <= values[4]),
+          ...coverage(values, y),
         };
       });
       const hit = actual.played && actual.fantasy_points > threshold;
@@ -126,6 +131,9 @@ function score(
         actual: publicOutcome(actual),
         forecast: own,
         ranges,
+        conditionalMinutesCoverage: actual.played
+          ? coverage(own.minutes, actual.minutes)
+          : null,
         misplacedMinutes: Math.abs(actual.minutes - m.quantile(0.5)) / 2,
         playBrier: inactive ? null : brier(own.p_play, actual.played),
         startBrier:
@@ -154,6 +162,14 @@ function score(
     );
     return {
       players: rows.length,
+      conditionalMinutesCoverage: {
+        coverage80: average(
+          rows.map((r) => r.conditionalMinutesCoverage?.coverage80 ?? null),
+        ),
+        coverage50: average(
+          rows.map((r) => r.conditionalMinutesCoverage?.coverage50 ?? null),
+        ),
+      },
       ranges: perStat((q) => ({
         pinball: average(rows.map((r) => r.ranges[q]?.pinball ?? null)),
         coverage80: average(rows.map((r) => r.ranges[q]?.coverage80 ?? null)),
@@ -225,7 +241,7 @@ export function scoreGame(
   return {
     gameId: pre.gameId,
     tip: pre.tip,
-    status: frozen ? "frozen" : "no_forecast",
+    status: frozen ? ("frozen" as const) : ("no_forecast" as const),
     costUsd: meter.costUsd,
     wallClockMs: meter.wallClockMs,
     box: game.players.map(publicOutcome),

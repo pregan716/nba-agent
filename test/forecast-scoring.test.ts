@@ -62,6 +62,17 @@ const close = (a: number | null, b: number) =>
 test("validator accepts negative fantasy and flat ranges, rejects malformed drafts without repair", () => {
   assert.ok(validateForecast(draft, pre).ok);
   const p = draft.players[0];
+  const probabilities = structuredClone(draft);
+  const first = probabilities.players[0];
+  first.p_play = 0.2;
+  first.p_start = 0.9;
+  assert.deepEqual(validateForecast(probabilities, pre), {
+    ok: false,
+    reason: "p_start for " + first.playerId + " must be at most p_play",
+  });
+  assert.equal(first.p_start, 0.9);
+  first.p_start = first.p_play;
+  assert.ok(validateForecast(probabilities, pre).ok);
   for (const bad of [
     { minutes: flat(59) },
     { minutes: flat(-0.01) },
@@ -127,6 +138,58 @@ test("hand-scored player and game diagnostics, pregame picks, weighted ceiling b
     rate: 0.25,
   });
   assert.equal(report.agent.byTier["deep bench"].players, 5);
+  const keys = (o: object, expected: string[]) =>
+    assert.deepEqual(Object.keys(o).sort(), expected.sort());
+  keys(report, [
+    "gameId",
+    "tip",
+    "status",
+    "costUsd",
+    "wallClockMs",
+    "box",
+    "agent",
+    "reference",
+  ]);
+  for (const scores of [report.agent, report.reference]) {
+    keys(scores, ["players", "picks", "overall", "byTier"]);
+    for (const player of scores.players)
+      keys(player, [
+        "playerId",
+        "tier",
+        "actual",
+        "forecast",
+        "ranges",
+        "conditionalMinutesCoverage",
+        "misplacedMinutes",
+        "playBrier",
+        "startBrier",
+        "ceiling",
+      ]);
+    for (const summary of [scores.overall, ...Object.values(scores.byTier)])
+      keys(summary, [
+        "players",
+        "conditionalMinutesCoverage",
+        "ranges",
+        "playBrier",
+        "startBrier",
+        "misplacedMinutes",
+        "ceiling",
+      ]);
+  }
+  const partial = scoreGame(
+    pre,
+    draft,
+    draft,
+    { ...box, players: [{ ...row, minutes: 5 }] },
+    meter,
+  ).agent;
+  for (const summary of [partial.overall, partial.byTier["deep bench"]]) {
+    assert.deepEqual(summary.conditionalMinutesCoverage, {
+      coverage80: { count: 1, mean: 0 },
+      coverage50: { count: 1, mean: 0 },
+    });
+    assert.deepEqual(summary.ranges.minutes.coverage80, { count: 5, mean: 1 });
+  }
   assert.doesNotMatch(
     JSON.stringify(report),
     /marketLine|bigOver|relativeLoss/,
@@ -185,11 +248,11 @@ test("freeze across handles, scheduled cutoff, exact DST release and previous-ga
     tip: "2026-11-02T00:00:00Z",
     release: "2026-11-02T14:00:00Z",
   };
-  const setup = (id: string, handle: ForecastRecord) =>
+  const setup = (id: string, handle: ForecastRecord, excluded = false) =>
     forecastSession({
       gameId: id,
       record: handle,
-      referenceRoot: root,
+      referenceRoot: excluded ? join(root, "excluded") : root,
       clock: () => ({ now, phase }),
       metering: () => meter,
       source: {
@@ -199,6 +262,9 @@ test("freeze across handles, scheduled cutoff, exact DST release and previous-ga
           gameId: g.gameId,
           tip: g.tip,
           history: [],
+          exclusions: excluded
+            ? [{ gameId: "today", reason: "missing box scores" }]
+            : [],
         }),
         outcomes: async (g, cutoff) => {
           reads++;
@@ -240,6 +306,14 @@ test("freeze across handles, scheduled cutoff, exact DST release and previous-ga
     phase = "pregame";
     const next = await setup("next", other);
     assert.deepEqual(await next.read_feedback(), fb);
+    const excluded = await setup("next", other, true);
+    const priorReads = reads;
+    assert.deepEqual(await excluded.read_feedback(), {
+      status: "excluded",
+      gameId: "today",
+      reason: "missing box scores",
+    });
+    assert.equal(reads, priorReads);
     now = tomorrow.tip;
     assert.equal(next.freeze_forecast({ ...draft, gameId: "next" }).ok, false);
     assert.equal(record.finalized({ ...pre, gameId: "missing" }, "ctx"), null);
