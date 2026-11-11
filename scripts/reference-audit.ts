@@ -9,8 +9,7 @@ import {
   projectionModel,
   referenceTables,
 } from "../src/projection/reference.js";
-import { quantities } from "../src/projection/forecast.js";
-import { minutes } from "../src/projection/distribution.js";
+import { auditGames } from "../src/projection/audit.js";
 import { BOS } from "../src/replay/types.js";
 
 const [image, output, root = ".cache/reference-projection", count = "70"] =
@@ -50,67 +49,26 @@ try {
   const forecasts = new Map(
     [...tables.history, tables.tonight].map((r) => [r.gameId, r]),
   );
-  const coverage = Object.fromEntries(
-    quantities.map((q) => [q, { n: 0, inside1090: 0, inside2575: 0 }]),
-  );
-  const conditionalMinutes = { n: 0, inside1090: 0, inside2575: 0 };
-  const perGame = [];
+  const scoredGames = [];
   for (const game of games) {
-    const record = forecasts.get(game.gameId)!;
     // Read only this game's outcomes at release. Never open game 71 to score game 70.
-    const actual = (
+    const boston = (
       await source.outcomes(
         game,
         new Date(Date.parse(game.release) + 1).toISOString(),
       )
     ).players.filter((p) => p.teamId === BOS);
-    const box = new Map(actual.map((p) => [p.playerId, p]));
-    const forecast = new Map(
-      record.forecast.players.map((p) => [p.playerId, p]),
-    );
-    let expectedBox = 0,
-      medianRoster = 0;
-    for (const a of actual) {
-      const f = forecast.get(a.playerId);
-      if (!f && a.played)
-        throw Error(
-          "Played outside dated roster: " + game.gameId + " " + a.playerId,
-        );
-      expectedBox +=
-        Math.abs(a.minutes - (f ? minutes(f.p_play, f.minutes).mean : 0)) / 2;
-    }
-    for (const f of forecast.values()) {
-      const a = box.get(f.playerId),
-        dist = minutes(f.p_play, f.minutes);
-      medianRoster += Math.abs((a?.minutes ?? 0) - dist.quantile(0.5)) / 2;
-      if (a?.played) {
-        conditionalMinutes.n++;
-        conditionalMinutes.inside1090 += Number(
-          f.minutes[1] <= a.minutes && a.minutes <= f.minutes[5],
-        );
-        conditionalMinutes.inside2575 += Number(
-          f.minutes[2] <= a.minutes && a.minutes <= f.minutes[4],
-        );
-      }
-      for (const q of quantities) {
-        if (q !== "minutes" && !a?.played) continue;
-        const y = a?.[q] ?? 0,
-          r = f[q],
-          c = coverage[q];
-        const quant = (level: number, index: number) =>
-          q === "minutes" ? dist.quantile(level) : r[index];
-        c.n++;
-        c.inside1090 += Number(quant(0.1, 1) <= y && y <= quant(0.9, 5));
-        c.inside2575 += Number(quant(0.25, 2) <= y && y <= quant(0.75, 4));
-      }
-    }
-    perGame.push({
-      gameId: game.gameId,
-      modelHash: record.modelHash,
-      expectedBox,
-      medianRoster,
+    scoredGames.push({
+      forecast: forecasts.get(game.gameId)!.forecast,
+      boston,
     });
   }
+  const counts = auditGames(scoredGames);
+  const perGame = games.map((game, i) => ({
+    gameId: game.gameId,
+    modelHash: forecasts.get(game.gameId)!.modelHash,
+    ...counts.perGame[i],
+  }));
   writeFileSync(
     output,
     JSON.stringify(
@@ -122,8 +80,11 @@ try {
           perGame.reduce((s, g) => s + g.expectedBox, 0) / games.length,
         medianRoster:
           perGame.reduce((s, g) => s + g.medianRoster, 0) / games.length,
-        coverage,
-        conditionalMinutes,
+        coverage: counts.all.coverage,
+        conditionalMinutes: counts.all.conditionalMinutes,
+        tails: counts.all.tails,
+        // Games 21-70: the same counters over the scored split.
+        scored: counts.scored,
         initialSeconds,
         warmSeconds,
         perGame,

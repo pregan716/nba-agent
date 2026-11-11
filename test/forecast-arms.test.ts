@@ -373,6 +373,7 @@ assert not names.intersection({'odds','prop_consensus','decision_windows','unanc
             requested_at: g.tip,
             snapshot_kind: "scheduled_start",
             status: "ok",
+            probability_basis: "unconditional",
             selected_line: 2,
             p_over: 0.45,
           };

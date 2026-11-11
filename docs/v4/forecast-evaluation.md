@@ -13,6 +13,8 @@ The Markdown summary reports the primary scores, market test, big overs and ceil
 
 The host appends each game's scheduled-tip consensus after the run ends and checkpoints the record. Rows come from the pinned odds release, joined by the ESPN game and player mappings. Capture records the release and methodology hashes, usable lines and probabilities, and the number of unusable rows. A usable prop without a matching forecast player fails evaluation. The scorer verifies the record chain, feedback blobs and forecast receipts. Reporting requires no credentials, corpus reads, sessions or model calls. Player markets and market-relative feedback stay outside agent sessions.
 
+Capture refuses a usable row whose `probability_basis` is not `unconditional`. On an integer line the release's over probability is conditional on no push, while the scorer counts a push as an under. The current pin selects only half-integer lines, so no row is refused.
+
 To attach the same inputs to an older, finished local forecast run, use `npm run forecast:capture -- "$RUN_DIRECTORY"` with the run's dataset pins. Repeating capture checks the saved inputs. A missing or different release cannot silently supply a comparison.
 
 Pilot records report development games. Scored records report games 21–70. The evaluator refuses holdout games. Excluded games retain the recorded reason. Missing forecasts use the recorded reference forecast. The report includes a second comparison with every game flagged for a missing forecast or infrastructure failure removed from all participating runs. Both views fit their own market blends. Comparisons require matching games, reference receipts, outcomes, market inputs and non-arm settings.
@@ -35,3 +37,13 @@ uv run --with pandas --with numpy --with scikit-learn python docs/evidence/proje
   --cache "$HEADROOM_CACHE" --out /tmp/headroom-results.json --baseline-props /tmp/headroom-props.json
 npx tsx scripts/forecast-headroom-check.ts /tmp/headroom-props.json
 ```
+
+## Capture check on the real release
+
+The headroom replay above feeds the headroom export's rows straight to the ranking rules. This check exercises the other half: the join of the pinned consensus release to games and players that capture performs after a run.
+
+```sh
+npm run --silent forecast:capture-check
+```
+
+It runs capture over Celtics games 1–70 and fails unless it finds the headroom pool. The comparison is by digest of every sorted (game, player, stat, line, over probability), so two swapped player identities fail it even though every count is unchanged. The expected digest comes from the headroom export, which joins the release through separate code. Pass the export's `props.json` as an argument to recompute the expected digest from the file as well. On the current pin (Nov 11, 2026, SPO-886) it found **1,562 usable props over 70 games**, 18 to 28 per game, with 142 scheduled-tip rows that had no usable consensus. Its digest (`b5d415c4…`) equals the headroom export's. It reads the schedule and the consensus release only; no outcome is decoded.
