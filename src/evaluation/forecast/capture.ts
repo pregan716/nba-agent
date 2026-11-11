@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { OddsAdapter } from "../../data/adapters.js";
 import type { Identities } from "../../data/identity.js";
 import type { Row } from "../../data/contracts.js";
@@ -69,6 +70,15 @@ export function snapshots(games: Game[], ids: Identities, rows: Row[]) {
         a.playerId.localeCompare(b.playerId) || a.stat.localeCompare(b.stat),
     );
   return data;
+}
+/** Order-independent digest of every captured (game, player, stat, line, over probability). */
+export function poolDigest(captured: Map<string, Snapshot>) {
+  const rows = [...captured].flatMap(([gameId, s]) =>
+    s.props.map((p) =>
+      JSON.stringify([gameId, p.playerId, p.stat, p.line, p.market]),
+    ),
+  );
+  return createHash("sha256").update(rows.sort().join("\n")).digest("hex");
 }
 // Called by the host after run_end. No session, sandbox, or model receives this input.
 export async function recordConsensus(

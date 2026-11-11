@@ -138,10 +138,14 @@ who played using the conditional ranges. All four production coverage figures
 are conditional on playing. The output records the denominators, hits, per-game
 hashes, and elapsed time to build game 70's tables and to retrieve them again.
 
-The audit also records `tails` (SPO-886). For players who played, each quantity
-has the count of results below the 10th percentile, above the 90th, and
-strictly above the interpolated 85th, for games 1–70 and separately for games
-21–70. The rate above the 85th fantasy-point percentile is the realised base
-rate of a ceiling game given that the player plays. These figures are not in
-the committed evidence yet: the rerun reuses the 70 receipts retained on the
-audit host and is recorded when that host is next started.
+The audit also records `tails` and a `scored` block (SPO-886). For players who
+played, `tails` counts results below the 10th percentile, above the 90th, and
+strictly above the interpolated 85th, per quantity. The rate above the 85th
+fantasy-point percentile is the realised base rate of a ceiling game given
+that the player plays. `scored` repeats every counter for games 21–70 alone:
+both coverage intervals for whole-roster minutes and for production,
+conditional-minutes coverage, and the tails. The counters live in
+`src/projection/audit.ts` and are tested on a fixture that crosses games 20
+and 21 with a DNP. These figures are not in the committed evidence yet: the
+rerun reuses the 70 receipts retained on the audit host and is recorded when
+that host is next started.
