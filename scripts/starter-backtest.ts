@@ -139,7 +139,8 @@ try {
     results,
   };
   writeFileSync(
-    "docs/evidence/policy/backtest-spo873.json",
+    process.argv.find((a) => a.startsWith("--output="))?.slice(9) ??
+      "docs/evidence/policy/backtest-spo873.json",
     JSON.stringify(evidence, null, 2) + "\n",
   );
   if (

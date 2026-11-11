@@ -16,6 +16,7 @@ import {
 } from "../src/runner/proxy.js";
 import { RecordStore } from "../src/runner/record.js";
 import { piHarness } from "../src/harness/pi.js";
+import { launchMachine } from "../src/launch/machine.js";
 import { verifyLaunchImages } from "../src/launch/images.js";
 import { localSandboxImage, presetConfig } from "../src/harness/presets.js";
 import {
@@ -222,7 +223,9 @@ try {
     backtestSource,
     starterService,
   } = inputs;
+  const machine = await launchMachine();
   const config = presetConfig({
+    host: machine.instanceType === "local" ? "local" : "aws-ec2-ebs",
     harness: "pi",
     promptSet,
     runId: arg(
@@ -238,6 +241,7 @@ try {
       ? probeForManifest(JSON.parse(readFileSync(arg("probe")!, "utf8")))
       : null,
   });
+  config.harness.machine = machine;
   // Bind the run to the exact sandbox pin checked before loading data.
   if (sandboxImage) config.harness.sandboxImage = sandboxImage;
   config.codeRevision = config.harness.codeRevision = currentCodeRevision();

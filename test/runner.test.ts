@@ -94,7 +94,17 @@ test("manifest pins all axes/descriptors and chronological 82-game schedule, fir
     executedAt: "2026-10-24T00:00:00Z",
     tools: [],
   };
-  assert.equal(manifest(c, schedule).config.purpose, "scored");
+  assert.throws(() => manifest(c, schedule), /recorded machine/);
+  c.harness.machine = {
+    instanceType: "c8g.4xlarge",
+    architecture: "aarch64",
+    dockerCpus: 16,
+    dockerMemoryBytes: 32000000000,
+  };
+  const scored = manifest(c, schedule);
+  assert.equal(scored.config.purpose, "scored");
+  c.harness.machine.dockerCpus = 8;
+  assert.notEqual(manifest(c, schedule).harnessVersion, scored.harnessVersion);
   assert.throws(() => manifest(c, games), /82/);
   assert.throws(
     () => manifest(fixtureConfig(), [games[0], games[0]]),
