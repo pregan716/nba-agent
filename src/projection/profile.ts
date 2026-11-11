@@ -1,7 +1,8 @@
 import { gameLineVersion } from "./game-lines.js";
 import type { DatasetVersion } from "../env/contract.js";
 import { presetConfig } from "../harness/presets.js";
-import { forecastDefinitions, forecastPrompts } from "./tools.js";
+import { FORECAST_MEMORY_INSTRUCTIONS, forecastPrompts } from "./prompts.js";
+import { forecastDefinitions } from "./tools.js";
 
 export type ForecastArm = "no-memory" | "full-memory";
 export function forecastProfile(o: {
@@ -49,9 +50,7 @@ export function forecastProfile(o: {
     (t) => full || !t.name.startsWith("workspace_"),
   );
   config.harness.prompts = { ...forecastPrompts };
-  config.harness.memoryInstructions = full
-    ? "Free-form notes in /workspace/memory and binary or text files in /workspace/code persist between games. Notes are capped at 50,000 tokens and code at 8 MB."
-    : "Start fresh each game. Read the last game's feedback. Use /scratch for temporary research.";
+  config.harness.memoryInstructions = FORECAST_MEMORY_INSTRUCTIONS[o.arm];
   config.codeRevision = config.harness.codeRevision;
   return config;
 }

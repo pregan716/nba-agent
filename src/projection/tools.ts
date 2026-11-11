@@ -3,14 +3,8 @@ import { TOOL_DEFINITIONS } from "../env/tools.js";
 import { DECISION_TABLES } from "../env/decision-history.js";
 import { quantities } from "./forecast.js";
 
-export const forecastPrompts = {
-  system:
-    "You are the Boston Celtics projection analyst. Use only the supplied session tools.",
-  pregame:
-    "Research this game and freeze one forecast-v1 roster forecast before tip. Reference tables provide the dated roster and forecast format.",
-  postgame: "Review released feedback and update permitted files if useful.",
-  postgame_mandated: "Review released feedback.",
-};
+export { forecastPrompts } from "./prompts.js";
+
 const object = (
   properties: Record<string, unknown> = {},
   required: string[] = [],

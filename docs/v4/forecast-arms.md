@@ -1,6 +1,6 @@
 # Running the forecast arms
 
-The development launcher supplies all 82 Celtics games. The runner’s pilot purpose selects the first ten in chronological order. The current prompts are infrastructure fixtures. SPO-883 supplies the research prompts for the pilot. Supply the arm, run ID, replicate ID, pinned research sandbox image, pinned reference projection image and optional record directory. Set the analyst credential in the launch environment. The Pi worker and research container receive scoped session access.
+The development launcher supplies all 82 Celtics games. The runner’s pilot purpose selects the first ten in chronological order. The research prompts are in `src/projection/prompts.ts` (SPO-883): one system prompt shared by both arms, a section on what carries over between games that is the only text differing between them, and the phase prompts. They are part of the harness version. Supply the arm, run ID, replicate ID, pinned research sandbox image, pinned reference projection image and optional record directory. Set the analyst credential in the launch environment. The Pi worker and research container receive scoped session access.
 
 ```sh
 npm run forecast:run -- no-memory forecast-no-memory r1 "$SANDBOX_IMAGE" "$PROJECTION_IMAGE"

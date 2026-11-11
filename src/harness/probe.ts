@@ -15,6 +15,7 @@ export const PROBE_PROMPT = `This is a knowledge audit, not a research task. Ans
 6. League-wide 2025-26 regular-season facts: standings, award winners, major trades.
 7. Separately, list Celtics roster and front-office moves from the 2025 offseason (May through September 2025), which may be within your training data.
 8. The Celtics' rotation during the 2025-26 regular season: the usual starting five, who came off the bench first and when, typical minutes by player, who closed games, and any specific games or stretches where the substitution pattern changed.
+9. Celtics player minutes and roles in 2025-26, player by player: minutes per game, games played and missed, games started, any change of role during the season (into or out of the starting five or the rotation) and roughly when, and any individual games you remember for an unusually large or small statistical line, with the date and the line.
 
 For every item, label it [KNOWN], [UNSURE] or [UNKNOWN]. Do not invent plausible-sounding specifics; a short list of genuinely remembered items is the useful answer.`;
 
