@@ -44,7 +44,7 @@ game release and the box/participation envelopes must precede the cutoff.
 Historical features advance on release as well: a later tip on the same day
 cannot see an earlier game's unreleased results. Each target uses the verified
 season roster and last pre-tip team injury snapshot; Out and Doubtful get zero
-play and start probability. The model uses every eligible team's history.
+play and start probability. The Playing Brier excludes those players. The minutes pinball loss includes them, so the reference incurs a loss if one plays. The model uses every eligible team's history.
 
 - Three histogram gradient-boosted estimators predict playing, minutes given
   playing, and starting given playing. Starting probability is the latter
@@ -64,6 +64,8 @@ play and start probability. The model uses every eligible team's history.
   residual percentiles to each target's center, grouped by predicted minutes
   (under 8, 8–18, 18–30 and 30+). Buckets with fewer than 40 observations use
   the pooled residuals. The final point models refit on all eligible games.
+
+Historical fitting and residual calibration use the retrospective inactive flag for availability and for redistributing team minutes. A pregame injury report can disagree with that flag. Residuals from historical centers may therefore understate game-day uncertainty; observed interval coverage measures the combined effects of this mismatch and other model errors.
 
 The harness identity includes model and feature source, forecast contract and
 runtime image. Each immutable pregame receipt binds the input hash, learned
@@ -87,3 +89,26 @@ the pinned numerical image, and a synthetic current-season target with the real
 opening roster and the pinned 2024–25 training release. The latter fit used
 1,228 eligible prior games and produced 17 player rows. Two regular-season
 games had unusable normalization products. No holdout game was needed.
+
+The independent-refit check needs the pinned Docker image. CI runs it in the assembler job. To run it locally:
+
+```sh
+PROJECTION_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/reference-projection.test.ts
+```
+
+To measure the 70-game comparison, run the following from the repository root
+on the audit host. The last argument is the durable receipt directory. A retry
+checks completed receipts and fits the remaining games.
+
+```sh
+npx tsx scripts/reference-audit.ts "$PROJECTION_IMAGE" reference-audit.json .cache/reference-projection
+```
+
+The audit integrates the conditional minutes quantile function, multiplies by
+`p_play`, then compares those expected minutes to the official boxes. For the
+V4 diagnostic it takes the median after adding the DNP mass. Both metrics sum
+absolute errors, halve the sum per game, and average across games. Minutes
+coverage is reported both over dated rosters using the mixture and over players
+who played using the conditional ranges. All four production coverage figures
+are conditional on playing. The output records the denominators, hits, per-game
+hashes, and elapsed time to build game 70's tables and to retrieve them again.

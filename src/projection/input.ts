@@ -103,92 +103,133 @@ export async function projectionSource(c: Corpus) {
   const envelopes = new Map(records.map((g) => [g.id, g]));
   const cache = new Map<string, ReleasedGame>();
   const exclusions = new Map<string, string>();
+  const rosters = new Map<string, ModelInput["roster"]>();
+  async function loadReleased(allowed: Game[], cutoff: string) {
+    for (const [i, season] of ["2024-25", "2025-26"].entries()) {
+      const missing = allowed.filter(
+        (g) =>
+          g.season === season &&
+          !cache.has(g.gameId) &&
+          !exclusions.has(g.gameId),
+      );
+      if (!missing.length) continue;
+      const releaseById = new Map(
+        missing.map((g) => [g.gameId, Date.parse(g.release)]),
+      );
+      const games = missing.map((g) => envelopes.get(g.gameId)!);
+      const load = async (table: string) => {
+        const grouped = new Map<string, RecordEnvelope[]>();
+        for await (const batch of seasons[i].exportRecords(table, games)) {
+          if (batch.reason) {
+            exclusions.set(batch.gameId, batch.reason);
+            continue;
+          }
+          grouped.set(
+            batch.gameId,
+            batch.records.filter((r) => {
+              if (!before(r.availableAt, cutoff)) return false;
+              if (
+                r.data.game_id !== batch.gameId ||
+                Date.parse(r.availableAt) !== releaseById.get(batch.gameId)
+              )
+                throw Error(
+                  "Unexpected released envelope: " + table + " " + batch.gameId,
+                );
+              return true;
+            }),
+          );
+        }
+        return grouped;
+      };
+      const summaries = await load("game_players"),
+        boxes = await load("player_box_scores");
+      for (const game of missing) {
+        if (exclusions.has(game.gameId)) continue;
+        const key = (r: RecordEnvelope) =>
+          r.data.team_id + ":" + r.data.player_id;
+        const rows = summaries.get(game.gameId) ?? [];
+        const sm = new Map(rows.map((r) => [key(r), r]));
+        if (sm.size !== rows.length)
+          throw Error("Duplicate player summary in " + game.gameId);
+        const players = (boxes.get(game.gameId) ?? [])
+          .map((b) => {
+            const s = sm.get(key(b));
+            if (!s) throw Error("Missing player summary in " + game.gameId);
+            sm.delete(key(b));
+            return outcome(b, s);
+          })
+          .sort(
+            (a, b) =>
+              a.teamId.localeCompare(b.teamId) ||
+              a.playerId.localeCompare(b.playerId),
+          );
+        if (sm.size)
+          throw Error("Player summary without box in " + game.gameId);
+        if (new Set(players.map((p) => p.teamId)).size !== 2)
+          throw Error("Incomplete projection history: " + game.gameId);
+        cache.set(game.gameId, { ...game, players });
+      }
+    }
+  }
   return {
     schedule,
+    async outcomes(game: Game, cutoff: string) {
+      if (!before(game.release, cutoff))
+        throw Error("Game outcomes unavailable before release");
+      await loadReleased([game], cutoff);
+      const result = cache.get(game.gameId);
+      if (!result)
+        throw Error(
+          "Missing outcomes: " +
+            game.gameId +
+            " " +
+            exclusions.get(game.gameId),
+        );
+      return result;
+    },
     async input(target: Game): Promise<ModelInput> {
       const allowed = eligibleHistory(schedule, target);
-      for (const [i, season] of ["2024-25", "2025-26"].entries()) {
-        const missing = allowed.filter(
-          (g) =>
-            g.season === season &&
-            !cache.has(g.gameId) &&
-            !exclusions.has(g.gameId),
+      await loadReleased(allowed, target.tip);
+      const pending = [
+        ...allowed.filter((g) => g.season === target.season && g.boston),
+        target,
+      ].filter((g) => !rosters.has(g.gameId));
+      if (pending.length) {
+        const pregames = await auditPregames(
+          c,
+          pending.map((g) => g.gameId),
+          [],
+          process.cwd(),
+          undefined,
+          {
+            throughReportDay: Temporal.Instant.from(target.tip)
+              .toZonedDateTimeISO("America/New_York")
+              .toPlainDate()
+              .toString(),
+            omitLineups: true,
+          },
         );
-        if (!missing.length) continue;
-        const releaseById = new Map(
-          missing.map((g) => [g.gameId, Date.parse(g.release)]),
-        );
-        const games = missing.map((g) => envelopes.get(g.gameId)!);
-        const load = async (table: string) => {
-          const grouped = new Map<string, RecordEnvelope[]>();
-          for await (const batch of seasons[i].exportRecords(table, games)) {
-            if (batch.reason) {
-              exclusions.set(batch.gameId, batch.reason);
-              continue;
-            }
-            grouped.set(
-              batch.gameId,
-              batch.records.filter(
-                (r) =>
-                  before(r.availableAt, target.tip) &&
-                  r.data.game_id === batch.gameId &&
-                  Date.parse(r.availableAt) === releaseById.get(batch.gameId),
-              ),
-            );
-          }
-          return grouped;
-        };
-        const summaries = await load("game_players"),
-          boxes = await load("player_box_scores");
-        for (const game of missing) {
-          if (exclusions.has(game.gameId)) continue;
-          const key = (r: RecordEnvelope) =>
-            r.data.team_id + ":" + r.data.player_id;
-          const sm = new Map(
-            summaries.get(game.gameId)?.map((r) => [key(r), r]),
+        for (const pre of pregames) {
+          const out = new Set(
+            pre.injuryReport.players
+              .filter((r) =>
+                ["out", "doubtful"].includes(r.status.toLowerCase()),
+              )
+              .map((r) => r.playerId),
           );
-          const players = (boxes.get(game.gameId) ?? [])
-            .map((b) => {
-              const s = sm.get(key(b));
-              if (!s) throw Error("Missing player summary in " + game.gameId);
-              return outcome(b, s);
-            })
-            .sort(
-              (a, b) =>
-                a.teamId.localeCompare(b.teamId) ||
-                a.playerId.localeCompare(b.playerId),
-            );
-          if (new Set(players.map((p) => p.teamId)).size !== 2)
-            throw Error("Incomplete projection history: " + game.gameId);
-          cache.set(game.gameId, { ...game, players });
+          rosters.set(
+            pre.gameId,
+            pre.roster.map((r) => ({
+              playerId: r.playerId,
+              inactive: out.has(r.playerId),
+            })),
+          );
         }
       }
-      const [pre] = await auditPregames(
-        c,
-        [target.gameId],
-        [],
-        process.cwd(),
-        undefined,
-        {
-          throughReportDay: Temporal.Instant.from(target.tip)
-            .toZonedDateTimeISO("America/New_York")
-            .toPlainDate()
-            .toString(),
-          omitLineups: true,
-        },
-      );
-      const out = new Set(
-        pre.injuryReport.players
-          .filter((r) => ["out", "doubtful"].includes(r.status.toLowerCase()))
-          .map((r) => r.playerId),
-      );
       return {
         gameId: target.gameId,
         tip: target.tip,
-        roster: pre.roster.map((r) => ({
-          playerId: r.playerId,
-          inactive: out.has(r.playerId),
-        })),
+        roster: rosters.get(target.gameId)!,
         history: allowed
           .filter((g) => cache.has(g.gameId))
           .map((g) => cache.get(g.gameId)!),

@@ -37,6 +37,18 @@ export function projectionModel(image: string) {
         image,
         source: digest([
           sha256(await readFile(script)),
+          ...(await Promise.all(
+            [
+              "./reference.ts",
+              "../replay/load.ts",
+              "../replay/roster.ts",
+              "../data/adapters.ts",
+              "../data/release.ts",
+              "../env/visibility.ts",
+            ].map(async (path) =>
+              sha256(await readFile(new URL(path, import.meta.url))),
+            ),
+          )),
           sha256(await readFile(new URL("./input.ts", import.meta.url))),
           sha256(await readFile(new URL("./forecast.ts", import.meta.url))),
         ]),

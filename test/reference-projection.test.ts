@@ -36,7 +36,7 @@ const today = schedule("today", tip),
 const future = schedule("exactly-at-cutoff", "2025-10-21T20:00:00Z");
 
 test("reference input excludes equal-cutoff games, result rows and injury reports before their contents affect a refit", async () => {
-  const source = async (planted: boolean) => {
+  const source = async (planted: boolean, defect?: "orphan" | "release") => {
     const adapter = (games: (typeof today)[]) => ({
       games: async () => games,
       async *exportRecords(table: string, requested: typeof games) {
@@ -62,6 +62,13 @@ test("reference input excludes equal-cutoff games, result rows and injury report
             participation_status: "played",
           },
         }));
+        if (defect === "orphan" && table === "game_players")
+          records.push({
+            ...records[0],
+            data: { ...records[0].data, player_id: "orphan" },
+          });
+        if (defect === "release")
+          records[0].availableAt = "2025-04-02T13:00:01Z";
         if (planted)
           records.push({
             ...records[0],
@@ -101,6 +108,11 @@ test("reference input excludes equal-cutoff games, result rows and injury report
   const clean = await source(false),
     planted = await source(true);
   assert.deepEqual(planted, clean);
+  await assert.rejects(source(false, "orphan"), /summary without box/);
+  await assert.rejects(
+    source(false, "release"),
+    /Unexpected released envelope/,
+  );
   assert.ok(clean.roster.length > 10);
   assert.equal(clean.history[0].players[0].fantasy_points, -0.5);
 });
@@ -227,4 +239,32 @@ test("pregame tables return immutable earlier forecasts paired only with release
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+test("injury partitions admit the cutoff day, skip later files and reject undated keys", async () => {
+  const { InjuryAdapter } = await import("../src/data/adapters.js");
+  const reads: string[] = [];
+  const keys = [
+    "reports/report_date=2025-10-22/rows",
+    "reports/report_date=2025-10-23/rows",
+  ];
+  const release = {
+    manifest: { partitions: keys.map((key) => ({ key })) },
+    ref: (key: string) => ({ key }),
+    rows: async (key: string) => {
+      reads.push(key);
+      return [];
+    },
+  };
+  const adapter = new InjuryAdapter(
+    release as unknown as Corpus["injuries"]["release"],
+  );
+  const scan = async () => {
+    for await (const _ of adapter.partitions("players", "2025-10-22")) {
+    }
+  };
+  await scan();
+  assert.deepEqual(reads, [keys[0]]);
+  release.manifest.partitions.push({ key: "reports/undated/rows" });
+  await assert.rejects(scan, /Missing injury partition date/);
 });
