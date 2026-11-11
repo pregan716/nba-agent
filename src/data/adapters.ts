@@ -9,7 +9,7 @@ import type {
 } from "./contracts.js";
 import { STATIC_AT } from "./contracts.js";
 import type { ObjectRef, VerifiedStore } from "./store.js";
-import { Release, jsonLines } from "./release.js";
+import { Release, jsonLines, parquet } from "./release.js";
 import {
   instant,
   laterEasternReading,
@@ -134,11 +134,60 @@ export class PlayByPlayAdapter {
   get exclusions(): Exclusion[] {
     return this.exclusionLog.values();
   }
-  constructor(readonly release: Release) {}
+  constructor(
+    readonly release: Release,
+    private readonly projectionOnly = false,
+  ) {}
+  // The projection audit may read public schedule fields across the season.
+  // Select columns at the decoder so no scores/statuses enter its schedule.
+  private async scheduleRows() {
+    if (!this.projectionOnly)
+      return this.release.table("games", "regular_season");
+    const m = this.release.manifest;
+    const rows: { row: Row; ref: ObjectRef }[] = [];
+    for (const name of m.tables.games as string[]) {
+      if (!name.includes("/phase=regular_season/")) continue;
+      const key = m.object_prefix + name;
+      const columns = [
+        "game_id",
+        "season",
+        "phase",
+        "home_team_id",
+        "away_team_id",
+        "scheduled_tipoff",
+      ];
+      for (const row of await parquet(await this.release.bytes(key), {
+        columns,
+      }))
+        rows.push({ row, ref: this.release.ref(key) });
+    }
+    return rows;
+  }
+  private async exportRows(
+    key: string,
+    entries: [string, number, number][],
+    allowed: Map<string, RecordEnvelope>,
+  ) {
+    if (!this.projectionOnly) {
+      return (await this.release.rows(key)).entries();
+    }
+    const ranges: { start: number; end: number }[] = [];
+    for (const [id, start, length] of entries) {
+      if (!allowed.has(id)) continue;
+      const last = ranges.at(-1);
+      if (last && last.end === start) last.end += length;
+      else ranges.push({ start, end: start + length });
+    }
+    const bytes = await this.release.bytes(key);
+    const selected: [number, Row][] = [];
+    for (const r of ranges) {
+      const rows = await parquet(bytes, { rowStart: r.start, rowEnd: r.end });
+      for (const [i, row] of rows.entries()) selected.push([r.start + i, row]);
+    }
+    return selected;
+  }
   async games(): Promise<RecordEnvelope[]> {
-    this.cachedGames ??= (
-      await this.release.table("games", "regular_season")
-    ).map(({ row, ref }) =>
+    this.cachedGames ??= (await this.scheduleRows()).map(({ row, ref }) =>
       envelope(
         "schedule",
         row.game_id,
@@ -219,7 +268,7 @@ export class PlayByPlayAdapter {
       )
         continue;
       const key = m.object_prefix + name;
-      for (const [i, row] of (await this.release.rows(key)).entries()) {
+      for (const [i, row] of await this.exportRows(key, index[name], allowed)) {
         const game = allowed.get(row.game_id);
         if (!game) continue;
         const records = rowsByGame.get(game.id) ?? [];
@@ -368,10 +417,16 @@ export class InjuryAdapter {
   constructor(readonly release: Release) {}
   async *partitions(
     kind: "teams" | "players" = "teams",
+    throughReportDay?: string,
   ): AsyncGenerator<RecordEnvelope[]> {
     for (const part of this.release.manifest[
       kind === "teams" ? "team_snapshot_partitions" : "partitions"
     ]) {
+      if (throughReportDay) {
+        const day = /\/report_date=(\d{4}-\d{2}-\d{2})\//.exec(part.key)?.[1];
+        if (!day) throw Error("Missing injury partition date");
+        if (day > throughReportDay) continue;
+      }
       const ref = this.release.ref(part.key),
         records: RecordEnvelope[] = [];
       for (const row of await this.release.rows(part.key)) {

@@ -37,6 +37,8 @@ jobs:
       - run: npx tsx scripts/assembler-build.ts
       - run: |
           ASSEMBLER_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/policy-sandbox.test.ts test/starter.test.ts
+      - name: Reference projection determinism
+        run: PROJECTION_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/reference-projection.test.ts
       - name: Offline chronological launcher and baselines
         run: |
           assembler_pin="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')"

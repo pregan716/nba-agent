@@ -11,8 +11,7 @@ The repository contains the data, runner, harness, memory and evaluation
 infrastructure the v4 task reuses, and the complete v3 substitution-policy system
 (decision windows, policy packages, the starter model, Jev), which
 [the v3 brief](docs/NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md)
-describes and [its pilot](docs/v3/pilot.md) evaluated. The v4 forecast, scoring and
-reference projection are not yet implemented.
+describes and [its pilot](docs/v3/pilot.md) evaluated. The [v4 reference projection](docs/v4/reference-projection.md) produces pregame forecasts and released forecast histories.
 [V1 records are archived](docs/archive/v1-props/README.md), as is
 [the original v2 research proposal](docs/archive/v2_agent_spec.md).
 

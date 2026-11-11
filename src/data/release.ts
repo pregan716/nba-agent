@@ -9,13 +9,17 @@ export const jsonLines = (body: Buffer): Row[] =>
     .split("\n")
     .filter((line) => line.trim())
     .map((line) => JSON.parse(line));
-export async function parquet(body: Buffer): Promise<Row[]> {
+export async function parquet(
+  body: Buffer,
+  selection: { rowStart?: number; rowEnd?: number; columns?: string[] } = {},
+): Promise<Row[]> {
   const rows = await parquetReadObjects({
     file: body.buffer.slice(
       body.byteOffset,
       body.byteOffset + body.byteLength,
     ) as ArrayBuffer,
     compressors,
+    ...selection,
   });
   return JSON.parse(
     JSON.stringify(rows, (_, v) => {
