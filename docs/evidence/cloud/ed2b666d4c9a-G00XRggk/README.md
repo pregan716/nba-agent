@@ -6,7 +6,9 @@ Ubuntu 24.04 arm64, AMI `ami-09a93d801db0bafae`, in us-east-1. The
 memory on an on-demand c8g.4xlarge. The encrypted 200 GiB gp3 root volume had
 198,932,221,952 bytes available after acceptance. The cold R2 object cache
 grew to 189,781,280 bytes. The run used offline scoring and scripted model
-providers.
+providers. The bootstrap log recorded Ubuntu package versions
+`docker.io 29.1.3-0ubuntu3~24.04.2`, `containerd 2.2.1-0ubuntu1~24.04.4`
+and `runc 1.3.4-0ubuntu1~24.04.1`.
 
 Type checking and formatting passed. The standard suite passed 318 tests
 with 16 optional skips. All 22 tests in the assembler, starter and backtest
@@ -43,3 +45,21 @@ changing the time limit. [Follow-up log](backtest-followup.log)
 
 AWS confirmed the instance was stopped after the evidence and scripted run root
 were retrieved. The encrypted root volume was retained for resume.
+
+## Implications for machine selection
+
+At the same cutoff, the Mac loaded package history in 80.8 s and completed
+the cold call in 112.4 s. On c8g.4xlarge, even the repeat with R2 objects on
+disk spent 120.15 s loading history. Once history was in memory, the cloud
+package call took 12.26 s versus 31.53 s on the Mac. The standalone cached
+starter call hit the limit on both machines (1,792 windows on the Mac and
+3,072 on EC2). These timings include differences between code revisions and
+do not isolate CPU decoding time. [Mac package](../../policy/backtest-spo872.json)
+and [Mac starter](../../policy/backtest-spo873.json).
+
+With elapsed-time charging, a cold v3 backtest on this instance can consume
+its entire allowance loading history. Before confirming a scored machine,
+compare initializing history before the charged call on c8g with an instance
+that loads it faster. For v4, measure the research sandbox and the SPO-879
+reference projection’s pregame refit on the intended scored machine before
+setting the V5 budget. The v3 backtest provides no timing for that refit.

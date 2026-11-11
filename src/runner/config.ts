@@ -108,6 +108,7 @@ export const configSchema = z.strictObject({
       .strictObject({
         instanceType: name,
         architecture: name,
+        dockerVersion: name.optional(), // Manifests created before engine version recording omit this.
         dockerCpus: integer,
         dockerMemoryBytes: integer,
       })

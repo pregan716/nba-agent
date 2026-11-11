@@ -869,11 +869,19 @@ hash or score before proceeding. Each attempt gets a separate evidence directory
 The two backtests both target game `0022501206`.
 
 For a chronological run, use the launch commands in this guide inside tmux.
+Bootstrap disables Ubuntu’s unattended package upgrades and configures FUSE to
+load at boot. If an upgrade was already staged, reboot before the first run
+and check `test -c /dev/fuse` and `docker info`. Schedule security updates
+between experiments. To restore unattended upgrades, remove
+`/etc/apt/apt.conf.d/99-nba-agent-maintenance`.
+
 After reboot, re-enter the token and repeat the same launch command with the
 same run root, run ID and replicate. The SQLite record supplies the checkpoint.
 The machine descriptor and exact image pins participate in manifest matching.
 For a replacement, restore the checkout, run roots (including SQLite sidecars),
-and exact images on a matching instance type with the same Docker capacity.
+and exact images on a matching instance type with the same Docker Engine
+version, CPU count and reported memory in bytes. A kernel or engine change
+that alters the manifest requires the original environment to resume.
 The stopped root volume retains all three. Alternatively, save and transfer
 the Docker images before replacement and load them on the new host:
 
@@ -886,7 +894,9 @@ gzip -dc .cache/harness-images.tar.gz | docker load
 After the runner exits, copy the complete run roots and evidence to the
 workstation. Acceptance's scripted run lives under `.cache/cloud`. Include
 `.cache/runs` or the selected `--root` for other launches. Stop and verify the
-instance even if an audit failed. EBS storage remains billable while stopped.
+instance even if an audit failed. EBS storage remains billable while stopped. Terminating this instance also
+retains the root volume. Delete it separately when the saved runs and images
+are no longer needed.
 
 ```bash
 mkdir -p .cache/ec2-return

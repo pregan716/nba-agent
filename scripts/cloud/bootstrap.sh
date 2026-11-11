@@ -5,6 +5,10 @@ revision=${1:?Pass the full Git commit SHA}
 [[ $revision =~ ^[a-f0-9]{40}$ && $(uname -m) == aarch64 && $(id -un) == ubuntu ]]
 source /etc/os-release
 [[ $ID == ubuntu && $VERSION_ID == 24.04 ]]
+# Keep the experiment kernel and container runtime stable across runs and reboots.
+# Operators apply security upgrades between experiments (see docs/v3/running.md).
+echo 'APT::Periodic::Unattended-Upgrade "0";' |
+  sudo tee /etc/apt/apt.conf.d/99-nba-agent-maintenance >/dev/null
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl docker.io git gnupg jq tmux xz-utils
 curl -fsSL --retry 3 https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key |
@@ -19,7 +23,9 @@ curl -fsSL --retry 3 https://nodejs.org/dist/v22.22.3/node-v22.22.3-linux-arm64.
 echo "1c4a9933a5e45bc88f54f70b5f91232c127ec49f1a5989d23fb85824c7adf9b7  $archive" | sha256sum -c -
 sudo tar -xJf "$archive" --strip-components=1 -C /usr/local
 sudo systemctl enable --now docker
+echo fuse | sudo tee /etc/modules-load.d/nba-agent-fuse.conf >/dev/null
 sudo modprobe fuse
+test -c /dev/fuse
 sudo usermod -aG docker ubuntu
 sudo touch /etc/nba-agent-ec2
 cd ~ubuntu

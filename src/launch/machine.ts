@@ -22,9 +22,13 @@ export async function launchMachine() {
     if (!/^[\w-]+\.[\w-]+$/.test(instanceType))
       throw Error("Invalid EC2 instance type");
   }
-  const [architecture, cpus, memory] = execFileSync(
+  const [architecture, cpus, memory, dockerVersion] = execFileSync(
     "docker",
-    ["info", "--format", "{{.Architecture}} {{.NCPU}} {{.MemTotal}}"],
+    [
+      "info",
+      "--format",
+      "{{.Architecture}} {{.NCPU}} {{.MemTotal}} {{.ServerVersion}}",
+    ],
     { encoding: "utf8", timeout: 10000 },
   )
     .trim()
@@ -33,10 +37,19 @@ export async function launchMachine() {
   const dockerMemoryBytes = Number(memory);
   if (
     !architecture ||
+    !dockerVersion ||
     ![dockerCpus, dockerMemoryBytes].every(
       (n) => Number.isSafeInteger(n) && n > 0,
     )
   )
-    throw Error("Docker did not report its available CPU and memory");
-  return { instanceType, architecture, dockerCpus, dockerMemoryBytes };
+    throw Error(
+      "Docker did not report its architecture, engine version, CPU count or memory",
+    );
+  return {
+    instanceType,
+    architecture,
+    dockerVersion,
+    dockerCpus,
+    dockerMemoryBytes,
+  };
 }
