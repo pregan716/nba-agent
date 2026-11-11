@@ -9,11 +9,8 @@ import {
   projectionModel,
   referenceTables,
 } from "../src/projection/reference.js";
-import {
-  percentiles,
-  quantities,
-  type Range,
-} from "../src/projection/forecast.js";
+import { quantities } from "../src/projection/forecast.js";
+import { minutes } from "../src/projection/distribution.js";
 import { BOS } from "../src/replay/types.js";
 
 const [image, output, root = ".cache/reference-projection", count = "70"] =
@@ -25,29 +22,6 @@ if (!image || !output)
 const gameCount = Number(count);
 if (!Number.isInteger(gameCount) || gameCount < 1 || gameCount > 70)
   throw Error("Audit supports games 1–70 only");
-const levels = [0, ...percentiles.map((p) => p / 100), 1];
-function minutes(p: number, r: Range) {
-  const values = [0, ...r, r[6] + r[6] - r[5]];
-  const mean =
-    p *
-    values
-      .slice(1)
-      .reduce(
-        (s, x, i) => s + (x + values[i]) * 0.5 * (levels[i + 1] - levels[i]),
-        0,
-      );
-  function quantile(t: number) {
-    if (t <= 1 - p || p === 0) return 0;
-    const u = (t - (1 - p)) / p;
-    const i = levels.findIndex((l, j) => j > 0 && l >= u);
-    return (
-      values[i - 1] +
-      ((values[i] - values[i - 1]) * (u - levels[i - 1])) /
-        (levels[i] - levels[i - 1])
-    );
-  }
-  return { mean, quantile };
-}
 const store = new DopplerStore();
 try {
   const corpus = await openCorpus(store, process.cwd(), ".cache/objects");
