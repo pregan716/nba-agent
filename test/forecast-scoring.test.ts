@@ -1,3 +1,6 @@
+import { gameMetrics } from "../src/evaluation/forecast/metrics.js";
+import { scoreProps } from "../src/evaluation/forecast/market.js";
+import { heldOutBlend } from "../src/evaluation/forecast/blend.js";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -353,4 +356,76 @@ test("ceiling uses the reference threshold, own play probability, and all eligib
     denominator: 0.5,
     rate: 1,
   });
+});
+
+test("market, big over and ceiling score atoms and voids against their distinct event definitions", () => {
+  const f = scoreGame(pre, draft, draft, box, meter);
+  const market = {
+    props: roster.map(({ playerId }) => ({
+      playerId,
+      stat: "assists" as const,
+      line: 0,
+      market: 0.5,
+    })),
+    unavailable: 1,
+  };
+  const props = scoreProps(f, market, "agent"),
+    picks = props.filter((p) => p.picked);
+  assert.equal(props[0].over, 0.02);
+  assert.equal(props[0].probability, 0.5);
+  assert.deepEqual(
+    picks.map((p) => p.playerId),
+    ["2", "3", "4"],
+  );
+  assert.equal(picks.filter((p) => p.hit).length, 1);
+  assert.equal(f.agent.players[0].ceiling?.probability, 0);
+  const game = {
+    id: pre.gameId,
+    index: 1,
+    flagged: false,
+    feedback: f,
+    market,
+    ...meter,
+  };
+  const [agent] = gameMetrics([game], "agent"),
+    [ref] = gameMetrics([game], "reference");
+  assert.deepEqual(agent["all/big.voidRate"], [2, 3]);
+  assert.deepEqual(agent["all/big.hitRateWithoutVoids"], [1, 1]);
+  assert.deepEqual(agent["deep bench/market.dnpRate"], [4, 5]);
+  assert.deepEqual(ref["all/ceiling.hitRate"], [0.5, 2]);
+  assert.deepEqual(agent["all/ceiling.hitRate"], [1, 3]);
+});
+test("changing held-out outcomes leaves both fitted predictions unchanged", () => {
+  const f = scoreGame(pre, draft, draft, box, meter);
+  const [p] = scoreProps(
+    f,
+    {
+      props: [{ playerId: "2", stat: "points", line: 1, market: 0.4 }],
+      unavailable: 0,
+    },
+    "agent",
+  );
+  const rows = Array.from({ length: 16 }, (_, i) => ({
+    ...p,
+    gameId: String(i % 4),
+    y: Number(i % 3 === 0),
+    market: 0.2 + 0.04 * i,
+    over: 0.7 - 0.03 * i,
+  }));
+  const changed = rows.map((r) =>
+    r.gameId === "0" ? { ...r, y: 1 - r.y } : r,
+  );
+  const a = heldOutBlend(rows),
+    b = heldOutBlend(changed);
+  for (let i = 0; i < rows.length; i += 4) {
+    assert.equal(
+      a.get(rows[i])!.marketPrediction,
+      b.get(changed[i])!.marketPrediction,
+    );
+    assert.equal(
+      a.get(rows[i])!.blendPrediction,
+      b.get(changed[i])!.blendPrediction,
+    );
+    assert.notEqual(a.get(rows[i])!.blend, b.get(changed[i])!.blend);
+  }
 });

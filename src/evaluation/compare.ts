@@ -24,7 +24,7 @@ export function validateBootstrap(options: Bootstrap) {
   )
     throw Error("bootstrap_options: resamples 1..100000; seed is uint32");
 }
-function random(seed: number) {
+export function random(seed: number) {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -35,7 +35,7 @@ function random(seed: number) {
 }
 const mean = (xs: number[]) =>
   xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
-const quantile = (sorted: number[], p: number) => {
+export const quantile = (sorted: number[], p: number) => {
   if (!sorted.length) return null;
   const x = (sorted.length - 1) * p,
     i = Math.floor(x);

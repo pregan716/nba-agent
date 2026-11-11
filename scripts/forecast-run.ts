@@ -1,3 +1,5 @@
+import { recordConsensus } from "../src/evaluation/forecast/capture.js";
+import { checkpoint } from "../src/runner/sync.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { verifyLaunchImages } from "../src/launch/images.js";
@@ -78,6 +80,8 @@ try {
     await proxy.listen();
     try {
       await runner.run(piHarness({ model: config.profile.modelRoles.analyst }));
+      await recordConsensus(runner.record, corpus.odds, ids);
+      await checkpoint(runner.record);
       if (
         runner.record
           .events("phase_end")

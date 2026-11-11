@@ -1,3 +1,8 @@
+import { forecastReport } from "../src/evaluation/forecast/report.js";
+import { markdown } from "../src/evaluation/forecast/markdown.js";
+import { recordConsensus } from "../src/evaluation/forecast/capture.js";
+import { loadForecastRun } from "../src/evaluation/forecast/records.js";
+import { Identities } from "../src/data/identity.js";
 import { ExcludedOutcome } from "../src/projection/input.js";
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -48,7 +53,14 @@ function setup(
     runId: "fixture-" + arm,
     replicateId: "r1",
     purpose: "fixture",
-    dataSources: source.versions,
+    dataSources: [
+      ...source.versions,
+      {
+        source: "odds",
+        release: "fixture-odds",
+        manifest_sha256: "b".repeat(64),
+      },
+    ],
   });
   const zero: Range = [0, 0, 0, 0, 0, 0, 0];
   const forecast = (gameId: string): Forecast => ({
@@ -120,7 +132,17 @@ function setup(
     referenceReads: () => referenceReads,
     environment: forecastEnvironment(
       config,
-      source,
+      {
+        ...source,
+        versions: [
+          ...source.versions,
+          {
+            source: "odds",
+            release: "fixture-odds",
+            manifest_sha256: "b".repeat(64),
+          },
+        ],
+      },
       projections,
       model,
       () => ({ celtics_spread: -2, game_total: 210 }),
@@ -163,6 +185,7 @@ async function twoGames(arm: ForecastArm, image?: string, excluded = false) {
         "freeze_package",
         "backtest_package",
         "read_odds",
+        "evaluator_consensus",
         "advance",
         "checkpoint",
       ])
@@ -316,8 +339,63 @@ assert not names.intersection({'odds','prop_consensus','decision_windows','unanc
       runner.record.events("game_end").map((e) => e.data.forecastStatus),
       [excluded ? "excluded" : "frozen", "no_forecast"],
     );
+    const ids = new Identities();
+    for (const [entity, id] of [
+      ...games.map((g) => ["game", g.gameId] as const),
+      ["player", "1"] as const,
+    ])
+      ids.add({
+        entity,
+        provider: "espn",
+        providerId: id,
+        canonicalId: id,
+        basis: "fixture",
+        evidence: [
+          { bucket: "sports-nba-data", key: "fixture", sha256: "a".repeat(64) },
+        ],
+      });
+    const odds = {
+      version: () => ({
+        name: "odds",
+        manifest: {
+          bucket: "sports-nba-data" as const,
+          key: "fixture-odds",
+          sha256: "b".repeat(64),
+        },
+        methodologySha256: "c".repeat(64),
+      }),
+      auditRows: async () =>
+        games.flatMap((g) => {
+          const prop = {
+            espn_event_id: g.gameId,
+            espn_player_id: "1",
+            prop_type: "player_points",
+            requested_at: g.tip,
+            snapshot_kind: "scheduled_start",
+            status: "ok",
+            selected_line: 2,
+            p_over: 0.45,
+          };
+          return [
+            prop,
+            { ...prop, status: "no_consensus", prop_type: "player_assists" },
+            { ...prop, snapshot_kind: "early" },
+          ];
+        }),
+    };
+    await recordConsensus(runner.record, odds, ids);
+    await recordConsensus(runner.record, odds, ids);
+    assert.equal(runner.record.events("evaluator_consensus").length, 2);
+    const read = loadForecastRun(runner.root);
+    assert.equal(read.excluded.length, Number(excluded));
+    assert.equal(read.games.at(-1)?.flagged, true);
+    assert.deepEqual(read.games[0].market.props, [
+      { playerId: "1", stat: "points", line: 2, market: 0.45 },
+    ]);
+    assert.equal(read.games[0].market.unavailable, 1);
     if (image && arm === "full-memory")
       assert.ok(runner.record.events("session_end").at(-1)!.data.codeBytes > 0);
+    return read;
   } finally {
     runner.close();
     await proxy.close();
@@ -327,12 +405,16 @@ assert not names.intersection({'odds','prop_consensus','decision_windows','unanc
 for (const arm of ["no-memory", "full-memory"] as const) {
   test(
     arm + " runs two forecast games with isolated permissions and release",
-    () => twoGames(arm),
+    async () => {
+      await twoGames(arm);
+    },
   );
   test(
     arm + " research sandbox across games",
     { skip: !process.env.FORECAST_SANDBOX_IMAGE },
-    () => twoGames(arm, process.env.FORECAST_SANDBOX_IMAGE),
+    async () => {
+      await twoGames(arm, process.env.FORECAST_SANDBOX_IMAGE);
+    },
   );
 }
 test("code cap counts binary bytes and serializes competing writes; notes use the pinned memory counter", async () => {
@@ -441,5 +523,51 @@ test("Pi registers and invokes only the forecast arm's phase tools", async () =>
   }
 });
 
-test("excluded current outcomes release a reason and allow the next game", () =>
-  twoGames("no-memory", undefined, true));
+test("excluded current outcomes release a reason and allow the next game", async () => {
+  await twoGames("no-memory", undefined, true);
+});
+
+test("completed records yield matched curves, flags and refusal of incompatible comparisons", async () => {
+  const left = await twoGames("full-memory"),
+    right = await twoGames("no-memory");
+  assert.throws(
+    () => forecastReport([left, { ...right, population: "changed" }]),
+    /Incompatible/,
+  );
+  assert.throws(
+    () => forecastReport([left, { ...right, replicate: "unpaired" }]),
+    /Unmatched/,
+  );
+  const report = forecastReport([left, right]);
+  assert.equal(report.withFlagged.learningCurves.length, 2);
+  assert.equal(report.withoutFlagged.learningCurves.length, 1);
+  assert.equal(report.withFlagged.pooled?.metrics["all/market.brier"].delta, 0);
+  assert.equal(
+    report.withFlagged.againstReference[0].metrics[
+      "all/market.blendMinusMarketOnly"
+    ].left.weight,
+    2,
+  );
+  assert.equal(
+    report.withoutFlagged.againstReference[0].metrics[
+      "all/market.blendMinusMarketOnly"
+    ].left.mean,
+    null,
+  );
+  assert.match(markdown(report), /Full memory minus no memory/);
+  // One game has one losing probability, the other has three perfect ones.
+  const uneven = structuredClone(right);
+  const first = uneven.games[0].market.props[0];
+  first.market = 0;
+  uneven.games[1].market.props = (
+    ["points", "assists", "rebounds"] as const
+  ).map((stat) => ({ ...first, stat, line: 0, market: 1 }));
+  const estimate = forecastReport([uneven]).withFlagged.againstReference[0]
+    .metrics["all/market.consensusBrier"].left;
+  assert.deepEqual(estimate, {
+    sum: 1,
+    weight: 4,
+    mean: 0.25,
+    interval90: [0, 1],
+  });
+});

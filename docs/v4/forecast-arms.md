@@ -20,3 +20,5 @@ During initialization, the host prepares reference tables before the analyst clo
 The run record retains the reference forecast and model hash, validation calls and results, frozen forecast or missing status, and the released feedback payload. The release records costs known that morning. The game checkpoint includes postgame costs and elapsed time. Each arm uses only the analyst model role.
 
 For a local two-game integration check, set `FORECAST_SANDBOX_IMAGE` to a locally available immutable research image and run `npx tsx --test test/forecast-arms.test.ts`. The fixture exercises Python file and fitted-model persistence without a paid analyst call.
+
+For post-run scoring and matched comparisons, see [Forecast evaluation](forecast-evaluation.md).

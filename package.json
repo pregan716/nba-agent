@@ -24,7 +24,9 @@
     "replay:audit": "tsx scripts/replay-audit.ts",
     "evaluate": "tsx scripts/evaluate.ts",
     "projection": "tsx scripts/reference-projection.ts",
-    "forecast:run": "tsx scripts/forecast-run.ts"
+    "forecast:run": "tsx scripts/forecast-run.ts",
+    "forecast:capture": "tsx scripts/forecast-capture.ts",
+    "forecast:evaluate": "tsx scripts/forecast-evaluate.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

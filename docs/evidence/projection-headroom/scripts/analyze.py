@@ -32,6 +32,7 @@ args = argparse.ArgumentParser()
 args.add_argument("--cache", default=".cache/projection-headroom")
 args.add_argument("--out", default="docs/evidence/projection-headroom/results.json")
 args.add_argument("--plant-holdout", action="store_true")
+args.add_argument("--baseline-props", help="Export the original pregame big-over probabilities and outcomes for the evaluator parity check")
 args = args.parse_args()
 H, OUT = args.cache, args.out
 BOS = "1610612738"
@@ -359,6 +360,8 @@ print(f"\nBIG OVERS: {big['offered']} props offered, {big['offered_player_did_no
 for tag, minutes_col, label in VARIANTS:
     given_play = prob_at_least(offered.rate * offered[minutes_col], offered.line + offered.sd_line, offered.stat)
     ranked = offered.assign(score=P_PLAY[tag] * given_play).sort_values(["score", "player_id", "stat"], ascending=[False, True, True], kind="mergesort")
+    if tag == "base" and args.baseline_props:
+        ranked[["game_id", "player_id", "stat", "line", "actual", "played", "score"]].to_json(args.baseline_props, orient="records", double_precision=15)
     picks = ranked.groupby("game_id").head(3)
     voids = int((picks.played == 0).sum())
     big[tag] = {
