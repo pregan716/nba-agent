@@ -1,3 +1,5 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { gameLineVersion } from "./game-lines.js";
 import { Temporal } from "@js-temporal/polyfill";
 import { sessionEnvironment } from "../env/session.js";
@@ -27,10 +29,10 @@ export function forecastEnvironment(
   ) => { celtics_spread: number | null; game_total: number | null },
   referenceRoot: string,
 ): EnvironmentFactory {
-  const research = sessionEnvironment(config, {
+  const researchData = {
     ...data,
     versions: [...data.versions, gameLineVersion],
-  });
+  };
   return async (context, trusted) => {
     const { record, root, workspace } = trusted,
       { game } = context;
@@ -88,7 +90,10 @@ export function forecastEnvironment(
     else if (digest(saved.data) !== digest(service.reference))
       throw Error("Recorded reference forecast changed");
     async function releasedFeedback() {
+      if (phase === "pregame" && game.index === 0)
+        return { status: "unavailable", reason: "First game of the season" };
       const target = service.feedbackGame();
+      if (!target) return undefined;
       const saved = record.events("forecast_feedback", target.gameId)[0];
       if (saved) return JSON.parse(readBlob(root, saved.data.blob).toString());
       const feedback = await service.read_feedback();
@@ -99,13 +104,33 @@ export function forecastEnvironment(
       });
       return feedback;
     }
-    if (phase === "postgame") await releasedFeedback();
+    const feedback = await releasedFeedback();
     const { history } = await referenceTables(
       source,
       game.gameId,
       referenceRoot,
       model,
     );
+    const research = sessionEnvironment(config, researchData, {
+      prepareSandboxData(directory) {
+        const referenceDir = join(directory, "reference");
+        const historyDir = join(referenceDir, "history");
+        mkdirSync(historyDir, { recursive: true });
+        const writeJson = (file: string, payload: unknown) =>
+          writeFileSync(file, JSON.stringify(payload), {
+            mode: 0o444,
+            flag: "wx",
+          });
+        writeJson(join(referenceDir, "tonight.json"), service.reference);
+        for (const prior of history) {
+          if (!/^[a-zA-Z0-9_-]+$/.test(prior.gameId))
+            throw Error("Invalid reference game ID");
+          writeJson(join(historyDir, prior.gameId + ".json"), prior);
+        }
+        if (feedback !== undefined)
+          writeJson(join(directory, "feedback.json"), feedback);
+      },
+    });
     const base = await research(context, trusted);
 
     return {
@@ -145,12 +170,8 @@ export function forecastEnvironment(
                 "invalid_input",
                 "Feedback takes no arguments",
               );
-            if (phase === "pregame" && game.index === 0)
-              return {
-                status: "unavailable",
-                reason: "First game of the season",
-              };
-            return releasedFeedback();
+            if (feedback === undefined) throw Error("Feedback unavailable");
+            return structuredClone(feedback);
           case "reference_projection": {
             if (
               Object.keys(input).some(

@@ -17,6 +17,14 @@ During initialization, the host prepares reference tables before the analyst clo
 - **Full memory.** Workspace tools and the sandbox mount share the same permissions. Free-form UTF-8 notes in `/workspace/memory` count toward the 50,000-token cap using the recorded analyst token counter. Files in `/workspace/code` may be binary. The aggregate limit is 8,000,000 bytes. For example, add that directory to Python's import path to use a saved module. Context and checkpoints report code bytes.
 - **Forecast tools.** `reference_projection({})` returns tonight's forecast and model hash. Use `{list:true}` for available game IDs and `{game_id:"…"}` for a released game's reference and errors. `validate_forecast` and `freeze_forecast` both take `{draft: forecast}`. A successful freeze commits the roster forecast and workspace snapshot together. Postgame opens at 9 a.m. Eastern the following morning. `read_feedback({})` returns the current game in postgame or the preceding game in pregame.
 
+Both arms can read the following JSON files directly from Python under the sandbox’s read-only `/data` mount. The host prepares them before the analyst clock starts.
+
+| Path | Contents |
+| --- | --- |
+| `/data/reference/tonight.json` | The current game’s `reference_projection({})` result, including its model hash. |
+| `/data/reference/history/<game_id>.json` | One file for each prior game listed by `reference_projection({list:true})`, with the identical forecast, errors, actuals and exclusion information returned for that ID. |
+| `/data/feedback.json` | The single `read_feedback({})` payload for this phase. In pregame it describes the preceding game, or gives the unavailable status on opening night. If the preceding game has yet to release, the file is absent. In postgame it describes the current game. |
+
 The run record retains the reference forecast and model hash, validation calls and results, frozen forecast or missing status, and the released feedback payload. The release records costs known that morning. The game checkpoint includes postgame costs and elapsed time. Each arm uses only the analyst model role.
 
 For a local two-game integration check, set `FORECAST_SANDBOX_IMAGE` to a locally available immutable research image and run `npx tsx --test test/forecast-arms.test.ts`. The fixture exercises Python file and fitted-model persistence without a paid analyst call.
