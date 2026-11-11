@@ -46,6 +46,8 @@ Also reported: misplaced minutes (half the summed absolute difference between ea
 
 Ceiling games. A ceiling game is a fantasy-point result strictly above the 85th percentile of the reference projection's range for that player. For each roster player not listed Out or Doubtful, the environment takes your probability of that event: p_play times the share of your fantasy-point distribution above the mark. It scores that probability (Brier), and it scores the three players to whom you gave the highest probability: how many of the three had a ceiling game. A pick who does not play counts as a miss. You do not name picks; they are read from your forecast.
 
+The reference projection cannot be given picks in the same way, because the mark is its own 85th percentile: it gives every player who plays the same 15% chance. Its side of the comparison is therefore a weighted rate over every roster player not listed Out or Doubtful, rather than three picks: each player counts in proportion to the reference's p_play for him, and the rate is the weighted share who had a ceiling game (ceiling.referenceWeighted in the feedback). Your three-pick hit rate is compared with that rate. It is roughly how often a player the reference expects to play has a ceiling game, so beating it means your three were better chosen than its roster at large.
+
 Your frozen forecast is also used in evaluations whose results you are not shown. All of them read the same distributions, tails included, so the forecast that serves you best everywhere is the one in which every probability and every percentile is your honest estimate.
 
 # The reference projection
@@ -54,7 +56,7 @@ The environment refits a statistical projection before every game, from every NB
 
 reference_projection({}) returns tonight's reference forecast. reference_projection({"list": true}) lists the earlier games of this season for which it exists, and reference_projection({"game_id": "..."}) returns the forecast it made before that game together with what happened: who played and started, each player's actual line, and its errors. Every one of those forecasts was made before its game, so its record is an honest account of how good it is and where it goes wrong.
 
-You are free to use it however you like. A forecast that copies it scores exactly what it scores, and adds nothing. Where you have no reason to differ, its numbers are a reasonable place to stand; the value of your work is in the places where you know something it does not, or can show from its own record that it is wrong in a consistent way.
+You are free to use it however you like. A forecast that copies it gets exactly its minutes, production and playing scores, and adds nothing. The ceiling hit rate is the one exception, since a copy still has three picks and the reference has its weighted rate; the two need not be equal. Where you have no reason to differ, its numbers are a reasonable place to stand; the value of your work is in the places where you know something it does not, or can show from its own record that it is wrong in a consistent way.
 
 # Feedback
 
@@ -69,7 +71,7 @@ The comparison between agent and reference, player by player, is the most direct
 
 # Evidence, time and budget
 
-The context tool gives the game, the phase, the cutoff, the Celtics' point spread and the game total at the scheduled start, and your remaining budget; call it first. Everything the tools return is filtered to the cutoff: in a pregame session nothing published at or after the scheduled start exists, including the game itself. Work from what the tools return. Do not rely on recollection of how this season, this team or its players turned out; you cannot verify it and it is not evidence here.
+The context tool gives the game, the phase, the cutoff, the Celtics' point spread and the game total at the scheduled start, and your remaining budget. Its result for the start of the session is already in your first message, so there is no need to call it before you begin; call it again when you want your current budget or workspace usage. Everything the tools return is filtered to the cutoff: in a pregame session nothing published at or after the scheduled start exists, including the game itself. Work from what the tools return. Do not rely on recollection of how this season, this team or its players turned out; you cannot verify it and it is not evidence here.
 
 The tools give you beat reporting, the head coach's media sessions, lineup announcements, injury reports, the schedule, and play-by-play, box scores, lineups and stints for completed games in 2024-25 and in this season so far, for every team, which you can also analyse with code. How you research, what you compute, which models you fit and how you organise what you keep are yours to decide.
 

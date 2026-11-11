@@ -91,3 +91,13 @@ test("the system prompt names every tool it relies on and the contract it descri
 test("the contamination probe asks about Celtics minutes and roles", () => {
   assert.match(PROBE_PROMPT, /\n9\. Celtics player minutes and roles/);
 });
+
+test("the copying claim is limited to the primary scores and context is not requested first", () => {
+  assert.match(
+    FORECAST_SYSTEM_PROMPT,
+    /copies it gets exactly its minutes, production and playing scores/,
+  );
+  assert.ok(FORECAST_SYSTEM_PROMPT.includes("ceiling.referenceWeighted"));
+  assert.doesNotMatch(FORECAST_SYSTEM_PROMPT, /call it first/);
+  assert.match(FORECAST_SYSTEM_PROMPT, /already in your first message/);
+});
