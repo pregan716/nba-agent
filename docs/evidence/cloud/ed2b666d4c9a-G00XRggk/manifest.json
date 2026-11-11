@@ -1,0 +1,733 @@
+{
+  "schemaVersion": 1,
+  "config": {
+    "runId": "scripted-analyst-M0",
+    "replicateId": "r1",
+    "team": "BOS",
+    "season": "2025-26",
+    "purpose": "fixture",
+    "host": "aws-ec2-ebs",
+    "codeRevision": "ed2b666d4c9a9cdb575afcc21577445f7880cb67",
+    "profile": {
+      "memory": {
+        "version": "memory-permissions-v1",
+        "variant": "M0",
+        "coachProfile": {
+          "read": false,
+          "create": false,
+          "revise": false
+        },
+        "bestPractices": {
+          "read": false,
+          "create": false,
+          "revise": false
+        },
+        "skills": {
+          "read": false,
+          "create": false,
+          "revise": false
+        }
+      },
+      "dataSources": [
+        {
+          "type": "fixture",
+          "release": "fixture-v1",
+          "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "capabilities": {
+        "version": "capabilities-v1",
+        "enabled": [
+          "search_and_fetch",
+          "game_history",
+          "workspace"
+        ]
+      },
+      "modelRoles": {
+        "version": "roles-v1",
+        "analyst": "claude-opus-4-6",
+        "jev": "jev-1.14.0"
+      }
+    },
+    "budget": {
+      "memory": {
+        "tokenCap": 50000,
+        "countProtocol": "analyst-count-snapshot-v1"
+      },
+      "id": "development-limits-not-a-budget-profile",
+      "pilotApproved": false,
+      "pregame": {
+        "tokens": 3000000,
+        "computeSeconds": 900,
+        "toolCalls": 300,
+        "wallSeconds": 10800
+      },
+      "postgame": {
+        "tokens": 1500000,
+        "computeSeconds": 600,
+        "toolCalls": 150,
+        "wallSeconds": 7200
+      },
+      "warnRemainingTokens": 400000,
+      "cacheReadWeight": 0.1,
+      "rollover": false,
+      "sandbox": {
+        "perCallSeconds": 120,
+        "stdoutBytes": 16384,
+        "cpu": 2,
+        "memoryBytes": 4294967296
+      },
+      "price": {
+        "id": "placeholder-verify-before-pilot",
+        "inputPerMillion": 5,
+        "outputPerMillion": 25,
+        "cacheReadPerMillion": 0.5,
+        "cacheWrite5mPerMillion": 6.25,
+        "cacheWrite1hPerMillion": 10
+      }
+    },
+    "harness": {
+      "machine": {
+        "instanceType": "c8g.4xlarge",
+        "architecture": "aarch64",
+        "dockerCpus": 16,
+        "dockerMemoryBytes": 33012969472
+      },
+      "identity": "pi-infrastructure-v3",
+      "prompts": {
+        "system": "You are operating in a cutoff-filtered NBA replay environment. Use only the evidence returned by the tools. The current session has no prediction or scoring task installed. Respect the session budget and workspace permissions.",
+        "pregame": "Inspect the available pregame evidence if needed. Finish when done.",
+        "postgame": "The cutoff has advanced to the next morning. You may inspect newly available game data and update permitted workspace files. Finish when done.",
+        "postgame_mandated": "Review newly available game data and record your reflection in the permitted workspace. Finish when done.",
+        "memory:stateless": "Memory mode: stateless. Nothing persists between games. You start every game with no notes, no scripts and no conversation history, and there is no workspace. Everything you want to use must come from the tools in this session.",
+        "memory:season-editable": "Memory mode: persistent, editable. Your workspace persists across the whole season and is yours alone. Anything in it was written by you in an earlier session: notes, hypotheses, scripts, fitted models, cached tables. You may read, create, overwrite, append to and delete files during pregame research and during postgame; it is locked during commit. Your past rationales and notes are not shown to you by the environment; if you want them later, keep them in the workspace. Scripts saved there can be run again with execute_code, where the workspace is mounted at /workspace. Durable working aids belong in the workspace as much as judgments: a sheet of the data schema you have learned (tables, column names and types, id conventions), query snippets and scripts you will run again. Each session starts with no conversation history, so anything you would otherwise rediscover with the tools every game is worth writing down once.",
+        "memory:season-append-only": "Memory mode: persistent, append-only. Your workspace persists across the whole season. You may create new files and append to existing ones during pregame research and during postgame, but you cannot overwrite or delete anything already written. A revised note or script is a new file. Your past rationales and notes are not shown to you by the environment; if you want them later, keep them in the workspace. Durable working aids belong in the workspace as much as judgments: a sheet of the data schema you have learned (tables, column names and types, id conventions), query snippets and scripts you will run again. Each session starts with no conversation history, so anything you would otherwise rediscover with the tools every game is worth writing down once.",
+        "memory:window": "Memory mode: persistent with a limited window. Your workspace carries into this game only what you wrote during the previous few games; older writes have expired, including the earlier parts of files you appended to. Write what you want your near-future self to have. Durable working aids belong in the workspace as much as judgments: a sheet of the data schema you have learned (tables, column names and types, id conventions), query snippets and scripts you will run again. Each session starts with no conversation history, so anything you would otherwise rediscover with the tools every game is worth writing down once."
+      },
+      "memoryInstructions": "You are operating in a cutoff-filtered NBA replay environment. Use only the evidence returned by the tools. The current session has no prediction or scoring task installed. Respect the session budget and workspace permissions.",
+      "toolDefinitions": [
+        {
+          "description": "Score the current unfrozen package on every eligible released prior Celtics window, including 2024–25 retrospective same-game box-score rosters (DNP included, injury status unknown, timestamps synthetic; never evaluation rosters). Requires a swap contract and a package with prediction. A v2 package without prediction scores every window as invalid/degenerate; this is not an estimate of its Jev policy. Package-only: scores prediction even when defer is set; never calls Jev and is not the deployed policy score. Returns scorer metrics, calibration and stoppage breakdowns, invalid reasons, would-defer counts and split scores. per_window adds window scores. Starter predictions are prepared once per model hash and cutoff in trusted pregame work, not charged to agent compute; their scores are labelled in-sample and cover exactly the same completed windows. History is cached by cutoff; a call timeout only stops waiting, and the next call reuses the pending or completed load. Waiting time counts as compute. Assembly uses up to four concurrent batch containers, including concurrent determinism passes, with fresh child processes, no network or Docker shared-memory mount, and oldest-first execution within each container. Parallelism is fixed in the harness and identical for every variant. Charges elapsed wall-clock seconds (a charged second buys more CPU with parallelism) as research compute with the configured sandbox per-call limit; incomplete results explicitly report compute_limit and completed/eligible counts. Current and future games are unreachable. Every call is recorded.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "per_window": {
+                "type": "boolean"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "name": "backtest_package",
+          "phases": [
+            "pregame"
+          ]
+        },
+        {
+          "description": "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory permissions of this run. V3 sessions include memoryUsage (retainedTokens and cap). Runs with the environment starter model include starter (its hash, cutoff, API and path). Call it first in every session and again whenever you need the budget.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {},
+            "required": [],
+            "type": "object"
+          },
+          "name": "context",
+          "phases": [
+            "pregame",
+            "commit",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (schedule, references, injuries and evidence), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace (same rules as the workspace tools). In runs with the environment starter model, /starter (model.json and the reference nba_starter.py) is mounted read-only and from nba_starter import predict returns the model's answer for a state. No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "program": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "program"
+            ],
+            "type": "object"
+          },
+          "name": "execute_code",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Read one evidence record by its evidence_id from list_evidence, search_evidence or from references on another record. Returns the full text as published, availability time, author, title, source URL, transcript segments with speaker-cluster labels (labels are not identities), announced starters for lineup posts, references to other eligible records, and provenance with the pinned manifest hash and supporting artifact object keys and hashes. Cite the stable evidence_id in evidence_refs. Post authors are @handles from the pinned account mapping when known, otherwise account IDs; fetch provenance retains the original account ID and mapping hash. The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them. An id that does not resolve returns not_found; this does not tell you whether it exists.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "evidence_id": {
+                "description": "From search_evidence or a references list.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "evidence_id"
+            ],
+            "type": "object"
+          },
+          "name": "fetch_evidence",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Validate and atomically freeze packages/<current game id>/ before cutoff. manifest.json requires stateVersion state-v1 and may include notes. The harness computes every file SHA-256; optional components hashes must match if supplied. Returns an immutable receipt; identical re-freezes return the same receipt. Later writes through tools or code are refused.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {},
+            "required": [],
+            "type": "object"
+          },
+          "name": "freeze_package",
+          "phases": [
+            "pregame"
+          ]
+        },
+        {
+          "description": "Browse eligible text evidence (beat reporters' posts, transcripts of the head coach's media sessions, and both teams' starting-lineup announcements) newest first, with snippets and paging. With no from, pregame starts at the previous Celtics game’s scheduled-start cutoff (all eligible history for the first game); postgame starts at this game’s scheduled start. The next pregame browse includes records from the previous postgame window because they were unavailable at the previous pregame cutoff. from is inclusive, to exclusive and clamped to the session cutoff. Use fetch_evidence to read a full record. Post authors are @handles from the pinned account mapping when known, otherwise account IDs; fetch provenance retains the original account ID and mapping hash. The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "cursor": {
+                "description": "Opaque cursor from a previous result's next_cursor.",
+                "type": "string"
+              },
+              "from": {
+                "description": "Only evidence available at or after this instant.",
+                "type": "string"
+              },
+              "limit": {
+                "description": "Maximum items to return (default 20).",
+                "maximum": 100,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "sources": {
+                "description": "Restrict to these sources (default all): posts are beat reporters, transcripts are the head coach's media sessions, lineups are starting-five announcements.",
+                "items": {
+                  "enum": [
+                    "posts",
+                    "transcripts",
+                    "lineups"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "to": {
+                "description": "Only evidence available before this instant (clamped to the cutoff).",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "name": "list_evidence",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Query published play-by-play release tables for completed games, or the static player reference. Game tables: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions; filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game, including the game just played when you are in its postgame. Player-reference tables (player_profiles, player_reference, player_season_stats, player_2024_25_summary, player_career_summary, player_identity_exceptions) are the opening-night roster and career history through 2024-25, built before the season and available in every game; filter by player_id or team_id. In the pinned release, substitution events are separate player entry and exit rows: a k-for-k change has 2k event rows at the same clock. Recover who moved from the difference between the team lineup before and after the substitution batch, using the home_lineup_before/after or away_lineup_before/after arrays. Raw equal-clock batches are not necessarily decision windows; use the feedback trace for scored decisions under the window and adjacency rules. player_box_scores.minutes_seconds is seconds; player_stints.cumulative_minutes_entry/exit is decimal minutes (duration_ms is milliseconds). By default rows omit provenance columns and columns contain names only. Set include_metadata=true for provenance columns and column descriptions. The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them. A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "cursor": {
+                "description": "Opaque cursor from a previous result's next_cursor.",
+                "type": "string"
+              },
+              "from": {
+                "description": "Games scheduled at or after this instant.",
+                "type": "string"
+              },
+              "game_id": {
+                "description": "NBA game id, e.g. 0022500083.",
+                "type": "string"
+              },
+              "include_metadata": {
+                "description": "Include provenance columns and column descriptions (default false).",
+                "type": "boolean"
+              },
+              "limit": {
+                "description": "Maximum items to return (default 20).",
+                "maximum": 100,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "player_id": {
+                "description": "NBA player id.",
+                "type": "string"
+              },
+              "season": {
+                "enum": [
+                  "2024-25",
+                  "2025-26"
+                ],
+                "type": "string"
+              },
+              "table": {
+                "enum": [
+                  "games",
+                  "player_box_scores",
+                  "team_box_scores",
+                  "team_period_scores",
+                  "events",
+                  "lineup_stints",
+                  "player_stints",
+                  "matchup_stints",
+                  "player_game_summary",
+                  "team_game_summary",
+                  "possessions",
+                  "decision_windows",
+                  "unanchored_substitutions",
+                  "player_profiles",
+                  "player_reference",
+                  "player_season_stats",
+                  "player_2024_25_summary",
+                  "player_career_summary",
+                  "player_identity_exceptions"
+                ],
+                "type": "string"
+              },
+              "team_id": {
+                "description": "NBA team id, e.g. 1610612738.",
+                "type": "string"
+              },
+              "to": {
+                "description": "Games scheduled before this instant (clamped to the cutoff).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "table"
+            ],
+            "type": "object"
+          },
+          "name": "query_game_history",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Read bounded pages of the previous chronological game's released replay trace in pregame, or the current game's trace in postgame. Nothing older or unreleased is available.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "cursor": {
+                "description": "Window page cursor; default 0, two windows per page.",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "game_id": {
+                "description": "Optional allowed game id",
+                "type": "string"
+              },
+              "offset": {
+                "description": "Character offset for window details; use returned nextOffset.",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "window_id": {
+                "description": "Optional window id for full forensic JSON in bounded chunks.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "name": "read_feedback",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "With neither game_id nor team_id, return the current game and next Celtics game, then pages of two later games using next_cursor as cursor. Explicit game_id or team_id keeps the full filtered result and cannot be combined with cursor. Return the schedule for a team or game and the official injury reports as printed, each with its printed report time: player rows with status and reason, and per-team snapshots marked listed, not_yet_submitted, or unknown. 'unknown' means the team was absent from that report; it is never a healthy roster, and no earlier report is carried forward. Player ids are present where the printed name resolves to one player; a few names are unresolved and carry only the name. The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "cursor": {
+                "description": "Next schedule page token; omit game_id and team_id when paging.",
+                "type": "string"
+              },
+              "from": {
+                "description": "Reports printed at or after this instant.",
+                "type": "string"
+              },
+              "game_id": {
+                "description": "Restrict to one game.",
+                "type": "string"
+              },
+              "team_id": {
+                "description": "Defaults to your team.",
+                "type": "string"
+              },
+              "to": {
+                "description": "Reports printed before this instant (clamped to the cutoff).",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "name": "read_schedule_and_injuries",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Search eligible text evidence: posts from two pinned Celtics beat reporters, transcripts of the head coach's practice, pregame and postgame media sessions (about one per game day), and both teams' starting-lineup announcements. Ranked BM25 matching of any meaningful query words with English stemming and accent folding; common English function words are ignored. Player surnames boost matching players without filtering other matches; full names resolve through pinned identities and restrict results to those players. Use one or two terms (e.g. 'Pritchard injury'); player_id filters directly. Lineup starters are searchable. Ambiguous surnames match any resolved player. Returns matches with source, availability time, author, title and a snippet, plus the total eligible match count and a cursor for more. Post authors are @handles from the pinned account mapping when known, otherwise account IDs; fetch provenance retains the original account ID and mapping hash. The environment applies the session cutoff before searching, counting, paging or returning anything. Posts, transcripts, lineup announcements and injury reports published at or after the cutoff, and game data or odds observations released after it, do not exist from your point of view; no query, count or error reveals them. Use fetch_evidence to read a full record.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "cursor": {
+                "description": "Opaque cursor from a previous result's next_cursor.",
+                "type": "string"
+              },
+              "from": {
+                "description": "Only evidence available at or after this instant.",
+                "type": "string"
+              },
+              "limit": {
+                "description": "Maximum items to return (default 20).",
+                "maximum": 100,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "player_id": {
+                "description": "Canonical player ID; restrict to this player.",
+                "type": "string"
+              },
+              "query": {
+                "description": "Words to match.",
+                "minLength": 1,
+                "type": "string"
+              },
+              "sources": {
+                "description": "Restrict to these sources (default all): posts are beat reporters, transcripts are the head coach's media sessions, lineups are starting-five announcements.",
+                "items": {
+                  "enum": [
+                    "posts",
+                    "transcripts",
+                    "lineups"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "to": {
+                "description": "Only evidence available before this instant (clamped to the cutoff).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object"
+          },
+          "name": "search_evidence",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Under jev-contract-v3 the package also returns prediction and optional defer:{reason}; validation returns prediction, defer and predictionValid. Under jev-contract-v2 assemble(state) returns candidates (1–8 unique equal-size out/in sets, eligible players only), instructions.swap and criteria.swap keyed out:<sorted comma-separated ids>|in:<sorted comma-separated ids>, plus other. Empty eligible bench requires empty candidates and omits swap. Invalid candidate lists return reasons. With jev:true the response includes raw swap and derived inclusion marginals. Test the current package against a deterministic spread of prior-game states. jev: true returns Jev answers for each; default false. samples chooses 1–24 states (default 3). Outcomes are never included. Before any run game is released, only the three fixed 2024–25 states are used. One tool call charges research compute; optional Jev calls are metered as pregame Jev usage, not research-agent weighted model tokens. Current and future games are never samples.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "jev": {
+                "type": "boolean"
+              },
+              "samples": {
+                "maximum": 24,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "name": "validate_package",
+          "phases": [
+            "pregame"
+          ]
+        },
+        {
+          "description": "Append text to a workspace file, creating it if needed. Allowed under both editable and append-only rights; refused during commit, outside the run's permitted paths, and over the memory cap. Memory mutations return memoryUsage (retainedTokens and cap).",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "path": {
+                "description": "File path relative to the workspace root.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ],
+            "type": "object"
+          },
+          "name": "workspace_append",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Delete a workspace file. Refused during commit, outside the run's permitted paths, and always under append-only rights. Memory mutations return memoryUsage (retainedTokens and cap).",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "description": "File path relative to the workspace root.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "type": "object"
+          },
+          "name": "workspace_delete",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Replace exactly one literal occurrence of old_text with new_text in an existing UTF-8 workspace file. Refuses empty old_text, zero or multiple matches. Uses the same permission, phase, freeze-lock and memory-cap rules as workspace_write. Memory mutations return memoryUsage (retainedTokens and cap).",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "new_text": {
+                "type": "string"
+              },
+              "old_text": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "path": {
+                "description": "File path relative to workspace root.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "old_text",
+              "new_text"
+            ],
+            "type": "object"
+          },
+          "name": "workspace_edit",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "List files and directories in your workspace under a path (default: the root). Which paths exist and which persist between games is set by the run's memory permissions, stated in your instructions; a path outside them is refused as not found.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "description": "Directory relative to the workspace root.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "name": "workspace_list",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Read a UTF-8 text file from your workspace; use code execution for binary files. Text files are whatever you or your earlier sessions wrote: notes, scripts, fitted-model parameters, cached tables.",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "description": "File path relative to the workspace root.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "type": "object"
+          },
+          "name": "workspace_read",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        },
+        {
+          "description": "Create or replace a workspace file with the given text. Refused during commit, outside the run's permitted paths, over the memory cap, and for an existing file when the run is append-only (write a new file instead). Memory mutations return memoryUsage (retainedTokens and cap).",
+          "input_schema": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "path": {
+                "description": "File path relative to the workspace root.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ],
+            "type": "object"
+          },
+          "name": "workspace_write",
+          "phases": [
+            "pregame",
+            "postgame"
+          ]
+        }
+      ],
+      "loop": {
+        "effort": "high",
+        "thinking": "adaptive",
+        "parameters": {
+          "maxTokens": 16000,
+          "timeoutMs": 600000,
+          "maxTurns": 200,
+          "promptCache": "ephemeral-5m"
+        }
+      },
+      "accessMethod": "anthropic-sdk-via-metering-proxy",
+      "sdkVersion": "1.3.0",
+      "pi": {
+        "packageVersion": "1.5.0",
+        "provider": {
+          "id": "nba-metered",
+          "api": "anthropic-messages",
+          "baseUrl": "session.model.baseURL",
+          "apiKey": "session.model.apiKey",
+          "transport": "metered-nonstream-to-sse-v1"
+        },
+        "tools": {
+          "registration": "extension-registerTool-from-TOOL_DEFINITIONS",
+          "selection": "phase-capability-memory",
+          "guard": "TOOL_NAMES-and-offered-tools",
+          "builtins": false
+        },
+        "prompts": {
+          "system": "replace-entirely-before-agent-start",
+          "append": [],
+          "opening": "phase-prompt-and-context"
+        },
+        "isolation": "fresh-process-empty-env-temp-cwd-agentdir-in-memory-no-discovery-v1",
+        "recovery": {
+          "compaction": false,
+          "retry": false,
+          "cacheWarming": false,
+          "truncation": "pi-paired-error-results",
+          "piRequestedThinkingLevel": "high",
+          "contextWindow": 200000
+        }
+      },
+      "sandboxImage": "none@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "policy": {
+        "api": "assemble-v1",
+        "backtest": {
+          "version": "parallel-backtest-v1",
+          "concurrency": 4,
+          "batchSize": 256,
+          "charging": "elapsed-wall-seconds",
+          "starterComparison": "trusted-pregame-cache"
+        },
+        "assemblerImage": "local@sha256:40fceea7e47c676d8c3c97a710d2d969d3006337330a5deb861fd0f68d774310",
+        "limits": {
+          "wallSeconds": 15,
+          "memoryBytes": 134217728,
+          "outputBytes": 256000
+        },
+        "jev": {
+          "model": "jev-1.14.0",
+          "inputUsdPerMillion": 0.042,
+          "retries": 1,
+          "maxRetryAfterMs": 60000,
+          "perQuestionTokens": 32000,
+          "contextGuard": "utf8-bytes-plus-1024-v1",
+          "requestTokens": 64000,
+          "answerMapping": "score-index-v1"
+        },
+        "determinism": "double-run-and-content-cache-v1"
+      },
+      "codeRevision": "ed2b666d4c9a9cdb575afcc21577445f7880cb67"
+    },
+    "policy": {
+      "version": "policy-v1",
+      "developmentGames": 10,
+      "release": "next-morning-09:00-America/New_York"
+    },
+    "replay": {
+      "mode": "variant",
+      "versions": {
+        "implementation": "replay-mvp-v1",
+        "windows": "windows-v2",
+        "state": "state-v1",
+        "prediction": "prediction-v1"
+      },
+      "datasets": [
+        {
+          "gameId": "prior",
+          "inputHash": "0e98d50cf597840e9c9db7b494b851088606554198a166f87f61d81b8eb677ce",
+          "version": "windows-v2:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "releaseManifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "gameId": "current",
+          "inputHash": "c1138422788e1a8f2e10a0169cbc591f0bf5c027a4ba6f8f67cf36833fbbe4b7",
+          "version": "windows-v2:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "releaseManifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "validationSamples": []
+    },
+    "contaminationProbe": null
+  },
+  "harnessVersion": "46c5b3289fcc135746984f194ca60d100792f3579d74b59e686f63ef5933f950",
+  "games": [
+    {
+      "gameId": "prior",
+      "scheduledStart": "2025-10-31T23:00:00Z",
+      "index": 0,
+      "development": true,
+      "split": "development",
+      "release": "2025-11-01T13:00:00Z"
+    },
+    {
+      "gameId": "current",
+      "scheduledStart": "2025-11-02T23:00:00Z",
+      "index": 1,
+      "development": true,
+      "split": "development",
+      "release": "2025-11-03T14:00:00Z"
+    }
+  ]
+}

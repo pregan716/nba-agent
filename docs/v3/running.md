@@ -862,8 +862,9 @@ unset DOPPLER_TOKEN
 ```
 
 Detach with Ctrl-B then D. Reconnect with the same tmux command, or follow the
-current log with `tail -f docs/evidence/cloud/<attempt>/acceptance.log`. A failed
-check ends the acceptance script. Inspect the reported game, expected and actual
+current log with `tail -f docs/evidence/cloud/<attempt>/acceptance.log`. A determinism
+failure ends the acceptance script immediately. Both independent backtest timings
+are collected before the script reports a backtest failure. Inspect the reported game, expected and actual
 hash or score before proceeding. Each attempt gets a separate evidence directory.
 The two backtests both target game `0022501206`.
 
@@ -899,3 +900,5 @@ aws ec2 wait instance-stopped --instance-ids "$instance"
 
 [Canonical AMI lookup](https://ubuntu.com/aws/docs/aws-how-to/instances/find-ubuntu-images/) ·
 [AWS SSH and SCP over Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started-enable-ssh-connections.html)
+
+The [Graviton acceptance report](../evidence/cloud/ed2b666d4c9a-G00XRggk/README.md) records exact starter parity and the cold and cached backtest timings.

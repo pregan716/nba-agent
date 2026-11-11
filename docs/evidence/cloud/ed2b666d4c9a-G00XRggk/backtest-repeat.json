@@ -1,0 +1,4331 @@
+{
+  "codeRevision": "ed2b666d4c9a9cdb575afcc21577445f7880cb67",
+  "image": "local@sha256:40fceea7e47c676d8c3c97a710d2d969d3006337330a5deb861fd0f68d774310",
+  "gameId": "0022501206",
+  "cutoff": "2025-12-12T01:00:00Z",
+  "allowanceSeconds": 120,
+  "historyLoads": 1,
+  "loadingSeconds": 120.148937127,
+  "contract": {
+    "version": "jev-contract-v3",
+    "sizePrior": [
+      0.631578947368421,
+      0.2789473684210526,
+      0.05789473684210526,
+      0.02631578947368421,
+      0.005263157894736842
+    ],
+    "training": [
+      {
+        "gameId": "0022500049",
+        "inputHash": "fcebdcbd0f2d0bfb5c46514c4382e9d2fb79ed31e0e5ff9bc0ad2d22cfc6bb4f"
+      },
+      {
+        "gameId": "0022500060",
+        "inputHash": "62811739c1fff9141d3e9ff4707809970cf2920d8dce95559f97b3a0b4f49ade"
+      },
+      {
+        "gameId": "0022500193",
+        "inputHash": "929b5b1f52e1ab9eb171431dbff812d0e4acb4748493a7aed8398452a7fde208"
+      },
+      {
+        "gameId": "0022500209",
+        "inputHash": "11064df74b3a220c624e821fe0d05d4c10d1525b8a10c589c733391103469886"
+      },
+      {
+        "gameId": "0022500216",
+        "inputHash": "eb42ebc6e57921f2144e29058229f3e7deefde9d842837f073719eb638c165d8"
+      },
+      {
+        "gameId": "0022500233",
+        "inputHash": "1c3b4e95d47fd803cdb30c669c1f569ae5e86e485b44059a4027797030c1b452"
+      },
+      {
+        "gameId": "0022500250",
+        "inputHash": "dcbb26ed0da6b3fdda9779da10c9ee528621cb67858c60d6bf18d071589f4140"
+      },
+      {
+        "gameId": "0022500277",
+        "inputHash": "6f67a4bb786ef9ad6a8b35c6230f4b37959f7679604d060caf00ba4da00dd2dc"
+      },
+      {
+        "gameId": "0022500293",
+        "inputHash": "3bd23ce2eb8f2e18f72ef2e12bf084f496f7e3eb18dbf0f19272bf7f6677cc95"
+      },
+      {
+        "gameId": "0022500302",
+        "inputHash": "fb52e5f5ea2780db5c67643373d63c03c60be985717747e057a06bb72ccfac8c"
+      }
+    ]
+  },
+  "results": [
+    {
+      "call": "cold",
+      "label": "package-only; deferral ignored",
+      "complete": false,
+      "error": "compute_limit",
+      "eligibleWindows": 5397,
+      "package": {
+        "gameId": "0022501206",
+        "packageHash": "e5189b73866ee79ea890ac4b7789c0bac2b591cf19993ac6e385eb741c4f0508",
+        "manifestHash": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650",
+        "stateVersion": "state-v1",
+        "files": {
+          "assemble.py": "046027d403eb7db30069a64229e25c671a4f003aec1bd7eae0c216edd9be759c",
+          "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+          "manifest.json": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650"
+        }
+      },
+      "games": [
+        {
+          "gameId": "0022500358",
+          "inputHash": "4c991f80377c11c343d3a6fdffe29d1ebdd7b8f6e3bd901b81d498bb051f556d",
+          "release": "2025-12-08T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500338",
+          "inputHash": "5ad34840bbd1c7ce687e40e375bea761921d5cb8f7b5a256e2ab3ba1616b1d9b",
+          "release": "2025-12-06T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500334",
+          "inputHash": "84025ef65ca21ea98dd23ae2d541110f19a8cd8feb40b53cfdb398e8cb2501ca",
+          "release": "2025-12-05T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500320",
+          "inputHash": "c8955a7bf74cd76dcc5050ff71f4ad880cf6ea1a70169ce6765662784a9b9bff",
+          "release": "2025-12-03T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500302",
+          "inputHash": "46eac21713e1ebeeabd47fceef97b58a86122a32064d806e3a5d867b9e97f209",
+          "release": "2025-12-01T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500293",
+          "inputHash": "b7c7aa1f02b9c44965382c65e0f54f56188a3e89ee895ed55fb139f100a6b33d",
+          "release": "2025-11-30T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500060",
+          "inputHash": "f476b13a8bd4692fc11c7ece17051fedfb9bed8672e33eabcee75dfb0b735522",
+          "release": "2025-11-27T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500277",
+          "inputHash": "c6ab8979f128d22f6c78c8a3f61d7b2efe92c3e5c442051bf20fcd185c923389",
+          "release": "2025-11-24T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500049",
+          "inputHash": "c62a595b78f082a70177877cfedb54cbbd9925ac4f75c3772bff9e1042f223bd",
+          "release": "2025-11-22T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500250",
+          "inputHash": "2b07ec2dd3e3a3e607f79d1546529892b9e78f8f9e269495f97f7951cf0c6bcb",
+          "release": "2025-11-19T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500233",
+          "inputHash": "a8f0b7aa4e87cb8acb7785d9824cce92c18b356393c23a6e323af1c0e3cf401e",
+          "release": "2025-11-17T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500216",
+          "inputHash": "0df966586660caaf202c256f1c3dd16089608c58f95d31a43abe7feba582ebbe",
+          "release": "2025-11-13T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500209",
+          "inputHash": "87ea048f1d1c7b82dcf9c12d7653ab0e93408464ff8653754bd222ca05bf883b",
+          "release": "2025-11-12T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500193",
+          "inputHash": "296e774f5d4e82cc3253d790bef1d3166f69d0c55411d1d5c4fc3554d4f72364",
+          "release": "2025-11-10T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500028",
+          "inputHash": "ebbd66c137b10559bf8df03a410d8494124a05be8d4e089fa3efb3997f914212",
+          "release": "2025-11-08T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500174",
+          "inputHash": "3a1e13ce3997c19f14a11eb712737e166a8bce45177be2d6bbb37b2cc990dec3",
+          "release": "2025-11-06T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500158",
+          "inputHash": "7f03cc35be575c77591a355e013079ad4c6fe0b31ae53e3fe28b8999d7aef930",
+          "release": "2025-11-04T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500146",
+          "inputHash": "ff3d2e093e9176117bb9f2cce3273397dac6673edf5402e5a8447052a44dec58",
+          "release": "2025-11-02T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500021",
+          "inputHash": "241392116aafee6cd3eba8795c1a55aca01f64857006848011afd37cf0da02bb",
+          "release": "2025-11-01T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500128",
+          "inputHash": "4814e713d81297b911316a77324e7d6f04da0db233ba179e9b202988d8e2ecc8",
+          "release": "2025-10-30T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500117",
+          "inputHash": "76ef91e28798194df2aa470fd68e35c75e972df2153dec23703794a2957fbc31",
+          "release": "2025-10-28T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500106",
+          "inputHash": "760cb7d7e70854ec299bcc8e83354f9a6fe961ab0d352eb0c358586e3754eb80",
+          "release": "2025-10-27T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500018",
+          "inputHash": "527a1545f91d1671a9655d94412a5d99eb8562b10363c3df30c2a1e277705d8a",
+          "release": "2025-10-25T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500083",
+          "inputHash": "b8f314473db57a5792ec6c5983d47721cf7b826c79feff536158f3a4b9e249a9",
+          "release": "2025-10-23T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022401187",
+          "inputHash": "9c542a91d8337b9d899838a2ce395cc712e0bf054f6f77cda7c468d063ee92f4",
+          "release": "2025-04-14T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401174",
+          "inputHash": "8a50106d8e8eb474ab6698391111af714fc7f72f8d61ede8f78d87dd73d9e877",
+          "release": "2025-04-12T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401156",
+          "inputHash": "f07fcc35c8f620070aea8224e51b5d6a14f45f6702acdf51f6ceb27ff0b42766",
+          "release": "2025-04-10T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401151",
+          "inputHash": "9de6432df048761f1a0f8d79a0fae79c17051c8794fb78cd69099e049fa09f77",
+          "release": "2025-04-09T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401137",
+          "inputHash": "f356a6a6a7ecaf85c4a9f495ebfca6f110e0d4264c6d0d053e6dfb2af0277c7b",
+          "release": "2025-04-07T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401120",
+          "inputHash": "fafd6ade8865c0d15ce87836d4c115282e73fc22f5789e91c76acb3b8e7f6016",
+          "release": "2025-04-05T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401106",
+          "inputHash": "7a8b4851e4bf6c6600f0be74b352a686ac4fa8ea4ca003232050f4114498611a",
+          "release": "2025-04-03T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401093",
+          "inputHash": "7dd1d1263cbbbdfb0e579af702d25a134b01e95ba17359547adc489fdc3ed7a1",
+          "release": "2025-04-01T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401080",
+          "inputHash": "1e2eabfe56813074cab83032a73e7918978bfe9c77a3f4d5e591ad502e1e8bd1",
+          "release": "2025-03-30T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401058",
+          "inputHash": "8f88a48e86dfdb27853af85a3804db7d0ff43965cfff9dfa858756e8cb70e2b2",
+          "release": "2025-03-27T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401044",
+          "inputHash": "b91857c1473bf241d528fc17ee7c0e8818050918c500d85850d9b9adc09b7c37",
+          "release": "2025-03-25T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401034",
+          "inputHash": "0f705da2acd6fc6bd3bb16ad6162093a903037e6cb58716360c20b60bd046bfb",
+          "release": "2025-03-24T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401020",
+          "inputHash": "91d8c4b4a8fc166d7aa2a1da4ae798c42d58e8ac4e9873dfd171d0173ea77f94",
+          "release": "2025-03-22T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400994",
+          "inputHash": "5aa780ff7a31f2a9192a3dea0880295dffe0415f4c8608258a160d94a5cdef02",
+          "release": "2025-03-19T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400968",
+          "inputHash": "199a6654adf22367e6672053251bf7571af53e548f41a2690913afe48b45adca",
+          "release": "2025-03-16T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400958",
+          "inputHash": "f5d3302682e01b7c54c15dd39bc32d8cdd9d87dc238074dac97db3f1717cb6e5",
+          "release": "2025-03-15T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400946",
+          "inputHash": "3c699cfa96a83d4a287bd939398a4557bb5cd4232a75a76aff523987c4495e23",
+          "release": "2025-03-13T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400929",
+          "inputHash": "b0895d72ccd738bdaaa442a67bb529a0a0b020b0fa7dd13b519308f67d0cdf60",
+          "release": "2025-03-11T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400918",
+          "inputHash": "1bc1e47a4e1c7604cc8d599aaf385afb29b2de82450fd7a21862e500f707958b",
+          "release": "2025-03-09T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400900",
+          "inputHash": "1c408e7849640f3c646f30c17638d9208a2557e80cd3409ffe24d7fd7f75486f",
+          "release": "2025-03-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400891",
+          "inputHash": "445ddca9e0507bb64e335adf7052d9ebe03bbc64c85d97ca97b71169722ccc14",
+          "release": "2025-03-06T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400866",
+          "inputHash": "1c328705aceca3a1639c096cb24584f6270fe153bfc6708495dc33ad281dfd83",
+          "release": "2025-03-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400852",
+          "inputHash": "eb308041f506c21d3e9847de1cf333a84bf45638cae45bae71f578c2347715db",
+          "release": "2025-03-01T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400836",
+          "inputHash": "5698e26d651728951faf62a7978dfc8519f7f83898568cd7ca23627d5d5680c7",
+          "release": "2025-02-27T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400829",
+          "inputHash": "5dec28eec828e6fdd419041ce2dd6be1cc7415d274dd9a78871587d58fa85a79",
+          "release": "2025-02-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400811",
+          "inputHash": "ea3708dccea935747f2b48eafdaa0547b540349ef329782ec08d32c28c41d81b",
+          "release": "2025-02-24T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400789",
+          "inputHash": "b6d38e684a149e2faeaab2ae4449c9144595f552da7df76c4468622af95fb4a4",
+          "release": "2025-02-21T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400769",
+          "inputHash": "679d2fc036ef4dfb7771c032f3472e035993dbc42bdf3e025a26f3f46f8eeae9",
+          "release": "2025-02-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400759",
+          "inputHash": "75bad0590ddc394930e0dfaf759d85f6150824a239de6dcda3ada99730c07b26",
+          "release": "2025-02-11T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400748",
+          "inputHash": "d25723d823c376b6725bc829272b94197b20d31f1cb58b5eced645bf4c071341",
+          "release": "2025-02-09T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400728",
+          "inputHash": "364f2cd6f2223dee6b09ddad3a120740b1187f3ac2b50a6ebe2574ee0b18c5a1",
+          "release": "2025-02-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400710",
+          "inputHash": "0d9595dd6575b08df76fa458301d7ffd4dbf6b5ec397e85d8e8c8aa67e300731",
+          "release": "2025-02-05T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400698",
+          "inputHash": "d1fc78f0aba789c991aa9ac37b40003bafb8ac86e2b7875f8e2b9933962cb567",
+          "release": "2025-02-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400683",
+          "inputHash": "a987b154024d17162e145fcf77c74ad81550e5462109a070761f8a568250343d",
+          "release": "2025-02-01T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400666",
+          "inputHash": "5be85603c87a1386659699f613db218259ca1fffa97f4fe37004da4752564c28",
+          "release": "2025-01-30T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400650",
+          "inputHash": "d7efcc36766b511c581bcbab375663a78e70ef55a45ee3c89ff53c1b636d38b0",
+          "release": "2025-01-28T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400635",
+          "inputHash": "92c838f507da51c4bff70e6a964d9970ee54d29cfc42b81bc8177f4c0755de18",
+          "release": "2025-01-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400629",
+          "inputHash": "1ec42023ed15de73523b3244b59a05f07757700fde55fd0f7cf88fff10286538",
+          "release": "2025-01-24T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400620",
+          "inputHash": "bbabeb87559d32733e893190f718d3bd851627e34238d9c15c4580146cd3d6ff",
+          "release": "2025-01-23T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400604",
+          "inputHash": "92e4ec868910f49be96a40e8ee62998347c3ad366a54c0f48561f6f4a0e2d2a8",
+          "release": "2025-01-21T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400587",
+          "inputHash": "c0bdf8118d4dfd3a397e95fd05c6be18af6dcf846b08ed9857dcedae98ea4a57",
+          "release": "2025-01-19T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400577",
+          "inputHash": "9f86c9168861699c780cf05cd0b7060572ffa9ac46220fd08d137f6b0787fdf2",
+          "release": "2025-01-18T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400562",
+          "inputHash": "459a407eb00084156fb630943336197b448cc512199b742b0dae6980a0e9e01c",
+          "release": "2025-01-16T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400542",
+          "inputHash": "1be77012fc5cec4b1b467e13cf555a52e7543ede44b76a1b3377bfbd690ae0d7",
+          "release": "2025-01-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400528",
+          "inputHash": "746ac1a06585e5439d9172250278068a0b1a1afb761f7a4d2e5f6b6a0745a739",
+          "release": "2025-01-11T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400507",
+          "inputHash": "b467da736e3bf89fc89c3682af6376b7d7c1db100622fca24dd82c5ef75dc1c7",
+          "release": "2025-01-08T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400487",
+          "inputHash": "8fca36e715fe8a9f533a9f9088975ac12df1d22ea8b457cd3e3794a1c5adfa21",
+          "release": "2025-01-06T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400471",
+          "inputHash": "6a8bc532015b63751def6f93de0d50dea068963156c725d89a727f243ae600d6",
+          "release": "2025-01-04T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400464",
+          "inputHash": "46c0e7d1eaa43b1ab6f9f59e6d137c292c671aacf83965a94fa17f3e709312b3",
+          "release": "2025-01-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400449",
+          "inputHash": "61dc56875636b6508fa262249105982d70f24fd8a82adff99b130bbb68c976ff",
+          "release": "2025-01-01T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400437",
+          "inputHash": "9622f64169374fa3dfe1c346d88678a0681b98acc4cbd22b0912a0ced311508f",
+          "release": "2024-12-30T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400420",
+          "inputHash": "b8579a7b7a1bb7194d37604dd9c0c8d7f8831062ab09925099376708f6682d7d",
+          "release": "2024-12-28T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400407",
+          "inputHash": "787c4f5ff2795a3d271850df66aaf0b18683002f206c3d5c5329acdd8ce73143",
+          "release": "2024-12-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400393",
+          "inputHash": "0d81454267a418cf6de0cfe02cc5887bb5110f2cc1b152347dfc8474c49cbdc8",
+          "release": "2024-12-24T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400381",
+          "inputHash": "a8836cbd9369d921681454410be3b25e12ba8965fa3f68af3197c5475c4e2391",
+          "release": "2024-12-22T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400363",
+          "inputHash": "1c1c691efcc945e5aa8f93f852c97ff59215c453db8c7d71ce23f599bc5a6f44",
+          "release": "2024-12-20T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401217",
+          "inputHash": "241634793f1bc3ac6ae84d72ab05a0d984ebdce8971a979c57a31d963d5ac418",
+          "release": "2024-12-16T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401205",
+          "inputHash": "f5628665cb86cfcd84c67380ef84bc0334030ebe70b67d6b6892662335985d9d",
+          "release": "2024-12-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400345",
+          "inputHash": "0014e8ae4def78ae679d78b03b6721f55d5440cb7e3d1eb839fcccd9ac046b0f",
+          "release": "2024-12-08T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400335",
+          "inputHash": "b2097e69f4a06ad3a9979c6ca62271d2b6d70e68fe5a1f91cf68b79af0b90b6b",
+          "release": "2024-12-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400319",
+          "inputHash": "b82ab2ed7dd8a7a9bcb23745e643974344eb1ae4f50254c43d0c6b4ec1da2101",
+          "release": "2024-12-05T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400316",
+          "inputHash": "37498deef4ac472f9c4a74bf308b8b41bc10b165957ba6456ddc37534e109387",
+          "release": "2024-12-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400307",
+          "inputHash": "c8c220be77d6ee1b54ee3fd64b4602437ccf961cd5ddee7d4c88d114c1196572",
+          "release": "2024-12-02T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400047",
+          "inputHash": "6c9c6f653069991a4d56f2874e9e0e31e213e4f8ff1a1632a41c8a5846d8bf96",
+          "release": "2024-11-30T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400281",
+          "inputHash": "a99f6231a6c215ec78267198bba857e70103195cb154c13bc0f703a4942860e1",
+          "release": "2024-11-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400271",
+          "inputHash": "22ce0ce3bdfb1ff3689cb4e26d20acaa58cc71590e0e4222591c5fa62aacde56",
+          "release": "2024-11-25T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400028",
+          "inputHash": "84800c92633831e108c27a98613cfb697d2e0dacd95dc66c0cf358e93e9ea50a",
+          "release": "2024-11-23T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400021",
+          "inputHash": "4db33bc81d844ffa6619efa796a73f60e8aad978512019e09b844d1e2ce91323",
+          "release": "2024-11-20T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400218",
+          "inputHash": "695d45c7d81e00391fbb2faffe44fa27bf45204818639fcf4793f1d5e75f3248",
+          "release": "2024-11-14T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400001",
+          "inputHash": "208c492e40b96aa363b2aefcf425712c1223c04d34ecce082095e8e67d649512",
+          "release": "2024-11-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400202",
+          "inputHash": "af04767e250b65d9be817fdf45b9dfa7aeadb5132e2509c923b1b0293832d11a",
+          "release": "2024-11-11T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400187",
+          "inputHash": "32941e52061fd52ffbce4c77112d6565fabb9e8b17ca5f6b387764b919cdfdba",
+          "release": "2024-11-09T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400172",
+          "inputHash": "05f41d3521a68bfb42437b7d8af3ab038df5749fe9560167dc1aa25f352ff644",
+          "release": "2024-11-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400157",
+          "inputHash": "136af6597b0ff8a15be03b193ef2df86cdeaeddd98d2d8bf1c61bcf1ba62a3b8",
+          "release": "2024-11-05T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400141",
+          "inputHash": "7a071ed6231775faa1bf63c0bcdf2e862178edb142f1a89f6ba4aa6ab832186b",
+          "release": "2024-11-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400132",
+          "inputHash": "b16d061dacedafc3a9685b07dbce0b7e42869a740a49035558e9310ff5749df1",
+          "release": "2024-11-02T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400119",
+          "inputHash": "f052b1f16905a991955c9fd42570b084007184c52d7cc7c173ec0018af91db58",
+          "release": "2024-10-31T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400104",
+          "inputHash": "aff207122b29208957ac417f88a110a5d100e01a308856952500548505e7a86d",
+          "release": "2024-10-29T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400089",
+          "inputHash": "9bd60f95349633ba2be2bb18080af3bdb237ed3ccd73dc012dfe14a81f510199",
+          "release": "2024-10-27T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400073",
+          "inputHash": "d6aded88b8b047dbae3826fab92237083272b03b2822a14ef4f4f7c28ec8221f",
+          "release": "2024-10-25T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        }
+      ],
+      "skipped": [
+        {
+          "gameId": "0022400061",
+          "scheduledStart": "2024-10-22T23:30:00.000Z",
+          "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+        },
+        {
+          "gameId": "0022400230",
+          "scheduledStart": "2024-11-17T01:00:00.000Z",
+          "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"
+        }
+      ],
+      "summary": {
+        "n": 0,
+        "timingBrier": null,
+        "timingConstantBrier": null,
+        "timingSkillVsConstant": null,
+        "timingSkillVsConstantReason": "no_scored_windows",
+        "timingSkillVsStatistical": null,
+        "timingSkillVsStatisticalReason": "baseline_not_supplied",
+        "meanPredicted": null,
+        "observedRate": null,
+        "brierDecomposition": null,
+        "setLogLoss": null,
+        "setLogLossClips": 0,
+        "candidateHitRate": null,
+        "setTop1": null,
+        "meanCandidates": null,
+        "otherMass": null,
+        "setN": 0,
+        "playerN": 0,
+        "exitBrier": null,
+        "entryBrier": null,
+        "exitTop1": null,
+        "entryTop1": null,
+        "exitTopK": null,
+        "entryTopK": null,
+        "exitLogLoss": null,
+        "entryLogLoss": null,
+        "exitMRR": null,
+        "entryMRR": null,
+        "exitLogLossClips": 0,
+        "entryLogLossClips": 0,
+        "midPeriod": {
+          "n": 0,
+          "timingBrier": null,
+          "timingConstantBrier": null,
+          "timingSkillVsConstant": null,
+          "timingSkillVsConstantReason": "no_scored_windows",
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": null,
+          "observedRate": null,
+          "brierDecomposition": null,
+          "setLogLoss": null,
+          "setLogLossClips": 0,
+          "candidateHitRate": null,
+          "setTop1": null,
+          "meanCandidates": null,
+          "otherMass": null,
+          "setN": 0,
+          "playerN": 0,
+          "exitBrier": null,
+          "entryBrier": null,
+          "exitTop1": null,
+          "entryTop1": null,
+          "exitTopK": null,
+          "entryTopK": null,
+          "exitLogLoss": null,
+          "entryLogLoss": null,
+          "exitMRR": null,
+          "entryMRR": null,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0
+        },
+        "byStoppage": {},
+        "windows": 0,
+        "eligible": 0,
+        "scored": 0,
+        "actualSubstitutions": 0,
+        "excluded": {},
+        "informational": {},
+        "failures": {},
+        "providerFailureRate": null,
+        "providerFailureFlag": false,
+        "invalidQuestions": {},
+        "invalidActions": 0,
+        "timingLogLoss": null,
+        "clipped": 0,
+        "precision": null,
+        "recall": null,
+        "exactAction": null,
+        "partialOverlap": null,
+        "calibration": [
+          {
+            "lower": 0,
+            "upper": 0.1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.9,
+            "upper": 1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          }
+        ],
+        "calibrationByStoppage": {}
+      },
+      "invalidByReason": {},
+      "wouldDefer": {},
+      "split": {
+        "wouldDefer": {
+          "n": 0,
+          "timingBrier": null,
+          "timingConstantBrier": null,
+          "timingSkillVsConstant": null,
+          "timingSkillVsConstantReason": "no_scored_windows",
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": null,
+          "observedRate": null,
+          "brierDecomposition": null,
+          "setLogLoss": null,
+          "setLogLossClips": 0,
+          "candidateHitRate": null,
+          "setTop1": null,
+          "meanCandidates": null,
+          "otherMass": null,
+          "setN": 0,
+          "playerN": 0,
+          "exitBrier": null,
+          "entryBrier": null,
+          "exitTop1": null,
+          "entryTop1": null,
+          "exitTopK": null,
+          "entryTopK": null,
+          "exitLogLoss": null,
+          "entryLogLoss": null,
+          "exitMRR": null,
+          "entryMRR": null,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0,
+          "midPeriod": {
+            "n": 0,
+            "timingBrier": null,
+            "timingConstantBrier": null,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "no_scored_windows",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": null,
+            "observedRate": null,
+            "brierDecomposition": null,
+            "setLogLoss": null,
+            "setLogLossClips": 0,
+            "candidateHitRate": null,
+            "setTop1": null,
+            "meanCandidates": null,
+            "otherMass": null,
+            "setN": 0,
+            "playerN": 0,
+            "exitBrier": null,
+            "entryBrier": null,
+            "exitTop1": null,
+            "entryTop1": null,
+            "exitTopK": null,
+            "entryTopK": null,
+            "exitLogLoss": null,
+            "entryLogLoss": null,
+            "exitMRR": null,
+            "entryMRR": null,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "byStoppage": {},
+          "windows": 0,
+          "eligible": 0,
+          "scored": 0,
+          "actualSubstitutions": 0,
+          "excluded": {},
+          "informational": {},
+          "failures": {},
+          "providerFailureRate": null,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingLogLoss": null,
+          "clipped": 0,
+          "precision": null,
+          "recall": null,
+          "exactAction": null,
+          "partialOverlap": null,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "calibrationByStoppage": {}
+        },
+        "nonDeferred": {
+          "n": 0,
+          "timingBrier": null,
+          "timingConstantBrier": null,
+          "timingSkillVsConstant": null,
+          "timingSkillVsConstantReason": "no_scored_windows",
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": null,
+          "observedRate": null,
+          "brierDecomposition": null,
+          "setLogLoss": null,
+          "setLogLossClips": 0,
+          "candidateHitRate": null,
+          "setTop1": null,
+          "meanCandidates": null,
+          "otherMass": null,
+          "setN": 0,
+          "playerN": 0,
+          "exitBrier": null,
+          "entryBrier": null,
+          "exitTop1": null,
+          "entryTop1": null,
+          "exitTopK": null,
+          "entryTopK": null,
+          "exitLogLoss": null,
+          "entryLogLoss": null,
+          "exitMRR": null,
+          "entryMRR": null,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0,
+          "midPeriod": {
+            "n": 0,
+            "timingBrier": null,
+            "timingConstantBrier": null,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "no_scored_windows",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": null,
+            "observedRate": null,
+            "brierDecomposition": null,
+            "setLogLoss": null,
+            "setLogLossClips": 0,
+            "candidateHitRate": null,
+            "setTop1": null,
+            "meanCandidates": null,
+            "otherMass": null,
+            "setN": 0,
+            "playerN": 0,
+            "exitBrier": null,
+            "entryBrier": null,
+            "exitTop1": null,
+            "entryTop1": null,
+            "exitTopK": null,
+            "entryTopK": null,
+            "exitLogLoss": null,
+            "entryLogLoss": null,
+            "exitMRR": null,
+            "entryMRR": null,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "byStoppage": {},
+          "windows": 0,
+          "eligible": 0,
+          "scored": 0,
+          "actualSubstitutions": 0,
+          "excluded": {},
+          "informational": {},
+          "failures": {},
+          "providerFailureRate": null,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingLogLoss": null,
+          "clipped": 0,
+          "precision": null,
+          "recall": null,
+          "exactAction": null,
+          "partialOverlap": null,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "calibrationByStoppage": {}
+        }
+      },
+      "starter": {
+        "label": "unavailable",
+        "reason": "Starter model not installed"
+      },
+      "computeSeconds": 120.492094029
+    },
+    {
+      "call": "cached",
+      "label": "package-only; deferral ignored",
+      "complete": true,
+      "error": null,
+      "eligibleWindows": 5397,
+      "package": {
+        "gameId": "0022501206",
+        "packageHash": "e5189b73866ee79ea890ac4b7789c0bac2b591cf19993ac6e385eb741c4f0508",
+        "manifestHash": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650",
+        "stateVersion": "state-v1",
+        "files": {
+          "assemble.py": "046027d403eb7db30069a64229e25c671a4f003aec1bd7eae0c216edd9be759c",
+          "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e",
+          "manifest.json": "d81e5a6ccd517357b3329bcd3ea43ca2f36d12f932db3e0dfb18ee46b19ab650"
+        }
+      },
+      "games": [
+        {
+          "gameId": "0022500358",
+          "inputHash": "4c991f80377c11c343d3a6fdffe29d1ebdd7b8f6e3bd901b81d498bb051f556d",
+          "release": "2025-12-08T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500338",
+          "inputHash": "5ad34840bbd1c7ce687e40e375bea761921d5cb8f7b5a256e2ab3ba1616b1d9b",
+          "release": "2025-12-06T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500334",
+          "inputHash": "84025ef65ca21ea98dd23ae2d541110f19a8cd8feb40b53cfdb398e8cb2501ca",
+          "release": "2025-12-05T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500320",
+          "inputHash": "c8955a7bf74cd76dcc5050ff71f4ad880cf6ea1a70169ce6765662784a9b9bff",
+          "release": "2025-12-03T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500302",
+          "inputHash": "46eac21713e1ebeeabd47fceef97b58a86122a32064d806e3a5d867b9e97f209",
+          "release": "2025-12-01T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500293",
+          "inputHash": "b7c7aa1f02b9c44965382c65e0f54f56188a3e89ee895ed55fb139f100a6b33d",
+          "release": "2025-11-30T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500060",
+          "inputHash": "f476b13a8bd4692fc11c7ece17051fedfb9bed8672e33eabcee75dfb0b735522",
+          "release": "2025-11-27T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500277",
+          "inputHash": "c6ab8979f128d22f6c78c8a3f61d7b2efe92c3e5c442051bf20fcd185c923389",
+          "release": "2025-11-24T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500049",
+          "inputHash": "c62a595b78f082a70177877cfedb54cbbd9925ac4f75c3772bff9e1042f223bd",
+          "release": "2025-11-22T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500250",
+          "inputHash": "2b07ec2dd3e3a3e607f79d1546529892b9e78f8f9e269495f97f7951cf0c6bcb",
+          "release": "2025-11-19T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500233",
+          "inputHash": "a8f0b7aa4e87cb8acb7785d9824cce92c18b356393c23a6e323af1c0e3cf401e",
+          "release": "2025-11-17T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500216",
+          "inputHash": "0df966586660caaf202c256f1c3dd16089608c58f95d31a43abe7feba582ebbe",
+          "release": "2025-11-13T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500209",
+          "inputHash": "87ea048f1d1c7b82dcf9c12d7653ab0e93408464ff8653754bd222ca05bf883b",
+          "release": "2025-11-12T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500193",
+          "inputHash": "296e774f5d4e82cc3253d790bef1d3166f69d0c55411d1d5c4fc3554d4f72364",
+          "release": "2025-11-10T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500028",
+          "inputHash": "ebbd66c137b10559bf8df03a410d8494124a05be8d4e089fa3efb3997f914212",
+          "release": "2025-11-08T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500174",
+          "inputHash": "3a1e13ce3997c19f14a11eb712737e166a8bce45177be2d6bbb37b2cc990dec3",
+          "release": "2025-11-06T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500158",
+          "inputHash": "7f03cc35be575c77591a355e013079ad4c6fe0b31ae53e3fe28b8999d7aef930",
+          "release": "2025-11-04T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500146",
+          "inputHash": "ff3d2e093e9176117bb9f2cce3273397dac6673edf5402e5a8447052a44dec58",
+          "release": "2025-11-02T14:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500021",
+          "inputHash": "241392116aafee6cd3eba8795c1a55aca01f64857006848011afd37cf0da02bb",
+          "release": "2025-11-01T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500128",
+          "inputHash": "4814e713d81297b911316a77324e7d6f04da0db233ba179e9b202988d8e2ecc8",
+          "release": "2025-10-30T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500117",
+          "inputHash": "76ef91e28798194df2aa470fd68e35c75e972df2153dec23703794a2957fbc31",
+          "release": "2025-10-28T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500106",
+          "inputHash": "760cb7d7e70854ec299bcc8e83354f9a6fe961ab0d352eb0c358586e3754eb80",
+          "release": "2025-10-27T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500018",
+          "inputHash": "527a1545f91d1671a9655d94412a5d99eb8562b10363c3df30c2a1e277705d8a",
+          "release": "2025-10-25T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022500083",
+          "inputHash": "b8f314473db57a5792ec6c5983d47721cf7b826c79feff536158f3a4b9e249a9",
+          "release": "2025-10-23T13:00:00Z",
+          "roster": {
+            "season": "2025-26",
+            "rosterPolicy": "season-pregame-v1"
+          }
+        },
+        {
+          "gameId": "0022401187",
+          "inputHash": "9c542a91d8337b9d899838a2ce395cc712e0bf054f6f77cda7c468d063ee92f4",
+          "release": "2025-04-14T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401174",
+          "inputHash": "8a50106d8e8eb474ab6698391111af714fc7f72f8d61ede8f78d87dd73d9e877",
+          "release": "2025-04-12T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401156",
+          "inputHash": "f07fcc35c8f620070aea8224e51b5d6a14f45f6702acdf51f6ceb27ff0b42766",
+          "release": "2025-04-10T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401151",
+          "inputHash": "9de6432df048761f1a0f8d79a0fae79c17051c8794fb78cd69099e049fa09f77",
+          "release": "2025-04-09T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401137",
+          "inputHash": "f356a6a6a7ecaf85c4a9f495ebfca6f110e0d4264c6d0d053e6dfb2af0277c7b",
+          "release": "2025-04-07T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401120",
+          "inputHash": "fafd6ade8865c0d15ce87836d4c115282e73fc22f5789e91c76acb3b8e7f6016",
+          "release": "2025-04-05T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401106",
+          "inputHash": "7a8b4851e4bf6c6600f0be74b352a686ac4fa8ea4ca003232050f4114498611a",
+          "release": "2025-04-03T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401093",
+          "inputHash": "7dd1d1263cbbbdfb0e579af702d25a134b01e95ba17359547adc489fdc3ed7a1",
+          "release": "2025-04-01T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401080",
+          "inputHash": "1e2eabfe56813074cab83032a73e7918978bfe9c77a3f4d5e591ad502e1e8bd1",
+          "release": "2025-03-30T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401058",
+          "inputHash": "8f88a48e86dfdb27853af85a3804db7d0ff43965cfff9dfa858756e8cb70e2b2",
+          "release": "2025-03-27T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401044",
+          "inputHash": "b91857c1473bf241d528fc17ee7c0e8818050918c500d85850d9b9adc09b7c37",
+          "release": "2025-03-25T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401034",
+          "inputHash": "0f705da2acd6fc6bd3bb16ad6162093a903037e6cb58716360c20b60bd046bfb",
+          "release": "2025-03-24T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401020",
+          "inputHash": "91d8c4b4a8fc166d7aa2a1da4ae798c42d58e8ac4e9873dfd171d0173ea77f94",
+          "release": "2025-03-22T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400994",
+          "inputHash": "5aa780ff7a31f2a9192a3dea0880295dffe0415f4c8608258a160d94a5cdef02",
+          "release": "2025-03-19T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400968",
+          "inputHash": "199a6654adf22367e6672053251bf7571af53e548f41a2690913afe48b45adca",
+          "release": "2025-03-16T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400958",
+          "inputHash": "f5d3302682e01b7c54c15dd39bc32d8cdd9d87dc238074dac97db3f1717cb6e5",
+          "release": "2025-03-15T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400946",
+          "inputHash": "3c699cfa96a83d4a287bd939398a4557bb5cd4232a75a76aff523987c4495e23",
+          "release": "2025-03-13T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400929",
+          "inputHash": "b0895d72ccd738bdaaa442a67bb529a0a0b020b0fa7dd13b519308f67d0cdf60",
+          "release": "2025-03-11T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400918",
+          "inputHash": "1bc1e47a4e1c7604cc8d599aaf385afb29b2de82450fd7a21862e500f707958b",
+          "release": "2025-03-09T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400900",
+          "inputHash": "1c408e7849640f3c646f30c17638d9208a2557e80cd3409ffe24d7fd7f75486f",
+          "release": "2025-03-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400891",
+          "inputHash": "445ddca9e0507bb64e335adf7052d9ebe03bbc64c85d97ca97b71169722ccc14",
+          "release": "2025-03-06T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400866",
+          "inputHash": "1c328705aceca3a1639c096cb24584f6270fe153bfc6708495dc33ad281dfd83",
+          "release": "2025-03-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400852",
+          "inputHash": "eb308041f506c21d3e9847de1cf333a84bf45638cae45bae71f578c2347715db",
+          "release": "2025-03-01T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400836",
+          "inputHash": "5698e26d651728951faf62a7978dfc8519f7f83898568cd7ca23627d5d5680c7",
+          "release": "2025-02-27T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400829",
+          "inputHash": "5dec28eec828e6fdd419041ce2dd6be1cc7415d274dd9a78871587d58fa85a79",
+          "release": "2025-02-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400811",
+          "inputHash": "ea3708dccea935747f2b48eafdaa0547b540349ef329782ec08d32c28c41d81b",
+          "release": "2025-02-24T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400789",
+          "inputHash": "b6d38e684a149e2faeaab2ae4449c9144595f552da7df76c4468622af95fb4a4",
+          "release": "2025-02-21T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400769",
+          "inputHash": "679d2fc036ef4dfb7771c032f3472e035993dbc42bdf3e025a26f3f46f8eeae9",
+          "release": "2025-02-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400759",
+          "inputHash": "75bad0590ddc394930e0dfaf759d85f6150824a239de6dcda3ada99730c07b26",
+          "release": "2025-02-11T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400748",
+          "inputHash": "d25723d823c376b6725bc829272b94197b20d31f1cb58b5eced645bf4c071341",
+          "release": "2025-02-09T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400728",
+          "inputHash": "364f2cd6f2223dee6b09ddad3a120740b1187f3ac2b50a6ebe2574ee0b18c5a1",
+          "release": "2025-02-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400710",
+          "inputHash": "0d9595dd6575b08df76fa458301d7ffd4dbf6b5ec397e85d8e8c8aa67e300731",
+          "release": "2025-02-05T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400698",
+          "inputHash": "d1fc78f0aba789c991aa9ac37b40003bafb8ac86e2b7875f8e2b9933962cb567",
+          "release": "2025-02-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400683",
+          "inputHash": "a987b154024d17162e145fcf77c74ad81550e5462109a070761f8a568250343d",
+          "release": "2025-02-01T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400666",
+          "inputHash": "5be85603c87a1386659699f613db218259ca1fffa97f4fe37004da4752564c28",
+          "release": "2025-01-30T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400650",
+          "inputHash": "d7efcc36766b511c581bcbab375663a78e70ef55a45ee3c89ff53c1b636d38b0",
+          "release": "2025-01-28T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400635",
+          "inputHash": "92c838f507da51c4bff70e6a964d9970ee54d29cfc42b81bc8177f4c0755de18",
+          "release": "2025-01-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400629",
+          "inputHash": "1ec42023ed15de73523b3244b59a05f07757700fde55fd0f7cf88fff10286538",
+          "release": "2025-01-24T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400620",
+          "inputHash": "bbabeb87559d32733e893190f718d3bd851627e34238d9c15c4580146cd3d6ff",
+          "release": "2025-01-23T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400604",
+          "inputHash": "92e4ec868910f49be96a40e8ee62998347c3ad366a54c0f48561f6f4a0e2d2a8",
+          "release": "2025-01-21T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400587",
+          "inputHash": "c0bdf8118d4dfd3a397e95fd05c6be18af6dcf846b08ed9857dcedae98ea4a57",
+          "release": "2025-01-19T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400577",
+          "inputHash": "9f86c9168861699c780cf05cd0b7060572ffa9ac46220fd08d137f6b0787fdf2",
+          "release": "2025-01-18T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400562",
+          "inputHash": "459a407eb00084156fb630943336197b448cc512199b742b0dae6980a0e9e01c",
+          "release": "2025-01-16T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400542",
+          "inputHash": "1be77012fc5cec4b1b467e13cf555a52e7543ede44b76a1b3377bfbd690ae0d7",
+          "release": "2025-01-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400528",
+          "inputHash": "746ac1a06585e5439d9172250278068a0b1a1afb761f7a4d2e5f6b6a0745a739",
+          "release": "2025-01-11T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400507",
+          "inputHash": "b467da736e3bf89fc89c3682af6376b7d7c1db100622fca24dd82c5ef75dc1c7",
+          "release": "2025-01-08T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400487",
+          "inputHash": "8fca36e715fe8a9f533a9f9088975ac12df1d22ea8b457cd3e3794a1c5adfa21",
+          "release": "2025-01-06T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400471",
+          "inputHash": "6a8bc532015b63751def6f93de0d50dea068963156c725d89a727f243ae600d6",
+          "release": "2025-01-04T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400464",
+          "inputHash": "46c0e7d1eaa43b1ab6f9f59e6d137c292c671aacf83965a94fa17f3e709312b3",
+          "release": "2025-01-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400449",
+          "inputHash": "61dc56875636b6508fa262249105982d70f24fd8a82adff99b130bbb68c976ff",
+          "release": "2025-01-01T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400437",
+          "inputHash": "9622f64169374fa3dfe1c346d88678a0681b98acc4cbd22b0912a0ced311508f",
+          "release": "2024-12-30T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400420",
+          "inputHash": "b8579a7b7a1bb7194d37604dd9c0c8d7f8831062ab09925099376708f6682d7d",
+          "release": "2024-12-28T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400407",
+          "inputHash": "787c4f5ff2795a3d271850df66aaf0b18683002f206c3d5c5329acdd8ce73143",
+          "release": "2024-12-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400393",
+          "inputHash": "0d81454267a418cf6de0cfe02cc5887bb5110f2cc1b152347dfc8474c49cbdc8",
+          "release": "2024-12-24T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400381",
+          "inputHash": "a8836cbd9369d921681454410be3b25e12ba8965fa3f68af3197c5475c4e2391",
+          "release": "2024-12-22T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400363",
+          "inputHash": "1c1c691efcc945e5aa8f93f852c97ff59215c453db8c7d71ce23f599bc5a6f44",
+          "release": "2024-12-20T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401217",
+          "inputHash": "241634793f1bc3ac6ae84d72ab05a0d984ebdce8971a979c57a31d963d5ac418",
+          "release": "2024-12-16T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022401205",
+          "inputHash": "f5628665cb86cfcd84c67380ef84bc0334030ebe70b67d6b6892662335985d9d",
+          "release": "2024-12-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400345",
+          "inputHash": "0014e8ae4def78ae679d78b03b6721f55d5440cb7e3d1eb839fcccd9ac046b0f",
+          "release": "2024-12-08T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400335",
+          "inputHash": "b2097e69f4a06ad3a9979c6ca62271d2b6d70e68fe5a1f91cf68b79af0b90b6b",
+          "release": "2024-12-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400319",
+          "inputHash": "b82ab2ed7dd8a7a9bcb23745e643974344eb1ae4f50254c43d0c6b4ec1da2101",
+          "release": "2024-12-05T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400316",
+          "inputHash": "37498deef4ac472f9c4a74bf308b8b41bc10b165957ba6456ddc37534e109387",
+          "release": "2024-12-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400307",
+          "inputHash": "c8c220be77d6ee1b54ee3fd64b4602437ccf961cd5ddee7d4c88d114c1196572",
+          "release": "2024-12-02T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400047",
+          "inputHash": "6c9c6f653069991a4d56f2874e9e0e31e213e4f8ff1a1632a41c8a5846d8bf96",
+          "release": "2024-11-30T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400281",
+          "inputHash": "a99f6231a6c215ec78267198bba857e70103195cb154c13bc0f703a4942860e1",
+          "release": "2024-11-26T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400271",
+          "inputHash": "22ce0ce3bdfb1ff3689cb4e26d20acaa58cc71590e0e4222591c5fa62aacde56",
+          "release": "2024-11-25T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400028",
+          "inputHash": "84800c92633831e108c27a98613cfb697d2e0dacd95dc66c0cf358e93e9ea50a",
+          "release": "2024-11-23T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400021",
+          "inputHash": "4db33bc81d844ffa6619efa796a73f60e8aad978512019e09b844d1e2ce91323",
+          "release": "2024-11-20T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400218",
+          "inputHash": "695d45c7d81e00391fbb2faffe44fa27bf45204818639fcf4793f1d5e75f3248",
+          "release": "2024-11-14T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400001",
+          "inputHash": "208c492e40b96aa363b2aefcf425712c1223c04d34ecce082095e8e67d649512",
+          "release": "2024-11-13T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400202",
+          "inputHash": "af04767e250b65d9be817fdf45b9dfa7aeadb5132e2509c923b1b0293832d11a",
+          "release": "2024-11-11T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400187",
+          "inputHash": "32941e52061fd52ffbce4c77112d6565fabb9e8b17ca5f6b387764b919cdfdba",
+          "release": "2024-11-09T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400172",
+          "inputHash": "05f41d3521a68bfb42437b7d8af3ab038df5749fe9560167dc1aa25f352ff644",
+          "release": "2024-11-07T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400157",
+          "inputHash": "136af6597b0ff8a15be03b193ef2df86cdeaeddd98d2d8bf1c61bcf1ba62a3b8",
+          "release": "2024-11-05T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400141",
+          "inputHash": "7a071ed6231775faa1bf63c0bcdf2e862178edb142f1a89f6ba4aa6ab832186b",
+          "release": "2024-11-03T14:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400132",
+          "inputHash": "b16d061dacedafc3a9685b07dbce0b7e42869a740a49035558e9310ff5749df1",
+          "release": "2024-11-02T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400119",
+          "inputHash": "f052b1f16905a991955c9fd42570b084007184c52d7cc7c173ec0018af91db58",
+          "release": "2024-10-31T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400104",
+          "inputHash": "aff207122b29208957ac417f88a110a5d100e01a308856952500548505e7a86d",
+          "release": "2024-10-29T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400089",
+          "inputHash": "9bd60f95349633ba2be2bb18080af3bdb237ed3ccd73dc012dfe14a81f510199",
+          "release": "2024-10-27T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        },
+        {
+          "gameId": "0022400073",
+          "inputHash": "d6aded88b8b047dbae3826fab92237083272b03b2822a14ef4f4f7c28ec8221f",
+          "release": "2024-10-25T13:00:00Z",
+          "roster": {
+            "season": "2024-25",
+            "rosterPolicy": "same-game-box-score-v1"
+          }
+        }
+      ],
+      "skipped": [
+        {
+          "gameId": "0022400061",
+          "scheduledStart": "2024-10-22T23:30:00.000Z",
+          "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unreconciled_substitution_batch, unresolved_or_repaired_order"
+        },
+        {
+          "gameId": "0022400230",
+          "scheduledStart": "2024-11-17T01:00:00.000Z",
+          "reason": "no_qualified_windows: ambiguous_equal_clock_run, ambiguous_stoppage, invalid_lineups, invalid_stints, multiple_whistles, quality:stints_withheld, unanchored_substitution, unknown_lineup, unqualified_summary, unreconciled_player_minutes, unreconciled_stints, unresolved_or_repaired_order"
+        }
+      ],
+      "summary": {
+        "n": 5397,
+        "timingBrier": 0.20007643135075043,
+        "timingConstantBrier": 0.19573564159346024,
+        "timingSkillVsConstant": -0.022176797858337594,
+        "timingSkillVsConstantReason": null,
+        "timingSkillVsStatistical": null,
+        "timingSkillVsStatisticalReason": "baseline_not_supplied",
+        "meanPredicted": 0.25,
+        "observedRate": 0.27515286270150086,
+        "brierDecomposition": {
+          "bins": 10,
+          "pooling": "window-weighted within-game deciles",
+          "reliability": 0.004340789757290092,
+          "resolution": 0,
+          "uncertainty": 0.19573564159346024,
+          "binningError": 8.326672684688674e-17
+        },
+        "setLogLoss": 5.508247534897052,
+        "setLogLossClips": 521,
+        "candidateHitRate": 0.039057239057239054,
+        "setTop1": 0.007407407407407408,
+        "meanCandidates": 2,
+        "otherMass": 0.600000000000015,
+        "setN": 1485,
+        "playerN": 1485,
+        "exitBrier": 0.23565178842171913,
+        "entryBrier": 0.11472996737508116,
+        "exitTop1": 0.2936026936026936,
+        "entryTop1": 0.33265993265993266,
+        "exitTopK": 0.15757575757575756,
+        "entryTopK": 0.21548821548821548,
+        "exitLogLoss": 1.7336501252797056,
+        "entryLogLoss": 2.227408042791848,
+        "exitMRR": 0.44467134306023376,
+        "entryMRR": 0.44570554106075905,
+        "exitLogLossClips": 0,
+        "entryLogLossClips": 0,
+        "midPeriod": {
+          "n": 5080,
+          "timingBrier": 0.1812007874015748,
+          "timingConstantBrier": 0.17712214718580918,
+          "timingSkillVsConstant": -0.0230272740059263,
+          "timingSkillVsConstantReason": null,
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": 0.25,
+          "observedRate": 0.2374015748031496,
+          "brierDecomposition": {
+            "bins": 10,
+            "pooling": "window-weighted within-game deciles",
+            "reliability": 0.004078640215765656,
+            "resolution": 0,
+            "uncertainty": 0.17712214718580918,
+            "binningError": -5.551115123125783e-17
+          },
+          "setLogLoss": 5.421897863863496,
+          "setLogLossClips": 351,
+          "candidateHitRate": 0.02902155887230514,
+          "setTop1": 0.001658374792703151,
+          "meanCandidates": 2,
+          "otherMass": 0.6000000000000132,
+          "setN": 1206,
+          "playerN": 1206,
+          "exitBrier": 0.23348207757283818,
+          "entryBrier": 0.11014491643760123,
+          "exitTop1": 0.22139303482587064,
+          "entryTop1": 0.29519071310116085,
+          "exitTopK": 0.13930348258706468,
+          "entryTopK": 0.21475953565505804,
+          "exitLogLoss": 1.7578310136254183,
+          "entryLogLoss": 2.2278017150553238,
+          "exitMRR": 0.426480560162151,
+          "entryMRR": 0.4417364745536371,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0
+        },
+        "byStoppage": {
+          "between_periods": {
+            "n": 317,
+            "timingBrier": 0.5025630914826499,
+            "timingConstantBrier": 0.06650893796004206,
+            "timingSkillVsConstant": -6.556324110671937,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.8801261829652997,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.43605415352260773,
+              "resolution": 0,
+              "uncertainty": 0.06650893796004206,
+              "binningError": 0
+            },
+            "setLogLoss": 5.881500951622469,
+            "setLogLossClips": 170,
+            "candidateHitRate": 0.08243727598566308,
+            "setTop1": 0.03225806451612903,
+            "meanCandidates": 2,
+            "otherMass": 0.5999999999999969,
+            "setN": 279,
+            "playerN": 279,
+            "exitBrier": 0.24503053854268692,
+            "entryBrier": 0.1345492198145097,
+            "exitTop1": 0.6057347670250897,
+            "entryTop1": 0.4946236559139785,
+            "exitTopK": 0.23655913978494625,
+            "entryTopK": 0.21863799283154123,
+            "exitLogLoss": 1.629126285333687,
+            "entryLogLoss": 2.225706362685123,
+            "exitMRR": 0.5233024691358021,
+            "entryMRR": 0.4628621511237999,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "dead_ball_turnover": {
+            "n": 782,
+            "timingBrier": 0.12515984654731457,
+            "timingConstantBrier": 0.09273799161906578,
+            "timingSkillVsConstant": -0.34960704197073933,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.12531969309462915,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.03242185492824878,
+              "resolution": 0,
+              "uncertainty": 0.09273799161906578,
+              "binningError": 2.7755575615628914e-17
+            },
+            "setLogLoss": 5.247084584266888,
+            "setLogLossClips": 21,
+            "candidateHitRate": 0.04081632653061224,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.600000000000001,
+            "setN": 98,
+            "playerN": 98,
+            "exitBrier": 0.22607269561094384,
+            "entryBrier": 0.10199237030637523,
+            "exitTop1": 0.19387755102040816,
+            "entryTop1": 0.2857142857142857,
+            "exitTopK": 0.1326530612244898,
+            "entryTopK": 0.22448979591836735,
+            "exitLogLoss": 1.7158734430897722,
+            "entryLogLoss": 2.2471781039218395,
+            "exitMRR": 0.4478741496598642,
+            "entryMRR": 0.4420863763976009,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "foul": {
+            "n": 3250,
+            "timingBrier": 0.1741923076923077,
+            "timingConstantBrier": 0.16621787403593238,
+            "timingSkillVsConstant": -0.04797578902165145,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.22338461538461538,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.007974433656375323,
+              "resolution": 0,
+              "uncertainty": 0.16621787403593238,
+              "binningError": -2.7755575615628914e-17
+            },
+            "setLogLoss": 5.315501543017859,
+            "setLogLossClips": 180,
+            "candidateHitRate": 0.03443526170798898,
+            "setTop1": 0.0013774104683195593,
+            "meanCandidates": 2,
+            "otherMass": 0.600000000000007,
+            "setN": 726,
+            "playerN": 726,
+            "exitBrier": 0.22748087180875534,
+            "entryBrier": 0.10732866360713303,
+            "exitTop1": 0.21074380165289255,
+            "entryTop1": 0.29338842975206614,
+            "exitTopK": 0.15013774104683195,
+            "entryTopK": 0.2190082644628099,
+            "exitLogLoss": 1.7587140068090803,
+            "entryLogLoss": 2.209267563158906,
+            "exitMRR": 0.4251729415365767,
+            "entryMRR": 0.4461565485962866,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "jump_ball": {
+            "n": 166,
+            "timingBrier": 0.08659638554216867,
+            "timingConstantBrier": 0.021586345381526106,
+            "timingSkillVsConstant": -3.0116279069767433,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.04819277108433735,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.06501004016064256,
+              "resolution": 0,
+              "uncertainty": 0.021586345381526106,
+              "binningError": 0
+            },
+            "setLogLoss": 5.450044218143457,
+            "setLogLossClips": 2,
+            "candidateHitRate": 0,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.6,
+            "setN": 8,
+            "playerN": 8,
+            "exitBrier": 0.22466859212818077,
+            "entryBrier": 0.10067152822986228,
+            "exitTop1": 0.25,
+            "entryTop1": 0.25,
+            "exitTopK": 0.125,
+            "entryTopK": 0.125,
+            "exitLogLoss": 1.8501250419004407,
+            "entryLogLoss": 2.464890986590369,
+            "exitMRR": 0.4197916666666667,
+            "entryMRR": 0.3939732142857143,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "timeout": {
+            "n": 803,
+            "timingBrier": 0.28915006226650064,
+            "timingConstantBrier": 0.20311541924244286,
+            "timingSkillVsConstant": -0.4235751443437439,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.4533001245330012,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.08603464302405771,
+              "resolution": 0,
+              "uncertainty": 0.20311541924244286,
+              "binningError": 1.1102230246251565e-16
+            },
+            "setLogLoss": 5.690054517404451,
+            "setLogLossClips": 146,
+            "candidateHitRate": 0.013736263736263736,
+            "setTop1": 0.0027472527472527475,
+            "meanCandidates": 2,
+            "otherMass": 0.5999999999999963,
+            "setN": 364,
+            "playerN": 364,
+            "exitBrier": 0.24865393576687747,
+            "entryBrier": 0.11902947614348706,
+            "exitTop1": 0.24725274725274726,
+            "entryTop1": 0.2967032967032967,
+            "exitTopK": 0.12087912087912088,
+            "entryTopK": 0.2032967032967033,
+            "exitLogLoss": 1.7680372240019397,
+            "entryLogLoss": 2.261227081523851,
+            "exitMRR": 0.42239468864468843,
+            "entryMRR": 0.43045381371274244,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "violation": {
+            "n": 79,
+            "timingBrier": 0.12579113924050633,
+            "timingConstantBrier": 0.046413502109704644,
+            "timingSkillVsConstant": -1.7102272727272725,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.12658227848101267,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.07937763713080169,
+              "resolution": 0,
+              "uncertainty": 0.046413502109704644,
+              "binningError": 0
+            },
+            "setLogLoss": 5.076021624974943,
+            "setLogLossClips": 2,
+            "candidateHitRate": 0.1,
+            "setTop1": 0,
+            "meanCandidates": 2,
+            "otherMass": 0.5999999999999999,
+            "setN": 10,
+            "playerN": 10,
+            "exitBrier": 0.1965767093643616,
+            "entryBrier": 0.07868056128759976,
+            "exitTop1": 0.3,
+            "entryTop1": 0.5,
+            "exitTopK": 0.1,
+            "entryTopK": 0.3,
+            "exitLogLoss": 1.659568619416206,
+            "entryLogLoss": 1.97713777515966,
+            "exitMRR": 0.4658333333333333,
+            "entryMRR": 0.5663095238095238,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          }
+        },
+        "windows": 5397,
+        "eligible": 5397,
+        "scored": 5397,
+        "actualSubstitutions": 1485,
+        "excluded": {},
+        "informational": {
+          "availability_unknown": 3997,
+          "unqualified_running_box_score": 54
+        },
+        "failures": {},
+        "providerFailureRate": 0,
+        "providerFailureFlag": false,
+        "invalidQuestions": {},
+        "invalidActions": 0,
+        "timingLogLoss": 0.5899683886778667,
+        "clipped": 0,
+        "precision": null,
+        "recall": 0,
+        "exactAction": 0.7248471372984991,
+        "partialOverlap": 0,
+        "calibration": [
+          {
+            "lower": 0,
+            "upper": 0.1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 5397,
+            "predicted": 0.25,
+            "observed": 0.27515286270150086
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          },
+          {
+            "lower": 0.9,
+            "upper": 1,
+            "n": 0,
+            "predicted": null,
+            "observed": null
+          }
+        ],
+        "calibrationByStoppage": {
+          "between_periods": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 317,
+              "predicted": 0.25,
+              "observed": 0.8801261829652997
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "dead_ball_turnover": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 782,
+              "predicted": 0.25,
+              "observed": 0.12531969309462915
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "foul": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 3250,
+              "predicted": 0.25,
+              "observed": 0.22338461538461538
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "jump_ball": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 166,
+              "predicted": 0.25,
+              "observed": 0.04819277108433735
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "timeout": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 803,
+              "predicted": 0.25,
+              "observed": 0.4533001245330012
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "violation": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 79,
+              "predicted": 0.25,
+              "observed": 0.12658227848101267
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      },
+      "invalidByReason": {},
+      "wouldDefer": {
+        "between_periods": 317
+      },
+      "split": {
+        "wouldDefer": {
+          "n": 317,
+          "timingBrier": 0.5025630914826499,
+          "timingConstantBrier": 0.06650893796004206,
+          "timingSkillVsConstant": -6.556324110671937,
+          "timingSkillVsConstantReason": null,
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": 0.25,
+          "observedRate": 0.8801261829652997,
+          "brierDecomposition": {
+            "bins": 10,
+            "pooling": "window-weighted within-game deciles",
+            "reliability": 0.43605415352260773,
+            "resolution": 0,
+            "uncertainty": 0.06650893796004206,
+            "binningError": 0
+          },
+          "setLogLoss": 5.881500951622469,
+          "setLogLossClips": 170,
+          "candidateHitRate": 0.08243727598566308,
+          "setTop1": 0.03225806451612903,
+          "meanCandidates": 2,
+          "otherMass": 0.5999999999999969,
+          "setN": 279,
+          "playerN": 279,
+          "exitBrier": 0.24503053854268692,
+          "entryBrier": 0.1345492198145097,
+          "exitTop1": 0.6057347670250897,
+          "entryTop1": 0.4946236559139785,
+          "exitTopK": 0.23655913978494625,
+          "entryTopK": 0.21863799283154123,
+          "exitLogLoss": 1.629126285333687,
+          "entryLogLoss": 2.225706362685123,
+          "exitMRR": 0.5233024691358021,
+          "entryMRR": 0.4628621511237999,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0,
+          "midPeriod": {
+            "n": 0,
+            "timingBrier": null,
+            "timingConstantBrier": null,
+            "timingSkillVsConstant": null,
+            "timingSkillVsConstantReason": "no_scored_windows",
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": null,
+            "observedRate": null,
+            "brierDecomposition": null,
+            "setLogLoss": null,
+            "setLogLossClips": 0,
+            "candidateHitRate": null,
+            "setTop1": null,
+            "meanCandidates": null,
+            "otherMass": null,
+            "setN": 0,
+            "playerN": 0,
+            "exitBrier": null,
+            "entryBrier": null,
+            "exitTop1": null,
+            "entryTop1": null,
+            "exitTopK": null,
+            "entryTopK": null,
+            "exitLogLoss": null,
+            "entryLogLoss": null,
+            "exitMRR": null,
+            "entryMRR": null,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "byStoppage": {
+            "between_periods": {
+              "n": 317,
+              "timingBrier": 0.5025630914826499,
+              "timingConstantBrier": 0.06650893796004206,
+              "timingSkillVsConstant": -6.556324110671937,
+              "timingSkillVsConstantReason": null,
+              "timingSkillVsStatistical": null,
+              "timingSkillVsStatisticalReason": "baseline_not_supplied",
+              "meanPredicted": 0.25,
+              "observedRate": 0.8801261829652997,
+              "brierDecomposition": {
+                "bins": 10,
+                "pooling": "window-weighted within-game deciles",
+                "reliability": 0.43605415352260773,
+                "resolution": 0,
+                "uncertainty": 0.06650893796004206,
+                "binningError": 0
+              },
+              "setLogLoss": 5.881500951622469,
+              "setLogLossClips": 170,
+              "candidateHitRate": 0.08243727598566308,
+              "setTop1": 0.03225806451612903,
+              "meanCandidates": 2,
+              "otherMass": 0.5999999999999969,
+              "setN": 279,
+              "playerN": 279,
+              "exitBrier": 0.24503053854268692,
+              "entryBrier": 0.1345492198145097,
+              "exitTop1": 0.6057347670250897,
+              "entryTop1": 0.4946236559139785,
+              "exitTopK": 0.23655913978494625,
+              "entryTopK": 0.21863799283154123,
+              "exitLogLoss": 1.629126285333687,
+              "entryLogLoss": 2.225706362685123,
+              "exitMRR": 0.5233024691358021,
+              "entryMRR": 0.4628621511237999,
+              "exitLogLossClips": 0,
+              "entryLogLossClips": 0
+            }
+          },
+          "windows": 317,
+          "eligible": 317,
+          "scored": 317,
+          "actualSubstitutions": 279,
+          "excluded": {},
+          "informational": {
+            "availability_unknown": 245,
+            "unqualified_running_box_score": 3
+          },
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingLogLoss": 1.2545995126360194,
+          "clipped": 0,
+          "precision": null,
+          "recall": 0,
+          "exactAction": 0.11987381703470032,
+          "partialOverlap": 0,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 317,
+              "predicted": 0.25,
+              "observed": 0.8801261829652997
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "calibrationByStoppage": {
+            "between_periods": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 317,
+                "predicted": 0.25,
+                "observed": 0.8801261829652997
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        },
+        "nonDeferred": {
+          "n": 5080,
+          "timingBrier": 0.1812007874015748,
+          "timingConstantBrier": 0.17712214718580918,
+          "timingSkillVsConstant": -0.0230272740059263,
+          "timingSkillVsConstantReason": null,
+          "timingSkillVsStatistical": null,
+          "timingSkillVsStatisticalReason": "baseline_not_supplied",
+          "meanPredicted": 0.25,
+          "observedRate": 0.2374015748031496,
+          "brierDecomposition": {
+            "bins": 10,
+            "pooling": "window-weighted within-game deciles",
+            "reliability": 0.004078640215765656,
+            "resolution": 0,
+            "uncertainty": 0.17712214718580918,
+            "binningError": -5.551115123125783e-17
+          },
+          "setLogLoss": 5.421897863863496,
+          "setLogLossClips": 351,
+          "candidateHitRate": 0.02902155887230514,
+          "setTop1": 0.001658374792703151,
+          "meanCandidates": 2,
+          "otherMass": 0.6000000000000132,
+          "setN": 1206,
+          "playerN": 1206,
+          "exitBrier": 0.23348207757283818,
+          "entryBrier": 0.11014491643760123,
+          "exitTop1": 0.22139303482587064,
+          "entryTop1": 0.29519071310116085,
+          "exitTopK": 0.13930348258706468,
+          "entryTopK": 0.21475953565505804,
+          "exitLogLoss": 1.7578310136254183,
+          "entryLogLoss": 2.2278017150553238,
+          "exitMRR": 0.426480560162151,
+          "entryMRR": 0.4417364745536371,
+          "exitLogLossClips": 0,
+          "entryLogLossClips": 0,
+          "midPeriod": {
+            "n": 5080,
+            "timingBrier": 0.1812007874015748,
+            "timingConstantBrier": 0.17712214718580918,
+            "timingSkillVsConstant": -0.0230272740059263,
+            "timingSkillVsConstantReason": null,
+            "timingSkillVsStatistical": null,
+            "timingSkillVsStatisticalReason": "baseline_not_supplied",
+            "meanPredicted": 0.25,
+            "observedRate": 0.2374015748031496,
+            "brierDecomposition": {
+              "bins": 10,
+              "pooling": "window-weighted within-game deciles",
+              "reliability": 0.004078640215765656,
+              "resolution": 0,
+              "uncertainty": 0.17712214718580918,
+              "binningError": -5.551115123125783e-17
+            },
+            "setLogLoss": 5.421897863863496,
+            "setLogLossClips": 351,
+            "candidateHitRate": 0.02902155887230514,
+            "setTop1": 0.001658374792703151,
+            "meanCandidates": 2,
+            "otherMass": 0.6000000000000132,
+            "setN": 1206,
+            "playerN": 1206,
+            "exitBrier": 0.23348207757283818,
+            "entryBrier": 0.11014491643760123,
+            "exitTop1": 0.22139303482587064,
+            "entryTop1": 0.29519071310116085,
+            "exitTopK": 0.13930348258706468,
+            "entryTopK": 0.21475953565505804,
+            "exitLogLoss": 1.7578310136254183,
+            "entryLogLoss": 2.2278017150553238,
+            "exitMRR": 0.426480560162151,
+            "entryMRR": 0.4417364745536371,
+            "exitLogLossClips": 0,
+            "entryLogLossClips": 0
+          },
+          "byStoppage": {
+            "dead_ball_turnover": {
+              "n": 782,
+              "timingBrier": 0.12515984654731457,
+              "timingConstantBrier": 0.09273799161906578,
+              "timingSkillVsConstant": -0.34960704197073933,
+              "timingSkillVsConstantReason": null,
+              "timingSkillVsStatistical": null,
+              "timingSkillVsStatisticalReason": "baseline_not_supplied",
+              "meanPredicted": 0.25,
+              "observedRate": 0.12531969309462915,
+              "brierDecomposition": {
+                "bins": 10,
+                "pooling": "window-weighted within-game deciles",
+                "reliability": 0.03242185492824878,
+                "resolution": 0,
+                "uncertainty": 0.09273799161906578,
+                "binningError": 2.7755575615628914e-17
+              },
+              "setLogLoss": 5.247084584266888,
+              "setLogLossClips": 21,
+              "candidateHitRate": 0.04081632653061224,
+              "setTop1": 0,
+              "meanCandidates": 2,
+              "otherMass": 0.600000000000001,
+              "setN": 98,
+              "playerN": 98,
+              "exitBrier": 0.22607269561094384,
+              "entryBrier": 0.10199237030637523,
+              "exitTop1": 0.19387755102040816,
+              "entryTop1": 0.2857142857142857,
+              "exitTopK": 0.1326530612244898,
+              "entryTopK": 0.22448979591836735,
+              "exitLogLoss": 1.7158734430897722,
+              "entryLogLoss": 2.2471781039218395,
+              "exitMRR": 0.4478741496598642,
+              "entryMRR": 0.4420863763976009,
+              "exitLogLossClips": 0,
+              "entryLogLossClips": 0
+            },
+            "foul": {
+              "n": 3250,
+              "timingBrier": 0.1741923076923077,
+              "timingConstantBrier": 0.16621787403593238,
+              "timingSkillVsConstant": -0.04797578902165145,
+              "timingSkillVsConstantReason": null,
+              "timingSkillVsStatistical": null,
+              "timingSkillVsStatisticalReason": "baseline_not_supplied",
+              "meanPredicted": 0.25,
+              "observedRate": 0.22338461538461538,
+              "brierDecomposition": {
+                "bins": 10,
+                "pooling": "window-weighted within-game deciles",
+                "reliability": 0.007974433656375323,
+                "resolution": 0,
+                "uncertainty": 0.16621787403593238,
+                "binningError": -2.7755575615628914e-17
+              },
+              "setLogLoss": 5.315501543017859,
+              "setLogLossClips": 180,
+              "candidateHitRate": 0.03443526170798898,
+              "setTop1": 0.0013774104683195593,
+              "meanCandidates": 2,
+              "otherMass": 0.600000000000007,
+              "setN": 726,
+              "playerN": 726,
+              "exitBrier": 0.22748087180875534,
+              "entryBrier": 0.10732866360713303,
+              "exitTop1": 0.21074380165289255,
+              "entryTop1": 0.29338842975206614,
+              "exitTopK": 0.15013774104683195,
+              "entryTopK": 0.2190082644628099,
+              "exitLogLoss": 1.7587140068090803,
+              "entryLogLoss": 2.209267563158906,
+              "exitMRR": 0.4251729415365767,
+              "entryMRR": 0.4461565485962866,
+              "exitLogLossClips": 0,
+              "entryLogLossClips": 0
+            },
+            "jump_ball": {
+              "n": 166,
+              "timingBrier": 0.08659638554216867,
+              "timingConstantBrier": 0.021586345381526106,
+              "timingSkillVsConstant": -3.0116279069767433,
+              "timingSkillVsConstantReason": null,
+              "timingSkillVsStatistical": null,
+              "timingSkillVsStatisticalReason": "baseline_not_supplied",
+              "meanPredicted": 0.25,
+              "observedRate": 0.04819277108433735,
+              "brierDecomposition": {
+                "bins": 10,
+                "pooling": "window-weighted within-game deciles",
+                "reliability": 0.06501004016064256,
+                "resolution": 0,
+                "uncertainty": 0.021586345381526106,
+                "binningError": 0
+              },
+              "setLogLoss": 5.450044218143457,
+              "setLogLossClips": 2,
+              "candidateHitRate": 0,
+              "setTop1": 0,
+              "meanCandidates": 2,
+              "otherMass": 0.6,
+              "setN": 8,
+              "playerN": 8,
+              "exitBrier": 0.22466859212818077,
+              "entryBrier": 0.10067152822986228,
+              "exitTop1": 0.25,
+              "entryTop1": 0.25,
+              "exitTopK": 0.125,
+              "entryTopK": 0.125,
+              "exitLogLoss": 1.8501250419004407,
+              "entryLogLoss": 2.464890986590369,
+              "exitMRR": 0.4197916666666667,
+              "entryMRR": 0.3939732142857143,
+              "exitLogLossClips": 0,
+              "entryLogLossClips": 0
+            },
+            "timeout": {
+              "n": 803,
+              "timingBrier": 0.28915006226650064,
+              "timingConstantBrier": 0.20311541924244286,
+              "timingSkillVsConstant": -0.4235751443437439,
+              "timingSkillVsConstantReason": null,
+              "timingSkillVsStatistical": null,
+              "timingSkillVsStatisticalReason": "baseline_not_supplied",
+              "meanPredicted": 0.25,
+              "observedRate": 0.4533001245330012,
+              "brierDecomposition": {
+                "bins": 10,
+                "pooling": "window-weighted within-game deciles",
+                "reliability": 0.08603464302405771,
+                "resolution": 0,
+                "uncertainty": 0.20311541924244286,
+                "binningError": 1.1102230246251565e-16
+              },
+              "setLogLoss": 5.690054517404451,
+              "setLogLossClips": 146,
+              "candidateHitRate": 0.013736263736263736,
+              "setTop1": 0.0027472527472527475,
+              "meanCandidates": 2,
+              "otherMass": 0.5999999999999963,
+              "setN": 364,
+              "playerN": 364,
+              "exitBrier": 0.24865393576687747,
+              "entryBrier": 0.11902947614348706,
+              "exitTop1": 0.24725274725274726,
+              "entryTop1": 0.2967032967032967,
+              "exitTopK": 0.12087912087912088,
+              "entryTopK": 0.2032967032967033,
+              "exitLogLoss": 1.7680372240019397,
+              "entryLogLoss": 2.261227081523851,
+              "exitMRR": 0.42239468864468843,
+              "entryMRR": 0.43045381371274244,
+              "exitLogLossClips": 0,
+              "entryLogLossClips": 0
+            },
+            "violation": {
+              "n": 79,
+              "timingBrier": 0.12579113924050633,
+              "timingConstantBrier": 0.046413502109704644,
+              "timingSkillVsConstant": -1.7102272727272725,
+              "timingSkillVsConstantReason": null,
+              "timingSkillVsStatistical": null,
+              "timingSkillVsStatisticalReason": "baseline_not_supplied",
+              "meanPredicted": 0.25,
+              "observedRate": 0.12658227848101267,
+              "brierDecomposition": {
+                "bins": 10,
+                "pooling": "window-weighted within-game deciles",
+                "reliability": 0.07937763713080169,
+                "resolution": 0,
+                "uncertainty": 0.046413502109704644,
+                "binningError": 0
+              },
+              "setLogLoss": 5.076021624974943,
+              "setLogLossClips": 2,
+              "candidateHitRate": 0.1,
+              "setTop1": 0,
+              "meanCandidates": 2,
+              "otherMass": 0.5999999999999999,
+              "setN": 10,
+              "playerN": 10,
+              "exitBrier": 0.1965767093643616,
+              "entryBrier": 0.07868056128759976,
+              "exitTop1": 0.3,
+              "entryTop1": 0.5,
+              "exitTopK": 0.1,
+              "entryTopK": 0.3,
+              "exitLogLoss": 1.659568619416206,
+              "entryLogLoss": 1.97713777515966,
+              "exitMRR": 0.4658333333333333,
+              "entryMRR": 0.5663095238095238,
+              "exitLogLossClips": 0,
+              "entryLogLossClips": 0
+            }
+          },
+          "windows": 5080,
+          "eligible": 5080,
+          "scored": 5080,
+          "actualSubstitutions": 1206,
+          "excluded": {},
+          "informational": {
+            "availability_unknown": 3752,
+            "unqualified_running_box_score": 51
+          },
+          "failures": {},
+          "providerFailureRate": 0,
+          "providerFailureFlag": false,
+          "invalidQuestions": {},
+          "invalidActions": 0,
+          "timingLogLoss": 0.5484943598796923,
+          "clipped": 0,
+          "precision": null,
+          "recall": 0,
+          "exactAction": 0.7625984251968504,
+          "partialOverlap": 0,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.3,
+              "n": 5080,
+              "predicted": 0.25,
+              "observed": 0.2374015748031496
+            },
+            {
+              "lower": 0.3,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.5,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.5,
+              "upper": 0.6,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.7,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.7,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 0.9,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.9,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ],
+          "calibrationByStoppage": {
+            "dead_ball_turnover": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 782,
+                "predicted": 0.25,
+                "observed": 0.12531969309462915
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ],
+            "foul": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 3250,
+                "predicted": 0.25,
+                "observed": 0.22338461538461538
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ],
+            "jump_ball": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 166,
+                "predicted": 0.25,
+                "observed": 0.04819277108433735
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ],
+            "timeout": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 803,
+                "predicted": 0.25,
+                "observed": 0.4533001245330012
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ],
+            "violation": [
+              {
+                "lower": 0,
+                "upper": 0.1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.1,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.3,
+                "n": 79,
+                "predicted": 0.25,
+                "observed": 0.12658227848101267
+              },
+              {
+                "lower": 0.3,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.7,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.7,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.9,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        }
+      },
+      "starter": {
+        "label": "unavailable",
+        "reason": "Starter model not installed"
+      },
+      "computeSeconds": 12.516259683999989
+    }
+  ]
+}

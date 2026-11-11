@@ -1,0 +1,24 @@
+{"fitSeconds":60.665623348,"model":"677462477525e6a71a490ea6be4dc7a393c2f7f08d7fc405b62360fa4b08ea2a"}
+{"historyLoads":1,"loadingSeconds":119.62046739,"games":104}
+{"call":"cold","complete":false,"error":"compute_limit","eligible":5397,"scored":0,"computeSeconds":120.11279509099998}
+{"call":"cached","complete":false,"error":"compute_limit","eligible":5397,"scored":3072,"computeSeconds":120.30444144600007}
+/home/ubuntu/nba-agent/scripts/starter-backtest.ts:158
+    throw Error("Starter backtest measurement failed");
+          ^
+
+Error: Starter backtest measurement failed
+    at <anonymous> (/home/ubuntu/nba-agent/scripts/starter-backtest.ts:158:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.22.3
+{"historyLoads":1,"loadingSeconds":120.148937127,"games":104}
+{"call":"cold","complete":false,"error":"compute_limit","eligible":5397,"scored":0,"computeSeconds":120.492094029}
+{"call":"cached","complete":true,"error":null,"eligible":5397,"scored":5397,"computeSeconds":12.516259683999989}
+/home/ubuntu/nba-agent/scripts/backtest-audit.ts:115
+    throw Error("Full-history acceptance failed");
+          ^
+
+Error: Full-history acceptance failed
+    at <anonymous> (/home/ubuntu/nba-agent/scripts/backtest-audit.ts:115:11)
+
+Node.js v22.22.3

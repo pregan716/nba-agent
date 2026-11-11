@@ -28,6 +28,14 @@ actual=$(jq -r '.mount.hash' "$out/opener.json")
 npx tsx scripts/starter-development.ts --image="$pin" --verify-spo873 --output="$out/development.json"
 du -sh .cache/objects
 df -h .
-npx tsx scripts/backtest-audit.ts --image="$pin" --output="$out/backtest.json"
-npx tsx scripts/starter-backtest.ts --image="$pin" --output="$out/starter-backtest.json"
+# The timing measurements are independent. Preserve both when one exceeds
+# its original acceptance limit, and propagate the failure after collection.
+package_status=0
+starter_status=0
+npx tsx scripts/backtest-audit.ts --image="$pin" --output="$out/backtest.json" || package_status=$?
+npx tsx scripts/starter-backtest.ts --image="$pin" --output="$out/starter-backtest.json" || starter_status=$?
+if (( package_status != 0 || starter_status != 0 )); then
+  echo "Backtest audit exit codes: package=$package_status starter=$starter_status" >&2
+  exit 1
+fi
 echo "Acceptance passed: $out"
