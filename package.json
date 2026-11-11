@@ -23,7 +23,8 @@
     "probe": "tsx scripts/contamination-probe.ts",
     "replay:audit": "tsx scripts/replay-audit.ts",
     "evaluate": "tsx scripts/evaluate.ts",
-    "projection": "tsx scripts/reference-projection.ts"
+    "projection": "tsx scripts/reference-projection.ts",
+    "forecast:run": "tsx scripts/forecast-run.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

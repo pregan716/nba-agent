@@ -45,6 +45,9 @@ export class WorkspacePolicy {
     private countMemory?: MemoryCounter,
     private feedback?: () => { gameId: string; content: Buffer } | undefined,
   ) {}
+  get forecast() {
+    return this.memory.version === "forecast-memory-v1";
+  }
   get v3() {
     return isMemoryV3(this.memory);
   }
@@ -67,6 +70,16 @@ export class WorkspacePolicy {
       );
     if (!["pregame", "postgame"].includes(this.phase()))
       throw new SessionError("phase_refused", "Workspace locked in this phase");
+    if (this.forecast) {
+      if (!path && operation === "list") return;
+      if (
+        !this.stateless &&
+        ["memory", "code"].includes(path.split("/")[0]) &&
+        (path.includes("/") || operation === "list")
+      )
+        return;
+      throw new SessionError("not_found", "Workspace entry unavailable");
+    }
     if (isMemoryV3(this.memory)) {
       const memory = this.memory;
       const read = operation === "read" || operation === "list";
@@ -177,6 +190,9 @@ export class Workspace {
   ) {
     this.#root = resolve(root);
     this.#ordinary(this.#root, true);
+    if (policy.forecast && !policy.stateless)
+      for (const path of ["memory", "code"])
+        mkdirSync(join(this.#root, path), { recursive: true, mode: 0o700 });
     if (policy.v3) {
       for (const path of [
         "scratch",
@@ -315,7 +331,7 @@ export class Workspace {
       this.#ordinary(target, true);
       const entries: WorkspaceEntry[] = readdirSync(target)
         .filter((name) =>
-          this.policy.v3
+          this.policy.v3 || this.policy.forecast
             ? this.policy.visible(path ? `${path}/${name}` : name)
             : path !== "" || !this.policy.stateless || name === "packages",
         )
@@ -404,11 +420,27 @@ export class Workspace {
           text.slice(at + edit.old_text.length),
       );
     };
-    if (!this.policy.v3) return this.#mutate(operation, path, edited());
+    if (!this.policy.v3 && !this.policy.forecast)
+      return this.#mutate(operation, path, edited());
     // Serialize validation, counting and commit across tools and FUSE writers.
     const work = this.#queue.then(async () => {
       this.authorize(operation, path);
       content = edited();
+      if (
+        this.policy.forecast &&
+        path.startsWith("code/") &&
+        operation !== "delete"
+      ) {
+        const prior =
+          operation === "write"
+            ? (this.#exists(this.#path(path))?.size ?? 0)
+            : 0;
+        if (codeBytes(this.#root) - prior + content.length > CODE_BYTE_CAP)
+          throw new SessionError(
+            "memory_mode_refused",
+            "Code exceeds the 8 MB cap",
+          );
+      }
       let memoryUsage: { retainedTokens: number; cap: number } | undefined;
       if (path.startsWith("memory/")) {
         if (!this.countMemory)
@@ -525,4 +557,18 @@ export class Workspace {
   changes(): WorkspaceChange[] {
     return structuredClone(this.#changes);
   }
+}
+
+export const CODE_BYTE_CAP = 8_000_000;
+export function codeBytes(root: string): number {
+  const dir = join(root, "code");
+  if (!existsSync(dir)) return 0;
+  function size(path: string): number {
+    const s = lstatSync(path);
+    if (s.isDirectory())
+      return readdirSync(path).reduce((n, f) => n + size(join(path, f)), 0);
+    if (!s.isFile() || s.nlink !== 1) throw invalid();
+    return s.size;
+  }
+  return size(dir);
 }

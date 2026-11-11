@@ -25,6 +25,8 @@ jobs:
       - run: test -c /dev/fuse || sudo modprobe fuse
       - run: npm run sandbox:build
       - run: npm run test:sandbox
+      - name: Forecast arm isolation and code persistence
+        run: FORECAST_SANDBOX_IMAGE="local@$(docker image inspect nba-agent-sandbox:local --format '{{.Id}}')" npx tsx --test test/forecast-arms.test.ts
   assembler:
     runs-on: ubuntu-latest
     steps:

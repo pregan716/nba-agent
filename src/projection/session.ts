@@ -4,15 +4,33 @@ import { before } from "../data/time.js";
 import { releaseTime } from "../env/visibility.js";
 import { digest } from "../runner/config.js";
 import type { Forecast } from "./forecast.js";
-import type { Game, projectionSource } from "./input.js";
+import { ExcludedOutcome, type Game, type projectionSource } from "./input.js";
 import { projectionModel, recordReference } from "./reference.js";
 import { scoreGame, type Metering } from "./scoring.js";
 import { validateForecast, type Pregame } from "./validation.js";
 
 type Source = Awaited<ReturnType<typeof projectionSource>>;
-interface Clock {
+export interface ForecastClock {
   phase: "pregame" | "postgame";
   now: string;
+}
+
+// Called while the store holds exclusive write access. Both storage backends
+// use the same validation and trusted-clock check immediately before insertion.
+export function lockForecast(
+  pre: Pregame,
+  draft: unknown,
+  clock: () => ForecastClock,
+  insert: (forecast: Forecast) => boolean,
+) {
+  const result = validateForecast(draft, pre);
+  if (!result.ok) return result;
+  const at = clock();
+  if (at.phase !== "pregame" || !before(at.now, pre.tip))
+    return { ok: false, reason: "Forecast cutoff has passed" } as const;
+  return insert(result.forecast)
+    ? ({ ok: true } as const)
+    : ({ ok: false, reason: "Forecast already locked" } as const);
 }
 
 // One database per experiment arm/replicate. The host owns the handle and clock.
@@ -27,23 +45,24 @@ export class ForecastRecord {
   close() {
     this.db.close();
   }
-  freeze(pre: Pregame, context: string, draft: unknown, clock: () => Clock) {
-    const parsed = validateForecast(draft, pre);
-    if (!parsed.ok) return parsed;
+  freeze(
+    pre: Pregame,
+    context: string,
+    draft: unknown,
+    clock: () => ForecastClock,
+  ) {
     this.db.exec("BEGIN IMMEDIATE");
     try {
-      const { phase, now } = clock();
-      if (phase !== "pregame" || !before(now, pre.tip)) {
-        this.db.exec("ROLLBACK");
-        return { ok: false, reason: "Forecast cutoff has passed" } as const;
-      }
-      const insert = this.db
-        .prepare("INSERT OR IGNORE INTO forecasts VALUES(?,?,?,?)")
-        .run(pre.gameId, pre.tip, context, JSON.stringify(parsed.forecast));
+      const result = lockForecast(pre, draft, clock, (forecast) =>
+        Boolean(
+          this.db
+            .prepare("INSERT OR IGNORE INTO forecasts VALUES(?,?,?,?)")
+            .run(pre.gameId, pre.tip, context, JSON.stringify(forecast))
+            .changes,
+        ),
+      );
       this.db.exec("COMMIT");
-      return insert.changes
-        ? ({ ok: true } as const)
-        : ({ ok: false, reason: "Forecast already locked" } as const);
+      return result;
     } catch (error) {
       this.db.exec("ROLLBACK");
       throw error;
@@ -66,10 +85,10 @@ export class ForecastRecord {
 export async function forecastSession(options: {
   gameId: string;
   source: Source;
-  record: ForecastRecord;
+  record: Pick<ForecastRecord, "freeze" | "finalized">;
   referenceRoot: string;
   model: ReturnType<typeof projectionModel>;
-  clock: () => Clock;
+  clock: () => ForecastClock;
   metering: (gameId: string) => Metering;
 }) {
   const { source, record, model, clock } = options;
@@ -88,19 +107,29 @@ export async function forecastSession(options: {
       reference: receipt.forecast,
       context: digest(receipt),
       exclusions: receipt.exclusions,
+      modelHash: receipt.modelHash,
     };
+  }
+  function feedbackGame() {
+    const { phase, now } = clock();
+    const game = phase === "postgame" ? current : season[index - 1];
+    if (!game || before(now, releaseTime(game.tip)))
+      throw Error("Feedback unavailable");
+    return game;
   }
   const currentData = await prepare(current);
   return {
+    feedbackGame,
+    reference: {
+      forecast: currentData.reference,
+      modelHash: currentData.modelHash,
+    },
     validate_forecast: (draft: unknown) =>
       validateForecast(draft, currentData.pre),
     freeze_forecast: (draft: unknown) =>
       record.freeze(currentData.pre, currentData.context, draft, clock),
     async read_feedback() {
-      const { phase, now } = clock();
-      const game = phase === "postgame" ? current : season[index - 1];
-      if (!game || before(now, releaseTime(game.tip)))
-        throw Error("Feedback unavailable");
+      const game = feedbackGame();
       const exclusion = currentData.exclusions.find(
         (e) => e.gameId === game.gameId,
       );
@@ -117,10 +146,21 @@ export async function forecastSession(options: {
       const release = releaseTime(game.tip);
       if (Temporal.Instant.compare(game.release, release) !== 0)
         throw Error("Unexpected game release");
-      const box = await source.outcomes(
-        game,
-        Temporal.Instant.from(release).add({ milliseconds: 1 }).toString(),
-      );
+      let box;
+      try {
+        box = await source.outcomes(
+          game,
+          Temporal.Instant.from(release).add({ milliseconds: 1 }).toString(),
+        );
+      } catch (error) {
+        if (error instanceof ExcludedOutcome && error.gameId === game.gameId)
+          return {
+            gameId: game.gameId,
+            status: "excluded" as const,
+            reason: error.reason,
+          };
+        throw error;
+      }
       return scoreGame(
         pre,
         record.finalized(pre, context),

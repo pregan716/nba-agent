@@ -68,6 +68,18 @@ export function cost(u: Usage, price: RunConfig["budget"]["price"]): number {
     1e6
   );
 }
+/** Totals at the point of observation (release or final checkpoint), including retries. */
+export function gameMetering(record: RecordStore, id: string) {
+  const phases = ["pregame", "postgame"].map((p) => id + ":" + p);
+  return {
+    costUsd: phases
+      .flatMap((s) => record.events("settlement", s))
+      .reduce((sum, e) => sum + (e.data.details?.usd ?? 0), 0),
+    wallClockMs: phases
+      .flatMap((s) => record.events("session_end", s))
+      .reduce((sum, e) => sum + (e.data.elapsedMs ?? 0), 0),
+  };
+}
 export class Budget {
   readonly caps: RunConfig["budget"]["pregame"];
   constructor(
@@ -85,8 +97,12 @@ export class Budget {
   }
   get stage(): Phase {
     return this.phase === "pregame" &&
-      this.config.profile.memory.version === "memory-permissions-v1" &&
-      this.record.events("package_freeze", this.scope.split(":")[0]).length
+      ((this.config.profile.memory.version === "memory-permissions-v1" &&
+        this.record.events("package_freeze", this.scope.split(":")[0])
+          .length) ||
+        (this.config.profile.memory.version === "forecast-memory-v1" &&
+          this.record.events("forecast_freeze", this.scope.split(":")[0])
+            .length))
       ? "commit"
       : this.phase;
   }

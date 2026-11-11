@@ -151,7 +151,11 @@ export async function mountGameShards(
   games: RecordEnvelope[],
   cutoff: string,
   signal: AbortSignal,
-  decisionVisibility: { cutoff: string; currentGameId: string } = {
+  decisionVisibility: {
+    cutoff: string;
+    currentGameId: string;
+    forecast?: boolean;
+  } = {
     cutoff,
     currentGameId: "",
   },
@@ -165,11 +169,14 @@ export async function mountGameShards(
     const entries = await Promise.all(
       games.map(async (game) => {
         const decisionsVisible =
+          !decisionVisibility.forecast &&
           game.id !== decisionVisibility.currentGameId &&
           Date.parse(releasedGame(game).availableAt) <
             Date.parse(decisionVisibility.cutoff);
         const key = digest([
-          "history-export-v5",
+          decisionVisibility.forecast
+            ? "forecast-history-v1"
+            : "history-export-v5",
           decisionsVisible,
           decisionsVisible ? await source.historyIdentity?.(game) : null,
           source.versions,
@@ -190,6 +197,7 @@ export async function mountGameShards(
       const selected = new Map(missing.map((e) => [e.game.id, e]));
       try {
         for (const table of GAME_HISTORY_TABLES) {
+          if (decisionVisibility.forecast && decisionTable(table)) continue;
           const definitions = await source.columns(table);
           const columns = definitions.map((c) =>
             c.name === "type" ? "kind" : c.name,

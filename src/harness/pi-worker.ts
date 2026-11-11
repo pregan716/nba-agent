@@ -15,7 +15,8 @@ import {
   VERSION,
 } from "@earendil-works/pi-coding-agent";
 import type { TSchema } from "typebox";
-import { TOOL_NAMES, type ContextResult } from "../env/contract.js";
+import { forecastTools, forecastPrompts } from "../projection/tools.js";
+import { type ContextResult } from "../env/contract.js";
 import { TOOL_DEFINITIONS } from "../env/tools.js";
 import { offeredTools } from "./loop.js";
 import { DEFAULT_LOOP, PI_CONTRACT } from "./version.js";
@@ -63,8 +64,14 @@ async function run({ options, model, memoryInstructions, root }: any) {
     throw Error("Pi package version does not match harness descriptor");
   const loop = { ...DEFAULT_LOOP, ...options.loop };
   const context: ContextResult = await call("context", {});
-  const names = offeredTools(context);
-  const texts = promptTexts(options.promptSet ?? "infrastructure");
+  const forecast = context.capabilities.includes("player_forecasts");
+  const definitions = forecast
+    ? forecastTools(context.phase, context.memory.horizon === "season")
+    : TOOL_DEFINITIONS.filter((t) => offeredTools(context).includes(t.name));
+  const names: string[] = definitions.map((t) => t.name);
+  const texts = forecast
+    ? forecastPrompts
+    : promptTexts(options.promptSet ?? "infrastructure");
   const system = `${texts.system}\n\n${memoryInstructions}`;
   const cwd = join(root, "cwd"),
     agentDir = join(root, "agent");
@@ -125,9 +132,7 @@ async function run({ options, model, memoryInstructions, root }: any) {
     appendSystemPromptOverride: () => [],
     extensionFactories: [
       (pi) => {
-        for (const definition of TOOL_DEFINITIONS.filter((tool) =>
-          names.includes(tool.name),
-        )) {
+        for (const definition of definitions) {
           pi.registerTool({
             name: definition.name,
             label: definition.name,
@@ -152,10 +157,7 @@ async function run({ options, model, memoryInstructions, root }: any) {
           });
         }
         pi.on("tool_call", async (event) => {
-          if (
-            !(TOOL_NAMES as readonly string[]).includes(event.toolName) ||
-            !names.includes(event.toolName as never)
-          )
+          if (!names.includes(event.toolName))
             return { block: true, reason: "Tool outside session allowlist" };
         });
         // Pi normally adds coding instructions and cwd/date to a base prompt.
