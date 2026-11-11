@@ -27,7 +27,7 @@ jobs:
       - run: npm run test:sandbox
       - name: Forecast arm isolation and code persistence
         run: FORECAST_SANDBOX_IMAGE="local@$(docker image inspect nba-agent-sandbox:local --format '{{.Id}}')" npx tsx --test test/forecast-arms.test.ts
-  assembler:
+  projection:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,15 +36,6 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npx tsx scripts/assembler-build.ts
-      - run: |
-          ASSEMBLER_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/policy-sandbox.test.ts test/starter.test.ts
+      - run: npm run projection:build
       - name: Reference projection determinism
-        run: PROJECTION_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/reference-projection.test.ts
-      - name: Offline chronological launcher and baselines
-        run: |
-          assembler_pin="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')"
-          npm run launch -- --scripted --memory=M0 --assembler-image="$assembler_pin"
-          npm run launch -- --scripted --memory=M3 --assembler-image="$assembler_pin"
-          npm run launch -- --scripted --memory=M3 --assembler-image="$assembler_pin"
-          npm run launch -- --scripted --mode=baselines --assembler-image="$assembler_pin"
+        run: PROJECTION_IMAGE="local@$(docker image inspect nba-agent-projection:local --format '{{.Id}}')" npx tsx --test test/reference-projection.test.ts

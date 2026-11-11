@@ -1,7 +1,7 @@
 # Pregame reference projection (SPO-879)
 
 Run the trusted V4 pregame producer from the repository root with the numerical
-Python image built by `scripts/assembler-build.ts`. Pass the same immutable
+Python image built by `npm run projection:build`. Pass the same immutable
 image digest for every arm. The data adapters use the repository's pinned
 releases and verified object cache.
 
@@ -115,15 +115,15 @@ opening roster and the pinned 2024–25 training release. The latter fit used
 1,228 eligible prior games and produced 17 player rows. Two regular-season
 games had unusable normalization products. No holdout game was needed.
 
-The independent-refit check needs the pinned Docker image. CI runs it in the assembler job. To run it locally:
+The independent-refit check needs the pinned Docker image. CI runs it in the projection job. To run it locally:
 
 ```sh
-PROJECTION_IMAGE="local@$(docker image inspect nba-agent-assembler:local --format '{{.Id}}')" npx tsx --test test/reference-projection.test.ts
+PROJECTION_IMAGE="local@$(docker image inspect nba-agent-projection:local --format '{{.Id}}')" npx tsx --test test/reference-projection.test.ts
 ```
 
 To measure the 70-game comparison, run the following from the repository root
 on the audit host. The last argument is the durable receipt directory. A retry
-checks completed receipts and fits the remaining games.
+checks completed receipts and fits the remaining games. Use a fresh receipt directory when changing the image or source revision. To reproduce a published audit, use the revision and image digest recorded with its evidence.
 
 ```sh
 npx tsx scripts/reference-audit.ts "$PROJECTION_IMAGE" reference-audit.json .cache/reference-projection
@@ -147,5 +147,4 @@ both coverage intervals for whole-roster minutes and for production,
 conditional-minutes coverage, and the tails. The counters live in
 `src/projection/audit.ts` and are tested on a fixture that crosses games 20
 and 21 with a DNP. These figures are not in the committed evidence yet: the
-rerun reuses the 70 receipts retained on the audit host and is recorded when
-that host is next started.
+rerun can reuse the 70 receipts retained on the audit host with the [pre-cleanup audit code](https://github.com/pregan716/nba-agent/tree/f0a69d3e2d3194aa34259483b0a6acd1a234b5c5) and the recorded image digest. The projection-only image and relocated input sources have a new identity and require fresh receipts.

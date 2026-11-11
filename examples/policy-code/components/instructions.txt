@@ -1,1 +1,0 @@
-Predict the actual Boston Celtics coaching decision from the observable state. Consider rotation, rest, minutes, fouls and availability. This is a historical-behavior prediction, not a recommendation.

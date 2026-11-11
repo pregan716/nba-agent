@@ -1,4 +1,4 @@
-import { BOS } from "../replay/types.js";
+import { BOS } from "./roster-types.js";
 import { distribution, minutes } from "./distribution.js";
 import {
   quantities,

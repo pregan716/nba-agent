@@ -1,4 +1,3 @@
-import { decisionTable } from "./decision-history.js";
 export const PROVENANCE_COLUMNS: string[] = JSON.parse(
   readFileSync(
     new URL("../../sandbox/provenance-columns.json", import.meta.url),
@@ -151,14 +150,6 @@ export async function mountGameShards(
   games: RecordEnvelope[],
   cutoff: string,
   signal: AbortSignal,
-  decisionVisibility: {
-    cutoff: string;
-    currentGameId: string;
-    forecast?: boolean;
-  } = {
-    cutoff,
-    currentGameId: "",
-  },
 ) {
   const transient = !source.exportCacheDirectory;
   const cache =
@@ -166,55 +157,40 @@ export async function mountGameShards(
     mkdtempSync(join(tmpdir(), "nba-history-cache-"));
   try {
     mkdirSync(cache, { recursive: true });
-    const entries = await Promise.all(
-      games.map(async (game) => {
-        const decisionsVisible =
-          !decisionVisibility.forecast &&
-          game.id !== decisionVisibility.currentGameId &&
-          Date.parse(releasedGame(game).availableAt) <
-            Date.parse(decisionVisibility.cutoff);
-        const key = digest([
-          decisionVisibility.forecast
-            ? "forecast-history-v1"
-            : "history-export-v5",
-          decisionsVisible,
-          decisionsVisible ? await source.historyIdentity?.(game) : null,
-          source.versions,
-          game,
-          source.exportCacheDirectory ? null : cutoff,
-        ]);
-        return {
-          game,
-          key,
-          decisionsVisible,
-          target: join(cache!, key + ".sqlite.gz"),
-        };
-      }),
-    );
+    const entries = games.map((game) => {
+      const key = digest([
+        // Keep the existing forecast shard identity across the task cleanup.
+        "forecast-history-v1",
+        false,
+        null,
+        source.versions,
+        game,
+        source.exportCacheDirectory ? null : cutoff,
+      ]);
+      return {
+        game,
+        key,
+        target: join(cache, key + ".sqlite.gz"),
+      };
+    });
     const missing = entries.filter((e) => !existsSync(e.target));
     if (missing.length) {
       const staging = join(cache, randomUUID());
       const selected = new Map(missing.map((e) => [e.game.id, e]));
       try {
         for (const table of GAME_HISTORY_TABLES) {
-          if (decisionVisibility.forecast && decisionTable(table)) continue;
           const definitions = await source.columns(table);
           const columns = definitions.map((c) =>
             c.name === "type" ? "kind" : c.name,
           );
           async function* fallback() {
-            for (const { game } of missing.filter(
-              (e) => !decisionTable(table) || e.decisionsVisible,
-            ))
+            for (const { game } of missing)
               yield { gameId: game.id, ...(await source.history(table, game)) };
           }
-          const tableGames = missing.filter(
-            (e) => !decisionTable(table) || e.decisionsVisible,
-          );
           const batches =
             source.exportHistory?.(
               table,
-              tableGames.map((e) => e.game),
+              missing.map((e) => e.game),
             ) ?? fallback();
           const seen = new Set<string>();
           for await (const batch of batches) {

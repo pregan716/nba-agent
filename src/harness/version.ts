@@ -12,12 +12,8 @@ import {
   PHASE_PROMPTS,
   SYSTEM_PROMPT,
   memoryInstructions,
-  memoryPermissionInstructions,
-  isResearchPromptSet,
-  promptTexts,
   type PromptSet,
 } from "./prompts.js";
-import { isMemoryV3, memoryVariant } from "../env/memory.js";
 
 export interface LoopParameters {
   /** `max_tokens` per model call before the proxy clamps it to the remaining allowance. */
@@ -89,7 +85,6 @@ export interface HarnessConfigOptions {
   effort: RunConfig["harness"]["loop"]["effort"];
   thinking: RunConfig["harness"]["loop"]["thinking"];
   sandboxImage: string;
-  policy?: RunConfig["harness"]["policy"];
   codeRevision?: string;
   loop?: Partial<LoopParameters>;
 }
@@ -109,48 +104,21 @@ export function harnessConfig(
   options: HarnessConfigOptions,
 ): RunConfig["harness"] {
   const loop = { ...DEFAULT_LOOP, ...options.loop };
-  const research = isResearchPromptSet(options.promptSet);
-  if (research && !isMemoryV3(options.memory))
-    throw Error("The research-v3 prompt set requires v3 memory permissions");
-  const texts = promptTexts(research ? options.promptSet! : "infrastructure");
   return {
-    identity: research
-      ? options.implementation === "pi"
-        ? "pi-research-v3"
-        : "replay-research-v3"
-      : options.implementation === "pi"
+    identity:
+      options.implementation === "pi"
         ? "pi-infrastructure-v3"
         : "replay-infrastructure-v2",
     ...(options.implementation === "pi" ? { pi: PI_CONTRACT } : {}),
-    prompts: research
-      ? {
-          system: texts.system,
-          pregame: texts.pregame,
-          postgame: texts.postgame,
-          // Every variant's text is hashed, so a wording change to any of them
-          // is a new harness version for all variants.
-          ...Object.fromEntries(
-            (["M0", "M1", "M2", "M3", "M4"] as const).map((v) => [
-              `memory:${v}`,
-              memoryPermissionInstructions(memoryVariant(v)),
-            ]),
-          ),
-        }
-      : {
-          system: SYSTEM_PROMPT,
-          ...PHASE_PROMPTS,
-          ...Object.fromEntries(
-            Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [
-              `memory:${k}`,
-              v,
-            ]),
-          ),
-        },
+    prompts: {
+      system: SYSTEM_PROMPT,
+      ...PHASE_PROMPTS,
+      ...Object.fromEntries(
+        Object.entries(MEMORY_INSTRUCTIONS).map(([k, v]) => [`memory:${k}`, v]),
+      ),
+    },
     memoryInstructions:
-      options.memoryInstructions ??
-      (research && isMemoryV3(options.memory)
-        ? memoryPermissionInstructions(options.memory)
-        : memoryInstructions(options.memory)),
+      options.memoryInstructions ?? memoryInstructions(options.memory),
     toolDefinitions: JSON.parse(serializeToolDefinitions(TOOL_DEFINITIONS)),
     loop: {
       effort: options.effort,
@@ -169,7 +137,6 @@ export function harnessConfig(
     accessMethod: "anthropic-sdk-via-metering-proxy",
     sdkVersion: SDK_VERSION,
     sandboxImage: options.sandboxImage,
-    ...(options.policy ? { policy: options.policy } : {}),
     codeRevision: options.codeRevision ?? currentCodeRevision(),
   };
 }

@@ -1,6 +1,5 @@
 import { SessionError, type Phase } from "../env/contract.js";
 import { TOOL_DEFINITIONS } from "../env/tools.js";
-import { DECISION_TABLES } from "../env/decision-history.js";
 import { quantities } from "./forecast.js";
 
 export { forecastPrompts } from "./prompts.js";
@@ -63,13 +62,6 @@ const carried = [
 ];
 const tools = TOOL_DEFINITIONS.filter((t) => carried.includes(t.name)).map(
   (t) => {
-    const schema = structuredClone(t.input_schema);
-    if (t.name === "query_game_history") {
-      const props = schema.properties as { table: { enum: string[] } };
-      props.table.enum = props.table.enum.filter(
-        (v) => !DECISION_TABLES.some((d) => d === v),
-      );
-    }
     return {
       ...t,
       description:
@@ -77,7 +69,6 @@ const tools = TOOL_DEFINITIONS.filter((t) => carried.includes(t.name)).map(
         (t.name.startsWith("workspace_")
           ? t.name.replace("_", " ") + " under the arm's permitted directories."
           : t.description),
-      input_schema: schema,
     };
   },
 );

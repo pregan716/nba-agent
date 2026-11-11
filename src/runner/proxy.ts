@@ -1,7 +1,3 @@
-import { meteredJev, type JevProvider } from "./jev.js";
-import type { JevRequest } from "../policy/request.js";
-import type { RecordLog } from "./record.js";
-export { systemOneProvider } from "./jev.js";
 import { retryModel, modelError } from "./retry.js";
 import { VERSION } from "@anthropic-ai/sdk/version";
 import Anthropic from "@anthropic-ai/sdk";
@@ -61,10 +57,7 @@ export class MeteringProxy {
     }
   >();
   #url = "";
-  constructor(
-    private provider: ModelProvider,
-    private jevProvider?: JevProvider,
-  ) {
+  constructor(private provider: ModelProvider) {
     this.#server = createServer(async (req, res) => {
       const key =
         req.headers["x-api-key"] ??
@@ -243,16 +236,6 @@ export class MeteringProxy {
       }
     });
     this.#server.requestTimeout = 30_000;
-  }
-  /** Trusted replay-only role. Analyst session credentials never authorize System One. */
-  jev(
-    request: JevRequest,
-    record: RecordLog,
-    scope: string,
-    signal: AbortSignal,
-  ) {
-    if (!this.jevProvider) throw Error("Jev provider is not installed");
-    return meteredJev(this.jevProvider, request, record, scope, signal);
   }
   request(body: any, budget: Budget): MessageCreateParamsNonStreaming {
     if (!body || typeof body !== "object")

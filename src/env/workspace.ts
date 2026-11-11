@@ -40,10 +40,6 @@ export class WorkspacePolicy {
   constructor(
     private memory: RunConfig["profile"]["memory"],
     private phase: () => Phase | "closed",
-    readonly packagesEnabled = false,
-    private gameId?: string,
-    private countMemory?: MemoryCounter,
-    private feedback?: () => { gameId: string; content: Buffer } | undefined,
   ) {}
   get forecast() {
     return this.memory.version === "forecast-memory-v1";
@@ -91,14 +87,6 @@ export class WorkspacePolicy {
         return denied();
       }
       if (path === "scratch" || path.startsWith("scratch/")) return;
-      if (path === "packages") {
-        if (operation === "list") return;
-        return denied();
-      }
-      if (path.startsWith("packages/")) {
-        if (!this.gameId || path.split("/")[1] !== this.gameId) return denied();
-        return;
-      }
       if (path === "memory") {
         if (read && (memory.coachProfile.read || memory.bestPractices.read))
           return;
@@ -125,22 +113,12 @@ export class WorkspacePolicy {
         return denied();
       return;
     }
-    if (
-      this.memory.horizon === "stateless" &&
-      !(
-        this.packagesEnabled &&
-        (path === "packages" || path.startsWith("packages/"))
-      )
-    )
+    if (this.memory.horizon === "stateless")
       throw new SessionError(
         "memory_mode_refused",
         "Stateless workspace tools disabled",
       );
     if (
-      !(
-        this.packagesEnabled &&
-        (path === "packages" || path.startsWith("packages/"))
-      ) &&
       this.memory.revision === "append-only" &&
       (operation === "delete" || (operation === "write" && exists))
     )
@@ -184,9 +162,7 @@ export class Workspace {
     root: string,
     readonly policy: WorkspacePolicy,
     private runRoot: string,
-    private gameId?: string,
     private countMemory?: MemoryCounter,
-    private feedback?: () => { gameId: string; content: Buffer } | undefined,
   ) {
     this.#root = resolve(root);
     this.#ordinary(this.#root, true);
@@ -196,8 +172,6 @@ export class Workspace {
     if (policy.v3) {
       for (const path of [
         "scratch",
-        "packages",
-        gameId ? `packages/${gameId}` : "",
         "memory",
         "memory/coach",
         "memory/practices",
@@ -230,12 +204,6 @@ export class Workspace {
       path.split("/").some((p) => !p || p === "." || p === "..")
     )
       throw invalid();
-    if (
-      this.gameId &&
-      path.startsWith("packages/") &&
-      path.split("/")[1] !== this.gameId
-    )
-      throw new SessionError("not_found", "Package unavailable");
     this.#ordinary(this.#root, true);
     const parts = path.split("/");
     let current = this.#root;
@@ -265,20 +233,8 @@ export class Workspace {
     // Do not expose the host path from filesystem errors.
     throw invalid();
   }
-  #unlocked(path: string) {
-    const parts = path.split("/");
-    if (
-      parts[0] === "packages" &&
-      parts[1] &&
-      existsSync(
-        join(this.runRoot, "frozen-packages", parts[1], "receipt.json"),
-      )
-    )
-      throw new SessionError("phase_refused", "Package is frozen");
-  }
   authorize(operation: WorkspaceChange["operation"], path: string) {
     this.policy.authorize(operation, false, path);
-    this.#unlocked(path);
     try {
       this.policy.authorize(operation, !!this.#exists(this.#path(path)), path);
     } catch (e) {
@@ -286,58 +242,12 @@ export class Workspace {
     }
   }
   list(path = "") {
-    const feedback =
-      this.policy.v3 &&
-      (!path || path === "feedback" || path.startsWith("feedback/"))
-        ? this.feedback?.()
-        : undefined;
-    if (
-      this.policy.v3 &&
-      (path === "feedback" || path.startsWith("feedback/"))
-    ) {
-      if (!feedback)
-        throw new SessionError("not_found", "Workspace entry unavailable");
-      if (path === "feedback")
-        return {
-          entries: [
-            {
-              path: `feedback/${feedback.gameId}`,
-              kind: "directory" as const,
-              bytes: null,
-            },
-          ],
-        };
-      if (path === `feedback/${feedback.gameId}`)
-        return {
-          entries: [
-            {
-              path: `${path}/trace.json`,
-              kind: "file" as const,
-              bytes: feedback.content.length,
-            },
-          ],
-        };
-      throw new SessionError("not_found", "Workspace entry unavailable");
-    }
-    this.policy.authorize(
-      "list",
-      false,
-      path === "" && this.policy.packagesEnabled && !this.policy.v3
-        ? "packages"
-        : path,
-    );
+    this.policy.authorize("list", false, path);
     try {
       const target = this.#path(path, true);
       this.#ordinary(target, true);
       const entries: WorkspaceEntry[] = readdirSync(target)
-        .filter((name) =>
-          this.policy.v3 || this.policy.forecast
-            ? this.policy.visible(path ? `${path}/${name}` : name)
-            : path !== "" || !this.policy.stateless || name === "packages",
-        )
-        .filter(
-          (name) => path !== "packages" || !this.gameId || name === this.gameId,
-        )
+        .filter((name) => this.policy.visible(path ? `${path}/${name}` : name))
         .sort()
         .map((name) => {
           const stat = this.#ordinary(join(target, name));
@@ -347,8 +257,6 @@ export class Workspace {
             bytes: stat.isFile() ? stat.size : null,
           };
         });
-      if (!path && feedback)
-        entries.push({ path: "feedback", kind: "directory", bytes: null });
       return { entries: entries.sort((a, b) => a.path.localeCompare(b.path)) };
     } catch (e) {
       return this.#error(e);
@@ -356,7 +264,6 @@ export class Workspace {
   }
   mkdir(path: string) {
     this.policy.authorize("write", false, path);
-    this.#unlocked(path);
     try {
       const target = this.#path(path);
       mkdirSync(target, { recursive: true, mode: 0o700 });
@@ -366,12 +273,6 @@ export class Workspace {
     }
   }
   readBytes(path: string): Buffer {
-    if (this.policy.v3 && path.startsWith("feedback/")) {
-      const feedback = this.feedback?.();
-      if (feedback && path === `feedback/${feedback.gameId}/trace.json`)
-        return feedback.content;
-      throw new SessionError("not_found", "Workspace entry unavailable");
-    }
     this.policy.authorize("read", false, path);
     try {
       const target = this.#path(path);
@@ -466,7 +367,7 @@ export class Workspace {
             `Memory cap exceeded: current ${current} tokens; proposed ${proposed}; cap ${MEMORY_TOKEN_CAP}`,
           );
       }
-      // Phase and freeze state may have changed while the counter was in flight.
+      // Phase may have changed while the counter was in flight.
       return {
         ...this.#mutate(operation, path, content),
         ...(memoryUsage ? { memoryUsage } : {}),
@@ -506,7 +407,6 @@ export class Workspace {
     )
       throw invalid();
     this.policy.authorize(operation, false, path);
-    this.#unlocked(path);
     try {
       const target = this.#path(path),
         existing = this.#exists(target);

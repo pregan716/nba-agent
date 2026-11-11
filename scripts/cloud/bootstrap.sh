@@ -37,4 +37,4 @@ git fetch origin "$revision"
 git checkout --detach "$revision"
 [[ -z $(git status --porcelain) ]]
 npm ci
-sg docker -c 'npx tsx scripts/assembler-build.ts && npm run sandbox:build'
+sg docker -c 'npm run projection:build && npm run sandbox:build'

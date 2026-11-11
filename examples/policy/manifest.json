@@ -1,8 +1,0 @@
-{
-  "stateVersion": "state-v1",
-  "components": {
-    "assemble.py": "90eb73c4ab769e0343bd86aee963f832fc392ec3e6a663aa82315a0ceb361188",
-    "components/instructions.txt": "bfc6406ae2891e3211b9353d66daface07e0e43493424544e0f5459e2af2ef0e"
-  },
-  "notes": "Hand-written gate-2 package; no learned components."
-}

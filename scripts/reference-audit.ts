@@ -10,7 +10,7 @@ import {
   referenceTables,
 } from "../src/projection/reference.js";
 import { auditGames } from "../src/projection/audit.js";
-import { BOS } from "../src/replay/types.js";
+import { BOS } from "../src/projection/roster-types.js";
 
 const [image, output, root = ".cache/reference-projection", count = "70"] =
   process.argv.slice(2);

@@ -59,53 +59,6 @@ const CUTOFF =
 
 export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
-    name: "backtest_package",
-    description:
-      "Score the current unfrozen package on every eligible released prior Celtics window, including 2024–25 retrospective same-game box-score rosters (DNP included, injury status unknown, timestamps synthetic; never evaluation rosters). Requires a swap contract and a package with prediction. A v2 package without prediction scores every window as invalid/degenerate; this is not an estimate of its Jev policy. Package-only: scores prediction even when defer is set; never calls Jev and is not the deployed policy score. Returns scorer metrics, calibration and stoppage breakdowns, invalid reasons, would-defer counts and split scores. per_window adds window scores. Starter predictions are prepared once per model hash and cutoff in trusted pregame work, not charged to agent compute; their scores are labelled in-sample and cover exactly the same completed windows. History is cached by cutoff; a call timeout only stops waiting, and the next call reuses the pending or completed load. Waiting time counts as compute. Assembly uses up to four concurrent batch containers, including concurrent determinism passes, with fresh child processes, no network or Docker shared-memory mount, and oldest-first execution within each container. Parallelism is fixed in the harness and identical for every variant. Charges elapsed wall-clock seconds (a charged second buys more CPU with parallelism) as research compute with the configured sandbox per-call limit; incomplete results explicitly report compute_limit and completed/eligible counts. Current and future games are unreachable. Every call is recorded.",
-    input_schema: object({ per_window: { type: "boolean" } }),
-    phases: ["pregame"],
-  },
-  {
-    name: "freeze_package",
-    description:
-      "Validate and atomically freeze packages/<current game id>/ before cutoff. manifest.json requires stateVersion state-v1 and may include notes. The harness computes every file SHA-256; optional components hashes must match if supplied. Returns an immutable receipt; identical re-freezes return the same receipt. Later writes through tools or code are refused.",
-    input_schema: object({}),
-    phases: ["pregame"],
-  },
-  {
-    name: "validate_package",
-    description:
-      "Under jev-contract-v3 the package also returns prediction and optional defer:{reason}; validation returns prediction, defer and predictionValid. Under jev-contract-v2 assemble(state) returns candidates (1–8 unique equal-size out/in sets, eligible players only), instructions.swap and criteria.swap keyed out:<sorted comma-separated ids>|in:<sorted comma-separated ids>, plus other. Empty eligible bench requires empty candidates and omits swap. Invalid candidate lists return reasons. With jev:true the response includes raw swap and derived inclusion marginals. Test the current package against a deterministic spread of prior-game states. jev: true returns Jev answers for each; default false. samples chooses 1–24 states (default 3). Outcomes are never included. Before any run game is released, only the three fixed 2024–25 states are used. One tool call charges research compute; optional Jev calls are metered as pregame Jev usage, not research-agent weighted model tokens. Current and future games are never samples.",
-    input_schema: object({
-      jev: { type: "boolean" },
-      samples: { type: "integer", minimum: 1, maximum: 24 },
-    }),
-    phases: ["pregame"],
-  },
-  {
-    name: "read_feedback",
-    description:
-      "Read bounded pages of the previous chronological game's released replay trace in pregame, or the current game's trace in postgame. Nothing older or unreleased is available.",
-    input_schema: object({
-      game_id: id("Optional allowed game id"),
-      cursor: {
-        type: "integer",
-        minimum: 0,
-        description: "Window page cursor; default 0, two windows per page.",
-      },
-      window_id: id(
-        "Optional window id for full forensic JSON in bounded chunks.",
-      ),
-      offset: {
-        type: "integer",
-        minimum: 0,
-        description:
-          "Character offset for window details; use returned nextOffset.",
-      },
-    }),
-    phases: ["pregame", "postgame"],
-  },
-  {
     name: "context",
     description:
       "Return the session: your team, the game (opponent, home/away, scheduled start, position in the season), the current phase, the cutoff instant, your remaining budget (tokens, sandbox compute seconds, tool calls, a low-budget warning), and the memory permissions of this run. V3 sessions include memoryUsage (retainedTokens and cap). Runs with the environment starter model include starter (its hash, cutoff, API and path). Call it first in every session and again whenever you need the budget.",
@@ -177,7 +130,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   },
   {
     name: "query_game_history",
-    description: `Query published play-by-play release tables for completed games, or the static player reference. Game tables: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions; filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game, including the game just played when you are in its postgame. Player-reference tables (player_profiles, player_reference, player_season_stats, player_2024_25_summary, player_career_summary, player_identity_exceptions) are the opening-night roster and career history through 2024-25, built before the season and available in every game; filter by player_id or team_id. In the pinned release, substitution events are separate player entry and exit rows: a k-for-k change has 2k event rows at the same clock. Recover who moved from the difference between the team lineup before and after the substitution batch, using the home_lineup_before/after or away_lineup_before/after arrays. Raw equal-clock batches are not necessarily decision windows; use the feedback trace for scored decisions under the window and adjacency rules. player_box_scores.minutes_seconds is seconds; player_stints.cumulative_minutes_entry/exit is decimal minutes (duration_ms is milliseconds). By default rows omit provenance columns and columns contain names only. Set include_metadata=true for provenance columns and column descriptions. ${CUTOFF} A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.`,
+    description: `Query published play-by-play release tables for completed games, or the static player reference. Game tables: schedule rows, official player and team box scores, period scores, events, lineup and player stints, matchup stints, per-game summaries and possessions; filter by game_id, team_id or player_id (at least one), season and a scheduled-start window. Both seasons are available: 2024-25 in full from the start, and 2025-26 games once released at 9 a.m. Eastern the morning after each game, including the game just played when you are in its postgame. Player-reference tables (player_profiles, player_reference, player_season_stats, player_2024_25_summary, player_career_summary, player_identity_exceptions) are the opening-night roster and career history through 2024-25, built before the season and available in every game; filter by player_id or team_id. In the pinned release, substitution events are separate player entry and exit rows: a k-for-k change has 2k event rows at the same clock. Recover who moved from the difference between the team lineup before and after the substitution batch, using the home_lineup_before/after or away_lineup_before/after arrays. player_box_scores.minutes_seconds is seconds; player_stints.cumulative_minutes_entry/exit is decimal minutes (duration_ms is milliseconds). By default rows omit provenance columns and columns contain names only. Set include_metadata=true for provenance columns and column descriptions. ${CUTOFF} A game whose product is not valid in the release coverage is listed under unavailable with the reason; it is not silently dropped. Prefer execute_code over the mounted export for season-wide aggregation.`,
     input_schema: object(
       {
         include_metadata: {
@@ -232,7 +185,7 @@ export const TOOL_DEFINITIONS: readonly ToolDefinition[] = [
   {
     name: "execute_code",
     description:
-      "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (schedule, references, injuries and evidence), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace (same rules as the workspace tools). In runs with the environment starter model, /starter (model.json and the reference nba_starter.py) is mounted read-only and from nba_starter import predict returns the model's answer for a state. No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
+      "Run a Python 3 program in this session's sandbox and return stdout, stderr, exit status, compute seconds used, and whether output was truncated at the byte cap. Available: pandas, numpy, scipy, scikit-learn. Mounted read-only at /data: session.sqlite (schedule, references, injuries and evidence), games/*.sqlite.gz (one compressed immutable history shard per eligible game), and source text files, all filtered before mounting. Use import nba_data; nba_data.table('player_box_scores') for a pandas DataFrame across games, nba_data.query(sql, params) for SQL run separately per game (aggregates are per game), and nba_data.session() for the session SQLite connection; /scratch is writable and discarded at the end of this session; /workspace is your workspace (same rules as the workspace tools). No network and no package installs. New processes are blocked: scikit-learn/joblib n_jobs>1 requires the threading backend; process backends fail. Each call has a wall-clock limit and counts against the phase's compute cap; print only what you need.",
     input_schema: object({ program: { type: "string", minLength: 1 } }, [
       "program",
     ]),

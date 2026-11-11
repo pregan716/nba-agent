@@ -13,7 +13,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { sha256 } from "../data/store.js";
 import { digest } from "../runner/config.js";
-import { BOS } from "../replay/types.js";
+import { BOS } from "./roster-types.js";
 import {
   eligibleHistory,
   type Game,
@@ -42,8 +42,8 @@ export function projectionModel(image: string) {
           ...(await Promise.all(
             [
               "./reference.ts",
-              "../replay/load.ts",
-              "../replay/roster.ts",
+              "./pregame.ts",
+              "./roster.ts",
               "../data/adapters.ts",
               "../data/release.ts",
               "../env/visibility.ts",

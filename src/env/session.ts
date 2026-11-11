@@ -1,13 +1,6 @@
-import { decisionTable } from "./decision-history.js";
-import type { ValidationInput, ValidationJev } from "../policy/validation.js";
 import { PROVENANCE_COLUMNS } from "./export.js";
-import { readFileSync } from "node:fs";
 import { boundaryNames, auditBoundary } from "./memory-audit.js";
 import { isMemoryV3, validateMemory } from "./memory.js";
-import { resolve as resolvePolicyPath } from "node:path";
-import { policyHarness } from "../policy/replay.js";
-import { canonicalJson } from "./tools.js";
-import type { PolicyTools } from "../policy/tools.js";
 import { DockerSandbox } from "./sandbox.js";
 import {
   projectHistory,
@@ -74,7 +67,6 @@ export class Session {
   #cutoff: string;
   #source: SessionSource;
   #closed = false;
-  #freezing = false;
   #workspace?: Workspace;
   #lifecycle: Lifecycle;
   #evidenceIndex?: Promise<EvidenceIndex>;
@@ -86,24 +78,8 @@ export class Session {
     source: SessionSource,
     workspacePath?: string,
     runRoot?: string,
-    private policyTools?: PolicyTools,
-    private countMemory?: import("../runner/memory.js").MemoryCounter,
+    countMemory?: import("../runner/memory.js").MemoryCounter,
   ) {
-    if (
-      policyTools &&
-      (!runRoot ||
-        policyTools.packages.root !==
-          resolvePolicyPath(runRoot, "frozen-packages"))
-    )
-      throw Error("Policy package root differs from session run root");
-    if (
-      policyTools &&
-      canonicalJson(config.harness.policy) !==
-        canonicalJson(
-          policyHarness(policyTools.assembler, policyTools.swapContract),
-        )
-    )
-      throw Error("Policy tools harness mismatch");
     if (isMemoryV3(config.profile.memory))
       validateMemory(config.profile.memory);
     this.#config = deepFreeze(structuredClone(config));
@@ -116,37 +92,11 @@ export class Session {
     if (workspacePath)
       this.#workspace = new Workspace(
         workspacePath,
-        new WorkspacePolicy(
-          this.#config.profile.memory,
-          () =>
-            this.#closed ? "closed" : this.#freezing ? "commit" : this.#phase,
-          !!policyTools,
-          game.gameId,
+        new WorkspacePolicy(this.#config.profile.memory, () =>
+          this.#closed ? "closed" : this.#phase,
         ),
         runRoot!,
-        game.gameId,
         countMemory,
-        () => {
-          if (
-            !isMemoryV3(this.#config.profile.memory) ||
-            !this.policyTools ||
-            this.#closed
-          )
-            return undefined;
-          try {
-            const page = this.policyTools.readFeedback(this.#phase);
-            return {
-              gameId: page.gameId,
-              content: readFileSync(
-                resolvePolicyPath(runRoot!, "feedback", page.gameId + ".json"),
-              ),
-            };
-          } catch (error) {
-            if (error instanceof SessionError && error.code === "not_found")
-              return undefined;
-            throw error;
-          }
-        },
       );
     const configured = config.profile.dataSources.map((d) => ({
       source: d.type,
@@ -215,16 +165,6 @@ export class Session {
     const { horizon, revision, process, windowGames } =
       this.#config.profile.memory;
     return {
-      ...(this.policyTools?.assembler.starter
-        ? {
-            starter: {
-              hash: this.policyTools.assembler.starter.hash,
-              cutoff: this.policyTools.assembler.starter.cutoff,
-              api: "nba_starter.predict(state)" as const,
-              path: "/starter/model.json" as const,
-            },
-          }
-        : {}),
       team: this.#team(BOS),
       season: "2025-26",
       game: {
@@ -356,11 +296,6 @@ export class Session {
     _signal?: AbortSignal,
   ): Promise<QueryGameHistoryResult> {
     this.#check("query_game_history", input);
-    if (
-      this.#config.profile.memory.version === "forecast-memory-v1" &&
-      decisionTable(input.table)
-    )
-      throw new SessionError("invalid_input", "Unknown history table");
     const ref = isReference(input.table);
     if (
       ref
@@ -381,13 +316,6 @@ export class Session {
       for (const game of (await this.#games()).filter((g) =>
         visible(releasedGame(g), this.#cutoff),
       )) {
-        if (
-          decisionTable(input.table) &&
-          (game.id === this.#game.gameId ||
-            Date.parse(releasedGame(game).availableAt) >=
-              Date.parse(this.#game.scheduledStart))
-        )
-          continue;
         if (
           (input.game_id && game.id !== input.game_id) ||
           (input.season && game.data.season !== input.season) ||
@@ -490,11 +418,7 @@ export class Session {
     );
     const names = new Set(rows.flatMap(Object.keys));
     const columns = definitions
-      .filter(
-        (c) =>
-          decisionTable(input.table) ||
-          names.has(c.name === "type" ? "kind" : c.name),
-      )
+      .filter((c) => names.has(c.name === "type" ? "kind" : c.name))
       .map((c) => ({
         name: c.name === "type" ? "kind" : c.name,
         description:
@@ -726,36 +650,6 @@ export class Session {
     signal: AbortSignal,
   ): Promise<ToolResult<N>> {
     this.#check(name, input);
-    if (name === "freeze_package" || name === "read_feedback") {
-      if (!this.policyTools)
-        throw new SessionError(
-          "capability_disabled",
-          "Policy tools are not installed",
-        );
-      if (
-        name === "freeze_package" &&
-        isMemoryV3(this.#config.profile.memory)
-      ) {
-        this.#freezing = true;
-        try {
-          const receipt = await this.policyTools.freeze(this.#phase, signal);
-          if ("packageHash" in receipt)
-            await this.transition("commit", this.#game.scheduledStart);
-          return receipt as ToolResult<N>;
-        } finally {
-          this.#freezing = false;
-        }
-      }
-      return (
-        name === "freeze_package"
-          ? await this.policyTools.freeze(this.#phase, signal)
-          : this.policyTools.readFeedback(
-              this.#phase,
-              (input as { game_id?: string }).game_id,
-              input as import("../policy/feedback.js").FeedbackQuery,
-            )
-      ) as ToolResult<N>;
-    }
     if (name.startsWith("workspace_")) {
       if (!this.#workspace)
         throw new SessionError(
@@ -798,39 +692,6 @@ export class Session {
       );
     return method(input as never, signal) as Promise<ToolResult<N>>;
   }
-  async backtestPackage(
-    allowance: number,
-    signal: AbortSignal,
-    input: import("../policy/backtest.js").BacktestInput = {},
-  ) {
-    this.#check("backtest_package", input);
-    if (!this.policyTools)
-      throw new SessionError(
-        "capability_disabled",
-        "Policy tools are not installed",
-      );
-    return this.policyTools.backtest(this.#phase, allowance, signal, input);
-  }
-  async validatePackage(
-    allowance: number,
-    signal: AbortSignal,
-    input: ValidationInput = {},
-    jev?: ValidationJev,
-  ) {
-    this.#check("validate_package", input);
-    if (!this.policyTools)
-      throw new SessionError(
-        "capability_disabled",
-        "Policy tools are not installed",
-      );
-    return this.policyTools.validate(
-      this.#phase,
-      allowance,
-      signal,
-      input,
-      jev,
-    );
-  }
   async assertCodeAllowed(program: string) {
     this.#check("execute_code", { program });
   }
@@ -846,19 +707,12 @@ export class Session {
         games,
         this.#cutoff,
         signal,
-        {
-          cutoff: this.#game.scheduledStart,
-          currentGameId: this.#game.gameId,
-          forecast:
-            this.#config.profile.memory.version === "forecast-memory-v1",
-        },
       );
     }
-    return writeSessionExport(directory, this.#exportBatches(signal), signal);
+    return writeSessionExport(directory, this.#exportBatches(), signal);
   }
-  async *#exportBatches(signal: AbortSignal): AsyncGenerator<ExportBatch> {
+  async *#exportBatches(): AsyncGenerator<ExportBatch> {
     const enabled = this.#config.profile.capabilities.enabled;
-    const games = await this.#games();
     yield {
       table: "session",
       rows: [
@@ -931,14 +785,9 @@ export function sessionEnvironment(
   source: SessionSource,
   hooks: Partial<Pick<Environment, "execute">> & {
     prepareSandboxData?: (directory: string) => void;
-    policy?: (
-      context: Parameters<EnvironmentFactory>[0],
-      trusted: Parameters<EnvironmentFactory>[1],
-    ) => PolicyTools;
   } = {},
 ): EnvironmentFactory {
   return async (context, trusted) => {
-    const policy = hooks.policy?.(context, trusted);
     const session = new Session(
       config,
       context.game,
@@ -947,7 +796,6 @@ export function sessionEnvironment(
       source,
       trusted.workspace,
       trusted.root,
-      policy,
       trusted.countMemory,
     );
     const createSandbox = () =>
@@ -956,16 +804,11 @@ export function sessionEnvironment(
         (directory, abort) => session.exportTo(directory, abort),
         session.workspaceForSandbox(),
         trusted.root,
-        policy?.assembler.starter,
         hooks.prepareSandboxData,
       );
     // Stage phase-specific releases before analyst metering. Docker still starts on first use.
     let sandbox = hooks.prepareSandboxData ? createSandbox() : undefined;
     return {
-      backtestPackage: (allowance, signal, input) =>
-        session.backtestPackage(allowance, signal, input),
-      validatePackage: (allowance, signal, input, jev) =>
-        session.validatePackage(allowance, signal, input, jev),
       workspace: session.workspaceForSandbox(),
       workspaceChanges: () => session.workspaceChanges(),
       boundaryAudit: async () =>
