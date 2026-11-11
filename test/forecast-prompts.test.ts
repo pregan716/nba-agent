@@ -98,6 +98,8 @@ test("the copying claim is limited to the primary scores and context is not requ
     /copies it gets exactly its minutes, production and playing scores/,
   );
   assert.ok(FORECAST_SYSTEM_PROMPT.includes("ceiling.referenceWeighted"));
+  assert.doesNotMatch(FORECAST_SYSTEM_PROMPT, /the same 15% chance/);
+  assert.match(FORECAST_SYSTEM_PROMPT, /With no tie at that percentile/);
   assert.doesNotMatch(FORECAST_SYSTEM_PROMPT, /call it first/);
   assert.match(FORECAST_SYSTEM_PROMPT, /already in your first message/);
 });
