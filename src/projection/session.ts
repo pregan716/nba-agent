@@ -113,8 +113,7 @@ export async function forecastSession(options: {
   function feedbackGame() {
     const { phase, now } = clock();
     const game = phase === "postgame" ? current : season[index - 1];
-    if (!game || before(now, releaseTime(game.tip)))
-      throw Error("Feedback unavailable");
+    if (!game || before(now, releaseTime(game.tip))) return undefined;
     return game;
   }
   const currentData = await prepare(current);
@@ -130,6 +129,7 @@ export async function forecastSession(options: {
       record.freeze(currentData.pre, currentData.context, draft, clock),
     async read_feedback() {
       const game = feedbackGame();
+      if (!game) throw Error("Feedback unavailable");
       const exclusion = currentData.exclusions.find(
         (e) => e.gameId === game.gameId,
       );

@@ -42,8 +42,15 @@ export class DockerSandbox {
     workspace?: WorkspacePort,
     private runRoot?: string,
     private starter?: StarterMount,
+    prepareData?: (directory: string) => void,
   ) {
     this.#port = workspace;
+    try {
+      prepareData?.(this.#directory);
+    } catch (error) {
+      rmSync(this.#directory, { recursive: true, force: true });
+      throw error;
+    }
   }
   async #start(limits: Limits) {
     if (this.#closed) throw new SessionError("phase_refused", "Sandbox closed");

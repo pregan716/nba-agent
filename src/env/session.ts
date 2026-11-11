@@ -930,6 +930,7 @@ export function sessionEnvironment(
   config: RunConfig,
   source: SessionSource,
   hooks: Partial<Pick<Environment, "execute">> & {
+    prepareSandboxData?: (directory: string) => void;
     policy?: (
       context: Parameters<EnvironmentFactory>[0],
       trusted: Parameters<EnvironmentFactory>[1],
@@ -949,7 +950,17 @@ export function sessionEnvironment(
       policy,
       trusted.countMemory,
     );
-    let sandbox: DockerSandbox | undefined;
+    const createSandbox = () =>
+      new DockerSandbox(
+        config,
+        (directory, abort) => session.exportTo(directory, abort),
+        session.workspaceForSandbox(),
+        trusted.root,
+        policy?.assembler.starter,
+        hooks.prepareSandboxData,
+      );
+    // Stage phase-specific releases before analyst metering. Docker still starts on first use.
+    let sandbox = hooks.prepareSandboxData ? createSandbox() : undefined;
     return {
       backtestPackage: (allowance, signal, input) =>
         session.backtestPackage(allowance, signal, input),
@@ -974,13 +985,7 @@ export function sessionEnvironment(
         (async (program, limits, signal) => {
           // Check the current phase before lazy export/container creation on every call.
           await session.assertCodeAllowed(program);
-          sandbox ??= new DockerSandbox(
-            config,
-            (directory, abort) => session.exportTo(directory, abort),
-            session.workspaceForSandbox(),
-            trusted.root,
-            policy?.assembler.starter,
-          );
+          sandbox ??= createSandbox();
           return sandbox.execute(program, limits, signal);
         }),
       close: async () => {

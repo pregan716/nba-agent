@@ -7,6 +7,7 @@ import { ExcludedOutcome } from "../src/projection/input.js";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtempSync, rmSync, mkdirSync } from "node:fs";
+import { gunzipSync } from "node:zlib";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fixtureCorpus, BOS } from "./fixtures/session/corpus.js";
@@ -211,6 +212,41 @@ async function twoGames(arm: ForecastArm, image?: string, excluded = false) {
             call(t, { path: "memory/answer", content: "x" }),
             /unavailable/,
           );
+      }
+      if (image) {
+        // Compare what Python can actually read with the public tools at this cutoff.
+        const mounted = await call("execute_code", {
+          program: `import base64, gzip, json, os
+from pathlib import Path
+root = Path("/data")
+ref = root / "reference"
+feedback = root / "feedback.json"
+assert os.statvfs(ref).f_flag & os.ST_RDONLY
+assert os.statvfs(feedback).f_flag & os.ST_RDONLY
+files = {p.relative_to(ref).as_posix(): json.loads(p.read_bytes()) for p in ref.rglob("*") if p.is_file()}
+payload = {"reference": files, "feedback": json.loads(feedback.read_bytes())}
+print(base64.b64encode(gzip.compress(json.dumps(payload).encode())).decode())`,
+        });
+        assert.equal(mounted.exit_status, 0, JSON.stringify(mounted));
+        assert.equal(mounted.truncated, false);
+        const visible = JSON.parse(
+          gunzipSync(Buffer.from(mounted.stdout.trim(), "base64")).toString(),
+        );
+        const expected: Record<string, unknown> = {
+          "tonight.json": await call("reference_projection"),
+        };
+        if (!first) {
+          const priorId = games[0].gameId;
+          const prior = await call("reference_projection", {
+            game_id: priorId,
+          });
+          assert.equal(prior.errors[0].playerId, "1");
+          expected["history/" + priorId + ".json"] = prior;
+        }
+        assert.deepEqual(visible, {
+          reference: expected,
+          feedback: await call("read_feedback"),
+        });
       }
       if (ctx.phase === "postgame") {
         assert.equal((await call("read_feedback")).gameId, id);
