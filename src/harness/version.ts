@@ -43,6 +43,14 @@ export const DEFAULT_LOOP: LoopParameters = {
   promptCache: "ephemeral-5m",
 };
 
+export function piLoop(forecast: boolean, overrides?: Partial<LoopParameters>) {
+  return {
+    ...DEFAULT_LOOP,
+    maxTokens: forecast ? 32000 : DEFAULT_LOOP.maxTokens,
+    ...overrides,
+  };
+}
+
 export const PI_CONTRACT = {
   packageVersion: "1.5.0",
   provider: {
@@ -70,6 +78,11 @@ export const PI_CONTRACT = {
     retry: false,
     cacheWarming: false,
     truncation: "pi-paired-error-results",
+    outputLimitContinuation: {
+      limit: 3,
+      prompt:
+        "Your last response reached the output limit before it finished, and nothing in it was acted on. Continue from where you were. Keep your reasoning brief and make your next tool call.",
+    },
     piRequestedThinkingLevel: "high",
     contextWindow: 200000,
   },
@@ -103,7 +116,10 @@ export function currentCodeRevision(): string {
 export function harnessConfig(
   options: HarnessConfigOptions,
 ): RunConfig["harness"] {
-  const loop = { ...DEFAULT_LOOP, ...options.loop };
+  const loop =
+    options.implementation === "pi"
+      ? piLoop(options.memory.version === "forecast-memory-v1", options.loop)
+      : { ...DEFAULT_LOOP, ...options.loop };
   return {
     identity:
       options.implementation === "pi"

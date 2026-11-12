@@ -492,7 +492,7 @@ test("code cap counts binary bytes and serializes competing writes; notes use th
   }
 });
 
-test("Pi registers and invokes only the forecast arm's phase tools", async () => {
+test("Pi continues a thinking-only cutoff, freezes the forecast and offers the phase tools", async () => {
   const { piHarness } = await import("../src/harness/pi.js");
   const base = mkdtempSync(join(tmpdir(), "forecast-pi-"));
   const { config, games, environment, forecast } = setup(
@@ -509,10 +509,34 @@ test("Pi registers and invokes only the forecast arm's phase tools", async () =>
       );
       toolsSeen.push(names);
       const answer = await provider.create(request, signal);
-      if (
-        names.includes("freeze_forecast") &&
-        !request.messages.some((m) => m.role === "assistant")
-      ) {
+      assert.equal(request.max_tokens, 32000);
+      if (toolsSeen.length === 1) {
+        return {
+          ...answer,
+          stop_reason: "max_tokens",
+          usage: { ...answer.usage, output_tokens: 32000 },
+          content: [
+            {
+              type: "thinking",
+              thinking: "Preparing the forecast",
+              signature: "test",
+            },
+          ],
+        };
+      }
+      if (toolsSeen.length === 2) {
+        assert.ok(names.includes("freeze_forecast"));
+        const content = request.messages.at(-1)!.content;
+        assert.ok(
+          Array.isArray(content) &&
+            content.some(
+              (b) =>
+                b.type === "text" &&
+                b.text ===
+                  "Your last response reached the output limit before it finished, and nothing in it was acted on. Continue from where you were. Keep your reasoning brief and make your next tool call.",
+            ),
+        );
+
         return {
           ...answer,
           stop_reason: "tool_use",
@@ -541,6 +565,13 @@ test("Pi registers and invokes only the forecast arm's phase tools", async () =>
     assert.deepEqual(
       runner.record.events("session_error").map((e) => e.data.message),
       [],
+    );
+    assert.equal(config.harness.loop.parameters.maxTokens, 32000);
+    assert.deepEqual(
+      runner.record
+        .events("output_limit_continuation")
+        .map((e) => [e.scope, e.data]),
+      [[id + ":pregame", { attempt: 1, continuation: 1, outputTokens: 32000 }]],
     );
     assert.equal(runner.record.events("forecast_freeze").length, 1);
     assert.equal(runner.record.events("forecast_feedback").length, 1);

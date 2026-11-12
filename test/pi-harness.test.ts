@@ -348,6 +348,7 @@ test("Pi pairs truncated tool calls without executing them", async () => {
       (e) => e.kind === "tool_result" && e.data.name === "workspace_write",
     ),
   );
+  assert.ok(!result.events.some((e) => e.kind === "output_limit_continuation"));
   const histories = result.events.filter((e) => e.kind === "harness_history");
   const messages = histories[0].data.history.messages;
   const calls = messages.flatMap((m: any) =>
@@ -363,6 +364,40 @@ test("Pi pairs truncated tool calls without executing them", async () => {
           m.role === "toolResult" && m.toolCallId === call.id && m.isError,
       ),
     );
+});
+
+test("Pi records at most three output-limit continuations per phase and respects the remaining turns", async () => {
+  for (const maxTurns of [8, 2]) {
+    const f = configFor(
+      { horizon: "season", revision: "editable" },
+      { loop: { maxTurns } },
+    );
+    const seen: Request[] = [];
+    const result = await run(
+      f.config,
+      scripted([() => "cut"], seen),
+      piHarness({ model: "claude-opus-4-6", loop: { maxTurns } }),
+      f,
+    );
+    assert.deepEqual(result.errors, []);
+    const callsPerPhase = Math.min(4, maxTurns);
+    assert.equal(seen.length, 2 * callsPerPhase);
+    const continuations = result.events.filter(
+      (e) => e.kind === "output_limit_continuation",
+    );
+    for (const phase of ["pregame", "postgame"]) {
+      assert.deepEqual(
+        continuations
+          .filter((e) => e.scope === `${f.game.gameId}:${phase}`)
+          .map((e) => e.data),
+        Array.from({ length: callsPerPhase - 1 }, (_, i) => ({
+          attempt: 1,
+          continuation: i + 1,
+          outputTokens: 10,
+        })),
+      );
+    }
+  }
 });
 
 test("Pi turn safeguard bounds a model that keeps calling tools", async () => {
