@@ -19,9 +19,10 @@ import { forecastTools, forecastPrompts } from "../projection/tools.js";
 import { type ContextResult } from "../env/contract.js";
 import { TOOL_DEFINITIONS } from "../env/tools.js";
 import { offeredTools } from "./loop.js";
-import { DEFAULT_LOOP, PI_CONTRACT } from "./version.js";
+import { piLoop, PI_CONTRACT } from "./version.js";
 import { promptTexts } from "./prompts.js";
 
+let stopped = false;
 let activeSession: AgentSession | undefined;
 let acknowledgeFinalHistory: (() => void) | undefined;
 let nextId = 0;
@@ -41,6 +42,7 @@ process.on("message", (message: any) => {
   if (message.type === "history_recorded") {
     acknowledgeFinalHistory?.();
   } else if (message.type === "abort") {
+    stopped = true;
     void activeSession?.abort();
   } else if (message.type === "result") {
     const waiter = pending.get(message.id)!;
@@ -62,9 +64,9 @@ process.on("message", (message: any) => {
 async function run({ options, model, memoryInstructions, root }: any) {
   if (VERSION !== PI_CONTRACT.packageVersion)
     throw Error("Pi package version does not match harness descriptor");
-  const loop = { ...DEFAULT_LOOP, ...options.loop };
   const context: ContextResult = await call("context", {});
   const forecast = context.capabilities.includes("player_forecasts");
+  const loop = piLoop(forecast, options.loop);
   const definitions = forecast
     ? forecastTools(context.phase, context.memory.horizon === "season")
     : TOOL_DEFINITIONS.filter((t) => offeredTools(context).includes(t.name));
@@ -111,7 +113,6 @@ async function run({ options, model, memoryInstructions, root }: any) {
   });
   let session: AgentSession | undefined;
   let turns = 0,
-    stopped = false,
     settled = false;
   const events: unknown[] = [];
   let failure: Error | undefined;
@@ -233,14 +234,30 @@ async function run({ options, model, memoryInstructions, root }: any) {
           ? texts.postgame_mandated
           : texts.postgame
         : texts.pregame;
-    await session.prompt(
-      `${phasePrompt}\n\nSession context:\n${JSON.stringify(context)}`,
-    );
-    if (failure) throw failure;
-    if (!settled) throw Error("Pi returned before agent_settled");
-    const last = session.messages.at(-1);
-    if (!stopped && last?.role === "assistant" && last.stopReason === "error")
-      throw Error(last.errorMessage);
+    const continuation = PI_CONTRACT.recovery.outputLimitContinuation;
+    let prompt = `${phasePrompt}\n\nSession context:\n${JSON.stringify(context)}`;
+    for (let count = 0; ; count++) {
+      settled = false;
+      await session.prompt(prompt);
+      if (failure) throw failure;
+      if (!settled) throw Error("Pi returned before agent_settled");
+      const last = session.messages.at(-1);
+      if (stopped || last?.role !== "assistant") break;
+      if (last.stopReason === "error") throw Error(last.errorMessage);
+      if (
+        last.stopReason !== "length" ||
+        last.content.some((block) => block.type === "toolCall") ||
+        count >= continuation.limit ||
+        turns >= loop.maxTurns
+      )
+        break;
+      send({
+        type: "output_limit_continuation",
+        continuation: count + 1,
+        outputTokens: last.usage.output,
+      });
+      prompt = continuation.prompt;
+    }
   } finally {
     // process.send queues large payloads; disconnect/exit must wait until the
     // parent has durably appended the final snapshot, not merely queued bytes.

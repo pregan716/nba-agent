@@ -108,6 +108,10 @@ export type EnvironmentFactory = (
 export interface SessionEndpoint extends SessionTools {
   /** Trusted harness transcript sink; never registered as a model tool. */
   recordHistory?(history: unknown): void;
+  recordOutputLimitContinuation?(
+    continuation: number,
+    outputTokens: number,
+  ): void;
   /** Register bounded harness shutdown before the session record is closed. */
   onClose?(cleanup: () => Promise<void>): void;
 }
@@ -699,6 +703,16 @@ export class Runner {
             call,
             onClose: (cleanup: () => Promise<void>) => {
               harnessCleanup.push(cleanup);
+            },
+            recordOutputLimitContinuation: (
+              continuation: number,
+              outputTokens: number,
+            ) => {
+              this.record.append("output_limit_continuation", scope, {
+                attempt,
+                continuation,
+                outputTokens,
+              });
             },
             recordHistory: (history: unknown) => {
               this.record.append("harness_history", scope, {

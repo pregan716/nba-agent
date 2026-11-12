@@ -79,8 +79,18 @@ export function piHarness(options: AnalystOptions): Harness {
                   },
                 });
             }
-          } else if (message.type === "history") {
+          } else if (
+            message.type === "history" ||
+            message.type === "output_limit_continuation"
+          ) {
             try {
+              if (message.type === "output_limit_continuation") {
+                session.recordOutputLimitContinuation?.(
+                  message.continuation,
+                  message.outputTokens,
+                );
+                return;
+              }
               session.recordHistory?.(message.history);
               if (message.final) {
                 finalHistoryRecorded = true;
