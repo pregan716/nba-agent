@@ -1,0 +1,562 @@
+{
+  "harnessHash": "ca372a8cc6e4e29094cf4112c112d3fbc04edd03ae3f9264eec67382687c9bad",
+  "image": "local@sha256:6f86dc598af21a34efc816c0a34c286519e21f214a65ea735977a33d61a2cb33",
+  "games": 70,
+  "expectedBox": 33.137170881551334,
+  "medianRoster": 31.22083478634693,
+  "coverage": {
+    "minutes": {
+      "n": 1160,
+      "inside1090": 1025,
+      "inside2575": 784
+    },
+    "points": {
+      "n": 757,
+      "inside1090": 598,
+      "inside2575": 367
+    },
+    "rebounds": {
+      "n": 757,
+      "inside1090": 548,
+      "inside2575": 366
+    },
+    "assists": {
+      "n": 757,
+      "inside1090": 649,
+      "inside2575": 377
+    },
+    "fantasy_points": {
+      "n": 757,
+      "inside1090": 592,
+      "inside2575": 347
+    }
+  },
+  "conditionalMinutes": {
+    "n": 757,
+    "inside1090": 590,
+    "inside2575": 361
+  },
+  "tails": {
+    "minutes": {
+      "n": 757,
+      "below10": 97,
+      "above90": 70,
+      "above85": 103
+    },
+    "points": {
+      "n": 757,
+      "below10": 89,
+      "above90": 70,
+      "above85": 99
+    },
+    "rebounds": {
+      "n": 757,
+      "below10": 114,
+      "above90": 95,
+      "above85": 117
+    },
+    "assists": {
+      "n": 757,
+      "below10": 63,
+      "above90": 45,
+      "above85": 72
+    },
+    "fantasy_points": {
+      "n": 757,
+      "below10": 89,
+      "above90": 76,
+      "above85": 111
+    }
+  },
+  "scored": {
+    "games": 50,
+    "coverage": {
+      "minutes": {
+        "n": 820,
+        "inside1090": 731,
+        "inside2575": 566
+      },
+      "points": {
+        "n": 533,
+        "inside1090": 433,
+        "inside2575": 269
+      },
+      "rebounds": {
+        "n": 533,
+        "inside1090": 388,
+        "inside2575": 258
+      },
+      "assists": {
+        "n": 533,
+        "inside1090": 460,
+        "inside2575": 262
+      },
+      "fantasy_points": {
+        "n": 533,
+        "inside1090": 421,
+        "inside2575": 242
+      }
+    },
+    "conditionalMinutes": {
+      "n": 533,
+      "inside1090": 418,
+      "inside2575": 251
+    },
+    "tails": {
+      "minutes": {
+        "n": 533,
+        "below10": 66,
+        "above90": 49,
+        "above85": 71
+      },
+      "points": {
+        "n": 533,
+        "below10": 52,
+        "above90": 48,
+        "above85": 65
+      },
+      "rebounds": {
+        "n": 533,
+        "below10": 85,
+        "above90": 60,
+        "above85": 76
+      },
+      "assists": {
+        "n": 533,
+        "below10": 44,
+        "above90": 29,
+        "above85": 51
+      },
+      "fantasy_points": {
+        "n": 533,
+        "below10": 60,
+        "above90": 52,
+        "above85": 75
+      }
+    }
+  },
+  "initialSeconds": 508.450720304,
+  "warmSeconds": 3.3227505590000073,
+  "perGame": [
+    {
+      "gameId": "0022500083",
+      "modelHash": "b5c39a2bd082bd4f1f1082461a10c4cd2e8c7bd2a44a62179cc0d85efc55e2ec",
+      "expectedBox": 93.33068013588446,
+      "medianRoster": 92.31635607036829
+    },
+    {
+      "gameId": "0022500018",
+      "modelHash": "f6a4ca14fbde078e5f73b4bc164fddfc3ac4e8690dfd153758d8f2d2b955db30",
+      "expectedBox": 61.4680175249594,
+      "medianRoster": 59.602275473983966
+    },
+    {
+      "gameId": "0022500106",
+      "modelHash": "cb7c8b9c3dbe2163bde4a90ec840d34f1afd0c43a0872d779b7ac402e87860aa",
+      "expectedBox": 39.49274681820866,
+      "medianRoster": 33.72764183892746
+    },
+    {
+      "gameId": "0022500117",
+      "modelHash": "430292306568ee19f8bbb3951c0955aa6e91a0eedddacb44f3fc7425dac61cf7",
+      "expectedBox": 42.972578188135564,
+      "medianRoster": 47.5760163677796
+    },
+    {
+      "gameId": "0022500128",
+      "modelHash": "1360198d71d15b25f3b47ae0c01ee4200801b9388752d38784d4f6dd6d210f01",
+      "expectedBox": 35.32721417088775,
+      "medianRoster": 35.028448408932086
+    },
+    {
+      "gameId": "0022500021",
+      "modelHash": "896e47b8beff5ddbdb755584a2b5c492bda81cc184b34fd24206a9a4a626977a",
+      "expectedBox": 28.56934803249539,
+      "medianRoster": 30.545054095999603
+    },
+    {
+      "gameId": "0022500146",
+      "modelHash": "1f9f6fc03d53e0d025c2dde2712f25562a76d018331adf65cc7e400424f0da74",
+      "expectedBox": 60.24136828515695,
+      "medianRoster": 70.77607682433248
+    },
+    {
+      "gameId": "0022500158",
+      "modelHash": "51895561a259fa2a7aebf82bb9320ddc3c1f5311513334b1287c160348b0ae59",
+      "expectedBox": 25.02984566867406,
+      "medianRoster": 24.91947579229406
+    },
+    {
+      "gameId": "0022500174",
+      "modelHash": "b9c92014d27a7d11b8b07ea34a6feaa5271e1cf7b17f4df52659e93b0ac02fcc",
+      "expectedBox": 46.17588174384413,
+      "medianRoster": 46.7532776127357
+    },
+    {
+      "gameId": "0022500028",
+      "modelHash": "03e16f3ac19ae5d8beba58beec005369aa108f758c3eed78a63e9a5dc2193ab3",
+      "expectedBox": 35.343465357582545,
+      "medianRoster": 31.69935485662552
+    },
+    {
+      "gameId": "0022500193",
+      "modelHash": "b10272cd2e7619ebb8919ea391ffb2faa5e73b05551fcd2f48ceba609ab42bb9",
+      "expectedBox": 31.647717676000013,
+      "medianRoster": 24.564446974955388
+    },
+    {
+      "gameId": "0022500209",
+      "modelHash": "59fcf02ceb71e145e4341e18d031ea2189c8bbc940975420457d460e2041f965",
+      "expectedBox": 33.97550425404299,
+      "medianRoster": 24.716567360182957
+    },
+    {
+      "gameId": "0022500216",
+      "modelHash": "0cb42edf1bfaed1278367637ad9c61b98de239e3ae57aea61f195a01abadfcab",
+      "expectedBox": 30.440214107320962,
+      "medianRoster": 39.53417786390058
+    },
+    {
+      "gameId": "0022500233",
+      "modelHash": "5c7dfb53ff7073b9c55ab8b397462197ca0afa7b13ca51f67961458ddc5c8717",
+      "expectedBox": 53.5350358805313,
+      "medianRoster": 47.99827313587473
+    },
+    {
+      "gameId": "0022500250",
+      "modelHash": "d23a49f567777b34859089403ff2ec8341574a7421752b22ee299d3b93424d39",
+      "expectedBox": 30.874664879473215,
+      "medianRoster": 29.673031943720073
+    },
+    {
+      "gameId": "0022500049",
+      "modelHash": "64a66bf2ae1b53bda86c1c1b7ed652f8a87e37e78fb7c30d0eb812c1aa47251c",
+      "expectedBox": 27.643423084206034,
+      "medianRoster": 27.406632779438745
+    },
+    {
+      "gameId": "0022500277",
+      "modelHash": "86ec52c7e5ddd7e5ed8306667feff95456e04eaa5c46f7a28a6fef81721df13a",
+      "expectedBox": 46.22076297830479,
+      "medianRoster": 45.68174288727631
+    },
+    {
+      "gameId": "0022500060",
+      "modelHash": "191e9515e012a5e4a5c81c94de624883452931314b8d8b13ed0b0edc3e680842",
+      "expectedBox": 41.41901627099422,
+      "medianRoster": 36.58927752569726
+    },
+    {
+      "gameId": "0022500293",
+      "modelHash": "158913b8b57ede565b394991239a38ee9202ac4cc5ab3b3c0af768d5b1d98f55",
+      "expectedBox": 33.1634260398069,
+      "medianRoster": 26.924563508646592
+    },
+    {
+      "gameId": "0022500302",
+      "modelHash": "f3111701516a6720d534d575c4a4a2d95b90b3b4b7468d97103e0b358483e10d",
+      "expectedBox": 49.67966471997322,
+      "medianRoster": 45.144115187036036
+    },
+    {
+      "gameId": "0022500320",
+      "modelHash": "37164a202ec1646e55cd777493dfc57d7a53c7e5efb58ca49f7c65c5dedef5b3",
+      "expectedBox": 42.717014569006274,
+      "medianRoster": 35.783340013707246
+    },
+    {
+      "gameId": "0022500334",
+      "modelHash": "9c52a4e5e6ff8f64f022218652aa0a1f40453fbaada883fe0955fb73993d0997",
+      "expectedBox": 27.27300521864342,
+      "medianRoster": 29.05872939646805
+    },
+    {
+      "gameId": "0022500338",
+      "modelHash": "3aa56847f9010161658c461027808262fb79874089df43fe830e1fd86fe0b137",
+      "expectedBox": 17.547954828268775,
+      "medianRoster": 20.00548034586644
+    },
+    {
+      "gameId": "0022500358",
+      "modelHash": "203ca33db1e6177610b9864ccff4cf6bec475f442b8c1f644b340882af94b149",
+      "expectedBox": 26.148504834905204,
+      "medianRoster": 19.44365737664548
+    },
+    {
+      "gameId": "0022501206",
+      "modelHash": "97241998ecb0714a09d1176140e035117de57c7743f398e57d4103eb13d61e7d",
+      "expectedBox": 28.579876531091934,
+      "medianRoster": 28.39512653465315
+    },
+    {
+      "gameId": "0022501222",
+      "modelHash": "075e0bc1b637dd37aa54d7e2714f82305f019a1f9dcda01994f996e2fa9f1430",
+      "expectedBox": 38.34484318262896,
+      "medianRoster": 32.580159460919695
+    },
+    {
+      "gameId": "0022500381",
+      "modelHash": "5d59745c320bd4dc8ed48c384b3dddd74cbd12ffad93fd33054f32b142562ed1",
+      "expectedBox": 34.83425542314701,
+      "medianRoster": 32.842697071115495
+    },
+    {
+      "gameId": "0022500388",
+      "modelHash": "0278921589d72d25377eb11923ef05c6a04f54d233918842e9939ff1acc4c8a3",
+      "expectedBox": 31.903035965428526,
+      "medianRoster": 33.21721240293689
+    },
+    {
+      "gameId": "0022500403",
+      "modelHash": "bc46146fa443eae17c9c14824249e5ade6fbdff2f084946ffef24c81b8cc5df7",
+      "expectedBox": 35.459144553674065,
+      "medianRoster": 33.586471212246565
+    },
+    {
+      "gameId": "0022500426",
+      "modelHash": "7b539e5286e7408aa278e0fd56ad160b92c62f426419985d671f1d61dd0ff406",
+      "expectedBox": 36.875765946955894,
+      "medianRoster": 39.49032482454708
+    },
+    {
+      "gameId": "0022500444",
+      "modelHash": "c7e50b68a34bb028fec1cac2816300bb753bd883bdce502a819d10f62ae6470b",
+      "expectedBox": 32.385781166075695,
+      "medianRoster": 28.939751385298507
+    },
+    {
+      "gameId": "0022500459",
+      "modelHash": "e171500e3f81f245e6465c696496b728b426666ef4afe763ab1376c4ffe2b116",
+      "expectedBox": 20.78661923655241,
+      "medianRoster": 18.540452565681207
+    },
+    {
+      "gameId": "0022500474",
+      "modelHash": "2efea76fe0a3485b23cd6701047300d7e9715e6450c1f22f27ac8745b9cc5ed4",
+      "expectedBox": 29.104950965807213,
+      "medianRoster": 27.1327641149212
+    },
+    {
+      "gameId": "0022500493",
+      "modelHash": "9102c7f1ad56607afbc3f17f8d0ce39bf14d3d7498ed664e3f3d4e44ccf9ee09",
+      "expectedBox": 30.955651653476757,
+      "medianRoster": 29.211648206600195
+    },
+    {
+      "gameId": "0022500503",
+      "modelHash": "33c56653b8de937ce4edc2253a60f3983cbf5a7cf976a4bd11ebd0dc7d4234eb",
+      "expectedBox": 17.53549601489341,
+      "medianRoster": 13.350841867871015
+    },
+    {
+      "gameId": "0022500520",
+      "modelHash": "4c6c74a580e063c3b1c386248be50b91ad536a24491bb5b70a7c7199d26a42d9",
+      "expectedBox": 14.648394195779296,
+      "medianRoster": 14.593485051849648
+    },
+    {
+      "gameId": "0022500532",
+      "modelHash": "bcae13f25cc18aa50801bf2214618023d3a0e46744389fa15643e20148486420",
+      "expectedBox": 18.52976445262729,
+      "medianRoster": 14.543765274209294
+    },
+    {
+      "gameId": "0022500545",
+      "modelHash": "d471dedf1cd037a3a993e1190d042adfeea00d5c0c899f2179790e3d9df69357",
+      "expectedBox": 34.738114775482025,
+      "medianRoster": 30.165141952716354
+    },
+    {
+      "gameId": "0022500559",
+      "modelHash": "a8f54240ef434f55477c99e9d20db6043903923279293d99789594d41fc2776d",
+      "expectedBox": 26.035873050487307,
+      "medianRoster": 20.91977517942459
+    },
+    {
+      "gameId": "0022500580",
+      "modelHash": "b0bdb0330328c1e3f75494e4bf013d142937d6064100751020ba078405fad1f4",
+      "expectedBox": 29.888306822203713,
+      "medianRoster": 25.1958651740549
+    },
+    {
+      "gameId": "0022500594",
+      "modelHash": "9eead1efbcb8664670cf38b25ccc850c7e52d95c0ddc0b2281d5b31397be0e0d",
+      "expectedBox": 49.95599116938405,
+      "medianRoster": 55.19064243050545
+    },
+    {
+      "gameId": "0022500017",
+      "modelHash": "44aa74e3b8c9a3265c70ffc48493e8c919d8b3ccb0295d7a57b009d163b8f4a6",
+      "expectedBox": 19.862655663784018,
+      "medianRoster": 18.213667893083823
+    },
+    {
+      "gameId": "0022500621",
+      "modelHash": "b83cc5a7adf97ddb56a98c78cbac28760833456d2bdc0e1971b84fdd636db78d",
+      "expectedBox": 10.218806524453193,
+      "medianRoster": 10.998830204160901
+    },
+    {
+      "gameId": "0022500637",
+      "modelHash": "f4bed70678bc9de1b8866c8929f9420983435a6fa45c13e9e6a01a6f6209bf1b",
+      "expectedBox": 32.88782188819726,
+      "medianRoster": 31.95224541477841
+    },
+    {
+      "gameId": "0022500647",
+      "modelHash": "3f50d54e32021e3d81ae15a32e49f8fbcf965780dddf24754f4375ee32d7d692",
+      "expectedBox": 27.685292659313166,
+      "medianRoster": 24.80373479853366
+    },
+    {
+      "gameId": "0022500660",
+      "modelHash": "759a771750a8b46e70c564cf261c223cbbcfc4808b2ff6e6f36a42a32025dc55",
+      "expectedBox": 27.818400365290255,
+      "medianRoster": 23.975583924845132
+    },
+    {
+      "gameId": "0022500673",
+      "modelHash": "748a914d219bf208e8977b3ca0a1b126e7d267e4fc095ec9a9740e620377f212",
+      "expectedBox": 32.49912118153621,
+      "medianRoster": 32.81216459028086
+    },
+    {
+      "gameId": "0022500689",
+      "modelHash": "ab5b36a5fddf6f23cec60c7fc79880574dcbf6946346bf56534c58e0510178fb",
+      "expectedBox": 19.182674068916114,
+      "medianRoster": 19.05461786937336
+    },
+    {
+      "gameId": "0022500702",
+      "modelHash": "4285166dd27bf442d4500ad83b3b90d565d8eefcd79129338f87178c3d0715c0",
+      "expectedBox": 16.265811466085893,
+      "medianRoster": 17.781150762380012
+    },
+    {
+      "gameId": "0022500721",
+      "modelHash": "416ee90cc9bb3662d424b9d9e6e0917b0be1044e229d3500e2967b6225fac092",
+      "expectedBox": 27.155400693558548,
+      "medianRoster": 19.562421947881475
+    },
+    {
+      "gameId": "0022500728",
+      "modelHash": "155ed45f499f0a94aee01f16c0b656add99e18c61556c37c4ab9c082505570f2",
+      "expectedBox": 42.90925679914916,
+      "medianRoster": 42.12744687696024
+    },
+    {
+      "gameId": "0022500741",
+      "modelHash": "4b12975a76bad8239d7ace1b1531729b4a274e1b8e761cfc4cd63acc6ed90044",
+      "expectedBox": 43.51369713032063,
+      "medianRoster": 35.04329900566231
+    },
+    {
+      "gameId": "0022500757",
+      "modelHash": "afa3f834d51adf61f103cc3bdf59e82667629a47c6aba2d9be40ab2bcf8a0e90",
+      "expectedBox": 25.68145670134942,
+      "medianRoster": 27.473793201078298
+    },
+    {
+      "gameId": "0022500778",
+      "modelHash": "dc945f2db289abb4236d05f3d690eba7d56454bc1c035591c7f7d3134ee60a3e",
+      "expectedBox": 30.239877040750287,
+      "medianRoster": 34.25475291758114
+    },
+    {
+      "gameId": "0022500799",
+      "modelHash": "b7cbf4187eb59572a3718684339d92f0febd99b1138e245aa397d05abfd0d14b",
+      "expectedBox": 43.85451180866452,
+      "medianRoster": 34.129495620185104
+    },
+    {
+      "gameId": "0022500823",
+      "modelHash": "f24e9cfde7393800d9be99e1c54b9ca2e4d0e558e17af3fe570413b1a671f29b",
+      "expectedBox": 31.70843895675905,
+      "medianRoster": 22.309146227482206
+    },
+    {
+      "gameId": "0022500839",
+      "modelHash": "cb928c3641f70505e3077755e165fe213942057ea7d274a4e4a3d35f9cd4b783",
+      "expectedBox": 31.29198587699489,
+      "medianRoster": 37.60816023867666
+    },
+    {
+      "gameId": "0022500847",
+      "modelHash": "f09079ccc1aeb9ee833610d60edbcf5eda3814f2a951671690c062bfb5e5e701",
+      "expectedBox": 16.784856177274058,
+      "medianRoster": 17.723718089514584
+    },
+    {
+      "gameId": "0022500859",
+      "modelHash": "2eae7c0a8c3488a50622089d3412252d1197aa77501732c2214c65d7469d9fbd",
+      "expectedBox": 18.442696927659327,
+      "medianRoster": 25.670487943795145
+    },
+    {
+      "gameId": "0022500874",
+      "modelHash": "2c5b2b916eea4a67e8a37b29101c1b22f2d022dd287189a682226a0b483b614a",
+      "expectedBox": 31.668928444635007,
+      "medianRoster": 20.787778892219414
+    },
+    {
+      "gameId": "0022500880",
+      "modelHash": "8d9a362629d8d55cab9427c54ac0821c6d5b3433f6d2259728e7fa4c0bc40b61",
+      "expectedBox": 24.70427206342445,
+      "medianRoster": 23.833209348668348
+    },
+    {
+      "gameId": "0022500894",
+      "modelHash": "277391c73d53daa6086bf0059714813ed81c7b15611e3e1d1636ef86ef4f232b",
+      "expectedBox": 28.327307940268074,
+      "medianRoster": 26.306031386279777
+    },
+    {
+      "gameId": "0022500908",
+      "modelHash": "44e6d293d5ad1450dd92606cda2678926ccc14cf2f3c005da75d68539f83f93e",
+      "expectedBox": 38.644486977077605,
+      "medianRoster": 36.69093767183172
+    },
+    {
+      "gameId": "0022500921",
+      "modelHash": "0e5f4ac36eb7c66d4ce1897d5c1451eff0d40b9e8a120324a12096615f3fe6c9",
+      "expectedBox": 35.5761818846172,
+      "medianRoster": 31.18359268648077
+    },
+    {
+      "gameId": "0022500942",
+      "modelHash": "150d1b1a318b9c098f2ebeb658f11f90e1d2cab38bf617411833b24fbd9e2084",
+      "expectedBox": 54.21511290598414,
+      "medianRoster": 57.27829492762311
+    },
+    {
+      "gameId": "0022500959",
+      "modelHash": "9763dcb45a40aee4d0a187fc088d8deb9a400eb60338f5422707b8024316c682",
+      "expectedBox": 32.17144984769609,
+      "medianRoster": 26.996898912749423
+    },
+    {
+      "gameId": "0022500971",
+      "modelHash": "b0ad956d1cdc23a1377bebac21e63164a0acd0b4f0b401f701790b8ec9cd8414",
+      "expectedBox": 25.604800030342325,
+      "medianRoster": 20.54049027767841
+    },
+    {
+      "gameId": "0022500986",
+      "modelHash": "b0b09c4abc4ebe1eb79a1f1976ef9ce32953691dc0bf4cabe3704ef6aafbd6ba",
+      "expectedBox": 32.080603683380275,
+      "medianRoster": 23.579596178208867
+    },
+    {
+      "gameId": "0022500999",
+      "modelHash": "9cacf74477dab97ed3cea79562a3e65e23b258b6c96b118aa59b4fee055dcbae",
+      "expectedBox": 16.884127977779738,
+      "medianRoster": 16.436001254426316
+    },
+    {
+      "gameId": "0022501019",
+      "modelHash": "65a8db3118ea5d9ae2d59447785211415498841a0a1367426e9a09bf47af16e7",
+      "expectedBox": 30.923007650331442,
+      "medianRoster": 22.966747630920896
+    }
+  ]
+}
