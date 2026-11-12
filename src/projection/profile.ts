@@ -13,6 +13,8 @@ export function forecastProfile(o: {
   dataSources: DatasetVersion[];
   sandboxImage: string;
   projectionImage: string;
+  throughGame?: number;
+  pilotCaps?: boolean;
 }) {
   if (!["no-memory", "full-memory"].includes(o.arm))
     throw Error("Unknown forecast arm");
@@ -43,6 +45,31 @@ export function forecastProfile(o: {
     tokenCap: 50000,
     countProtocol: "analyst-count-snapshot-v1",
   };
+  if (o.throughGame !== undefined) config.policy.throughGame = o.throughGame;
+  if (o.pilotCaps || (o.throughGame ?? 10) > 10) {
+    if (o.purpose !== "pilot") throw Error("Extension caps require a pilot");
+    config.budget = {
+      ...config.budget,
+      id: "forecast-pilot-caps-v1",
+      pregame: {
+        tokens: 260000,
+        computeSeconds: 300,
+        toolCalls: 80,
+        wallSeconds: 2700,
+      },
+      postgame: {
+        tokens: 225000,
+        computeSeconds: 300,
+        toolCalls: 80,
+        wallSeconds: 1800,
+      },
+      warnRemainingTokens: 50000,
+      price: {
+        ...config.budget.price,
+        id: "claude-opus-4-6-standard-usd-per-million-v1",
+      },
+    };
+  }
   config.harness.identity = "pi-forecast-v4";
   config.harness.projectionImage = o.projectionImage;
   config.harness.sandboxImage = o.sandboxImage;

@@ -298,6 +298,7 @@ export function forecastReport(runs: EvaluationRun[]) {
       replicate: r.replicate,
       runId: r.runId,
       head: r.source,
+      configurations: r.configurations,
       excluded: r.excluded,
       flagged: r.games.filter((g) => g.flagged).map((g) => g.id),
     })),

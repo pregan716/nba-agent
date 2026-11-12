@@ -1,3 +1,4 @@
+import { pilotEnd } from "./continuation.js";
 import { forecastTool } from "../projection/tools.js";
 import { codeBytes } from "../env/workspace.js";
 import { capCodeOutput } from "../env/code-output.js";
@@ -139,6 +140,7 @@ export class Runner {
     private proxy: MeteringProxy,
     private environment: EnvironmentFactory,
     private sink?: CheckpointSink,
+    options: { continuePilot?: boolean } = {},
   ) {
     const validated = makeManifest(manifest.config, manifest.games);
     if (digest(validated) !== digest(manifest))
@@ -178,7 +180,7 @@ export class Runner {
     try {
       if (sweepClaimHeld(this.root))
         throw Error("Sandbox cleanup holds run root");
-      this.record = new RecordStore(this.root, manifest);
+      this.record = new RecordStore(this.root, manifest, options.continuePilot);
       mkdirSync(this.workspace, { recursive: true, mode: 0o700 });
       mkdirSync(join(this.root, "blobs"), { recursive: true });
       const state = this.record
@@ -228,7 +230,10 @@ export class Runner {
       // Retry publication before advancing after a previous sync failure.
       await this.checkpoint();
       for (const game of this.manifest.games) {
-        if (this.manifest.config.purpose === "pilot" && !game.development)
+        if (
+          this.manifest.config.purpose === "pilot" &&
+          game.index >= pilotEnd(this.manifest.config)
+        )
           continue;
         if (this.record.events("game_end", game.gameId).length) continue;
         for (const phase of ["pregame", "postgame"] as const) {
@@ -252,8 +257,10 @@ export class Runner {
         });
         await this.checkpoint();
       }
-      if (!this.record.events("run_end").length)
-        this.record.append("run_end", "run", {});
+      const end = this.record.events("continuation").length
+        ? "continuation_end"
+        : "run_end";
+      if (!this.record.events(end).length) this.record.append(end, "run", {});
       await this.checkpoint();
     } finally {
       this.#running = false;

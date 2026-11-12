@@ -1,3 +1,4 @@
+import { parseArgs } from "node:util";
 import { recordConsensus } from "../src/evaluation/forecast/capture.js";
 import { checkpoint } from "../src/runner/sync.js";
 import { readFileSync } from "node:fs";
@@ -17,6 +18,24 @@ import { projectionModel } from "../src/projection/reference.js";
 import { forecastProfile } from "../src/projection/profile.js";
 import { openingGameLines } from "../src/projection/game-lines.js";
 
+const { values, positionals } = parseArgs({
+  allowPositionals: true,
+  options: {
+    continue: { type: "boolean" },
+    "through-game": { type: "string" },
+  },
+});
+const throughGame =
+  values["through-game"] === undefined
+    ? undefined
+    : Number(values["through-game"]);
+if (
+  throughGame !== undefined &&
+  (!Number.isInteger(throughGame) || throughGame < 1 || throughGame > 20)
+)
+  throw Error("--through-game must be an integer from 1 to 20");
+if (values.continue && throughGame === undefined)
+  throw Error("--continue requires --through-game");
 const [
   arm,
   runId,
@@ -24,16 +43,17 @@ const [
   sandboxImage,
   projectionImage,
   base = ".cache/runs",
-] = process.argv.slice(2);
+] = positionals;
 if (
   (arm !== "no-memory" && arm !== "full-memory") ||
   !runId ||
   !replicateId ||
   !sandboxImage ||
+  positionals.length > 6 ||
   !projectionImage
 )
   throw Error(
-    "Usage: npm run forecast:run -- ARM RUN_ID REPLICATE PINNED_SANDBOX PINNED_PROJECTION [ROOT]",
+    "Usage: npm run forecast:run -- ARM RUN_ID REPLICATE PINNED_SANDBOX PINNED_PROJECTION [ROOT] [--continue] [--through-game N]",
   );
 const key = process.env.ANTHROPIC_API_KEY;
 delete process.env.ANTHROPIC_API_KEY;
@@ -55,6 +75,8 @@ try {
     runId,
     replicateId,
     purpose: "pilot",
+    throughGame,
+    pilotCaps: values.continue,
     dataSources: data.versions,
     sandboxImage,
     projectionImage,
@@ -75,6 +97,8 @@ try {
     manifest(config, schedule),
     proxy,
     environment,
+    undefined,
+    { continuePilot: values.continue },
   );
   try {
     await proxy.listen();
@@ -82,10 +106,15 @@ try {
       await runner.run(piHarness({ model: config.profile.modelRoles.analyst }));
       await recordConsensus(runner.record, corpus.odds, ids);
       await checkpoint(runner.record);
+      const segmentStart = runner.record.events("continuation")[0]?.seq ?? 0;
       if (
         runner.record
           .events("phase_end")
-          .some((e) => e.data.status === "infrastructure_failure")
+          .some(
+            (e) =>
+              e.seq > segmentStart &&
+              e.data.status === "infrastructure_failure",
+          )
       )
         throw Error("Forecast run contains a failed phase; see run record");
       console.log(runner.root);

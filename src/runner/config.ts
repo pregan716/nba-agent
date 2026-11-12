@@ -145,6 +145,7 @@ export const configSchema = z.strictObject({
   policy: z.strictObject({
     version: name,
     developmentGames: z.literal(10),
+    throughGame: z.number().int().min(1).max(20).optional(),
     release: z.literal("next-morning-09:00-America/New_York"),
   }),
   contaminationProbe: z
@@ -190,6 +191,11 @@ export function manifest(
   schedule: ScheduledGame[],
 ): Manifest {
   const c = configSchema.parse(config);
+  if (
+    c.policy.throughGame !== undefined &&
+    (c.purpose !== "pilot" || c.profile.memory.version !== "forecast-memory-v1")
+  )
+    throw Error("A game limit requires a forecast pilot");
   if (c.profile.memory.version === "forecast-memory-v1") {
     if (
       !c.budget.memory ||

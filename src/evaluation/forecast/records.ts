@@ -1,5 +1,15 @@
 import { dirname } from "node:path";
-import type { Manifest } from "../../runner/config.js";
+import {
+  manifest as makeManifest,
+  digest,
+  type Manifest,
+  type RunConfig,
+} from "../../runner/config.js";
+import {
+  checkPilotBoundary,
+  continuationData,
+  pilotEnd,
+} from "../../runner/continuation.js";
 import { readBlob } from "../../runner/blobs.js";
 import { readRecord, canonical, hash } from "../record.js";
 import type { Feedback, Snapshot } from "./market.js";
@@ -13,10 +23,50 @@ export interface EvaluationRun {
   common: string;
   armSettings: string;
   population: string;
+  configurations: {
+    firstGame: number;
+    lastGame: number;
+    configDigest: string;
+    codeRevision: string;
+    harnessVersion: string;
+    budget: string;
+  }[];
   games: GameResult[];
   excluded: { id: string; reason: string }[];
 }
-export function loadForecastRun(path: string): EvaluationRun {
+function comparisonSettings(config: RunConfig) {
+  const memory = config.profile.memory;
+  // Only the declared memory manipulation and run/replicate identifiers may differ.
+  const { runId, replicateId, profile, harness, ...configRest } = config;
+  const { memoryInstructions, toolDefinitions, ...harnessRest } = harness;
+  const tools = toolDefinitions as { name: string }[];
+  const common = hash(
+    canonical([
+      configRest,
+      harnessRest,
+      tools.filter((t) => !t.name.startsWith("workspace_")),
+      profile.modelRoles,
+      profile.dataSources,
+      profile.capabilities.version,
+      profile.capabilities.enabled.filter((c) => c !== "workspace"),
+    ]),
+  );
+  return {
+    common,
+    armSettings: hash(
+      canonical([
+        memory,
+        memoryInstructions,
+        toolDefinitions,
+        profile.capabilities,
+      ]),
+    ),
+  };
+}
+export function loadForecastRun(
+  path: string,
+  range?: { first: number; last: number },
+): EvaluationRun {
   const { manifest, events, source } = readRecord(path);
   const { config, games: schedule } = manifest as Manifest;
   const memory = config.profile.memory;
@@ -27,10 +77,33 @@ export function loadForecastRun(path: string): EvaluationRun {
     throw Error("Expected a completed forecast run");
   const arm = memory.horizon === "season" ? "full-memory" : "no-memory";
   const gameEnds = events.filter((e) => e.kind === "game_end");
+  const changes = events.filter((e) => e.kind === "continuation");
+  const segments = [{ firstGame: 1, config }];
+  let active = config;
+  if (changes.length) {
+    const [change] = changes;
+    const next = makeManifest(change.data.config, schedule);
+    const data = continuationData(manifest, next);
+    checkPilotBoundary(
+      manifest,
+      gameEnds.filter((e) => e.seq < change.seq),
+      events.filter((e) => e.kind === "run_end" && e.seq < change.seq),
+    );
+    const ends = events.filter((e) => e.kind === "continuation_end");
+    if (
+      changes.length !== 1 ||
+      canonical(data) !== canonical(change.data) ||
+      ends.length !== 1 ||
+      ends[0].seq <= (gameEnds.at(-1)?.seq ?? change.seq)
+    )
+      throw Error("Invalid or incomplete pilot continuation");
+    active = next.config;
+    segments.push({ firstGame: data.firstGame, config: active });
+  }
   const expected = schedule.filter(
     (g) =>
       config.purpose === "fixture" ||
-      (config.purpose === "pilot" ? g.development : g.index < 70),
+      (config.purpose === "pilot" ? g.index < pilotEnd(active) : g.index < 70),
   );
   if (
     canonical(gameEnds.map((e) => e.scope)) !==
@@ -38,6 +111,21 @@ export function loadForecastRun(path: string): EvaluationRun {
     expected.some((g) => g.index >= 70)
   )
     throw Error("Incomplete, mismatched or holdout game list");
+  const eligible = expected.filter(
+    (g) => config.purpose !== "scored" || g.index >= 20,
+  );
+  if (
+    range &&
+    (!Number.isInteger(range.first) ||
+      !Number.isInteger(range.last) ||
+      range.first > range.last ||
+      range.first < (eligible[0]?.index ?? 0) + 1 ||
+      range.last > (eligible.at(-1)?.index ?? -1) + 1)
+  )
+    throw Error("Game range outside the evaluated run");
+  const selected = eligible.filter(
+    (g) => !range || (g.index + 1 >= range.first && g.index + 1 <= range.last),
+  );
   const one = (kind: string, id: string) => {
     const matching = events.filter((e) => e.kind === kind && e.scope === id);
     if (matching.length !== 1)
@@ -47,8 +135,7 @@ export function loadForecastRun(path: string): EvaluationRun {
   const games: GameResult[] = [],
     excluded: EvaluationRun["excluded"] = [];
   const population = [];
-  for (const g of expected) {
-    if (config.purpose === "scored" && g.index < 20) continue;
+  for (const g of selected) {
     const id = g.gameId,
       end = one("game_end", id),
       ref = one("reference_forecast", id),
@@ -131,36 +218,38 @@ export function loadForecastRun(path: string): EvaluationRun {
       wallClockMs: end.wallClockMs,
     });
   }
-  // Only the declared memory manipulation and run/replicate identifiers may differ.
-  const { runId, replicateId, profile, harness, ...configRest } = config;
-  const { memoryInstructions, toolDefinitions, ...harnessRest } = harness;
-  const tools = toolDefinitions as { name: string }[];
-  const common = hash(
-    canonical([
-      configRest,
-      harnessRest,
-      tools.filter((t) => !t.name.startsWith("workspace_")),
-      profile.modelRoles,
-      profile.dataSources,
-      profile.capabilities.version,
-      profile.capabilities.enabled.filter((c) => c !== "workspace"),
-      schedule,
-    ]),
-  );
+  const settings = segments.map((s) => comparisonSettings(s.config));
   return {
     arm,
-    replicate: replicateId,
-    runId,
+    replicate: config.replicateId,
+    runId: config.runId,
     source: source.lastEventHash,
-    common,
-    armSettings: hash(
+    common: hash(
       canonical([
-        memory,
-        memoryInstructions,
-        toolDefinitions,
-        profile.capabilities,
+        schedule,
+        ...settings.map((s, i) => [segments[i].firstGame, s.common]),
       ]),
     ),
+    armSettings: hash(canonical(settings.map((s) => s.armSettings))),
+    configurations: segments.flatMap((s, i) => {
+      const games = selected.filter(
+        (g) =>
+          g.index + 1 >= s.firstGame &&
+          g.index + 1 < (segments[i + 1]?.firstGame ?? Infinity),
+      );
+      return games.length
+        ? [
+            {
+              firstGame: games[0].index + 1,
+              lastGame: games.at(-1)!.index + 1,
+              configDigest: digest(s.config),
+              codeRevision: s.config.codeRevision,
+              harnessVersion: digest(s.config.harness),
+              budget: s.config.budget.id,
+            },
+          ]
+        : [];
+    }),
     population: hash(canonical(population)),
     games,
     excluded,

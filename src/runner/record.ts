@@ -10,7 +10,8 @@ import {
   existsSync,
 } from "node:fs";
 import { join, relative } from "node:path";
-import { digest, type Manifest } from "./config.js";
+import { continuationData, checkPilotBoundary } from "./continuation.js";
+import { digest, manifest, type Manifest } from "./config.js";
 
 export interface Event {
   seq: number;
@@ -21,12 +22,15 @@ export interface Event {
   hash: string;
   at: string;
 }
-export class RecordStore<TManifest = Manifest> {
+export class RecordStore {
   readonly db: DatabaseSync;
   constructor(
     readonly root: string,
-    expected?: TManifest,
+    expected?: Manifest,
+    continuePilot = false,
   ) {
+    if (continuePilot && !existsSync(join(root, "record.sqlite")))
+      throw Error("Missing pilot record to continue");
     mkdirSync(root, { recursive: true, mode: 0o700 });
     this.db = new DatabaseSync(join(root, "record.sqlite"));
     this.db
@@ -36,30 +40,50 @@ export class RecordStore<TManifest = Manifest> {
       CREATE TRIGGER IF NOT EXISTS immutable_delete BEFORE DELETE ON events BEGIN SELECT RAISE(ABORT, 'immutable record'); END;
       CREATE INDEX IF NOT EXISTS events_scope_kind ON events(scope,kind);
       CREATE UNIQUE INDEX IF NOT EXISTS one_manifest ON events(kind) WHERE kind='manifest';`);
-    this.verify();
-    const saved = this.events("manifest")[0];
-    if (saved && expected && digest(saved.data) !== digest(expected))
-      throw Error("Run manifest mismatch; create a new run");
-    if (saved && !existsSync(join(root, "manifest.json")))
-      writeFileSync(
-        join(root, "manifest.json"),
-        JSON.stringify(saved.data, null, 2) + "\n",
-        { mode: 0o600, flush: true },
-      );
-    if (
-      saved &&
-      readFileSync(join(root, "manifest.json"), "utf8") !==
-        JSON.stringify(saved.data, null, 2) + "\n"
-    )
-      throw Error("Manifest file integrity mismatch");
-    if (!saved) {
-      if (!expected) throw Error("Missing manifest");
-      this.append("manifest", "run", expected);
-      writeFileSync(
-        join(root, "manifest.json"),
-        JSON.stringify(expected, null, 2) + "\n",
-        { mode: 0o600 },
-      );
+    try {
+      this.verify();
+      const saved = this.events("manifest")[0];
+      if (saved && !existsSync(join(root, "manifest.json")))
+        writeFileSync(
+          join(root, "manifest.json"),
+          JSON.stringify(saved.data, null, 2) + "\n",
+          { mode: 0o600, flush: true },
+        );
+      if (
+        saved &&
+        readFileSync(join(root, "manifest.json"), "utf8") !==
+          JSON.stringify(saved.data, null, 2) + "\n"
+      )
+        throw Error("Manifest file integrity mismatch");
+      if (saved && expected) {
+        const change = this.events("continuation")[0];
+        if (change) {
+          const active = manifest(change.data.config, saved.data.games);
+          if (digest(expected) !== digest(active))
+            throw Error("Run manifest mismatch for continued pilot");
+        } else if (continuePilot) {
+          const data = continuationData(saved.data, expected);
+          checkPilotBoundary(
+            saved.data,
+            this.events("game_end"),
+            this.events("run_end"),
+          );
+          this.append("continuation", "run", data);
+        } else if (digest(saved.data) !== digest(expected))
+          throw Error("Run manifest mismatch; create a new run");
+      }
+      if (!saved) {
+        if (!expected || continuePilot) throw Error("Missing manifest");
+        this.append("manifest", "run", expected);
+        writeFileSync(
+          join(root, "manifest.json"),
+          JSON.stringify(expected, null, 2) + "\n",
+          { mode: 0o600 },
+        );
+      }
+    } catch (error) {
+      this.db.close();
+      throw error;
     }
   }
   events(kind?: string, scope?: string): Event[] {
@@ -217,6 +241,6 @@ export function diff(before: Snapshot, after: Snapshot) {
 
 /** Durable event surface shared by runner and scoped replay views. */
 export type RecordLog = Pick<
-  RecordStore<any>,
+  RecordStore,
   "root" | "events" | "append" | "verify"
 >;

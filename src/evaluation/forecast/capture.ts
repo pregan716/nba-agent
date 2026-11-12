@@ -86,7 +86,10 @@ export async function recordConsensus(
   odds: Pick<OddsAdapter, "version" | "auditRows">,
   ids: Identities,
 ) {
-  if (!record.events("run_end").length)
+  const end = record.events("continuation").length
+    ? "continuation_end"
+    : "run_end";
+  if (!record.events(end).length)
     throw Error("Market capture requires a finished run");
   const manifest = record.events("manifest")[0].data;
   if (manifest.config.profile.memory.version !== "forecast-memory-v1")
