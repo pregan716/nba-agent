@@ -1,3 +1,6 @@
+import { execFileSync } from "node:child_process";
+import { continuationData } from "../src/runner/continuation.js";
+import { RecordStore } from "../src/runner/record.js";
 import { forecastReport } from "../src/evaluation/forecast/report.js";
 import { markdown } from "../src/evaluation/forecast/markdown.js";
 import { recordConsensus } from "../src/evaluation/forecast/capture.js";
@@ -35,12 +38,13 @@ function setup(
   referenceRoot: string,
   image = pin,
   excluded = false,
+  pilotThrough?: number,
 ) {
   const { source, schedule } = fixtureCorpus(false);
   source.odds = async () => {
     throw Error("Player consensus read");
   };
-  const games = schedule.slice(0, 2).map((g) => ({
+  const games = schedule.slice(0, pilotThrough ? 3 : 2).map((g) => ({
     gameId: g.id,
     tip: String(g.data.scheduled_tipoff),
     season: "2025-26",
@@ -53,7 +57,9 @@ function setup(
     projectionImage: pin,
     runId: "fixture-" + arm,
     replicateId: "r1",
-    purpose: "fixture",
+    purpose: pilotThrough ? "pilot" : "fixture",
+    throughGame: pilotThrough,
+    pilotCaps: pilotThrough === 3,
     dataSources: [
       ...source.versions,
       {
@@ -152,6 +158,54 @@ function setup(
   };
 }
 
+function fixtureOdds(games: { gameId: string; tip: string }[]) {
+  const ids = new Identities();
+  for (const [entity, id] of [
+    ...games.map((g) => ["game", g.gameId] as const),
+    ["player", "1"] as const,
+  ])
+    ids.add({
+      entity,
+      provider: "espn",
+      providerId: id,
+      canonicalId: id,
+      basis: "fixture",
+      evidence: [
+        { bucket: "sports-nba-data", key: "fixture", sha256: "a".repeat(64) },
+      ],
+    });
+  const odds = {
+    version: () => ({
+      name: "odds",
+      manifest: {
+        bucket: "sports-nba-data" as const,
+        key: "fixture-odds",
+        sha256: "b".repeat(64),
+      },
+      methodologySha256: "c".repeat(64),
+    }),
+    auditRows: async () =>
+      games.flatMap((g) => {
+        const prop = {
+          espn_event_id: g.gameId,
+          espn_player_id: "1",
+          prop_type: "player_points",
+          requested_at: g.tip,
+          snapshot_kind: "scheduled_start",
+          status: "ok",
+          probability_basis: "unconditional",
+          selected_line: 2,
+          p_over: 0.45,
+        };
+        return [
+          prop,
+          { ...prop, status: "no_consensus", prop_type: "player_assists" },
+          { ...prop, snapshot_kind: "early" },
+        ];
+      }),
+  };
+  return { ids, odds };
+}
 async function twoGames(arm: ForecastArm, image?: string, excluded = false) {
   const base = mkdtempSync(join(tmpdir(), "forecast-arms-"));
   const { config, games, environment, forecast, referenceReads } = setup(
@@ -375,51 +429,7 @@ assert not names.intersection({'odds','prop_consensus','decision_windows','unanc
       runner.record.events("game_end").map((e) => e.data.forecastStatus),
       [excluded ? "excluded" : "frozen", "no_forecast"],
     );
-    const ids = new Identities();
-    for (const [entity, id] of [
-      ...games.map((g) => ["game", g.gameId] as const),
-      ["player", "1"] as const,
-    ])
-      ids.add({
-        entity,
-        provider: "espn",
-        providerId: id,
-        canonicalId: id,
-        basis: "fixture",
-        evidence: [
-          { bucket: "sports-nba-data", key: "fixture", sha256: "a".repeat(64) },
-        ],
-      });
-    const odds = {
-      version: () => ({
-        name: "odds",
-        manifest: {
-          bucket: "sports-nba-data" as const,
-          key: "fixture-odds",
-          sha256: "b".repeat(64),
-        },
-        methodologySha256: "c".repeat(64),
-      }),
-      auditRows: async () =>
-        games.flatMap((g) => {
-          const prop = {
-            espn_event_id: g.gameId,
-            espn_player_id: "1",
-            prop_type: "player_points",
-            requested_at: g.tip,
-            snapshot_kind: "scheduled_start",
-            status: "ok",
-            probability_basis: "unconditional",
-            selected_line: 2,
-            p_over: 0.45,
-          };
-          return [
-            prop,
-            { ...prop, status: "no_consensus", prop_type: "player_assists" },
-            { ...prop, snapshot_kind: "early" },
-          ];
-        }),
-    };
+    const { ids, odds } = fixtureOdds(games);
     await recordConsensus(runner.record, odds, ids);
     await recordConsensus(runner.record, odds, ids);
     assert.equal(runner.record.events("evaluator_consensus").length, 2);
@@ -637,4 +647,184 @@ test("completed records yield matched curves, flags and refusal of incompatible 
     mean: 0.25,
     interval90: [0, 1],
   });
+});
+
+test("pilot continuation preserves the boundary, applies new caps and evaluates a matched range", async () => {
+  const base = mkdtempSync(join(tmpdir(), "pilot-continuation-"));
+  const image = process.env.FORECAST_SANDBOX_IMAGE;
+  const proxy = new MeteringProxy(provider);
+  await proxy.listen();
+  async function extend(arm: ForecastArm, revision: string, parent: string) {
+    const first = setup(arm, join(base, "refs"), image, false, 2);
+    const next = setup(arm, join(base, "refs"), image, false, 3);
+    next.config.codeRevision = next.config.harness.codeRevision = revision;
+    const games = first.games;
+    const schedule = [
+      ...games.map((g) => ({ gameId: g.gameId, scheduledStart: g.tip })),
+      ...Array.from({ length: 79 }, (_, i) => ({
+        gameId: "unused-" + i,
+        scheduledStart: new Date(Date.UTC(2025, 11, 1 + i, 23)).toISOString(),
+      })),
+    ];
+    const original = manifest(first.config, schedule),
+      updated = manifest(next.config, schedule);
+    const scored = structuredClone(original);
+    scored.config.purpose = "scored";
+    assert.throws(() => continuationData(scored, updated), /Incompatible/);
+    const { ids, odds } = fixtureOdds(games);
+    const runner = new Runner(parent, original, proxy, first.environment);
+    const root = runner.root;
+    let prefix: string[];
+    try {
+      assert.throws(() => new RecordStore(root, updated, true), /boundary/);
+      await runner.run(async ({ session }) => {
+        const ctx = await session.call("context", {});
+        if (ctx.phase === "postgame" && ctx.game.game_id === games[1].gameId)
+          await session.call("workspace_write", {
+            path: "memory/prior",
+            content: "from game two",
+          });
+      });
+      await recordConsensus(runner.record, odds, ids);
+      prefix = runner.record.events().map((e) => e.hash);
+    } finally {
+      runner.close();
+    }
+    for (const change of [
+      (c: typeof next.config) => {
+        c.purpose = "scored";
+      },
+      (c: typeof next.config) => {
+        c.profile.memory = {
+          ...c.profile.memory,
+          version: "memory-v1",
+        } as typeof c.profile.memory;
+      },
+      (c: typeof next.config) => {
+        c.profile.dataSources[0].manifestSha256 = "d".repeat(64);
+      },
+      (c: typeof next.config) => {
+        c.profile.memory.horizon =
+          arm === "full-memory" ? "stateless" : "season";
+      },
+    ]) {
+      const bad = structuredClone(updated);
+      change(bad.config);
+      assert.throws(() => new RecordStore(root, bad, true), /Incompatible/);
+    }
+    const open = () =>
+      new Runner(parent, updated, proxy, next.environment, undefined, {
+        continuePilot: true,
+      });
+    const continued = open();
+    try {
+      await assert.rejects(
+        recordConsensus(continued.record, odds, ids),
+        /finished/,
+      );
+      assert.throws(() => loadForecastRun(root), /incomplete/i);
+      await continued.run(async ({ session }) => {
+        const ctx = await session.call("context", {});
+        assert.equal(ctx.game.game_id, games[2].gameId);
+        if (ctx.phase === "pregame") {
+          const feedback = (await session.call(
+            "read_feedback" as never,
+            {} as never,
+          )) as any;
+          assert.equal(feedback.gameId, games[1].gameId);
+          if (arm === "full-memory") {
+            assert.equal(
+              (await session.call("workspace_read", { path: "memory/prior" }))
+                .content,
+              "from game two",
+            );
+            if (image) {
+              const result = await session.call("execute_code", {
+                program:
+                  "from pathlib import Path\nprint(Path('/workspace/memory/prior').read_text())",
+              });
+              assert.match(result.stdout, /from game two/);
+            }
+          }
+          for (let i = 0; i < 81; i++)
+            await session.call("read_feedback" as never, {} as never);
+        }
+      });
+      assert.deepEqual(
+        continued.record.events("session_error").map((e) => e.data.message),
+        ["Session limit: tool_calls"],
+      );
+      const end = continued.record.events(
+        "phase_end",
+        games[2].gameId + ":pregame",
+      )[0];
+      assert.equal(end.data.limit, "tool_calls");
+      assert.equal(continued.record.events("tool_start", end.scope).length, 80);
+      assert.deepEqual(
+        continued.record
+          .events()
+          .slice(0, prefix.length)
+          .map((e) => e.hash),
+        prefix,
+      );
+      await recordConsensus(continued.record, odds, ids);
+      assert.equal(continued.record.events("evaluator_consensus").length, 3);
+      continued.record.verify();
+    } finally {
+      continued.close();
+    }
+    assert.throws(() => new RecordStore(root, original), /manifest mismatch/);
+    const resumed = open();
+    try {
+      await resumed.run(async () => {
+        throw Error("Game ran twice");
+      });
+      assert.equal(resumed.record.events("game_end").length, 3);
+      assert.equal(resumed.record.events("continuation").length, 1);
+      assert.equal(resumed.record.events("continuation_end").length, 1);
+    } finally {
+      resumed.close();
+    }
+    const result = loadForecastRun(root, { first: 3, last: 3 });
+    assert.deepEqual(
+      result.games.map((g) => g.index),
+      [3],
+    );
+    assert.equal(result.configurations[0].budget, "forecast-pilot-caps-v1");
+    if (arm === "full-memory") {
+      const report = JSON.parse(
+        execFileSync(
+          process.execPath,
+          [
+            "--import",
+            "tsx",
+            "scripts/forecast-evaluate.ts",
+            "--json",
+            "--games",
+            "3-3",
+            root,
+          ],
+          { encoding: "utf8" },
+        ),
+      );
+      assert.deepEqual(report.withFlagged.games, [games[2].gameId]);
+      assert.deepEqual(report.records[0].configurations, result.configurations);
+    }
+    assert.equal(loadForecastRun(root).configurations.length, 2);
+    return result;
+  }
+  try {
+    const a = await extend("no-memory", "revision-two", base),
+      b = await extend("full-memory", "revision-two", base);
+    assert.match(markdown(forecastReport([a, b])), /Games 3–3/);
+    const other = await extend(
+      "no-memory",
+      "different-revision",
+      join(base, "different"),
+    );
+    assert.throws(() => forecastReport([other, b]), /Incompatible/);
+  } finally {
+    await proxy.close();
+    rmSync(base, { recursive: true, force: true });
+  }
 });

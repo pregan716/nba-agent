@@ -4,10 +4,15 @@ const format = (x: number | null) =>
   x === null ? "—" : Number(x.toFixed(4)).toString();
 export function markdown(report: Report) {
   const lines = ["# Forecast evaluation", ""];
-  for (const r of report.records)
+  for (const r of report.records) {
     lines.push(
       `- ${r.arm}, ${r.replicate} · flagged games ${r.flagged.join(", ") || "none"} · excluded games ${r.excluded.map((g) => g.id + " (" + g.reason + ")").join(", ") || "none"}`,
     );
+    for (const c of r.configurations)
+      lines.push(
+        `  - Games ${c.firstGame}–${c.lastGame} · revision \`${c.codeRevision}\` · budget \`${c.budget}\` · configuration \`${c.configDigest}\``,
+      );
+  }
   for (const [title, view] of [
     ["Including flagged games", report.withFlagged],
     ["Excluding flagged games", report.withoutFlagged],
