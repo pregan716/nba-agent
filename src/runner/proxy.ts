@@ -27,15 +27,18 @@ export interface ModelProvider {
   ): Promise<Message>;
 }
 /** Construct only in the trusted runner process. No credential or client is passed to a harness. */
-export function anthropicProvider(apiKey: string): ModelProvider {
-  const client = new Anthropic({ apiKey, maxRetries: 0 });
+export function anthropicProvider(
+  apiKey: string,
+  baseURL?: string,
+): ModelProvider {
+  const client = new Anthropic({ apiKey, baseURL, maxRetries: 0 });
   return {
     async count(r, signal) {
       const { max_tokens, stream, output_config, ...input } = r;
       return (await client.messages.countTokens(input, { signal }))
         .input_tokens;
     },
-    create: (r, signal) => client.messages.create(r, { signal }),
+    create: (r, signal) => client.messages.stream(r, { signal }).finalMessage(),
   };
 }
 export interface ModelEndpoint {
@@ -177,7 +180,7 @@ export class MeteringProxy {
               `event: ${type}\ndata: ${JSON.stringify({ type, ...data })}\n\n`,
             );
           // Transport adaptation only: upstream requests, reservations, and usage
-          // stay on the same non-streaming metered path as the homemade harness.
+          // stay on the same metered path as the homemade harness.
           emit("message_start", {
             message: {
               ...response,

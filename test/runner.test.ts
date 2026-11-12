@@ -1404,3 +1404,72 @@ test("runner preserves stderr tail after oversized output", async () => {
     await s.close();
   }
 });
+
+test("Anthropic provider assembles a streamed response at the forecast output limit", async () => {
+  const { createServer } = await import("node:http");
+  const { anthropicProvider } = await import("../src/runner/proxy.js");
+  let requestBody;
+  const server = createServer(async (req, res) => {
+    let body = "";
+    for await (const chunk of req) body += chunk;
+    requestBody = JSON.parse(body);
+    const events = [
+      {
+        type: "message_start",
+        message: {
+          ...sdkMessage,
+          content: [],
+          stop_reason: null,
+          usage: { ...sdkMessage.usage, output_tokens: 0 },
+        },
+      },
+      {
+        type: "content_block_start",
+        index: 0,
+        content_block: { type: "text", text: "" },
+      },
+      ...["fix", "ture"].map((text) => ({
+        type: "content_block_delta",
+        index: 0,
+        delta: { type: "text_delta", text },
+      })),
+      { type: "content_block_stop", index: 0 },
+      {
+        type: "message_delta",
+        delta: { stop_reason: "end_turn", stop_sequence: null },
+        usage: { output_tokens: 7 },
+      },
+      { type: "message_stop" },
+    ];
+    res.writeHead(200, { "content-type": "text/event-stream" });
+    for (const event of events)
+      res.write(`event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
+    res.end();
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  try {
+    const address = server.address();
+    assert.ok(address && typeof address === "object");
+    const request = {
+      model: sdkMessage.model,
+      messages: [{ role: "user" as const, content: "Reply briefly." }],
+      max_tokens: 32000,
+      stream: false as const,
+    };
+    const message = await anthropicProvider(
+      "fixture",
+      `http://127.0.0.1:${address.port}`,
+    ).create(request, AbortSignal.timeout(10000));
+    assert.deepEqual(requestBody, { ...request, stream: true });
+    assert.equal(message.stop_reason, "end_turn");
+    assert.equal(
+      message.content[0].type === "text" && message.content[0].text,
+      "fixture",
+    );
+    assert.deepEqual(message.usage, sdkMessage.usage);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close((e) => (e ? reject(e) : resolve())),
+    );
+  }
+});

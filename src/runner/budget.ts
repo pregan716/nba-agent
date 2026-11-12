@@ -69,8 +69,13 @@ export function cost(u: Usage, price: RunConfig["budget"]["price"]): number {
   );
 }
 /** Totals at the point of observation (release or final checkpoint), including retries. */
-export function gameMetering(record: RecordStore, id: string) {
-  const phases = ["pregame", "postgame"].map((p) => id + ":" + p);
+export function gameMetering(
+  record: RecordStore,
+  id: string,
+  through: "pregame" | "postgame" = "postgame",
+) {
+  const phases = [id + ":pregame"];
+  if (through === "postgame") phases.push(id + ":postgame");
   return {
     costUsd: phases
       .flatMap((s) => record.events("settlement", s))
