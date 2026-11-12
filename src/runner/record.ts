@@ -13,6 +13,11 @@ import { join, relative } from "node:path";
 import { continuationData, checkPilotBoundary } from "./continuation.js";
 import { digest, manifest, type Manifest } from "./config.js";
 
+export interface RecordEntry {
+  kind: string;
+  scope: string;
+  data: unknown;
+}
 export interface Event {
   seq: number;
   kind: string;
@@ -108,9 +113,7 @@ export class RecordStore {
   append(kind: string, scope: string, data: unknown): Event {
     return this.appendMany([{ kind, scope, data }])[0];
   }
-  private appendMany(
-    entries: { kind: string; scope: string; data: unknown }[],
-  ): Event[] {
+  appendMany(entries: RecordEntry[]): Event[] {
     this.db.exec("BEGIN IMMEDIATE");
     try {
       const events: Event[] = [];

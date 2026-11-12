@@ -60,3 +60,15 @@ npm run --silent forecast:evaluate -- --games 11-20 .cache/runs/v5-pilot-no-memo
 ```
 
 Omit `--games` to include both segments. The report identifies the configuration used for each range, including its revision and budget. Comparisons check the original and continued settings across arms even when the report covers only one segment.
+
+## Check analyst connectivity before a paid run
+
+On the run host, supply the analyst credential and run the smoke check before launching either arm:
+
+```sh
+doppler run --project nba-agent --config prd -- npm run forecast:smoke
+```
+
+This sends one real, billable request asking for a short reply with the forecast output limit (32,000 tokens). It uses the same streaming provider as the run and prints the model, stop reason and actual usage. A failure exits non-zero. The command needs no run directory.
+
+If a forecast phase exhausts its infrastructure retries, the runner checkpoints the failed attempts and exits non-zero. Fix the underlying problem and repeat the same launch command. The runner restores the workspace at the start of the failed attempt and retries that phase. The record retains earlier attempts and their costs. A budget-limited session or a completed pregame without a frozen forecast follows the usual release and scoring rules.

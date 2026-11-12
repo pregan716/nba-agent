@@ -7,7 +7,7 @@ import type { SessionSource } from "../env/source.js";
 import { SessionError } from "../env/contract.js";
 import { codeBytes, CODE_BYTE_CAP } from "../env/workspace.js";
 import { gameMetering } from "../runner/budget.js";
-import { snapshot } from "../runner/record.js";
+import { snapshot, type RecordEntry } from "../runner/record.js";
 import type { EnvironmentFactory } from "../runner/runner.js";
 import { readBlob, writeBlob } from "../runner/blobs.js";
 import { digest, type RunConfig } from "../runner/config.js";
@@ -38,6 +38,7 @@ export function forecastEnvironment(
       { game } = context;
     let phase = context.phase;
 
+    let missing: RecordEntry | undefined;
     const find = (id: string) =>
       record.events("forecast_freeze", id)[0] ??
       record.events("forecast_missing", id)[0];
@@ -75,20 +76,30 @@ export function forecastEnvironment(
           if (row && row.data.context !== hash)
             throw Error("Forecast evidence changed");
           if (!row)
-            record.append("forecast_missing", pre.gameId, {
-              context: hash,
-              status: "no_forecast",
-            });
+            missing = {
+              kind: "forecast_missing",
+              scope: pre.gameId,
+              data: {
+                context: hash,
+                status: "no_forecast",
+              },
+            };
           return row?.data.forecast ?? null;
         },
       },
-      metering: (id) => gameMetering(record, id),
+      metering: (id) => gameMetering(record, id, "pregame"),
     });
     const saved = record.events("reference_forecast", game.gameId)[0];
     if (!saved)
       record.append("reference_forecast", game.gameId, service.reference);
     else if (digest(saved.data) !== digest(service.reference))
       throw Error("Recorded reference forecast changed");
+    let pending:
+      | {
+          gameId: string;
+          feedback: Awaited<ReturnType<typeof service.read_feedback>>;
+        }
+      | undefined;
     async function releasedFeedback() {
       if (phase === "pregame" && game.index === 0)
         return { status: "unavailable", reason: "First game of the season" };
@@ -97,11 +108,7 @@ export function forecastEnvironment(
       const saved = record.events("forecast_feedback", target.gameId)[0];
       if (saved) return JSON.parse(readBlob(root, saved.data.blob).toString());
       const feedback = await service.read_feedback();
-      const blob = writeBlob(root, Buffer.from(JSON.stringify(feedback)));
-      record.append("forecast_feedback", target.gameId, {
-        status: feedback.status,
-        blob,
-      });
+      pending = { gameId: target.gameId, feedback };
       return feedback;
     }
     const feedback = await releasedFeedback();
@@ -135,6 +142,22 @@ export function forecastEnvironment(
 
     return {
       ...base,
+      releaseEntries() {
+        const entries = missing ? [missing] : [];
+        if (pending)
+          entries.push({
+            kind: "forecast_feedback",
+            scope: pending.gameId,
+            data: {
+              status: pending.feedback.status,
+              blob: writeBlob(
+                root,
+                Buffer.from(JSON.stringify(pending.feedback)),
+              ),
+            },
+          });
+        return entries;
+      },
       context: async (budget) => ({
         ...(await base.context(budget)),
         game_lines: lines(game.gameId, game.scheduledStart),

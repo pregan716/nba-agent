@@ -828,3 +828,104 @@ test("pilot continuation preserves the boundary, applies new caps and evaluates 
     rmSync(base, { recursive: true, force: true });
   }
 });
+
+for (const failedPhase of ["pregame", "postgame"] as const) {
+  test(`forecast infrastructure failure halts at ${failedPhase} and relaunch resumes there`, async () => {
+    const base = mkdtempSync(join(tmpdir(), "forecast-halt-"));
+    const { config, games, environment } = setup(
+      "full-memory",
+      join(base, "reference"),
+    );
+    const m = manifest(
+      config,
+      games.map((g) => ({ gameId: g.gameId, scheduledStart: g.tip })),
+    );
+    let broken = true;
+    const proxy = new MeteringProxy({
+      ...provider,
+      create: async (request, signal) => {
+        if (broken) throw Error("fixture provider unavailable");
+        return provider.create(request, signal);
+      },
+    });
+    await proxy.listen();
+    const open = () => new Runner(base, m, proxy, environment);
+    let runner = open();
+    const id = games[0].gameId;
+    const scope = id + ":" + failedPhase;
+    const harness: import("../src/runner/runner.js").Harness = async ({
+      session,
+      model,
+    }) => {
+      const ctx = await session.call("context", {});
+      if (ctx.game.game_id !== id || ctx.phase !== failedPhase) return;
+      const workspace = await session.call("workspace_list", {
+        path: "memory",
+      });
+      assert.equal(workspace.entries.length, 0);
+      await session.call("workspace_write", {
+        path: "memory/attempt",
+        content: "partial",
+      });
+      const response = await fetch(model.baseURL + "/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": model.apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "claude-opus-4-6",
+          max_tokens: 32000,
+          messages: [{ role: "user", content: "OK?" }],
+        }),
+      });
+      if (!response.ok)
+        throw Error(`fixture provider returned ${response.status}`);
+    };
+    try {
+      await assert.rejects(
+        runner.run(harness),
+        new RegExp("stopped at " + scope),
+      );
+      assert.equal(runner.record.events("model_error", scope).length, 2);
+      assert.deepEqual(
+        runner.record.events("session_end", scope).map((e) => e.data.status),
+        ["infrastructure_failure", "infrastructure_failure"],
+      );
+      for (const kind of [
+        "forecast_missing",
+        "forecast_feedback",
+        "game_end",
+        "run_end",
+      ])
+        assert.equal(runner.record.events(kind).length, 0, kind);
+      assert.equal(runner.record.events("phase_end", scope).length, 0);
+      assert.equal(
+        runner.record
+          .events("session_start")
+          .some((e) => e.scope.startsWith(games[1].gameId + ":")),
+        false,
+      );
+      runner.close();
+      broken = false;
+      runner = open();
+      await runner.run(harness);
+      assert.equal(
+        runner.record.events("session_end", scope).at(-1)?.data.attempt,
+        3,
+      );
+      assert.equal(
+        runner.record.events("phase_end", scope)[0].data.status,
+        "completed",
+      );
+      assert.equal(runner.record.events("game_end").length, 2);
+      assert.equal(runner.record.events("forecast_feedback", id).length, 1);
+      assert.equal(runner.record.events("forecast_missing", id).length, 1);
+      runner.record.verify();
+    } finally {
+      runner.close();
+      await proxy.close();
+      rmSync(base, { recursive: true, force: true });
+    }
+  });
+}

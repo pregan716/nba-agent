@@ -44,6 +44,7 @@ import {
   restore,
   diff,
   type Snapshot,
+  type RecordEntry,
 } from "./record.js";
 import { Budget, LimitError, gameMetering } from "./budget.js";
 import { MeteringProxy, type ModelEndpoint } from "./proxy.js";
@@ -77,6 +78,8 @@ export interface SessionContext {
 }
 /** Trusted P3 adapter. Paths and persistence hooks are never exposed to the harness. */
 export interface Environment {
+  /** Release receipts published atomically with a successful or budget-limited phase. */
+  releaseEntries?(): RecordEntry[];
   context(budget: BudgetRemaining): Promise<ContextResult>;
   transition(phase: LifecyclePhase, cutoff: string): Promise<void>;
   call(name: string, args: unknown, signal: AbortSignal): Promise<unknown>;
@@ -239,7 +242,15 @@ export class Runner {
         for (const phase of ["pregame", "postgame"] as const) {
           const scope = `${game.gameId}:${phase}`;
           if (this.record.events("phase_end", scope).length) continue;
-          await this.session(game, phase, harness);
+          // A relaunch grants a fresh set of forecast attempts. Their recorded
+          // numbers keep increasing so prior failures and costs remain auditable.
+          const previous =
+            this.manifest.config.profile.memory.version === "forecast-memory-v1"
+              ? this.record.events("session_start", scope).length
+              : 0;
+          const lastAttempt =
+            previous + (this.manifest.config.recovery?.maxSessionAttempts ?? 2);
+          await this.session(game, phase, harness, lastAttempt);
           await this.checkpoint();
         }
         this.record.append("game_end", game.gameId, {
@@ -293,6 +304,7 @@ export class Runner {
     game: Game,
     phase: "pregame" | "postgame",
     harness: Harness,
+    lastAttempt: number,
   ): Promise<void> {
     const scope = `${game.gameId}:${phase}`,
       budget = new Budget(this.record, scope, this.manifest.config, phase);
@@ -328,13 +340,14 @@ export class Runner {
       this.record
         .events("session_end", scope)
         .find((e) => e.data.attempt === prior.data.attempt);
+    const forecast =
+      this.manifest.config.profile.memory.version === "forecast-memory-v1";
     const retry =
       prior &&
       durableEnd?.data.limit !== "interrupted" &&
       durableEnd?.data.status === "infrastructure_failure" &&
       durableEnd?.data.retryable !== false &&
-      prior.data.attempt <
-        (this.manifest.config.recovery?.maxSessionAttempts ?? 2);
+      prior.data.attempt < lastAttempt;
     if (durableEnd && durableEnd.data.limit !== "interrupted" && !retry) {
       this.record.append("phase_end", scope, {
         status: durableEnd.data.status,
@@ -466,15 +479,22 @@ export class Runner {
         }
       }
       this.record.append("clock", scope, { phase, cutoff: game.release });
-      this.record.append("phase_end", scope, {
-        status: "skipped",
-        limit: null,
-        reason: "stateless",
-        before,
-        after: before,
-        diff: diff(before, before),
-        usage: budget.totals(),
-      });
+      this.record.appendMany([
+        ...(environment?.releaseEntries?.() ?? []),
+        {
+          kind: "phase_end",
+          scope,
+          data: {
+            status: "skipped",
+            limit: null,
+            reason: "stateless",
+            before,
+            after: before,
+            diff: diff(before, before),
+            usage: budget.totals(),
+          },
+        },
+      ]);
       return;
     }
     const attempt = this.record.events("session_start", scope).length + 1;
@@ -807,34 +827,49 @@ export class Runner {
       }
     }
     const after = snapshot(this.root, this.workspace);
-    this.record.append("session_end", scope, {
-      attempt,
-      status,
-      limit,
-      before,
-      after,
-      diff: diff(before, after),
-      workspaceChanges: environment?.workspaceChanges?.() ?? [],
-      ...(this.manifest.config.profile.memory.version === "forecast-memory-v1"
-        ? { codeBytes: codeBytes(this.workspace) }
-        : {}),
-      ...(isMemoryV3(this.manifest.config.profile.memory)
-        ? {
-            memorySize: await measureMemory(
-              this.workspace,
-              this.counter(scope),
-            ),
-          }
-        : {}),
-      usage: budget.totals(),
-      elapsedMs: Date.now() - started,
-    });
-    if (
-      status === "infrastructure_failure" &&
-      attempt < (this.manifest.config.recovery?.maxSessionAttempts ?? 2)
-    ) {
-      await this.session(game, phase, harness);
+    const released =
+      status === "infrastructure_failure"
+        ? []
+        : (environment?.releaseEntries?.() ?? []);
+    this.record.appendMany([
+      ...released,
+      {
+        kind: "session_end",
+        scope,
+        data: {
+          attempt,
+          status,
+          limit,
+          before,
+          after,
+          diff: diff(before, after),
+          workspaceChanges: environment?.workspaceChanges?.() ?? [],
+          ...(this.manifest.config.profile.memory.version ===
+          "forecast-memory-v1"
+            ? { codeBytes: codeBytes(this.workspace) }
+            : {}),
+          ...(isMemoryV3(this.manifest.config.profile.memory)
+            ? {
+                memorySize: await measureMemory(
+                  this.workspace,
+                  this.counter(scope),
+                ),
+              }
+            : {}),
+          usage: budget.totals(),
+          elapsedMs: Date.now() - started,
+        },
+      },
+    ]);
+    if (status === "infrastructure_failure" && attempt < lastAttempt) {
+      await this.session(game, phase, harness, lastAttempt);
       return;
+    }
+    if (forecast && status === "infrastructure_failure") {
+      await this.checkpoint();
+      throw Error(
+        `Forecast run stopped at ${scope} after infrastructure failure (attempt ${attempt}); relaunch to retry this phase`,
+      );
     }
     this.record.append("phase_end", scope, { status, limit });
   }

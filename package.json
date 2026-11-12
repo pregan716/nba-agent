@@ -21,6 +21,7 @@
     "test:sandbox": "tsx scripts/sandbox-test.ts",
     "probe": "tsx scripts/contamination-probe.ts",
     "projection": "tsx scripts/reference-projection.ts",
+    "forecast:smoke": "tsx scripts/forecast-smoke.ts",
     "forecast:run": "tsx scripts/forecast-run.ts",
     "forecast:capture": "tsx scripts/forecast-capture.ts",
     "forecast:capture-check": "tsx scripts/forecast-capture-check.ts",

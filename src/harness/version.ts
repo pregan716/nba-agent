@@ -58,7 +58,7 @@ export const PI_CONTRACT = {
     api: "anthropic-messages",
     baseUrl: "session.model.baseURL",
     apiKey: "session.model.apiKey",
-    transport: "metered-nonstream-to-sse-v1",
+    transport: "metered-assembled-stream-to-sse-v2",
   },
   tools: {
     registration: "extension-registerTool-from-TOOL_DEFINITIONS",
