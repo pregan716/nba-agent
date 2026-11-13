@@ -117,16 +117,26 @@ export async function forecastSession(options: {
     return game;
   }
   const currentData = await prepare(current);
+  let validated: Forecast | undefined;
   return {
     feedbackGame,
     reference: {
       forecast: currentData.reference,
       modelHash: currentData.modelHash,
     },
-    validate_forecast: (draft: unknown) =>
-      validateForecast(draft, currentData.pre),
-    freeze_forecast: (draft: unknown) =>
-      record.freeze(currentData.pre, currentData.context, draft, clock),
+    validate_forecast(draft: unknown) {
+      const result = validateForecast(draft, currentData.pre);
+      if (result.ok) validated = structuredClone(result.forecast);
+      return result;
+    },
+    freeze_forecast(draft: unknown = validated) {
+      if (draft === undefined)
+        return {
+          ok: false,
+          reason: "No draft has passed validation in this session.",
+        } as const;
+      return record.freeze(currentData.pre, currentData.context, draft, clock);
+    },
     async read_feedback() {
       const game = feedbackGame();
       if (!game) throw Error("Feedback unavailable");

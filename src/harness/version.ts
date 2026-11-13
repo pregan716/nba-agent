@@ -60,6 +60,8 @@ export const PI_CONTRACT = {
     apiKey: "session.model.apiKey",
     transport: "metered-assembled-stream-to-sse-v2",
   },
+  forecastBudget:
+    "per-tool-token-balance-and-phase-warnings-at-profile-threshold-and-half-v1",
   tools: {
     registration: "extension-registerTool-from-TOOL_DEFINITIONS",
     selection: "phase-capability-memory",
