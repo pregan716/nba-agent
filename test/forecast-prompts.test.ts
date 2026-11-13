@@ -103,3 +103,20 @@ test("the copying claim is limited to the primary scores and context is not requ
   assert.doesNotMatch(FORECAST_SYSTEM_PROMPT, /call it first/);
   assert.match(FORECAST_SYSTEM_PROMPT, /already in your first message/);
 });
+
+test("the prompt describes the budget line, the warning and freezing a validated draft", () => {
+  for (const text of [
+    "freeze_forecast({})",
+    "Every tool result ends with a line giving your remaining token budget",
+    "you are sent a budget warning",
+    "once more at half that level",
+    "A validated draft that was never frozen counts for nothing",
+  ])
+    assert.ok(FORECAST_SYSTEM_PROMPT.includes(text), text);
+  const freeze = forecastDefinitions.find((t) => t.name === "freeze_forecast")!;
+  assert.deepEqual(freeze.input_schema.required ?? [], []);
+  assert.match(
+    FORECAST_MEMORY_INSTRUCTIONS["full-memory"],
+    /only what has been written to the workspace by then is kept/,
+  );
+});

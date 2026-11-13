@@ -790,7 +790,7 @@ test("pilot continuation preserves the boundary, applies new caps and evaluates 
       result.games.map((g) => g.index),
       [3],
     );
-    assert.equal(result.configurations[0].budget, "forecast-pilot-caps-v1");
+    assert.equal(result.configurations[0].budget, "forecast-pilot-caps-v2");
     if (arm === "full-memory") {
       const report = JSON.parse(
         execFileSync(
