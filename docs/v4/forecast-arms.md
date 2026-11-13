@@ -44,7 +44,7 @@ npm run forecast:run -- full-memory v5-pilot-full-memory r1 "$SANDBOX_IMAGE" "$P
 
 Game numbers are one-based. A fresh pilot defaults to games 1–10. An explicit end may range from 1 to 20. The extension starts after the original pilot's final game, once every original game has ended. It appends a timestamped `continuation` event with the original manifest digest, the new configuration and the inclusive game range. The original manifest and game events remain available. A retry with the same command and configuration resumes the extension; a different configuration is refused. Full memory resumes the prior workspace, and each arm reads its own recorded game 10 feedback.
 
-The extension uses `forecast-pilot-caps-v1`. Fresh pilots explicitly requesting an end past game 10 also use these caps for their whole run.
+The extension uses `forecast-pilot-caps-v2`. Fresh pilots explicitly requesting an end past game 10 also use these caps for their whole run.
 
 | Limit | Pregame | Postgame |
 | --- | ---: | ---: |
@@ -53,7 +53,7 @@ The extension uses `forecast-pilot-caps-v1`. Fresh pilots explicitly requesting 
 | Tool calls | 80 | 80 |
 | Wall seconds | 2,700 | 1,800 |
 
-The warning fires at 50,000 tokens remaining. The profile retains the 0.1 cache-read weight, the 50,000-token memory cap and the original per-call sandbox limits. Pricing uses the Opus 4.6 standard schedule. These caps are approved for the pilot extension only. Games 11–20 will run again as warm-up for the scored experiment.
+The warning fires at 80,000 tokens remaining and again at 40,000 (raised from 50,000 after the first attempt at games 11–20; the profile id changed from `forecast-pilot-caps-v1`). The profile retains the 0.1 cache-read weight, the 50,000-token memory cap and the original per-call sandbox limits. Pricing uses the Opus 4.6 standard schedule. These caps are approved for the pilot extension only. Games 11–20 will run again as warm-up for the scored experiment.
 
 The original `run_end` closes the first segment. A separate `continuation_end` closes the extension and enables capture of its market consensus. To compare only the extension:
 

@@ -50,7 +50,7 @@ export function forecastProfile(o: {
     if (o.purpose !== "pilot") throw Error("Extension caps require a pilot");
     config.budget = {
       ...config.budget,
-      id: "forecast-pilot-caps-v1",
+      id: "forecast-pilot-caps-v2",
       pregame: {
         tokens: 260000,
         computeSeconds: 300,
@@ -63,7 +63,7 @@ export function forecastProfile(o: {
         toolCalls: 80,
         wallSeconds: 1800,
       },
-      warnRemainingTokens: 50000,
+      warnRemainingTokens: 80000,
       price: {
         ...config.budget.price,
         id: "claude-opus-4-6-standard-usd-per-million-v1",
