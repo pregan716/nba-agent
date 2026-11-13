@@ -39,7 +39,7 @@ const draft = object(
 );
 const descriptions: Record<string, string> = {
   context:
-    "Return game, spread, total, clock, workspace permissions and remaining research budget.",
+    "Return game, spread, total, clock, workspace permissions and remaining research budget. Every forecast tool result includes the remaining token budget.",
   query_game_history:
     "Query released game history or opening player references. Select a table and filter by game, team or player.",
   execute_code:
@@ -89,9 +89,12 @@ export const forecastDefinitions = [
     name,
     description:
       name === "freeze_forecast"
-        ? "Validate and lock the roster forecast."
-        : "Check the roster forecast without locking it.",
-    input_schema: object({ draft }, ["draft"]),
+        ? "Validate and lock a supplied roster forecast, or pass {} to lock the most recent draft that passed validation in this session."
+        : "Check the roster forecast and save a successful draft for freeze_forecast({}).",
+    input_schema: object(
+      { draft },
+      name === "freeze_forecast" ? [] : ["draft"],
+    ),
     phases: ["pregame"] as Phase[],
   })),
   {

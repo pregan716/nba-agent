@@ -181,6 +181,8 @@ export function forecastEnvironment(
         switch (name) {
           case "validate_forecast":
           case "freeze_forecast":
+            if (name === "freeze_forecast" && Object.keys(input).length === 0)
+              return service.freeze_forecast();
             if (
               Object.keys(input).length !== 1 ||
               !Object.hasOwn(input, "draft")

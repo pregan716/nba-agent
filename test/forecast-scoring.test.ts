@@ -292,10 +292,18 @@ test("freeze across handles, scheduled cutoff, exact DST release and previous-ga
     const s = await setup("today", record),
       reopened = await setup("today", other);
     assert.equal(s.freeze_forecast({}).ok, false);
-    assert.ok(s.validate_forecast(draft).ok);
-    assert.ok(s.freeze_forecast(draft).ok);
     const changed = structuredClone(draft);
     changed.players[0].minutes = flat(4);
+    assert.ok(s.validate_forecast(changed).ok);
+    const validated = s.validate_forecast(draft);
+    assert.ok(validated.ok);
+    validated.forecast.players[0].minutes = flat(4);
+    assert.equal(s.validate_forecast({}).ok, false);
+    assert.deepEqual(reopened.freeze_forecast(), {
+      ok: false,
+      reason: "No draft has passed validation in this session.",
+    });
+    assert.ok(s.freeze_forecast().ok);
     assert.equal(reopened.freeze_forecast(changed).ok, false);
     await assert.rejects(s.read_feedback(), /unavailable/);
     phase = "postgame";

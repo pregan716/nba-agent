@@ -1,3 +1,4 @@
+import { ForecastBudgetNotices } from "../harness/forecast-budget.js";
 import { retryModel, modelError } from "./retry.js";
 import { VERSION } from "@anthropic-ai/sdk/version";
 import Anthropic from "@anthropic-ai/sdk";
@@ -57,6 +58,7 @@ export class MeteringProxy {
       pending: Promise<void> | null;
       /** Preflight count of the previous request in this scope, for the cache estimate. */
       previousCount: number;
+      forecastBudget?: ForecastBudgetNotices;
     }
   >();
   #url = "";
@@ -111,6 +113,7 @@ export class MeteringProxy {
         if (scope.closed || scope.signal.aborted) throw Error("Session closed");
         const payload = JSON.parse(body);
         const request = this.request(payload, scope.budget);
+        const delivery = scope.forecastBudget?.annotate(request, scope.budget);
         const { value: count } = await retryModel(
           (signal) => this.provider.count(request, signal),
           scope.signal,
@@ -162,6 +165,12 @@ export class MeteringProxy {
           retries,
           usage,
         });
+        if (delivery)
+          scope.budget.record.append(
+            "budget_warning_delivered",
+            scope.budget.scope,
+            { reservation, ...delivery },
+          );
         scope.budget.settle(reservation, tokenTotal(usage, weight), 0, {
           usage,
           usd: cost(usage, scope.budget.config.budget.price),
@@ -318,6 +327,10 @@ export class MeteringProxy {
       closed: false,
       pending: null,
       previousCount: 0,
+      forecastBudget:
+        budget.config.profile.memory.version === "forecast-memory-v1"
+          ? new ForecastBudgetNotices()
+          : undefined,
     });
     return Object.freeze({ baseURL: this.#url, apiKey });
   }

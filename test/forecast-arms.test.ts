@@ -929,3 +929,131 @@ for (const failedPhase of ["pregame", "postgame"] as const) {
     }
   });
 }
+
+test("Pi sees the remaining budget, acts on both thresholds, and freezes the last validated draft", async () => {
+  const { piHarness } = await import("../src/harness/pi.js");
+  const base = mkdtempSync(join(tmpdir(), "forecast-budget-"));
+  const { config, games, environment, forecast } = setup(
+    "full-memory",
+    join(base, "reference"),
+  );
+  const id = games[0].gameId;
+  config.budget.pregame.tokens = 1000;
+  config.budget.postgame.tokens = 500;
+  config.budget.warnRemainingTokens = 650;
+  const requests: import("@anthropic-ai/sdk/resources/messages").MessageCreateParamsNonStreaming[] =
+    [];
+  const proxy = new MeteringProxy({
+    ...provider,
+    create: async (request, signal) => {
+      requests.push(structuredClone(request));
+      const answer = await provider.create(request, signal);
+      const call = (name: string, input: Record<string, unknown>) =>
+        ({
+          ...answer,
+          usage: {
+            ...answer.usage,
+            input_tokens: 10,
+            output_tokens: 180,
+            cache_read_input_tokens: 0,
+            cache_creation_input_tokens: 0,
+            cache_creation: {
+              ephemeral_5m_input_tokens: 0,
+              ephemeral_1h_input_tokens: 0,
+            },
+          },
+          stop_reason: "tool_use" as const,
+          content: [
+            {
+              type: "tool_use" as const,
+              id: "call-" + requests.length,
+              name,
+              input,
+            },
+          ],
+        }) as typeof answer;
+      switch (requests.length) {
+        case 1:
+          return call("freeze_forecast", {});
+        case 2:
+          return call("read_feedback", { game_id: "not-allowed" });
+        case 3:
+          assert.match(
+            JSON.stringify(request.messages.at(-1)),
+            /Validate and freeze/,
+          );
+          return call("validate_forecast", { draft: forecast(id) });
+        case 4:
+          return call("read_feedback", {});
+        case 5:
+          assert.match(
+            JSON.stringify(request.messages.at(-1)),
+            /Validate and freeze/,
+          );
+          return call("freeze_forecast", {});
+        default:
+          return answer;
+      }
+    },
+  });
+  await proxy.listen();
+  const runner = new Runner(
+    base,
+    manifest(config, [{ gameId: id, scheduledStart: games[0].tip }]),
+    proxy,
+    environment,
+  );
+  try {
+    await runner.run(piHarness({ model: config.profile.modelRoles.analyst }));
+    const latest = requests.map((r) =>
+      JSON.stringify(r.messages.at(-1)?.content),
+    );
+    assert.match(latest[1], /No draft has passed validation/);
+    for (const [i, tokens] of [810, 620, 430, 240, 50].entries())
+      assert.match(
+        latest[i + 1],
+        new RegExp("Remaining token budget: " + tokens),
+      );
+    assert.doesNotMatch(latest[1], /Budget warning/);
+    assert.match(
+      latest[2],
+      /Budget warning: 620 tokens, \d+ compute seconds and \d+ tool calls remaining\. Validate and freeze/,
+    );
+    assert.doesNotMatch(latest[3], /Budget warning/);
+    assert.match(latest[4], /Budget warning: 240 tokens/);
+    assert.doesNotMatch(latest[5], /Budget warning/);
+    assert.match(latest[6], /Finish writing memory now/);
+    const delivered = runner.record.events("budget_warning_delivered");
+    assert.deepEqual(
+      delivered.map((e) => [
+        e.scope,
+        e.data.threshold,
+        e.data.remaining.tokens,
+      ]),
+      [
+        [id + ":pregame", 650, 620],
+        [id + ":pregame", 325, 240],
+        [id + ":postgame", 650, 500],
+      ],
+    );
+    const frozen = runner.record.events("forecast_freeze", id)[0];
+    assert.equal(
+      JSON.stringify(frozen.data.forecast),
+      JSON.stringify(forecast(id)),
+    );
+    assert.equal(
+      runner.record.events("phase_end", id + ":pregame")[0].data.status,
+      "completed",
+    );
+    assert.equal(
+      runner.record
+        .events("tool_start")
+        .filter((e) => e.data.name === "context").length,
+      0,
+    );
+  } finally {
+    runner.close();
+    await proxy.close();
+    rmSync(base, { recursive: true, force: true });
+  }
+});
