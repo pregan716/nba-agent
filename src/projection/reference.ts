@@ -163,13 +163,17 @@ export async function recordReference(
   }
 }
 
-export function releasedErrors(record: ReferenceRecord, game: ReleasedGame) {
+export function releasedErrors(
+  record: Pick<ReferenceRecord, "gameId" | "forecast">,
+  game: ReleasedGame,
+  teamId: string = BOS,
+) {
   if (record.gameId !== game.gameId)
     throw Error("Reference outcome game mismatch");
   const actuals = new Map(
-    game.players.filter((p) => p.teamId === BOS).map((p) => [p.playerId, p]),
+    game.players.filter((p) => p.teamId === teamId).map((p) => [p.playerId, p]),
   );
-  if (!actuals.size) throw Error("Missing Celtics outcomes: " + game.gameId);
+  if (!actuals.size) throw Error("Missing team outcomes: " + game.gameId);
   return record.forecast.players.map((p) => {
     const row = actuals.get(p.playerId),
       played = row?.played ?? false;

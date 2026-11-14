@@ -63,6 +63,7 @@ function score(
   f: Forecast,
   ref: Forecast,
   outcomes: Map<string, Outcome>,
+  teamId: string,
 ) {
   const forecast = new Map(f.players.map((p) => [p.playerId, p]));
   const reference = new Map(ref.players.map((p) => [p.playerId, p]));
@@ -101,7 +102,7 @@ function score(
     ({ playerId, inactive, own, base, tier, threshold, probability }) => {
       const actual = outcomes.get(playerId) ?? {
         playerId,
-        teamId: BOS,
+        teamId,
         played: false,
         starter: null,
         inactive: false,
@@ -215,6 +216,7 @@ export function scoreGame(
   reference: Forecast,
   game: ReleasedGame,
   meter: Metering,
+  teamId: string = BOS,
 ) {
   if (
     game.gameId !== pre.gameId ||
@@ -228,16 +230,16 @@ export function scoreGame(
   )
     throw Error("Invalid game metering");
   const roster = new Set(pre.roster.map((r) => r.playerId));
-  const rows = game.players.filter((p) => p.teamId === BOS);
+  const rows = game.players.filter((p) => p.teamId === teamId);
   const outcomes = new Map(rows.map((r) => [r.playerId, r]));
   if (
     !rows.length ||
     rows.length !== outcomes.size ||
     rows.some((p) => p.played && !roster.has(p.playerId))
   )
-    throw Error("Inconsistent Boston box score");
+    throw Error("Inconsistent box score for team " + teamId);
   const ref = checked(reference, pre);
-  const refScores = score(pre, ref, ref, outcomes);
+  const refScores = score(pre, ref, ref, outcomes, teamId);
   return {
     gameId: pre.gameId,
     tip: pre.tip,
@@ -245,7 +247,9 @@ export function scoreGame(
     costUsd: meter.costUsd,
     wallClockMs: meter.wallClockMs,
     box: game.players.map(publicOutcome),
-    agent: frozen ? score(pre, checked(frozen, pre), ref, outcomes) : refScores,
+    agent: frozen
+      ? score(pre, checked(frozen, pre), ref, outcomes, teamId)
+      : refScores,
     reference: refScores,
   };
 }
