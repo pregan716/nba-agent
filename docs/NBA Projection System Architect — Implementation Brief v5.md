@@ -1,0 +1,311 @@
+# NBA Projection System Architect — Implementation Brief v5
+
+Nov 14, 2026 · @Patrick Regan · Draft for review (SPO-899)
+
+## Purpose and research question
+
+Find out whether an AI agent can design a projection system that adds value to DFS players and bettors. The system forecasts each player's minutes and production before every game of a replayed 2025–26 season, for one team at a time, and may build knowledge of that team as the season goes on.
+
+The agent that does the designing is the **architect**. It does not forecast games itself. It writes the game loop: the code, the models and the specialist agents that produce each forecast. It submits a configuration, receives the scores of that configuration over about 40 games, studies where it did well and badly, and submits again.
+
+Four questions, in order of difficulty:
+
+1. **Can the architect build a system that beats a plain statistical projection on minutes, on teams it never saw?**
+2. **Do the agents in the game loop add to that system?** The same system with its agents switched off is the control.
+3. **Does knowledge accumulated from game to game help?** The same system with nothing kept between games is the control.
+4. **Does the system know anything the betting market does not?** This is a stretch result, as in v4.
+
+A good score alone does not establish any of these. Findings must connect score differences to what the system did, and a negative result is valuable when the comparison is sound.
+
+## How to use this brief
+
+Agreed items are requirements. Proposed items are recommended defaults for the first implementation: an implementer builds them as written and may raise a brief change against them before the development run begins. Open items must be resolved by the user and are never inferred.
+
+| Status   | Meaning                                                           |
+| -------- | ----------------------------------------------------------------- |
+| Agreed   | Explicit user choice, or a decision carried from an earlier brief |
+| Proposed | Concrete default offered for review                               |
+| Open     | Unresolved choice that must not be inferred                       |
+
+This brief supersedes [the v4 brief](NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md) for the experiment design, the agent's role, memory and budgets. These v4 sections stay in force by reference, each with the status it has there:
+
+- The forecast (format, validation, the interpolation rule)
+- Reference projection (form and refit), now produced for all five teams
+- Scoring: the primary scores and diagnostics, the market test, big overs and ceiling games, invalid and missing forecasts
+- The paired-bootstrap settings under Comparison between arms
+
+The v3 sections that v4 carried by reference (data contracts and temporal access rules, isolation and reproducibility, the experiment record, contamination) stay in force in the same way.
+
+### What changed from v4
+
+The v4 pilot ran one analyst agent through Celtics games 1–20 in two arms, with and without memory ([games 1–10](v4/pilot.md); the write-up of games 11–20 is pending under SPO-883).
+
+- In games 1–10 both arms placed minutes better than the reference: about 37 misplaced minutes a game against 47. The reference is at its weakest there, with no games yet from the new roster.
+- In games 11–20 neither arm beat it: 33.7 (no memory) and 35.7 (full memory) against 34.8. No difference between the arms was distinguishable from zero on any primary score.
+- The reference's own big-over picks hit more often than either arm's in both stretches (11 of 30 against 5 to 9 of 30).
+- None of the 558 sandbox programs across both stretches fitted a model. Saved code was never reused. Memory was notes.
+
+The agent's only signal was one game of feedback, and one game is mostly noise. It had no way to test a change to its method, redid the whole forecast by judgement every game, and nothing in the task told it that its routine was not working. On Nov 14, 2026 the user moved the agent up a level.
+
+- The agent designs the system instead of being the forecaster.
+- Feedback is the score over a large sample of games after each change, not one game.
+- The experiment covers five teams, so that a design can be tested on teams the architect never saw.
+- The two memory arms, the per-session research budgets and the fixed research prompt are dropped. Whether accumulated knowledge helps is now answered by an ablation of the final system.
+
+## Scope
+
+| Area                 | Value                                                                                                                                               | Status                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Goal                 | Test whether an architect agent can build a projection system that adds value to DFS players and bettors                                            | Agreed (Nov 14, 2026)                           |
+| Architect            | The only permanent and mandatory agent role. It decides how the game loop works.                                                                    | Agreed (Nov 14, 2026)                           |
+| Architect model      | `claude-opus-4-6` to start. Jev has no role in the architect.                                                                                       | Agreed (Nov 14, 2026)                           |
+| Game-loop models     | Claude Haiku, Sonnet and Opus, and Jev, at the architect's choice. Nothing outside the allowed list.                                                | Agreed (Nov 14, 2026); exact versions Open      |
+| Target metric        | Minutes pinball loss relative to the reference projection on the same games                                                                         | Agreed (Nov 14, 2026)                           |
+| Teams                | Boston, Denver, Memphis, Oklahoma City and Washington, 2025–26 regular season; 2024–25 games are historical evidence from the start                 | Agreed (Nov 14, 2026)                           |
+| Development and test | The architect develops on Boston, Oklahoma City and Washington. Denver and Memphis are never shown to it and are the test.                          | Proposed                                        |
+| Leakage review       | A separate model reviews every submission for knowledge of the replayed season                                                                      | Agreed (Nov 14, 2026); procedure Proposed       |
+| Prop lines           | Neither the architect nor anything in the game loop sees player prop lines or any score computed from them. The game spread and total stay visible. | Agreed, carried                                 |
+| Replay timing        | Pregame cutoff at scheduled tip; postgame release at 9 a.m. America/New_York the next morning                                                       | Agreed, carried                                 |
+| Holdout date         | Nothing from Mar 23, 2026 on (the date of the Celtics' 71st game) is read during development, for any team                                          | Agreed, carried and extended to all teams       |
+| Budgets              | Set for a full replay run, not per game                                                                                                             | Agreed in form (Nov 14, 2026); numbers Proposed |
+
+### Guard against unnecessary process
+
+Carried. Specify the access rules, the output format, the scoring, the budgets and the leakage rule rigorously. Leave the architect free to choose how the game loop works: what is code and what is an agent, which models it fits, what its agents are told and what the system keeps.
+
+## The architect
+
+### What it must do
+
+Status: Agreed (Nov 14, 2026), except where marked.
+
+- **Submit code that produces a valid forecast for every game in the replay.** The output is the v4 forecast (`forecast-v1`): one per team per game, frozen before the scheduled start.
+- **Use a combination of deterministic code and LLM agents in the game loop.** See the Open item on whether this is a requirement or a permission.
+- **Stay within the budget.** See Budgets.
+- **Keep a running list of hypotheses** about what could improve performance, and update it with findings as it learns. Proposed addition: each submission names the hypothesis it tests and the effect it expects, recorded before the results are released.
+
+### What it may do
+
+Status: Agreed (Nov 14, 2026).
+
+- **Create specialist agents** for tasks in the game loop, and write their prompts, tools and skills.
+- **Declare artifacts that persist from game to game** during a replay run. An artifact is team-specific or team-agnostic. A team-specific artifact is visible only to the agents and code working on that team. A team-agnostic artifact is visible to all of them.
+- **See the raw data the game loop will have**: play-by-play, box scores, transcripts, beat-reporter posts, injury reports and starting lineups. The limits on this view are under Leakage.
+- **Do a test run** on a handful of games to check that its code works and to look at the outputs.
+- **Read an archive of every past iteration**: code, prompts, the intermediate outputs of every agent in the loop, the final forecast for each game, and the scores, in aggregate and by game.
+- **Train its own predictive models** and use them in the game loop. The limits are under Leakage.
+
+### What it must not do
+
+Status: Agreed (Nov 14, 2026).
+
+- **Put team-specific tips or guidance in the prompts, tools or skills it writes.** They must be generic, so that the system could be used on any team. Team knowledge belongs in the artifacts the system builds for itself during a replay.
+- **Use a model version outside the allowed list.**
+
+### How the architect works
+
+Status: Proposed.
+
+- **Iterations.** One architect session per iteration. A session starts with no conversation history and has the archive, the hypothesis list and a notes workspace of its own. It ends by submitting a configuration, requesting a test run, or nominating a final configuration.
+- **Configuration.** A package containing the game-loop entry point, any other code, the agent definitions (model, prompt, tools, skills), the artifact declarations, the training scripts for any pretrained model, and the hypothesis statement.
+- **Team identity.** The environment tells the game loop which team and game it is working on at run time. Prompts and skills are therefore templates, and nothing in them needs to name a team.
+- **Agent failure.** A configuration must still freeze a valid forecast when an agent call fails or is refused. This is also what makes the agent ablation possible.
+
+## The game loop
+
+Status: Proposed where new.
+
+- **Unit.** One team's forecast for one game. A game between two of the experiment's teams is two forecasts.
+- **One clock.** A replay run moves through its games in date order across all of its teams. Team-agnostic artifacts written for one game are visible only to later games.
+- **Fresh start.** Every replay run begins with empty artifacts. Only the configuration carries from one iteration to the next.
+- **Execution.** The architect's code is untrusted. It runs in the sandbox with no network, and reads data only through the interface that filters to the cutoff. Agent calls go through the environment, which enforces the allowed models and meters the spend.
+- **Reference projection and feedback.** Tonight's reference forecast, its record on earlier games, and the system's own scores on released games are available in the loop on the v4 terms, with nothing market-relative. Whether and how the loop uses them is the architect's choice.
+- **Missing forecast.** A team-game with no valid forecast frozen before the cutoff is scored on the reference projection and flagged (carried).
+
+## Evaluation
+
+### Target
+
+Status: Agreed (Nov 14, 2026). The architect optimizes the v4 Minutes score: mean pinball loss on every roster player's minutes, with the chance of not playing included. It is reported as the ratio of the system's loss to the reference projection's loss on the same team-games, with a paired bootstrap interval over games.
+
+Why minutes: the [headroom check](v4/headroom-check.md) found that the reference's own per-minute rates with actual minutes beat the market, and with projected minutes lose to it. Minutes are also a cleaner signal than fantasy points, which add per-minute noise.
+
+Status: Proposed for the rest of this section.
+
+- **Guardrails.** Fantasy-point pinball loss and the play Brier score are reported beside the target. A configuration that is reliably worse than the reference on either cannot be nominated as final.
+- **What the architect sees.** Every v4 score that uses no prop line, in aggregate, by game, by team, by role tier and by player. It never sees the market test or big-over results.
+- **What it does not optimize.** Ceiling picks are reported but three picks a game cannot separate two configurations over 40 games. Optimizing minutes alone will not reward learning how production shifts when a star sits; the target can move to fantasy-point pinball by a brief change once the system reliably beats the reference on minutes.
+
+### Evaluation windows
+
+Status: Proposed. A full evaluation replays the three development teams together through one calendar window. Each window is four weeks and about 40 team-games ([counts](evidence/brief-v5-team-selection/results.txt)).
+
+| Window  | Dates                  | Team-games (Boston / Oklahoma City / Washington) |
+| ------- | ---------------------- | ------------------------------------------------ |
+| Opening | Oct 21 to Nov 17, 2025 | 41 (14 / 14 / 13)                                |
+| Middle  | Jan 5 to Feb 1, 2026   | 43 (15 / 14 / 14)                                |
+| Late    | Feb 23 to Mar 22, 2026 | 42 (14 / 13 / 15)                                |
+
+- The architect chooses the window for each full evaluation. Two configurations are compared only on the same window, where the comparison is paired game by game.
+- The windows differ on purpose. The reference is weakest in the opening weeks, so a gain there may not hold later.
+- A window in mid-season starts with empty artifacts but with all game data and evidence released before its first game.
+- **Test run.** At most five team-games, chosen by the architect from the development teams. Scores are returned.
+- **Repeat run.** The architect may run a configuration again on the same window to see its run-to-run spread. It counts as a full evaluation.
+
+### Final evaluation
+
+Status: Proposed. The architect nominates one configuration. After that there is no further development.
+
+- **Games.** Denver and Memphis together in one replay, without the development teams, over their whole seasons: 164 team-games. The architect has seen none of them apart from the 14 against development teams, so all of them count, including those after the holdout date.
+- **Runs.** The nominated configuration, twice, for its run-to-run spread; the same configuration with every agent call refused; and the same configuration with the artifact store emptied before every game.
+- **Comparisons.** Each run against the reference projection, and the nominated configuration against each ablation, on the target and the guardrails. Then the market test and the big-over and ceiling scores, computed by the evaluator alone.
+- **Celtics holdout.** Games 71–82 become an optional secondary check. Scoring them means replaying Boston's first 70 games to build its artifacts, so it is run only if the user asks. It stays unread until then.
+
+## Leakage
+
+The architect studies the results of the development games. The rules below keep those results, and anything else from the replayed season, out of the system it builds.
+
+### The rule
+
+Status: Proposed, widening the Agreed ban on team-specific guidance. No part of a configuration may contain content drawn from the results of the 2025–26 season: players, teams, coaches, dates, opponents, or statements about what happened or tends to happen in that season. This covers prompts, tools, skills, code, constants, data files and model weights.
+
+What stays allowed: general basketball knowledge; the structure of the loop; anything fitted on 2024–25; and design choices made because they scored well in development. The last is the optimization itself. The test on unseen teams is what limits it.
+
+### Trained models
+
+Status: Proposed. A model used for a game may be fitted only on data released before that game's cutoff.
+
+- A model fitted inside the loop is fitted under the cutoff by construction.
+- A pretrained model is built by the environment from the architect's training script, with only 2024–25 data mounted. A configuration cannot ship weights of its own.
+
+### The architect's view
+
+Status: Proposed.
+
+- It sees the development teams' data before the holdout date, and league-wide data for 2024–25.
+- It does not see Denver's or Memphis's games, except the 14 they played against the development teams before the holdout date. Removing those would leave gaps in the development teams' seasons.
+- It sees nothing from the holdout date on.
+- The game loop itself keeps the full league-wide history before each cutoff, as in v4. Denver and Memphis rows can therefore appear in archived intermediate outputs. The reviewer does not police the archive; the risk is accepted and stated under Limits.
+
+### Review
+
+Status: review by a separate model is Agreed (Nov 14, 2026). The procedure is Proposed.
+
+- Every configuration is reviewed before it runs, test runs included.
+- First an automated scan for the names and ids of 2025–26 players, teams and coaches, for dates in the season, and for bundled binary files.
+- Then a reviewer model reads the prompts, skills, tool descriptions and code against the rule. It runs in its own session with a fixed prompt and sees the configuration only, not the architect's reasoning.
+- A rejection returns the reason. It costs nothing from the evaluation pool.
+- Every review is recorded. A sample of accepted configurations is read by a person before the final evaluation.
+
+### Contamination
+
+Status: Proposed. Every model on the allowed list, the architect and the reviewer included, passes the carried contamination probe before use, with items added for the four new teams. A version that shows knowledge of the 2025–26 season is not allowed. `claude-opus-4-6` passed for the Celtics on Nov 12, 2026.
+
+## Budgets
+
+Status: budgets at the level of a full replay run are Agreed in form (Nov 14, 2026). The numbers are Proposed. Dollar figures use the v4 price schedule.
+
+| Limit                                   | Proposed                                    | Basis                                                                               |
+| --------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Game-loop spend per full evaluation     | $2 per team-game in the window (about $80)  | About what the no-memory arm cost in the v4 pilot                                   |
+| Evaluation pool for the development run | $1,000, and at most 12 full evaluations     | Covers full evaluations, repeat runs and test runs; the architect decides the split |
+| Test run                                | At most five team-games, from the same pool | Enough to check that the code runs                                                  |
+| Architect's own model spend             | $30 per iteration, $350 in total            | A guess; confirmed or changed after the architect pilot                             |
+| Final evaluation                        | $2 per team-game per run                    | About $330 a run; three paid runs and one that costs almost nothing, so about $990  |
+| Safeguard per team-game                 | $10 and 45 minutes                          | One game cannot consume the run                                                     |
+
+- **The cap on full evaluations matters as much as the dollars.** Each evaluation on the same games is another chance to fit them by luck.
+- **When a run's budget is exhausted**, the remaining team-games are scored on the reference projection and flagged.
+- **The architect pilot** runs two iterations before the development run, to replace the guess at the architect's own spend with a measurement.
+- The total is about $2,300. Fewer full evaluations is the cheapest way to cut it: eight instead of twelve saves about $320.
+
+## Teams
+
+Status: the five teams are Agreed (Nov 14, 2026). The split is Proposed.
+
+The four new teams were chosen from box scores before the holdout date, to differ from each other and from Boston ([script and output](evidence/brief-v5-team-selection/)). The yardstick is rough: each player forecast at his mean minutes over the team's previous five games. It is not the reference projection.
+
+| Team          | Role        | Win rate | Naive misplaced minutes (rank of 30, 1 = most stable) | Starting lineups | Games missed by top five players | Players arriving / leaving mid-season |
+| ------------- | ----------- | -------: | ----------------------------------------------------- | ---------------: | -------------------------------: | ------------------------------------- |
+| Boston        | Development |     0.67 | 40.1 (3rd)                                            |               17 |                               19 | 2 / 2                                 |
+| Oklahoma City | Development |     0.79 | 54.4 (20th)                                           |               29 |                               47 | 3 / 3                                 |
+| Washington    | Development |     0.23 | 64.4 (30th)                                           |               42 |                               68 | 2 / 7                                 |
+| Denver        | Test        |     0.61 | 46.3 (11th)                                           |               25 |                               44 | 0 / 1                                 |
+| Memphis       | Test        |     0.34 | 53.0 (18th)                                           |               37 |                               73 | 9 / 9                                 |
+
+Boston is among the easiest teams in the league to forecast by this measure, so the v4 pilot ran on favourable ground. The test pair is one moderate team with injuries and no roster moves, and one with heavy roster turnover.
+
+## Run record
+
+Carried in form. Added per iteration: the configuration and its hash, the review and its outcome, the hypothesis statement, the window, every agent call in the loop with its model and spend, the artifacts as they stood after each game, and the scores. The architect's archive is a view of this record with the market quantities removed.
+
+## Limits on claims
+
+- **One architect, one run.** A result describes one sequence of designs by one model, not architects in general.
+- **Two test teams, same season.** Denver and Memphis are unseen, but they play in the season the architect studied, and 14 of their games against development teams are visible to it.
+- **Design choices are fitted to development results.** The leakage rule cannot separate a general design choice from one that happens to suit three teams in 2025–26. Only the test teams can.
+- **The archive can show test-team rows** that agents in the loop printed from league history.
+- **The target and the teams were chosen after seeing results.** Minutes was chosen after the pilot. The teams were chosen by a person and an assistant from box-score summaries that included Denver and Memphis; the architect sees none of that.
+- **Evidence coverage for the new teams is unknown.** Beat reporting and prop lines may be thinner for Memphis and Washington.
+- The v4 limits on the market reference, DFS salaries, the single forecast time and the holdout record carry over.
+- Development windows are never evidence.
+
+## Decisions
+
+### Agreed on Nov 14, 2026
+
+| Decision          | Resolution                                                                                                                                                       |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Design            | An architect agent designs the game loop and receives results over a large sample of games after each change. It is the only permanent and mandatory agent role. |
+| Architect's terms | The must, may and must-not lists under The architect                                                                                                             |
+| Target metric     | Minutes pinball loss relative to the reference projection                                                                                                        |
+| Models            | The architect is `claude-opus-4-6` to start, with no Jev. The game loop may use Claude Haiku, Sonnet and Opus, and Jev.                                          |
+| Teams             | Denver, Memphis, Oklahoma City and Washington are added to Boston                                                                                                |
+| Leakage review    | By a separate model                                                                                                                                              |
+| Budget form       | Calculated for a full replay run, not per game                                                                                                                   |
+
+### Open
+
+| Item                            | Resolution path                                                                                                                                                                                                         |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agents in the loop: must or may | The user's list requires a combination of code and LLM agents. The recommendation is to permit it and measure it by the agent ablation, since a forced agent adds nothing if the best system is code. The user decides. |
+| Exact model versions            | The allowed list names specific versions of Haiku, Sonnet, Opus and Jev, each after it passes the contamination probe. Newer versions may have been trained on the 2025–26 season.                                      |
+| Reviewer model                  | Which model reviews submissions. It must pass the probe and should not share a session with the architect.                                                                                                              |
+| Architect's own spend           | Confirmed by the user after the two-iteration architect pilot                                                                                                                                                           |
+
+### Proposed
+
+| Item                                                                                                 | Where                   |
+| ---------------------------------------------------------------------------------------------------- | ----------------------- |
+| Boston, Oklahoma City and Washington for development; Denver and Memphis as the unseen test          | Scope, Teams            |
+| Each submission states its hypothesis and expected effect before results                             | What it must do         |
+| One architect session per iteration; the configuration package; a valid forecast when an agent fails | How the architect works |
+| One clock across teams; empty artifacts at the start of every run; sandboxed execution               | The game loop           |
+| Guardrails on fantasy-point pinball and play Brier                                                   | Target                  |
+| Three four-week evaluation windows, chosen per evaluation by the architect                           | Evaluation windows      |
+| Final evaluation on the test teams' whole seasons, with two ablations and a repeat of the nominee    | Final evaluation        |
+| The Celtics holdout as an optional secondary check                                                   | Final evaluation        |
+| The widened leakage rule, pretrained models built by the environment on 2024–25 only                 | Leakage                 |
+| The limits on the architect's view                                                                   | The architect's view    |
+| Review procedure: automated scan, reviewer model, human sample                                       | Review                  |
+| The contamination probe for every allowed model                                                      | Contamination           |
+| Every budget number                                                                                  | Budgets                 |
+
+## Implementation projects
+
+Each is one or more Linear issues in `nba-agent-v2`, filed after this brief is accepted. The data adapters, sandbox, reference projection, forecast validation, scoring and evaluators of earlier briefs are inputs, not rebuilt.
+
+| Project               | Outputs                                                                                                                                                       | Acceptance                                                                                                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1 Five-team data     | The four new teams' evidence under the existing contracts; the reference projection and roster evidence for all five; the architect's filtered data view      | The view contains no Denver or Memphis game beyond the 14 and nothing from the holdout date on (planted-record fixtures); the reference reproduces its Celtics figures                            |
+| A2 Game-loop runtime  | The configuration package format; sandboxed execution of submitted code; agent calls with the model allowlist; the artifact store; the league clock; metering | Team-specific artifacts are unreadable from another team; a later game's artifact is never visible to an earlier one; a disallowed model is refused; a refused agent call still yields a forecast |
+| A3 Evaluation service | Full evaluations on a window, test runs and repeat runs; scores with intervals; the archive; the pool and run budgets; the two ablation switches              | No market quantity is reachable from the archive; an exhausted budget scores the rest on the reference and flags it; a pretrained model is built with only 2024–25 mounted                        |
+| A4 Leakage review     | The automated scan and the reviewer's prompt and session                                                                                                      | Planted leaks of each kind are rejected; a clean configuration passes; every review is recorded                                                                                                   |
+| A5 Architect harness  | The architect's tools, prompt, notes and hypothesis list; the contamination probe for every allowed model                                                     | The prompt names no result of the replayed season; a session cannot reach data outside its view                                                                                                   |
+| A6 Architect pilot    | Two iterations end to end on the development teams                                                                                                            | Written up as a pilot, not evidence; the architect's spend is measured and the budget numbers are put to the user                                                                                 |
+| A7 Development run    | The architect's iterations within the pool, ending in a nominated configuration                                                                               | Every iteration is in the record; the nominee passed review and the guardrails                                                                                                                    |
+| A8 Final evaluation   | The test-team runs, the ablations, the market test and the write-up                                                                                           | Report generated from the record alone; no development after nomination                                                                                                                           |
+
+Build order: A1 and A2 first, in parallel. A3 against A2's interfaces. A4 and A5 after A2. A6 after A1 to A5 and the Open decisions on models. A7 after A6 and the Open decision on spend. A8 after A7.
+
+The v4 scored run (SPO-885) is withdrawn. The pilot extension is written up under SPO-883. Heavy runs belong on the cloud host (SPO-877), not the Mac mini.

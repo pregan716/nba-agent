@@ -2,6 +2,8 @@
 
 Nov 10, 2026 · @Patrick Regan · Draft for review (SPO-878)
 
+> **Superseded Nov 14, 2026 by [the v5 brief](NBA%20Projection%20System%20Architect%20%E2%80%94%20Implementation%20Brief%20v5.md) (SPO-899).** The experiment design, the agent's role, the memory arms and the budgets below are no longer the plan. The sections the v5 brief lists as carried by reference (the forecast, the reference projection, scoring and the paired-bootstrap settings) remain in force.
+
 ## Purpose and research question
 
 Find out whether an AI agent that builds expertise in a single NBA team adds value to DFS players and bettors. The agent follows the Boston Celtics through a replay of the 2025–26 season. Before every game it projects each player's minutes and production from time-restricted sources. After the game it sees how its projections did and may update what it keeps.

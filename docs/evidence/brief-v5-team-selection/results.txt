@@ -1,0 +1,44 @@
+withheld games 167 box rows dropped 0 max tip kept 2026-03-22 23:30:00+00:00 holdout start 2026-03-23 00:00:00+00:00
+team  games  win  naive_mis  mis_early  mis_late  lineups  starters  used  top5_missed  arrivals  departures
+ MIN     71 0.61       35.6       32.8      36.5        8        10    21           18         2           1
+ SAS     71 0.75       38.0       42.7      40.1       11         9    20           41         0           1
+ BOS     70 0.67       40.1       39.1      46.8       17        15    21           19         2           2
+ TOR     69 0.57       41.0       33.6      34.6       21        12    19            9         0           1
+ HOU     69 0.62       42.4       37.0      44.2       15        11    15           17         1           1
+ POR     70 0.49       43.2       44.0      47.5       19        12    19           60         2           4
+ ATL     71 0.55       43.3       47.1      44.3       23        16    23           35         5           4
+ PHX     71 0.55       44.5       40.9      56.1       22        11    19           40         2           2
+ ORL     70 0.54       44.6       40.1      43.0       13        11    19           29         3           2
+ NYK     72 0.65       46.2       38.7      43.0       21        13    20           40         1           2
+ DEN     72 0.61       46.3       36.0      46.2       25        15    19           44         0           1
+ CHA     70 0.51       47.3       48.4      42.0       19        13    21           24         4           3
+ MIL     69 0.42       50.1       37.4      59.9       27        13    20           20         3           2
+ NOP     72 0.35       50.5       51.1      46.6       27        14    18           34         1           2
+ MIA     70 0.53       50.9       39.5      61.9       25        13    17           59         2           0
+ LAC     71 0.49       51.8       56.3      50.9       22        14    26           62         4           4
+ DET     70 0.73       52.9       65.6      54.3       17        12    20           47         3           1
+ MEM     70 0.34       53.0       40.3      68.0       37        24    29           73         9           9
+ LAL     71 0.65       53.3       56.4      52.6       23        16    20           44         3           2
+ OKC     71 0.79       54.4       45.4      60.5       29        12    20           47         3           3
+ GSW     71 0.46       56.0       53.5      56.9       36        17    21           67         3           5
+ SAC     72 0.26       56.1       54.7      61.5       31        17    22           30         4           4
+ CLE     71 0.62       56.5       67.1      60.4       34        16    23           66         3           3
+ PHI     71 0.55       57.7       56.7      64.3       26        14    23           64         2           2
+ BKN     71 0.24       58.0       44.7      70.7       31        13    21           67         3           2
+ CHI     70 0.40       58.1       50.0      71.9       30        17    27           77         9           8
+ IND     71 0.21       59.0       53.8      71.0       41        22    27           46         6           7
+ UTA     71 0.30       60.1       45.0      71.2       33        19    24           45         5           5
+ DAL     71 0.32       63.4       50.9      70.8       39        18    23           49         2           3
+ WAS     71 0.23       64.4       60.3      70.5       42        18    26           68         2           7
+
+season opens 2025-10-21 23:30:00+00:00 holdout starts 2026-03-23 00:00:00+00:00
+BOS games before holdout date 70 on or after 12
+OKC games before holdout date 71 on or after 11
+WAS games before holdout date 71 on or after 11
+DEN games before holdout date 72 on or after 10
+MEM games before holdout date 70 on or after 12
+window opening 2025-10-21 2025-11-17 team-games 41 {'BOS': np.int64(14), 'OKC': np.int64(14), 'WAS': np.int64(13)} distinct games 39
+window middle 2026-01-05 2026-02-01 team-games 43 {'BOS': np.int64(15), 'OKC': np.int64(14), 'WAS': np.int64(14)} distinct games 43
+window late 2026-02-23 2026-03-22 team-games 42 {'WAS': np.int64(15), 'BOS': np.int64(14), 'OKC': np.int64(13)} distinct games 39
+development-team games against test teams before the holdout date: 14
+games between the two test teams, whole season: 4
