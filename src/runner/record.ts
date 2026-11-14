@@ -31,7 +31,13 @@ export class RecordStore {
   readonly db: DatabaseSync;
   constructor(
     readonly root: string,
-    expected?: Manifest,
+    expected?:
+      | Manifest
+      | {
+          schemaVersion: "game-loop-v1";
+          packageHash: string;
+          [key: string]: unknown;
+        },
     continuePilot = false,
   ) {
     if (continuePilot && !existsSync(join(root, "record.sqlite")))
@@ -62,7 +68,10 @@ export class RecordStore {
         throw Error("Manifest file integrity mismatch");
       if (saved && expected) {
         const change = this.events("continuation")[0];
-        if (change) {
+        if (expected.schemaVersion === "game-loop-v1") {
+          if (digest(expected) !== digest(saved.data))
+            throw Error("Game-loop manifest mismatch");
+        } else if (change) {
           const active = manifest(change.data.config, saved.data.games);
           if (digest(expected) !== digest(active))
             throw Error("Run manifest mismatch for continued pilot");

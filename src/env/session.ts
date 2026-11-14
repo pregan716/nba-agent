@@ -79,6 +79,7 @@ export class Session {
     workspacePath?: string,
     runRoot?: string,
     countMemory?: import("../runner/memory.js").MemoryCounter,
+    private readonly strictPregameExport = false,
   ) {
     if (isMemoryV3(config.profile.memory))
       validateMemory(config.profile.memory);
@@ -86,6 +87,8 @@ export class Session {
     this.#game = deepFreeze(structuredClone(game));
     this.#phase = phase;
     this.#cutoff = Temporal.Instant.from(cutoff).toString();
+    if (strictPregameExport && phase !== "pregame")
+      throw Error("Expected pregame export");
     this.#lifecycle = new Lifecycle(this.#game, phase, cutoff);
     if (workspacePath && !runRoot)
       throw Error("Workspace requires the run root");
@@ -131,7 +134,9 @@ export class Session {
       throw new SessionError("capability_disabled", "Capability disabled");
   }
   #eligible(records: RecordEnvelope[]) {
-    return records.filter((r) => visible(r, this.#cutoff)).sort(stable);
+    return records
+      .filter((r) => visible(r, this.#cutoff, this.strictPregameExport))
+      .sort(stable);
   }
   #team(id: string): TeamRef {
     const team = this.#source.teams.find((t) => t.team_id === id);
@@ -140,7 +145,8 @@ export class Session {
   }
   async #games() {
     return this.#eligible(await this.#source.games()).map((game) => {
-      if (visible(releasedGame(game), this.#cutoff)) return game;
+      if (visible(releasedGame(game), this.#cutoff, this.strictPregameExport))
+        return game;
       // Status is outcome-time metadata, not part of the static schedule.
       // Copy before stripping: SessionSource may share cached rows across sessions.
       const data = { ...game.data };
@@ -314,7 +320,7 @@ export class Session {
       );
     else
       for (const game of (await this.#games()).filter((g) =>
-        visible(releasedGame(g), this.#cutoff),
+        visible(releasedGame(g), this.#cutoff, this.strictPregameExport),
       )) {
         if (
           (input.game_id && game.id !== input.game_id) ||
@@ -699,7 +705,7 @@ export class Session {
     this.#check("execute_code", { program: "pass" });
     if (this.#config.profile.capabilities.enabled.includes("game_history")) {
       const games = (await this.#games()).filter((game) =>
-        visible(releasedGame(game), this.#cutoff),
+        visible(releasedGame(game), this.#cutoff, this.strictPregameExport),
       );
       await mountGameShards(
         directory,
@@ -707,6 +713,7 @@ export class Session {
         games,
         this.#cutoff,
         signal,
+        this.strictPregameExport,
       );
     }
     return writeSessionExport(directory, this.#exportBatches(), signal);

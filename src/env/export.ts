@@ -150,6 +150,7 @@ export async function mountGameShards(
   games: RecordEnvelope[],
   cutoff: string,
   signal: AbortSignal,
+  exclusive = false,
 ) {
   const transient = !source.exportCacheDirectory;
   const cache =
@@ -207,7 +208,7 @@ export async function mountGameShards(
             const rows = batch.reason
               ? []
               : batch.records
-                  .filter((r) => visible(r, cutoff))
+                  .filter((r) => visible(r, cutoff, exclusive))
                   .map((r) => projectHistory(r, definitions));
             async function* projected() {
               yield { table, columns, rows };

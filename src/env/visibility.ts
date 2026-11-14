@@ -18,9 +18,15 @@ const rules: Record<RecordEnvelope["availabilityConvention"], CutoffRule> = {
 
 /** The sole availability gate. Call before joins, filtering, counting or paging.
  * Fail closed for malformed/unknown availability, including late static builds. */
-export function visible(record: RecordEnvelope, cutoff: string): boolean {
+export function visible(
+  record: RecordEnvelope,
+  cutoff: string,
+  exclusive = false,
+): boolean {
   try {
     const rule = rules[record.availabilityConvention];
+    if (exclusive && Temporal.Instant.compare(record.availableAt, cutoff) >= 0)
+      return false;
     if (rule === "static")
       return Temporal.Instant.compare(record.availableAt, STATIC_AT) <= 0;
     const comparison = Temporal.Instant.compare(record.availableAt, cutoff);

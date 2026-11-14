@@ -264,6 +264,7 @@ def execute(request):
     cap = request["limits"]["stdoutBytes"]
     buffers = [bytearray(), bytearray()]
     truncated = False
+    stdout_truncated = False
     process = None
     try:
         process = subprocess.Popen(
@@ -301,6 +302,8 @@ def execute(request):
                 else:
                     output.extend(chunk[:available])
                 truncated |= len(chunk) > available
+                if streams[stream] == 0:
+                    stdout_truncated |= len(chunk) > available
         status = process.wait()
         if oom_kills() > oom_before:
             limit = "memory"
@@ -314,6 +317,7 @@ def execute(request):
                 exitStatus=status,
                 computeSeconds=max(0, cpu() - before),
                 truncated=truncated,
+                stdoutTruncated=stdout_truncated,
                 limit=limit,
             )
         )
