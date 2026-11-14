@@ -1,15 +1,19 @@
-# NBA team expert projection agent
+# NBA projection system architect
 
-A chronological Boston Celtics replay experiment asking whether an AI agent that
-builds expertise in one team adds value to DFS players and bettors by projecting
-each player's minutes and production before every game. The design lives in
-[the v4 implementation brief](docs/NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md),
-with Agreed, Proposed and Open status on every decision, and starts from
-[an offline headroom check](docs/v4/headroom-check.md).
+A chronological replay experiment asking whether an AI agent can design a projection
+system that adds value to DFS players and bettors. An architect agent writes the game
+loop (code, models and specialist agents) that forecasts each player's minutes and
+production before every game, and is scored over many games after each change. The
+design lives in
+[the v5 implementation brief](docs/NBA%20Projection%20System%20Architect%20%E2%80%94%20Implementation%20Brief%20v5.md),
+with Agreed, Proposed and Open status on every decision.
 
-For the current experiment, see the [forecast arms](docs/v4/forecast-arms.md),
+The earlier single-agent experiment on the Boston Celtics is described in
+[the v4 brief](docs/NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md),
+its [headroom check](docs/v4/headroom-check.md) and [pilot](docs/v4/pilot.md). Its
+[forecast format and arms](docs/v4/forecast-arms.md),
 [reference projection](docs/v4/reference-projection.md) and
-[forecast evaluation](docs/v4/forecast-evaluation.md). The
+[forecast evaluation](docs/v4/forecast-evaluation.md) are carried into v5. The
 [substitution-policy archive](docs/archive/v3/README.md) contains the earlier
 pilot write-ups, evidence links and Jev integration.
 

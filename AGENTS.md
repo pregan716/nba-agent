@@ -1,9 +1,14 @@
 Work comes from Linear issues in the `nba-agent-v2` project.
 
-The authority document is [the v4 implementation brief](docs/NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md).
+The authority document is [the v5 implementation brief](docs/NBA%20Projection%20System%20Architect%20%E2%80%94%20Implementation%20Brief%20v5.md).
 Agreed items there are requirements, Proposed items are defaults offered for review,
 and Open items must be resolved by the user, never inferred. Each issue states the
 Open decisions it depends on.
+
+[The v4 brief](docs/NBA%20Team%20Expert%20Projection%20Agent%20%E2%80%94%20Implementation%20Brief%20v4.md)
+is superseded. It remains the reference only for the sections the v5 brief lists as
+carried by reference (the forecast, the reference projection, scoring and the
+paired-bootstrap settings).
 
 [The v3 brief](docs/NBA%20Coaching%20Policy%20Agent%20%E2%80%94%20Implementation%20Brief%20v3.md)
 is superseded. It remains the reference only for the sections the v4 brief lists as
