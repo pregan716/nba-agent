@@ -13,6 +13,7 @@ export function gameSandbox(
   pkg: Package,
   context: unknown,
   root: string,
+  recordStep: (entry: Record<string, unknown>) => void,
 ) {
   const session = new Session(
     config,
@@ -66,12 +67,34 @@ export function gameSandbox(
           computeSeconds: seconds * config.budget.sandbox.cpu,
         },
         signal,
+        "json",
       );
-      if (res.exitStatus !== 0 || res.truncated || res.limit)
-        throw Error(
-          "Sandbox step failed: " + (res.stderr || res.limit || res.exitStatus),
-        );
-      return JSON.parse(res.stdout) as unknown;
+      const diagnostic = {
+        file,
+        stderr: res.stderr,
+        exitStatus: res.exitStatus,
+        limit: res.limit,
+        stdoutTruncated: res.truncated,
+      };
+      let action: unknown;
+      try {
+        if (res.exitStatus !== 0 || res.truncated || res.limit)
+          throw Error(
+            "Sandbox step failed: " +
+              (res.limit ||
+                (res.truncated
+                  ? "stdout truncated"
+                  : res.stderr || res.exitStatus)),
+          );
+        const value = JSON.parse(res.stdout);
+        action =
+          file === pkg.entry && typeof value?.type === "string"
+            ? value.type.slice(0, 64)
+            : null;
+        return value as unknown;
+      } finally {
+        recordStep({ ...diagnostic, action: action ?? null });
+      }
     },
     async close() {
       await box.close();

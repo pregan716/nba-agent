@@ -4,7 +4,7 @@ The evaluation host calls `replay` in `src/game-loop/replay.ts` with a new run d
 
 ## Package
 
-A `game-loop-v1` JSON object contains a hypothesis, an entry filename, a map of Python filenames to source text, a list of training filenames, and declarations for agents and artifacts. The SHA-256 digest covers the entire canonical JSON package, including training scripts. The evaluation service owns model builds. Package files share a flat importable directory. An agent declares its pinned model, prompt, ordered skill texts and named tools. Each tool declares a description and a Python filename. Prompts and skills accept `{{team}}` and `{{game}}` placeholders.
+A `game-loop-v1` JSON object contains a hypothesis, an entry filename, a map of Python filenames to source text, a list of training filenames, and declarations for agents and artifacts. The SHA-256 digest covers the entire canonical JSON package, including training scripts. The evaluation service owns model builds. The read-only path reserved for its built artifacts is `/data/models`. Package files share a flat importable directory. An agent declares its pinned model, prompt, ordered skill texts and named tools. Each tool declares a description and a Python filename. Prompts and skills accept `{{team}}` and `{{game}}` placeholders.
 
 ## Python entry point
 
@@ -25,9 +25,9 @@ def run(ctx, arg):
             "writes": {"last_game": ctx["gameId"]}}
 ```
 
-The example expects an agent named `analyst` and an artifact declaration such as `{"last_game": "team"}`. A code-only entry can return a finish action immediately. Each agent action resumes the entry with the submitted JSON state and a reply containing either a value or an error. Claude returns text. Jev accepts a task containing `state` and named System One `questions` (choice, noul or score), and returns its answers. Its declared tools prepare evidence from the task state. Claude chooses its declared tools per turn. Tool files also define `run(ctx, arg)` and return JSON. Send diagnostic output to stderr.
+The example expects an agent named `analyst` and an artifact declaration such as `{"last_game": "team"}`. A code-only entry can return a finish action immediately. Each agent action resumes the entry with the submitted JSON state and a reply containing either a value or an error. Claude returns text. Jev accepts a task containing `state` and named System One `questions` (choice, noul or score), and returns its answers. Its declared tools prepare evidence from the task state. Claude chooses its declared tools per turn. Tool files also define `run(ctx, arg)` and return JSON. Send diagnostic output to stderr. Each completed sandbox step records its file, action, exit status and a stderr tail of up to 4 KiB. Claude tools may declare an object `parameters` schema with typed, named properties, descriptions, required keys and an additional-properties flag.
 
-The context includes team ID, game ID, tip, roster, spread, total, tonight's reference, released reference history and feedback from the team's previous game when available. Research tables use the existing read-only sandbox export. Python globals are fresh at each invocation. The scratch directory lasts for one team-game. Only declared JSON artifact writes on a valid finish carry forward. Team artifacts are private to that team. League artifacts are shared. Simultaneous tips read the same pre-tip snapshot. Later games see the last write in deterministic team/game order.
+The context includes team ID, game ID, tip, roster, spread, total, tonight's reference, released reference history and the chronological `scores` list for this team's released games in the replay. The previous-game `feedback` field is also available. Research tables use the existing read-only sandbox export. Python globals are fresh at each invocation. The scratch directory lasts for one team-game. Only declared JSON artifact writes on a valid finish carry forward. Team artifacts are private to that team. League artifacts are shared. Simultaneous tips read the same pre-tip snapshot. Later games see the last write in deterministic team/game order.
 
 ## Metering and records
 

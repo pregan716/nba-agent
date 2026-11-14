@@ -262,6 +262,7 @@ export class DockerSandbox {
     program: string,
     limits: Limits,
     signal: AbortSignal,
+    outputMode: "combined" | "json" = "combined",
   ): Promise<CodeResult> {
     if (this.#closed || this.#dead || this.#busy)
       throw new SessionError("phase_refused", "Sandbox unavailable");
@@ -300,17 +301,27 @@ export class DockerSandbox {
         ![null, "wall_clock", "compute", "memory"].includes(message.limit)
       )
         throw Error("Invalid sandbox result");
+      const stdout = Buffer.from(message.stdout, "base64");
+      const json = outputMode === "json";
       const output = capCodeOutput(
-        Buffer.from(message.stdout, "base64").toString(),
+        json ? "" : stdout.toString(),
         this.#workspaceErrors +
           Buffer.from(message.stderr, "base64").toString(),
         limits.stdoutBytes,
       );
+      // Older supervisors return a combined flag. If stdout filled its buffer
+      // their result cannot distinguish an exact fit from lost bytes.
+      const stdoutTruncated =
+        message.stdoutTruncated ??
+        (!!message.truncated && stdout.length >= limits.stdoutBytes);
       return {
-        ...output,
+        stdout: json ? stdout.toString() : output.stdout,
+        stderr: output.stderr,
         exitStatus: message.exitStatus,
         computeSeconds: message.computeSeconds,
-        truncated: !!message.truncated || output.truncated,
+        truncated: json
+          ? stdoutTruncated
+          : !!message.truncated || output.truncated,
         limit: message.limit,
       };
     } finally {

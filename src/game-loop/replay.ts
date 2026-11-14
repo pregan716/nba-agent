@@ -208,6 +208,10 @@ export async function replay(options: {
           spread,
           total,
           referenceHistory: history.map((h) => priorReferences.get(scope(h))),
+          scores: history.flatMap((h) => {
+            const score = scores.get(scope(h));
+            return score ? [score] : [];
+          }),
           feedback: previous ? (scores.get(scope(previous)) ?? null) : null,
           artifacts: Object.fromEntries(
             [...visibleArtifacts.values()]
@@ -228,6 +232,7 @@ export async function replay(options: {
           pkg,
           ctx,
           root,
+          (entry) => record.append("sandbox_step", id, entry),
         );
         const invoke = (file: string, input: unknown) =>
           box.invoke(file, input, remainingSeconds(), signal);

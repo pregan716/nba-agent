@@ -11,6 +11,8 @@ import { RecordStore } from "../src/runner/record.js";
 import type { Range } from "../src/projection/forecast.js";
 
 const loop = `def run(ctx, arg):
+    import sys
+    print("w" * 8192, file=sys.stderr)
     if arg is None:
         return dict(type="agent",name="reader",state=None,input=ctx["artifacts"])
     writes = {"note": ctx["teamId"], "latest": ctx["gameId"]}
@@ -26,7 +28,8 @@ const pkg: Package = {
   files: {
     "main.py": loop,
     "inspect.py": `def run(ctx, args):
-    import gzip, pathlib, socket
+    import gzip, pathlib, socket, sys
+    print("w" * 8192, file=sys.stderr)
     try:
         sock = socket.socket()
     except PermissionError:
@@ -43,6 +46,7 @@ const pkg: Package = {
             if ctx["teamId"] != "${BOS}":
                 assert b"private:${BOS}" not in data
             assert b"MARKET_SENTINEL" not in data
+    assert [s["gameId"] for s in ctx["scores"]] == [r["gameId"] for r in ctx["referenceHistory"]]
     return {"artifacts":ctx["artifacts"],"feedback":ctx["feedback"] is not None,"history":len(ctx["referenceHistory"])}
 `,
   },
@@ -55,6 +59,12 @@ const pkg: Package = {
         inspect: {
           file: "inspect.py",
           description: "Inspect available pregame evidence.",
+          parameters: {
+            type: "object",
+            properties: { value: { type: "integer" } },
+            required: ["value"],
+            additionalProperties: false,
+          },
         },
       },
     },
@@ -110,7 +120,10 @@ test(
     ];
     const range: Range = [0, 1, 2, 3, 4, 5, 6];
     const source: ReplaySource = {
-      schedule: games,
+      schedule: [
+        ...games,
+        { gameId: "fifth", teamId: BOS, tip: "2025-11-10T23:00:00Z" },
+      ],
       data: f.source,
       async projection(g) {
         return {
@@ -169,6 +182,7 @@ test(
     const week = await replay({
       ...base,
       root,
+      games: [...source.schedule].reverse(),
       runAgent: async (call) => {
         assert.match(call.system, /Use the research export/);
         observed.push(await call.tool("inspect", {}));
@@ -186,8 +200,25 @@ test(
     };
     assert.deepEqual(
       read(root).map((r) => r.reason),
-      [null, null, null, null],
+      [null, null, null, null, null],
     );
+    const log = new RecordStore(root);
+    try {
+      const steps = log.events("sandbox_step");
+      assert.deepEqual(
+        steps.slice(0, 3).map((e) => e.data.action),
+        ["agent", null, "finish"],
+      );
+      assert.ok(
+        steps.every(
+          (e) =>
+            Buffer.byteLength(e.data.stderr) === 4096 &&
+            !e.data.stdoutTruncated,
+        ),
+      );
+    } finally {
+      log.close();
+    }
     assert.equal(week.usd, 0);
     assert.deepEqual(observed, [
       { artifacts: {}, feedback: false, history: 0 },
@@ -206,7 +237,31 @@ test(
         feedback: true,
         history: 1,
       },
+      {
+        artifacts: {
+          latest: "last",
+          note: BOS,
+          private_note: "private:" + BOS,
+        },
+        feedback: true,
+        history: 2,
+      },
     ]);
+    const oversizedRoot = join(parent, "oversized");
+    await replay({
+      ...base,
+      root: oversizedRoot,
+      games: games.slice(0, 1),
+      package: {
+        ...pkg,
+        files: {
+          ...pkg.files,
+          "main.py": 'def run(ctx,arg):\n    return "x" * (1024*1024)',
+        },
+      },
+      runAgent: async () => null,
+    });
+    assert.match(read(oversizedRoot)[0].reason, /stdout truncated/);
     const off = join(parent, "off");
     let offCalls = 0;
     const ablated = await replay({
@@ -385,6 +440,8 @@ test("Pi specialist uses the declared model and sandbox tool, streams each turn 
   assert.deepEqual(tools, [{ name: "inspect", args: { value: 2 } }]);
   assert.equal(requests.length, 2);
   for (const r of requests) {
+    assert.ok(r.system.some((block: any) => block.text === "Use inspect."));
+    assert.equal(r.tools[0].input_schema.properties.value.type, "integer");
     assert.equal(r.stream, true);
     assert.equal(r.model, pkg.agents.reader.model);
     assert.equal(r.max_tokens, 64);
@@ -404,6 +461,11 @@ test("Jev receives only the declared instructions, runtime team, task and sandbo
     "fetch",
     async (_url: unknown, init: RequestInit) => {
       requests.push(JSON.parse(String(init.body)));
+      if (requests.length === 1)
+        return new Response(null, {
+          status: 429,
+          headers: { "retry-after": "0" },
+        });
       return Response.json({
         model: "jev-1.14.0",
         usage: { input_tokens: 50, output_tokens: 3 },
@@ -441,6 +503,6 @@ test("Jev receives only the declared instructions, runtime team, task and sandbo
   assert.equal(JSON.parse(requests[0].state).evidence.inspect, "fixture");
   assert.deepEqual(
     charges.map((usd) => Math.round(usd * 1e9)),
-    [2100],
+    [0, 2100],
   );
 });

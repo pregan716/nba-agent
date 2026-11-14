@@ -2,7 +2,8 @@ import { runAgentLoop, type StreamFn } from "@earendil-works/pi-agent-core";
 import { streamSimple } from "@earendil-works/pi-ai/api/anthropic-messages";
 import { ANTHROPIC_MODELS } from "@earendil-works/pi-ai/providers/anthropic.models";
 import type { MessageCreateParamsNonStreaming } from "@anthropic-ai/sdk/resources/messages";
-import { Type } from "typebox";
+import { Type, type TSchema } from "typebox";
+import { setTimeout as delay } from "node:timers/promises";
 import { z } from "zod";
 import { anthropicProvider } from "../runner/proxy.js";
 import type { Specialist } from "./package.js";
@@ -90,34 +91,63 @@ export function specialists(keys: {
         throw Error("Invalid Jev question size");
       const bytes = Buffer.byteLength(JSON.stringify(request)) + 4096;
       if (bytes > 64000) throw Error("Jev request exceeds context limit");
-      const settle = call.reserve((bytes * 0.042) / 1e6);
-      call.transcript({ request });
-      const res = await fetch("https://api.typesafe.ai/v1/systemone", {
-        method: "POST",
-        signal,
-        headers: {
-          Authorization: "Bearer " + keys.typesafe,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
-      });
-      if (!res.ok) throw Error("Jev HTTP " + res.status);
-      const raw = await res.json();
-      call.transcript({ response: raw });
-      const response = z
-        .object({
-          model: z.string(),
-          usage: z.object({
-            input_tokens: z.number().int().nonnegative(),
-            output_tokens: z.number().int().nonnegative(),
-          }),
-          answers: z.json(),
-        })
-        .parse(raw);
-      settle((response.usage.input_tokens * 0.042) / 1e6);
-      if (response.model !== agent.model)
-        throw Error("Unexpected Jev response model");
-      return response.answers;
+      for (let attempt = 1; ; attempt++) {
+        signal.throwIfAborted();
+        const settle = call.reserve((bytes * 0.042) / 1e6);
+        call.transcript({ request, attempt });
+        let res: Response;
+        try {
+          res = await fetch("https://api.typesafe.ai/v1/systemone", {
+            method: "POST",
+            signal,
+            headers: {
+              Authorization: "Bearer " + keys.typesafe,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request),
+          });
+        } catch (error) {
+          call.transcript({ attempt, error: "Jev transport failure" });
+          if (signal.aborted || attempt !== 1 || !(error instanceof TypeError))
+            throw error;
+          await delay(1000, undefined, { signal });
+          continue;
+        }
+        if (!res.ok) {
+          call.transcript({ attempt, status: res.status });
+          if (res.status >= 400 && res.status < 500 && res.status !== 408)
+            settle(0);
+          await res.body?.cancel();
+          if (attempt !== 1 || res.status !== 429)
+            throw Error("Jev HTTP " + res.status);
+          const header = res.headers.get("retry-after");
+          const seconds = header === null ? 1 : Number(header);
+          const ms = Number.isFinite(seconds)
+            ? seconds * 1000
+            : Date.parse(header!) - Date.now();
+          if (ms > 60000) throw Error("Jev Retry-After exceeds 60 seconds");
+          await delay(Number.isFinite(ms) ? Math.max(0, ms) : 1000, undefined, {
+            signal,
+          });
+          continue;
+        }
+        const raw = await res.json();
+        call.transcript({ response: raw });
+        const response = z
+          .object({
+            model: z.string(),
+            usage: z.object({
+              input_tokens: z.number().int().nonnegative(),
+              output_tokens: z.number().int().nonnegative(),
+            }),
+            answers: z.json(),
+          })
+          .parse(raw);
+        settle((response.usage.input_tokens * 0.042) / 1e6);
+        if (response.model !== agent.model)
+          throw Error("Unexpected Jev response model");
+        return response.answers;
+      }
     }
     if (!keys.anthropic) throw Error("Missing Claude credentials");
     const catalog = ANTHROPIC_MODELS[agent.model];
@@ -162,7 +192,8 @@ export function specialists(keys: {
           name,
           label: name,
           description: t.description,
-          parameters: Type.Object({}, { additionalProperties: true }),
+          parameters: (t.parameters ??
+            Type.Object({}, { additionalProperties: true })) as TSchema,
           async execute(_id, args) {
             const value = await call.tool(name, args);
             return {
