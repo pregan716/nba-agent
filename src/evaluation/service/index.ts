@@ -21,7 +21,12 @@ import {
 } from "./profile.js";
 import { buildModels, type TrainingData } from "./training.js";
 
-import { review, type ReviewGate } from "../review/index.js";
+import {
+  review,
+  restoreAcceptance,
+  type ReviewGate,
+  type ReviewReceipt,
+} from "../review/index.js";
 
 export interface EvaluationHost {
   review: ReviewGate;
@@ -114,7 +119,7 @@ export function developmentService(host: EvaluationHost) {
     return archiveRun(path(id));
   };
   return {
-    async evaluate(raw: unknown) {
+    async evaluate(raw: unknown, recorded?: (receipt: ReviewReceipt) => void) {
       const req = developmentRequest.parse(raw);
       const parent = "runId" in req ? pool.complete(req.runId) : null;
 
@@ -128,6 +133,7 @@ export function developmentService(host: EvaluationHost) {
         host.root,
         host.review,
         "package" in req ? req.package : parent!.pkg,
+        recorded,
       );
       const { hash } = readPackage(pkg);
       const id = pool.reserve(
@@ -156,13 +162,47 @@ export function developmentService(host: EvaluationHost) {
         throw e;
       }
     },
+    budget: () => pool.remaining(),
+    async nominate(id: string, recorded?: (receipt: ReviewReceipt) => void) {
+      await approveNomination(host, pool, id, recorded);
+    },
     list: () => pool.list(),
     refusals: () => pool.refusals(),
     archive: previous,
+    summary(id: string) {
+      const { scores } = previous(id);
+      return {
+        system: summarize(scores, "agent"),
+        reference: summarize(scores, "reference"),
+        againstReference: pairedComparison(scores, scores, "reference"),
+      };
+    },
     compare: (a: string, b: string) =>
       pairedComparison(previous(a).scores, previous(b).scores),
     close: () => pool.close(),
   };
+}
+
+async function approveNomination(
+  host: EvaluationHost,
+  pool: EvaluationPool,
+  id: string,
+  recorded?: (receipt: ReviewReceipt) => void,
+) {
+  const parent = pool.complete(id);
+  if (parent.kind !== "full") throw Error("Nominate a full evaluation");
+  const dev = archiveRun(join(host.root, "development", id));
+  if (dev.hash !== parent.hash || readPackage(parent.pkg).hash !== parent.hash)
+    throw Error("Nominee differs from the evaluated configuration");
+  const guard = pairedComparison(dev.scores, dev.scores, "reference");
+  if (!guard.games || guard.guardrailFlag)
+    throw Error("Configuration ineligible for nomination");
+  const nominee = pool.remaining().nominee;
+  if (nominee === id) return restoreAcceptance(host.root, parent.pkg, recorded);
+  if (nominee) throw Error("A different configuration was nominated");
+  const pkg = await review(host.root, host.review, parent.pkg, recorded);
+  pool.nominate(id);
+  return pkg;
 }
 
 /** Operator-only entry point. A completed full development evaluation supplies
@@ -170,21 +210,14 @@ export function developmentService(host: EvaluationHost) {
 export async function finalEvaluation(host: EvaluationHost, id: string) {
   const pool = openPool(host);
   try {
-    const parent = pool.complete(id);
-    if (parent.kind !== "full") throw Error("Nominate a full evaluation");
-    const dev = archiveRun(join(host.root, "development", id));
-    const guard = pairedComparison(dev.scores, dev.scores, "reference");
-    if (!guard.games || guard.guardrailFlag)
-      throw Error("Configuration ineligible for nomination");
     const games = finalGames(host.source.schedule);
-    const pkg = await review(host.root, host.review, parent.pkg);
-    pool.nominate(id);
+    const pkg = await approveNomination(host, pool, id);
     const dir = join(host.root, "final", id);
     mkdirSync(dir, { recursive: true });
     const runs: Record<string, ReturnType<typeof results>> = {};
     for (const mode of [
       "nominated",
-      ...(Object.keys(parent.pkg.agents).length ? ["agents-off"] : []),
+      ...(Object.keys(pkg.agents).length ? ["agents-off"] : []),
       "clear-artifacts",
     ]) {
       const root = join(dir, mode);

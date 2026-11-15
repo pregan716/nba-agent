@@ -255,15 +255,44 @@ test("development requests stay on the pinned games, final mode is separate, rep
   );
   assert.equal(calls.length, before);
   assert.equal(s.list().length, 3);
+  await assert.rejects(s.nominate(full.id), /Planted season knowledge/);
+  assert.equal(s.budget().nominee, null);
   host.review = fixtureReview;
+  await s.evaluate({
+    kind: "test",
+    package: pkg,
+    games: [{ gameId: middle.gameId, teamId: middle.teamId }],
+  });
+  const afterRecovery = calls.length;
+  await assert.rejects(s.nominate(check.id), /full evaluation/);
+  await s.nominate(full.id);
+  let finalReviewCalls = 0;
+  host.review = {
+    ...fixtureReview,
+    reviewer: async () => {
+      finalReviewCalls++;
+      return {
+        usd: 0,
+        text: JSON.stringify({
+          verdict: "reject",
+          reasons: [{ file: "main.py", line: 1, reason: "Changed verdict" }],
+        }),
+      };
+    },
+  };
+
+  assert.equal(s.budget().nominee, full.id);
+  assert.equal(calls.length, afterRecovery);
   const result = await finalEvaluation(host, full.id);
   assert.deepEqual(Object.keys(result.runs), [
     "nominated",
     "agents-off",
     "clear-artifacts",
   ]);
+  assert.equal(finalReviewCalls, 0);
+  host.review = fixtureReview;
   assert.equal(result.runs.nominated.archive.scores.length, 164);
-  assert.equal(s.list().length, 3);
+  assert.equal(s.list().length, 4);
   await assert.rejects(
     s.evaluate({ kind: "full", package: pkg }),
     /closed after nomination/,
@@ -434,3 +463,254 @@ test(
     );
   },
 );
+
+test("fresh Pi architect iterations retain drafts and hypotheses, submit through review and read only development results", async (t) => {
+  const { architectIteration } = await import("../src/architect/session.js");
+  const { architectProvider } =
+    await import("./fixtures/architect-provider.js");
+  const { DatabaseSync } = await import("node:sqlite");
+  const provider = await architectProvider();
+  t.after(() => provider.close());
+  const f = fixtureCorpus(),
+    root = mkdtempSync(join(tmpdir(), "architect-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const profile = structuredClone(evaluationProfile);
+  const image = process.env.FORECAST_SANDBOX_IMAGE;
+  profile.replay.usdPerTeamGame = image ? 1 : 0;
+  if (image) {
+    f.config.harness.sandboxImage = image;
+    Object.assign(f.config.budget.sandbox, {
+      memoryBytes: 256 * 1024 * 1024,
+      stdoutBytes: 1024 * 1024,
+    });
+  }
+  const games = Array.from({ length: 82 }, (_, n) => {
+    const tip =
+      n < 70
+        ? middle.tip
+        : new Date(
+            Date.parse("2026-03-23T00:00:00Z") + 86400000 * (n - 70),
+          ).toISOString();
+    return envelope(
+      n === 0 ? "visible" : "g" + n,
+      "schedule",
+      tip,
+      "schedule_static",
+      {
+        game_id: n >= 70 ? "HOLDOUT_SENTINEL" : "visible",
+        scheduled_tipoff: tip,
+        season: "2025-26",
+        home_team_id: teamIds.BOS,
+        away_team_id: "other",
+        game_total: "MARKET_SENTINEL",
+      },
+    );
+  });
+
+  const host: EvaluationHost = {
+    root,
+    profile,
+    config: f.config,
+    review: fixtureReview,
+    runAgent: async () => {
+      throw Error("Unexpected provider");
+    },
+    source: {
+      data: f.source,
+      schedule: [middle],
+      projection: async (g) => ({
+        roster,
+        reference: forecast(g, 7),
+        spread: -12345,
+        total: 67890,
+      }),
+      outcomes: async (g) => outcome(g),
+    },
+    training: {
+      games,
+      data: {
+        async columns() {
+          return [];
+        },
+        async *exportHistory() {},
+      },
+      evidence: [],
+      rosters: new Map(),
+      corpus: { injuries: { async *partitions() {} } },
+    },
+  };
+  const call = (name: string, input: Record<string, unknown>) => ({
+    name,
+    input,
+  });
+  const proposal = {
+    kind: "test",
+    hypothesis: "Baseline",
+    expectedEffect: "Match reference scores.",
+    games: [{ gameId: middle.gameId, teamId: middle.teamId }],
+  };
+  const { files, ...manifest } = pkg;
+  provider.steps.push(
+    { truncated: true },
+    {
+      calls: [
+        call("document_write", {
+          area: "notes",
+          name: "memo",
+          content: "PRIVATE_ITERATION_NOTE",
+        }),
+        call("document_write", {
+          area: "draft",
+          name: "package.json",
+          content: JSON.stringify(manifest),
+        }),
+        call("document_write", {
+          area: "draft",
+          name: "main.py",
+          content: files["main.py"],
+        }),
+        ...(image
+          ? [
+              call("data_python", {
+                code: `import sqlite3, pathlib
+db=sqlite3.connect("file:/data/session.sqlite?mode=ro",uri=True)
+assert db.execute("select distinct game_id from schedule").fetchall()==[("visible",)]
+assert "game_total" not in [row[1] for row in db.execute("pragma table_info(schedule)")]
+assert not pathlib.Path("/data/architect.sqlite").exists()
+print("filtered data verified")`,
+              }),
+            ]
+          : []),
+        call("validate_package", {}),
+        call("submit", proposal),
+        call("hypothesis_write", {
+          action: "add",
+          name: "Baseline",
+          description: "Use a code-only forecast.",
+        }),
+        call("submit", { ...proposal, hypothesis: "" }),
+        call("submit", { ...proposal, expectedEffect: "" }),
+        call("document_edit", {
+          area: "notes",
+          name: "memo",
+          before: "PRIVATE_ITERATION_NOTE",
+          after: "PRIVATE_ITERATION_NOTE updated",
+        }),
+      ],
+    },
+    { calls: [call("submit", proposal)] },
+  );
+  const first = await architectIteration(host, provider.options);
+  assert.equal(first.status, "test");
+  assert.match(
+    JSON.stringify(provider.requests[1].messages),
+    /last response reached the output limit/,
+  );
+  const db = new DatabaseSync(join(root, "architect.sqlite"), {
+    readOnly: true,
+  });
+  t.after(() => db.close());
+  const events = db
+    .prepare("SELECT seq,kind,data FROM events WHERE iteration=? ORDER BY seq")
+    .all(first.iteration);
+  if (image)
+    assert.ok(
+      events.some(
+        (e) =>
+          e.kind === "tool_result" &&
+          JSON.parse(String(e.data)).result?.stdout?.includes(
+            "filtered data verified",
+          ),
+      ),
+    );
+  const decision = JSON.parse(
+    String(events.find((r) => r.kind === "decision")!.data),
+  );
+  const recorded = events.filter((r) =>
+    ["proposal", "configuration", "review", "decision"].includes(
+      String(r.kind),
+    ),
+  );
+  assert.deepEqual(
+    recorded.map((r) => r.kind),
+    ["proposal", "configuration", "review", "decision"],
+  );
+  assert.equal(
+    JSON.parse(String(recorded[0].data)).expectedEffect,
+    proposal.expectedEffect,
+  );
+  assert.equal(JSON.parse(String(recorded[2].data)).verdict, "accept");
+  assert.equal(
+    JSON.parse(String(recorded[1].data)).files["main.py"],
+    files["main.py"],
+  );
+  if (image) {
+    const service = developmentService(host);
+    try {
+      assert.equal(
+        service.archive(decision.runId).forecasts[0].fallback,
+        false,
+      );
+    } finally {
+      service.close();
+    }
+  }
+  const before = provider.requests.length;
+  provider.steps.push(
+    {
+      calls: [
+        call("document_read", { area: "notes", name: "memo" }),
+        call("archive_read", { runId: decision.runId, section: "forecasts" }),
+        call("final", {}),
+        call("budget", {}),
+      ],
+    },
+    // Near the iteration cap, force a warning on an ordinary tool result and
+    // then use the exact remaining amount in the last fixture response.
+    { inputTokens: 5599900, outputTokens: 10, calls: [call("hypotheses", {})] },
+  );
+  const chargedFirstTurn = 10 * 5 + 3 * 25;
+  const remainingMicro = 30e6 - chargedFirstTurn - (5599900 * 5 + 10 * 25);
+  provider.steps.push({
+    inputTokens: (remainingMicro - 25) / 5,
+    outputTokens: 1,
+  });
+  const second = await architectIteration(host, provider.options);
+  assert.equal(second.status, "budget");
+  assert.equal(second.budget.sessionUsd, 0);
+  assert.ok(
+    !JSON.stringify(provider.requests[before].messages).includes(
+      "PRIVATE_ITERATION_NOTE",
+    ),
+  );
+  const history = JSON.stringify(provider.requests[before + 1].messages);
+  assert.match(history, /PRIVATE_ITERATION_NOTE updated/);
+  assert.match(history, /forecast-v1/);
+  assert.doesNotMatch(history, /-12345|67890/);
+  assert.ok(
+    !provider.requests[before].tools.some((tool) => tool.name === "final"),
+  );
+  assert.match(
+    JSON.stringify(provider.requests.at(-1)!.messages),
+    /Budget low/,
+  );
+  assert.ok(
+    provider.requests.every((r) => r.stream && r.model === "claude-opus-4-6"),
+  );
+  assert.equal(db.prepare("SELECT count(*) AS n FROM documents").get()?.n, 3);
+  assert.equal(db.prepare("SELECT count(*) AS n FROM hypotheses").get()?.n, 1);
+  host.review = {
+    ...fixtureReview,
+    scan: () => [{ file: "main.py", line: 1, reason: "Planted leak" }],
+  };
+  provider.steps.push({ calls: [call("submit", proposal)] });
+  const rejected = await architectIteration(host, provider.options);
+  assert.equal(rejected.status, "rejected");
+  const receipt = db
+    .prepare("SELECT data FROM events WHERE iteration=? AND kind='review'")
+    .get(rejected.iteration)!;
+  assert.equal(
+    JSON.parse(String(receipt.data)).reasons[0].reason,
+    "Planted leak",
+  );
+});

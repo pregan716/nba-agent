@@ -105,6 +105,20 @@ export class EvaluationPool {
       games: JSON.parse(String(row.games)) as TeamGame[],
     };
   }
+  remaining() {
+    const totals = this.db
+      .prepare(
+        "SELECT COALESCE(SUM(full),0) AS full, COALESCE(SUM(charge),0) AS charge FROM runs",
+      )
+      .get()!;
+    return {
+      nominee:
+        this.db.prepare("SELECT nominee FROM settings").get()?.nominee ?? null,
+      fullEvaluations: this.profile.fullLimit - Number(totals.full),
+      evaluationUsd:
+        (Math.round(1e9 * this.profile.poolUsd) - Number(totals.charge)) / 1e9,
+    };
+  }
   reserve(
     kind: string,
     parent: string | null,
@@ -120,19 +134,11 @@ export class EvaluationPool {
     let refusal = "";
     this.db.exec("BEGIN IMMEDIATE");
     try {
-      const totals = this.db
-        .prepare(
-          "SELECT COALESCE(SUM(full),0) AS full, COALESCE(SUM(charge),0) AS charge FROM runs",
-        )
-        .get()!;
-      if (this.db.prepare("SELECT nominee FROM settings").get()?.nominee)
-        refusal = "Development closed after nomination";
-      else if (Number(totals.full) + full > this.profile.fullLimit)
+      const remaining = this.remaining();
+      if (remaining.nominee) refusal = "Development closed after nomination";
+      else if (full > remaining.fullEvaluations)
         refusal = "Full evaluation cap exceeded";
-      else if (
-        Number(totals.charge) + cost >
-        Math.round(1e9 * this.profile.poolUsd)
-      )
+      else if (cost > Math.round(1e9 * remaining.evaluationUsd))
         refusal = "Evaluation dollar pool exceeded";
       if (refusal)
         this.db
