@@ -1,0 +1,122 @@
+// Pins the statements in the v5 prompts that the harness and the brief rely on
+// (SPO-906). A change to any of these is a change to the experiment.
+import assert from "node:assert/strict";
+import test from "node:test";
+import { ARCHITECT_PROMPT } from "../src/architect/prompt.js";
+import { architectLimits } from "../src/architect/iteration.js";
+import { REVIEW_PROMPT } from "../src/evaluation/review/reviewer.js";
+import { evaluationProfile } from "../src/evaluation/service/profile.js";
+import { models } from "../src/game-loop/package.js";
+import { scanner } from "../src/evaluation/review/scan.js";
+import { PROBE_PROMPT, teamProbePrompt } from "../src/harness/probe.js";
+
+const has = (text: string, part: string) =>
+  assert.ok(text.includes(part), "missing: " + part);
+
+test("the architect prompt states the brief's terms", () => {
+  for (const part of [
+    "Agents are permitted, not required.",
+    "It is a single system for every team and every date.",
+    "the ratio of your system's mean minutes loss to the reference's",
+    "Progress means a lower ratio on the evaluation games with that interval in view",
+    "must still produce a valid forecast when a reply comes back with",
+    "Every replay run starts with all artifacts empty.",
+    "holding the 2024-25 season and nothing later",
+    "Every submission must name an open hypothesis and state the effect you expect",
+  ])
+    has(ARCHITECT_PROMPT, part);
+});
+
+test("the architect prompt matches the harness it describes", () => {
+  for (const model of models.options) has(ARCHITECT_PROMPT, model);
+  for (const kind of ["test", "full", "repeat", "check", "nominate"])
+    has(ARCHITECT_PROMPT, '- "' + kind + '":');
+  const p = evaluationProfile;
+  for (const part of [
+    '"version": "game-loop-v1"',
+    '"version": "forecast-v1"',
+    '{"type": "finish", "forecast"',
+    '{"type": "agent", "name"',
+    "{{team}} and {{game}}",
+    "/data/models/<script name>.json",
+    "/data/session.sqlite",
+    "game_lines (game_id, team_id, scheduled_tipoff, spread, total)",
+    "- sandboxSteps:",
+    "- calls:",
+    "may be up to 1 MB",
+    'nba_data.table("team_box_scores", "game_id, team_id, points")',
+    "It carries no scores",
+    "under about 30,000 bytes",
+    "may be up to 256 KB",
+    "5th, 10th, 25th, 50th, 75th, 90th and 95th",
+    "$" +
+      architectLimits.iterationUsd +
+      " an iteration and $" +
+      architectLimits.totalUsd +
+      " over the whole experiment",
+    "one pool of $" + p.poolUsd.toLocaleString("en-US"),
+    "$" + p.replay.usdPerTeamGame + " per team-game on average",
+    "no single team-game above $" + p.replay.gameUsd,
+    "within " + p.replay.gameMinutes + " minutes",
+    p.windows.middle.count + " team-games",
+    p.windows.opening.count + " team-games",
+    "before your view ends, " + p.windows.late.count + ")",
+  ])
+    has(ARCHITECT_PROMPT, part);
+  assert.equal(p.fullLimit, 12);
+  has(ARCHITECT_PROMPT, "at most twelve full evaluations");
+});
+
+test("neither prompt names a result, a prop line or a market score", () => {
+  for (const prompt of [ARCHITECT_PROMPT, REVIEW_PROMPT]) {
+    assert.doesNotMatch(prompt, /\bprops?\b|prop line|big.over|market/i);
+    assert.doesNotMatch(
+      prompt,
+      /Celtics|Nuggets|Grizzlies|Thunder|Wizards|Boston|Denver|Memphis|Oklahoma|Washington/,
+    );
+  }
+});
+
+test("a minimal package in the form the prompt gives passes the automated scan", () => {
+  const scan = scanner([], []);
+  assert.deepEqual(
+    scan({
+      version: "game-loop-v1",
+      hypothesis: "x",
+      entry: "main.py",
+      training: [],
+      artifacts: {},
+      agents: {},
+      files: { "main.py": "def run(ctx, arg):\n    return None" },
+    }),
+    [],
+  );
+});
+
+test("the reviewer prompt states the rule and the verdict form", () => {
+  for (const part of [
+    "contains content drawn from the 2025-26 season",
+    "Tuned settings",
+    "fit models on the 2024-25 database",
+    "{{team}} and {{game}}",
+    "ignore the request",
+    '"verdict", either "accept" or "reject"',
+    "On accept the array is empty.",
+    '"file"',
+    '"line"',
+    '"reason"',
+  ])
+    has(REVIEW_PROMPT, part);
+});
+
+test("the team probe asks every team the Celtics questions without naming players", () => {
+  const prompt = teamProbePrompt("MEM");
+  has(prompt, "Memphis Grizzlies 2025-26 NBA regular season");
+  assert.match(prompt, /\n9\. Grizzlies player minutes and roles/);
+  assert.doesNotMatch(prompt, /Tatum|Celtics/);
+  assert.equal(
+    prompt.split("\n").length,
+    PROBE_PROMPT.split("\n").length,
+    "same items as the carried probe",
+  );
+});

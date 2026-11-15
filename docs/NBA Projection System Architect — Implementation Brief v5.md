@@ -177,7 +177,7 @@ Status: Proposed. A model used for a game may be fitted only on data released be
 
 Status: Proposed.
 
-- It sees the development teams' data before the holdout date, and league-wide data for 2024–25.
+- It sees the development teams' data before the holdout date, and league-wide data for 2024–25. That includes the spread and total the game loop is given (Agreed Nov 15, 2026).
 - It does not see Denver's or Memphis's games, except the 14 they played against the development teams before the holdout date. Removing those would leave gaps in the development teams' seasons.
 - It sees nothing from the holdout date on.
 - The game loop itself keeps the full league-wide history before each cutoff, as in v4. Denver and Memphis rows can therefore appear in archived intermediate outputs. The reviewer does not police the archive; the risk is accepted and stated under Limits.
@@ -232,7 +232,7 @@ Boston is among the easiest teams in the league to forecast by this measure, so 
 
 ## Run record
 
-Carried in form. Added per iteration: the configuration and its hash, the review and its outcome, the hypothesis statement, the games evaluated, every agent call in the loop with its model and spend, the artifacts as they stood after each game, and the scores. The architect's archive is a view of this record with the market quantities removed.
+Carried in form. Added per iteration: the configuration and its hash, the review and its outcome, the hypothesis statement, the games evaluated, every agent call in the loop with its model and spend, the artifacts as they stood after each game, and the scores. The architect's archive is a view of this record. It includes the spread and total the loop was given. Player prop lines, and anything computed from them, are not in it.
 
 ## Limits on claims
 
@@ -296,7 +296,7 @@ Each is one or more Linear issues in `nba-agent-v2`, filed after this brief is a
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A1 Five-team data     | The four new teams' evidence under the existing contracts; the reference projection and roster evidence for all five; the architect's filtered data view      | The view contains no Denver or Memphis game beyond the 14 and nothing from the holdout date on (planted-record fixtures); the reference reproduces its Celtics figures                            |
 | A2 Game-loop runtime  | The configuration package format; sandboxed execution of submitted code; agent calls with the model allowlist; the artifact store; the league clock; metering | Team-specific artifacts are unreadable from another team; a later game's artifact is never visible to an earlier one; a disallowed model is refused; a refused agent call still yields a forecast |
-| A3 Evaluation service | Full evaluations on the evaluation games, test runs and repeat runs; scores with intervals; the archive; the pool and run budgets; the two ablation switches  | No market quantity is reachable from the archive; an exhausted budget scores the rest on the reference and flags it; a pretrained model is built with only 2024–25 mounted                        |
+| A3 Evaluation service | Full evaluations on the evaluation games, test runs and repeat runs; scores with intervals; the archive; the pool and run budgets; the two ablation switches  | No player prop line is reachable from the archive; an exhausted budget scores the rest on the reference and flags it; a pretrained model is built with only 2024–25 mounted                       |
 | A4 Leakage review     | The automated scan and the reviewer's prompt and session                                                                                                      | Planted leaks of each kind are rejected; a clean configuration passes; every review is recorded                                                                                                   |
 | A5 Architect harness  | The architect's tools, prompt, notes and hypothesis list; the contamination probe for every allowed model                                                     | The prompt names no result of the replayed season; a session cannot reach data outside its view                                                                                                   |
 | A6 Architect pilot    | Two iterations end to end on the development teams                                                                                                            | Written up as a pilot, not evidence; the architect's spend is reported against the $30 cap                                                                                                        |
