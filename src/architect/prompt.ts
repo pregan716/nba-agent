@@ -87,7 +87,7 @@ Each call to run is a fresh Python process. Nothing in memory survives from one 
 - scores: for each of this team's earlier games in this replay run, the released score of your system's forecast beside the reference's, player by player, with the box score. feedback is the entry for the previous game, or null.
 - artifacts: the current values of the artifacts this team may read.
 
-Python has pandas, numpy, scipy and scikit-learn. There is no network. Each step may use two CPUs and 4 GB, and the whole team-game must finish within 45 minutes. What a step returns is read from its standard output as JSON and must be under 16,000 bytes; a larger result fails the step. That limit covers the finish action, forecast and artifact writes together, and a forecast written at full floating-point precision for an 18-man roster is already about 14,000 bytes. Round the numbers you return (two decimals is ample) and keep what you write to artifacts compact. Print diagnostics to stderr, never to stdout.
+Python has pandas, numpy, scipy and scikit-learn. There is no network. Each step may use two CPUs and 4 GB, and the whole team-game must finish within 45 minutes. What a step returns is read from its standard output as JSON and may be up to 1 MB, counting everything in the action. Print diagnostics to stderr, never to stdout.
 
 Any exception, an invalid action or an invalid forecast ends the team-game with no forecast, and it is scored on the reference. There is no second attempt. Write the entry point so that whatever goes wrong inside it, it still finishes with a valid forecast: validate your own forecast in code before returning it, and fall back to ctx["reference"] when anything fails.
 
@@ -101,7 +101,7 @@ Each entry in "agents" is:
 
 The allowed models are claude-haiku-4-5-20251001, claude-sonnet-4-6, claude-opus-4-6 and jev-1.14.0. Nothing else is accepted.
 
-For the Claude models, the prompt and skills together are the agent's system prompt, and the placeholders {{team}} and {{game}} in them are replaced with the team id and game id at run time. The agent receives one user message, the JSON {"teamId", "gameId", "task": <your input>}, and may call its tools over as many turns as it needs. Each tool is a Python file in your package defining run(ctx, arg), where arg is the arguments the agent passed; it runs in the same sandbox as the entry point, with the same data, and its JSON result (also under 16,000 bytes) goes back to the agent. The agent has nothing else: no data access and no code execution except through the tools you give it. Its final text is the reply value. If you want JSON back, ask for it and parse it defensively.
+For the Claude models, the prompt and skills together are the agent's system prompt, and the placeholders {{team}} and {{game}} in them are replaced with the team id and game id at run time. The agent receives one user message, the JSON {"teamId", "gameId", "task": <your input>}, and may call its tools over as many turns as it needs. Each tool is a Python file in your package defining run(ctx, arg), where arg is the arguments the agent passed; it runs in the same sandbox as the entry point, with the same data, and its JSON result (up to 1 MB) goes back to the agent. The agent has nothing else: no data access and no code execution except through the tools you give it. Its final text is the reply value. If you want JSON back, ask for it and parse it defensively.
 
 An agent knows only what its prompt, its task and its tools tell it. It starts every call with no memory of earlier calls or earlier games. It has no knowledge of this season beyond what you pass it or let it look up. Write its prompt as you would brief a capable colleague who has never seen this project: what the task is, why, what good output looks like, and what it should do when the evidence is thin.
 
@@ -109,7 +109,7 @@ jev-1.14.0 is a different kind of model. It does not write text. It takes a stat
 
 ## Artifacts
 
-"artifacts" declares the named values the system keeps from game to game within one replay run, each as "team" or "league". A team artifact is private to the team that wrote it. A league artifact is shared by every team in the run. A finish action may write any declared artifact, replacing its previous value; later games see the last write. Games that tip at the same moment see the same earlier values.
+"artifacts" declares the named values the system keeps from game to game within one replay run, each as "team" or "league". A team artifact is private to the team that wrote it. A league artifact is shared by every team in the run. A finish action may write any declared artifact, replacing its previous value; later games see the last write. One artifact value may be up to 256 KB, and the stored values may total 1 MB for each team and 1 MB for the league. A finish that would exceed a limit is rejected whole: the forecast is not frozen and the earlier artifacts stay as they were. Games that tip at the same moment see the same earlier values.
 
 Every replay run starts with all artifacts empty. A full evaluation starts in January with nothing stored; the final evaluation starts on opening night with nothing stored and no games of the new season to read. A system that needs accumulated knowledge has to build it as it goes, and has to work sensibly before it has any.
 

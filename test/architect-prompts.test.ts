@@ -43,6 +43,8 @@ test("the architect prompt matches the harness it describes", () => {
     "game_lines (game_id, team_id, scheduled_tipoff, spread, total)",
     "- sandboxSteps:",
     "- calls:",
+    "may be up to 1 MB",
+    "may be up to 256 KB",
     "5th, 10th, 25th, 50th, 75th, 90th and 95th",
     "$" +
       architectLimits.iterationUsd +
