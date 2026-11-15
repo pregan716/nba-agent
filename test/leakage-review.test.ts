@@ -7,6 +7,7 @@ import { scanner } from "../src/evaluation/review/scan.js";
 import {
   review,
   approvedPackage,
+  restoreAcceptance,
   humanReviews,
 } from "../src/evaluation/review/index.js";
 import { reviewer, REVIEW_PROMPT } from "../src/evaluation/review/reviewer.js";
@@ -165,7 +166,15 @@ test("review isolates the request, records costs on invalid output and binds app
   const accepted = await review(root, gate, clean);
   assert.equal(approvedPackage(accepted).hash, readPackage(clean).hash);
   assert.throws(() => approvedPackage(structuredClone(accepted)), /review/);
+  assert.equal(
+    approvedPackage(restoreAcceptance(root, structuredClone(clean))).hash,
+    readPackage(clean).hash,
+  );
   accepted.hypothesis = "new";
+  assert.throws(
+    () => restoreAcceptance(root, accepted),
+    /No recorded acceptance/,
+  );
   assert.throws(() => approvedPackage(accepted), /review/);
   const rows = humanReviews(root) as {
     id: string;

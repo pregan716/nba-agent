@@ -255,19 +255,44 @@ test("development requests stay on the pinned games, final mode is separate, rep
   );
   assert.equal(calls.length, before);
   assert.equal(s.list().length, 3);
+  await assert.rejects(s.nominate(full.id), /Planted season knowledge/);
+  assert.equal(s.budget().nominee, null);
   host.review = fixtureReview;
-  assert.throws(() => s.nominate(check.id), /full evaluation/);
-  s.nominate(full.id);
+  await s.evaluate({
+    kind: "test",
+    package: pkg,
+    games: [{ gameId: middle.gameId, teamId: middle.teamId }],
+  });
+  const afterRecovery = calls.length;
+  await assert.rejects(s.nominate(check.id), /full evaluation/);
+  await s.nominate(full.id);
+  let finalReviewCalls = 0;
+  host.review = {
+    ...fixtureReview,
+    reviewer: async () => {
+      finalReviewCalls++;
+      return {
+        usd: 0,
+        text: JSON.stringify({
+          verdict: "reject",
+          reasons: [{ file: "main.py", line: 1, reason: "Changed verdict" }],
+        }),
+      };
+    },
+  };
+
   assert.equal(s.budget().nominee, full.id);
-  assert.equal(calls.length, before);
+  assert.equal(calls.length, afterRecovery);
   const result = await finalEvaluation(host, full.id);
   assert.deepEqual(Object.keys(result.runs), [
     "nominated",
     "agents-off",
     "clear-artifacts",
   ]);
+  assert.equal(finalReviewCalls, 0);
+  host.review = fixtureReview;
   assert.equal(result.runs.nominated.archive.scores.length, 164);
-  assert.equal(s.list().length, 3);
+  assert.equal(s.list().length, 4);
   await assert.rejects(
     s.evaluate({ kind: "full", package: pkg }),
     /closed after nomination/,

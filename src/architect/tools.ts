@@ -310,7 +310,7 @@ export function architectTools(
         let runId;
         try {
           if (a.kind === "nominate") {
-            s.nominate(a.runId);
+            await s.nominate(a.runId, (r) => i.record("review", r));
             runId = a.runId;
           } else {
             const req =

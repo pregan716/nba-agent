@@ -23,6 +23,7 @@ import { buildModels, type TrainingData } from "./training.js";
 
 import {
   review,
+  restoreAcceptance,
   type ReviewGate,
   type ReviewReceipt,
 } from "../review/index.js";
@@ -162,9 +163,8 @@ export function developmentService(host: EvaluationHost) {
       }
     },
     budget: () => pool.remaining(),
-    nominate(id: string) {
-      eligibleNominee(host, pool, id);
-      pool.nominate(id);
+    async nominate(id: string, recorded?: (receipt: ReviewReceipt) => void) {
+      await approveNomination(host, pool, id, recorded);
     },
     list: () => pool.list(),
     refusals: () => pool.refusals(),
@@ -183,18 +183,26 @@ export function developmentService(host: EvaluationHost) {
   };
 }
 
-function eligibleNominee(
+async function approveNomination(
   host: EvaluationHost,
   pool: EvaluationPool,
   id: string,
+  recorded?: (receipt: ReviewReceipt) => void,
 ) {
   const parent = pool.complete(id);
   if (parent.kind !== "full") throw Error("Nominate a full evaluation");
   const dev = archiveRun(join(host.root, "development", id));
+  if (dev.hash !== parent.hash || readPackage(parent.pkg).hash !== parent.hash)
+    throw Error("Nominee differs from the evaluated configuration");
   const guard = pairedComparison(dev.scores, dev.scores, "reference");
   if (!guard.games || guard.guardrailFlag)
     throw Error("Configuration ineligible for nomination");
-  return parent;
+  const nominee = pool.remaining().nominee;
+  if (nominee === id) return restoreAcceptance(host.root, parent.pkg, recorded);
+  if (nominee) throw Error("A different configuration was nominated");
+  const pkg = await review(host.root, host.review, parent.pkg, recorded);
+  pool.nominate(id);
+  return pkg;
 }
 
 /** Operator-only entry point. A completed full development evaluation supplies
@@ -202,16 +210,14 @@ function eligibleNominee(
 export async function finalEvaluation(host: EvaluationHost, id: string) {
   const pool = openPool(host);
   try {
-    const parent = eligibleNominee(host, pool, id);
     const games = finalGames(host.source.schedule);
-    const pkg = await review(host.root, host.review, parent.pkg);
-    pool.nominate(id);
+    const pkg = await approveNomination(host, pool, id);
     const dir = join(host.root, "final", id);
     mkdirSync(dir, { recursive: true });
     const runs: Record<string, ReturnType<typeof results>> = {};
     for (const mode of [
       "nominated",
-      ...(Object.keys(parent.pkg.agents).length ? ["agents-off"] : []),
+      ...(Object.keys(pkg.agents).length ? ["agents-off"] : []),
       "clear-artifacts",
     ]) {
       const root = join(dir, mode);

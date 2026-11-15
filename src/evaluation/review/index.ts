@@ -102,6 +102,30 @@ export async function review(
     db.close();
   }
 }
+/** Restore approval for an immutable nominee when the final operator runs in
+ * a new process. Both the hash and the canonical bytes must match. */
+export function restoreAcceptance(
+  root: string,
+  raw: Package,
+  recorded?: (receipt: ReviewReceipt) => void,
+) {
+  const { pkg, hash } = readPackage(raw);
+  const db = new DatabaseSync(join(root, "reviews.sqlite"), { readOnly: true });
+  try {
+    const row = db
+      .prepare(
+        "SELECT id FROM reviews WHERE hash=? AND configuration=? AND verdict='accept' AND reviewerVerdict='accept' ORDER BY rowid DESC LIMIT 1",
+      )
+      .get(hash, canonicalJson(pkg));
+    if (!row)
+      throw Error("No recorded acceptance for the nominated configuration");
+    approvals.set(pkg, hash);
+    recorded?.({ id: String(row.id), hash, verdict: "accept", reasons: [] });
+    return pkg;
+  } finally {
+    db.close();
+  }
+}
 export function humanReviews(root: string, id?: string) {
   const db = new DatabaseSync(join(root, "reviews.sqlite"), { readOnly: true });
   try {
