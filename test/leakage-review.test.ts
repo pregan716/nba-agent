@@ -228,3 +228,40 @@ test("review isolates the request, records costs on invalid output and binds app
     /Reviewer unavailable/,
   );
 });
+
+test("review honours a rate limit beyond its retry window and records zero billed usage", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "review-rate-limit-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const retryAfter of [
+    "120",
+    new Date(Date.now() + 120000).toUTCString(),
+  ]) {
+    let calls = 0;
+    let id = "";
+    await assert.rejects(
+      review(
+        root,
+        {
+          ...fixtureReview,
+          reviewer: async () => {
+            assert.equal(++calls, 1);
+            throw Object.assign(Error("rate limited"), {
+              status: 429,
+              headers: new Headers({ "retry-after": retryAfter }),
+            });
+          },
+        },
+        clean,
+        (receipt) => {
+          id = receipt.id;
+        },
+      ),
+      /Submit the configuration again/,
+    );
+    assert.equal(calls, 1);
+    const record = humanReviews(root, id) as Record<string, unknown>;
+    assert.equal(record.verdict, "failed");
+    assert.equal(record.reviewerUsd, 0);
+    assert.equal(record.reviewerVerdict, null);
+  }
+});

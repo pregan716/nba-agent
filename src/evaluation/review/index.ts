@@ -3,6 +3,10 @@ import { createHash, randomUUID } from "node:crypto";
 import { join } from "node:path";
 import { canonicalJson } from "../../env/tools.js";
 import { readPackage, type Package } from "../../game-loop/package.js";
+import {
+  retryArchitectProvider,
+  unbilledProviderFailure,
+} from "../../runner/retry.js";
 import { type Reviewer, verdict } from "./reviewer.js";
 import type { Finding } from "./scan.js";
 
@@ -21,10 +25,36 @@ export function approvedPackage(raw: Package) {
 export type ReviewReceipt = {
   id: string;
   hash: string;
-  verdict: "accept" | "reject";
+  verdict: "accept" | "reject" | "failed";
   reasons: Finding[];
 };
+export class ReviewerFailure extends Error {}
 export class ReviewRejection extends Error {}
+// Reviewer spend is outside the architect and evaluation budgets. Keep the
+// successful usage even if an earlier attempt left the review total unknown.
+async function requestVerdict(
+  db: DatabaseSync,
+  id: string,
+  reviewer: Reviewer,
+  pkg: Package,
+) {
+  const reserve = db.prepare("INSERT INTO reviewer_attempts(review) VALUES(?)");
+  const settle = db.prepare("UPDATE reviewer_attempts SET usd=? WHERE id=?");
+  return retryArchitectProvider(async () => {
+    const attempt = reserve.run(id).lastInsertRowid;
+    let response;
+    try {
+      response = await reviewer(structuredClone(pkg));
+    } catch (e) {
+      if (unbilledProviderFailure(e)) settle.run(0, attempt);
+      throw e;
+    }
+    if (!Number.isFinite(response.usd) || response.usd < 0)
+      throw Error("Invalid reviewer spend");
+    settle.run(response.usd, attempt);
+    return response.text;
+  }, new AbortController().signal);
+}
 export async function review(
   root: string,
   gate: ReviewGate,
@@ -39,7 +69,8 @@ export async function review(
   try {
     db.exec(`PRAGMA busy_timeout=5000;
     CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY, created TEXT DEFAULT CURRENT_TIMESTAMP,
-      hash TEXT NOT NULL, configuration TEXT NOT NULL, findings TEXT NOT NULL, verdict TEXT NOT NULL, reasons TEXT NOT NULL, reviewerUsd REAL, reviewerVerdict TEXT)`);
+      hash TEXT NOT NULL, configuration TEXT NOT NULL, findings TEXT NOT NULL, verdict TEXT NOT NULL, reasons TEXT NOT NULL, reviewerUsd REAL, reviewerVerdict TEXT);
+    CREATE TABLE IF NOT EXISTS reviewer_attempts(id INTEGER PRIMARY KEY, review TEXT NOT NULL, usd REAL)`);
     let findings: Finding[] = [];
     db.prepare(
       "INSERT INTO reviews(id,hash,configuration,findings,verdict,reasons) VALUES(?,?,?,?,'pending','[]')",
@@ -49,6 +80,7 @@ export async function review(
       reviewerVerdict: string | null = null;
     let pkg: Package | undefined;
     let scanned = false;
+    let reviewerFailed = false;
     try {
       findings = await gate.scan(raw);
       scanned = true;
@@ -56,11 +88,10 @@ export async function review(
       if (!reasons.length) {
         pkg = readPackage(raw).pkg;
         reviewerUsd = null;
-        const response = await gate.reviewer(structuredClone(pkg));
-        if (!Number.isFinite(response.usd) || response.usd < 0)
-          throw Error("Invalid reviewer spend");
-        reviewerUsd = response.usd;
-        const result = verdict.parse(JSON.parse(response.text));
+        reviewerFailed = true;
+        const text = await requestVerdict(db, id, gate.reviewer, pkg);
+        reviewerFailed = false;
+        const result = verdict.parse(JSON.parse(text));
         reviewerVerdict = result.verdict;
         reasons = result.reasons;
       }
@@ -69,26 +100,38 @@ export async function review(
         {
           file: "package",
           line: 1,
-          reason: !scanned
-            ? "Season identity scan unavailable"
-            : reviewerUsd === 0 && !pkg
-              ? String(e)
-              : "Reviewer unavailable or returned an invalid decision",
+          reason: reviewerFailed
+            ? "Reviewer unavailable. Submit the configuration again."
+            : !scanned
+              ? "Season identity scan unavailable"
+              : reviewerUsd === 0 && !pkg
+                ? String(e)
+                : "Reviewer returned an invalid decision",
         },
       ];
     }
+    if (pkg) {
+      const totals = db
+        .prepare(
+          "SELECT CASE WHEN count(usd)=count(*) THEN sum(usd) END AS usd FROM reviewer_attempts WHERE review=?",
+        )
+        .get(id)!;
+      reviewerUsd = totals.usd === null ? null : Number(totals.usd);
+    }
     const accepted = pkg && reviewerVerdict === "accept" && !reasons.length;
+    const outcome = accepted ? "accept" : reviewerFailed ? "failed" : "reject";
     db.prepare(
       "UPDATE reviews SET findings=?,verdict=?,reasons=?,reviewerUsd=?,reviewerVerdict=? WHERE id=?",
     ).run(
       JSON.stringify(findings),
-      accepted ? "accept" : "reject",
+      outcome,
       JSON.stringify(reasons),
       reviewerUsd,
       reviewerVerdict,
       id,
     );
-    recorded?.({ id, hash, verdict: accepted ? "accept" : "reject", reasons });
+    recorded?.({ id, hash, verdict: outcome, reasons });
+    if (reviewerFailed) throw new ReviewerFailure(reasons[0].reason);
     if (!accepted || !pkg)
       throw new ReviewRejection(
         "Leakage review " +

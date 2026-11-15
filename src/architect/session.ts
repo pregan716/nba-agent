@@ -2,6 +2,11 @@ import { runAgentLoop, type StreamFn } from "@earendil-works/pi-agent-core";
 import { streamSimple } from "@earendil-works/pi-ai/api/anthropic-messages";
 import { ANTHROPIC_MODELS } from "@earendil-works/pi-ai/providers/anthropic.models";
 import type { MessageCreateParamsNonStreaming } from "@anthropic-ai/sdk/resources/messages";
+import { APIConnectionError } from "@anthropic-ai/sdk";
+import {
+  retryArchitectProvider,
+  unbilledProviderFailure,
+} from "../runner/retry.js";
 import { anthropicProvider } from "../runner/proxy.js";
 import { PI_CONTRACT } from "../harness/version.js";
 import { DockerSandbox } from "../env/sandbox.js";
@@ -25,46 +30,87 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
   const key = options.apiKey ?? process.env.ANTHROPIC_API_KEY;
   if (!key) throw Error("Missing architect provider credentials");
   const provider = anthropicProvider(key, options.baseURL ?? model.baseUrl);
-  let settle: ((usd: number) => void) | undefined;
-  const stream: StreamFn = (_, context, streamOptions) =>
-    streamSimple(
-      { ...model, baseUrl: options.baseURL ?? model.baseUrl },
-      context,
-      {
-        ...streamOptions,
-        apiKey: key,
-        cacheRetention: "none",
-        maxRetries: 0,
-        maxTokens: 32000,
-        async onPayload(raw) {
-          const req = raw as MessageCreateParamsNonStreaming;
-          const tokens = await provider.count(req, signal);
-          if (!Number.isSafeInteger(tokens) || tokens < 0)
-            throw Error("Invalid architect input token count");
-          const input = tokens * model.cost.input;
-          const max = Math.min(
-            req.max_tokens,
-            Math.floor(
-              (i.budget().sessionUsd * 1e6 - input) / model.cost.output,
-            ),
-          );
-          if (max < 1) {
-            i.status = "budget";
-            throw Error("Architect budget exhausted");
-          }
-          req.max_tokens = max;
-          settle = i.reserve((input + max * model.cost.output) / 1e6);
-          return req;
+  const stream: StreamFn = async (_, context, streamOptions) =>
+    retryArchitectProvider(async () => {
+      let settle: ((usd: number) => void) | undefined;
+      let transportError: unknown;
+      const events = streamSimple(
+        { ...model, baseUrl: options.baseURL ?? model.baseUrl },
+        context,
+        {
+          ...streamOptions,
+          apiKey: key,
+          cacheRetention: "none",
+          maxRetries: 0,
+          maxTokens: 32000,
+          async onPayload(raw) {
+            const req = raw as MessageCreateParamsNonStreaming;
+            const tokens = await retryArchitectProvider(
+              (signal) => provider.count(req, signal),
+              signal,
+            );
+            if (!Number.isSafeInteger(tokens) || tokens < 0)
+              throw Error("Invalid architect input token count");
+            const input = tokens * model.cost.input;
+            const max = Math.min(
+              req.max_tokens,
+              Math.floor(
+                (i.budget().sessionUsd * 1e6 - input) / model.cost.output,
+              ),
+            );
+            if (max < 1) {
+              i.status = "budget";
+              throw Error("Architect budget exhausted");
+            }
+            req.max_tokens = max;
+            settle = i.reserve((input + max * model.cost.output) / 1e6);
+            return req;
+          },
+          // Pi reduces provider errors to text. Preserve HTTP status and retry
+          // headers here, including on Pi's strict-tool fallback request.
+          async fetch(input, init) {
+            transportError = undefined;
+            if (!settle) throw Error("Missing architect reservation");
+            const response = await fetch(input, init).catch((error) => {
+              transportError = new APIConnectionError({ cause: error });
+              throw transportError;
+            });
+            if (!response.ok) {
+              const { status, headers } = response;
+              signal.throwIfAborted();
+              if (unbilledProviderFailure(response)) {
+                settle(0);
+                settle = undefined;
+              }
+              transportError = Object.assign(
+                Error("Architect provider HTTP " + status),
+                { status, headers },
+              );
+            }
+            return response;
+          },
         },
-      },
-    );
-  return {
-    stream,
-    settle: (usd: number) => {
-      settle?.(usd);
-      settle = undefined;
-    },
-  };
+      );
+      // Only a completed attempt may enter the transcript or execute tools.
+      const reply = await events.result();
+      signal.throwIfAborted();
+      if (reply.stopReason === "error" || reply.stopReason === "aborted") {
+        if (transportError) throw transportError;
+        if (
+          settle &&
+          /^(terminated|Anthropic stream ended (?:before message_stop|without a stop reason))$/.test(
+            reply.errorMessage ?? "",
+          )
+        )
+          throw Object.assign(Error("Architect stream disconnected"), {
+            code: "ECONNRESET",
+          });
+        return events;
+      }
+      settle!(reply.usage.cost.total);
+      return events;
+    }, signal);
+  return stream;
 }
 async function converse(
   i: Iteration,
@@ -72,7 +118,7 @@ async function converse(
   signal: AbortSignal,
   options: ArchitectOptions,
 ) {
-  const { stream, settle } = metered(i, signal, options);
+  const stream = metered(i, signal, options);
   const user = (content: string) => ({
     role: "user" as const,
     content,
@@ -141,7 +187,6 @@ async function converse(
         m.role === "assistant" &&
         !["error", "aborted"].includes(m.stopReason)
       ) {
-        settle(m.usage.cost.total);
         if (m.responseModel && m.responseModel !== model.id)
           throw Error("Unexpected architect model");
       }

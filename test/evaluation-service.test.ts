@@ -772,4 +772,74 @@ print("filtered data verified")`,
     JSON.parse(String(receipt.data)).reasons[0].reason,
     "Planted leak",
   );
+  // The first submission exhausts reviewer retries. The architect sees the
+  // error and submits the same configuration in the same iteration.
+  const pool = new DatabaseSync(join(root, "evaluations.sqlite"), {
+    readOnly: true,
+  });
+  t.after(() => pool.close());
+  const runCount = () =>
+    Number(pool.prepare("SELECT count(*) AS n FROM runs").get()!.n);
+  const baseline = runCount();
+  let reviewCalls = 0;
+  host.review = {
+    ...fixtureReview,
+    reviewer: async (pkg) => {
+      assert.equal(runCount(), baseline);
+      if (++reviewCalls <= 5)
+        throw Object.assign(Error("overloaded"), { status: 529 });
+      return fixtureReview.reviewer(pkg);
+    },
+  };
+  provider.failures.count.push(529);
+  provider.failures.model.push(529, 429);
+  provider.steps.push(
+    { calls: [call("submit", proposal)], disconnected: true },
+    { calls: [call("submit", proposal)] },
+    { calls: [call("submit", proposal)] },
+  );
+  const recovered = await architectIteration(host, provider.options);
+  assert.equal(recovered.status, "test");
+  assert.equal(reviewCalls, 6);
+  assert.equal(runCount(), baseline + 1);
+  assert.match(
+    JSON.stringify(provider.requests.at(-1)!.messages),
+    /Reviewer unavailable. Submit the configuration again/,
+  );
+  const receipts = db
+    .prepare(
+      "SELECT data FROM events WHERE iteration=? AND kind='review' ORDER BY seq",
+    )
+    .all(recovered.iteration);
+  assert.deepEqual(
+    receipts.map((row) => JSON.parse(String(row.data)).verdict),
+    ["failed", "accept"],
+  );
+  const reviewDb = new DatabaseSync(join(root, "reviews.sqlite"), {
+    readOnly: true,
+  });
+  t.after(() => reviewDb.close());
+  for (const [index, row] of receipts.entries()) {
+    const { id, verdict } = JSON.parse(String(row.data));
+    const review = reviewDb
+      .prepare("SELECT verdict,reviewerUsd FROM reviews WHERE id=?")
+      .get(id)!;
+    assert.equal(review.verdict, verdict);
+    assert.equal(review.reviewerUsd, null);
+    const amounts = reviewDb
+      .prepare("SELECT usd FROM reviewer_attempts WHERE review=? ORDER BY id")
+      .all(id)
+      .map((a) => a.usd);
+    assert.deepEqual(
+      amounts,
+      index === 0 ? [null, null, null, null] : [null, 0],
+    );
+  }
+  const ledger = db
+    .prepare("SELECT spent,held FROM iterations WHERE id=?")
+    .get(recovered.iteration)!;
+  // Two completed turns, with the 529 and disconnected stream still held. The rate limit
+  // released its reservation and the token count never charged the ledger.
+  assert.equal(ledger.spent, 2 * (10 * 5 + 3 * 25) * 1000);
+  assert.equal(ledger.held, 2 * (10 * 5 + 32000 * 25) * 1000);
 });

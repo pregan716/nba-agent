@@ -71,24 +71,24 @@ export class Iteration {
       held > Math.round(this.budget().sessionUsd * units)
     )
       throw Error("Insufficient architect budget");
-    if (
-      !this.db
-        .prepare("UPDATE iterations SET held=? WHERE id=? AND held=0")
-        .run(held, this.id).changes
-    )
-      throw Error("Outstanding architect request");
+    this.db
+      .prepare("UPDATE iterations SET held=held+? WHERE id=?")
+      .run(held, this.id);
+    let settled = false;
     return (actual: number) => {
+      if (settled) throw Error("Invalid architect settlement");
       const spent = Math.round(actual * units);
       if (!Number.isSafeInteger(spent) || spent < 0)
         throw Error("Invalid architect usage");
       if (
         !this.db
           .prepare(
-            "UPDATE iterations SET held=0,spent=spent+? WHERE id=? AND held=?",
+            "UPDATE iterations SET held=held-?,spent=spent+? WHERE id=? AND held>=?",
           )
-          .run(spent, this.id, held).changes
+          .run(held, spent, this.id, held).changes
       )
         throw Error("Invalid architect settlement");
+      settled = true;
       if (spent > held) throw Error("Architect provider exceeded reservation");
     };
   }
