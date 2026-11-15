@@ -260,7 +260,7 @@ export class DockerSandbox {
   }
   async execute(
     program: string,
-    limits: Limits,
+    limits: Limits & { stderrBytes?: number },
     signal: AbortSignal,
     outputMode: "combined" | "json" = "combined",
   ): Promise<CodeResult> {
@@ -307,7 +307,7 @@ export class DockerSandbox {
         json ? "" : stdout.toString(),
         this.#workspaceErrors +
           Buffer.from(message.stderr, "base64").toString(),
-        limits.stdoutBytes,
+        limits.stderrBytes ?? limits.stdoutBytes,
       );
       // Older supervisors return a combined flag. If stdout filled its buffer
       // their result cannot distinguish an exact fit from lost bytes.

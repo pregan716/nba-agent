@@ -8,6 +8,8 @@ import type { SessionSource } from "../env/source.js";
 import { approvedPackage } from "../evaluation/review/index.js";
 import type { Package } from "./package.js";
 
+const stepResultBytes = 1024 * 1024;
+
 export function gameSandbox(
   config: RunConfig,
   data: SessionSource,
@@ -63,12 +65,14 @@ export function gameSandbox(
         "fn = runpy.run_path(" +
           JSON.stringify("/data/package/" + file) +
           ")['run']",
-        "print(json.dumps(fn(ctx,args),allow_nan=False))",
+        "sys.stdout.write(json.dumps(fn(ctx,args),allow_nan=False,separators=(',',':')))",
       ].join("\n");
       const res = await box.execute(
         program,
         {
           ...config.budget.sandbox,
+          stdoutBytes: stepResultBytes,
+          stderrBytes: config.budget.sandbox.stdoutBytes,
           wallSeconds: seconds,
           computeSeconds: seconds * config.budget.sandbox.cpu,
         },
@@ -89,7 +93,7 @@ export function gameSandbox(
             "Sandbox step failed: " +
               (res.limit ||
                 (res.truncated
-                  ? "stdout truncated"
+                  ? "result exceeds the 1 MiB step result limit"
                   : res.stderr || res.exitStatus)),
           );
         const value = JSON.parse(res.stdout);

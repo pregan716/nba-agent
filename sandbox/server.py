@@ -261,7 +261,8 @@ def execute(request):
     before = cpu()
     oom_before = oom_kills()
     limit = None
-    cap = request["limits"]["stdoutBytes"]
+    stdout_cap = request["limits"]["stdoutBytes"]
+    caps = (stdout_cap, request["limits"].get("stderrBytes", stdout_cap))
     buffers = [bytearray(), bytearray()]
     truncated = False
     stdout_truncated = False
@@ -294,6 +295,7 @@ def execute(request):
                     del streams[stream]
                     continue
                 output = buffers[streams[stream]]
+                cap = caps[streams[stream]]
                 available = max(0, cap - len(output))
                 if streams[stream] == 1:
                     # Keep the exception at the end even after noisy stderr.
