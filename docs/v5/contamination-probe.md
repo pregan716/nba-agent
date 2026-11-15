@@ -46,8 +46,8 @@ This is the same picture as the Nov 6 probe on the Celtics alone. It is descript
 
 The first run, earlier the same day, sent 1,118 statements. A review of the PR found two breaches of the holdout rule in it, and the write-up's claim that the schedule was cut before any box-score row was read was wrong.
 
-1. **It decoded every outcome row.** The script loaded both box-score tables whole and filtered afterwards, so rows from the holdout date on were decoded in memory, in the dry run as well. None of those rows was printed, stored or sent, apart from the four statements below.
-2. **It gated on scheduled tip, not on release.** Four statements concerned two games played on Mar 22 (`0022501032`, Denver, and `0022501034`, Washington). They tipped before the holdout instant, but their outcomes were released at 9 a.m. Eastern on Mar 23, after it. Their results and one appearance each were sent to Jev and written to the record, and they were counted in the statistics first reported.
+1. **It decoded every outcome row.** The script loaded both box-score tables whole and filtered afterwards, so rows from the holdout date on were decoded in memory, in the dry run as well. None of those rows was printed, stored or sent. The four statements below were built from them.
+2. **It gated on scheduled tip, not on release.** Four statements concerned two games played on Mar 22 (`0022501032`, Denver, and `0022501034`, Washington). They tipped before the holdout instant, but their outcomes were released at 9 a.m. Eastern on Mar 23, after it. A result statement and an appearance statement about each were sent to Jev. The requests carried the statements only: whether each was true was never sent, and was stored locally in the record for scoring. The four were counted in the statistics first reported.
 
 The script now uses the release gate the architect's view uses and reads only eligible row ranges. The probe was run again from scratch, and the table above is from that run. The first run's record is no longer in the tree. It remains in the branch history at commit `7af0cb4`.
 

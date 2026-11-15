@@ -9,10 +9,7 @@
 // released before the holdout are used. Eligibility is decided from schedule
 // columns, and only eligible games' row ranges are decoded from the box-score
 // files (src/harness/jev-probe-source.ts).
-//
-// --reconcile=<record> drops facts from a stored record whose game is not
-// eligible and recomputes the statistics. It reads no outcome and calls no model.
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { Temporal } from "@js-temporal/polyfill";
 import { openCorpus } from "../src/data/corpus.js";
 import { DopplerStore } from "../src/data/store.js";
@@ -43,13 +40,9 @@ const BATCH = 40;
 const dryRun = process.argv.includes("--dry-run");
 const out =
   process.argv.find((a) => a.startsWith("--out="))?.slice(6) ?? ".cache";
-const reconcile = process.argv
-  .find((a) => a.startsWith("--reconcile="))
-  ?.slice(12);
 const five = new Set<string>(Object.values(teamIds));
 const opened: { table: string; file: string; start: number; end: number }[] =
   [];
-const reconciled = new Set<string>();
 const kindSeason = (r: ProbeRow) => r.group.split(":").slice(0, 2).join(":");
 const statistics = (rows: ProbeRow[]) => ({
   chance: { accuracy: 0.5, brier: 0.25, discrimination: 0 },
@@ -82,10 +75,6 @@ try {
         eligibleGame(g.data.scheduled_tipoff, holdout),
     );
     const allowed = new Set(eligible.map((g) => g.id));
-    if (reconcile) {
-      for (const id of allowed) reconciled.add(id);
-      continue;
-    }
     // Outcome files are opened only where they hold an allowed game, and only
     // those games' row ranges are decoded.
     const index: Record<string, GameIndex> = JSON.parse(
@@ -173,34 +162,7 @@ try {
   }
   if (new Set(facts.map((f) => f.id)).size !== facts.length)
     throw Error("Duplicate probe fact");
-  if (reconcile) {
-    const stored = JSON.parse(readFileSync(reconcile, "utf8"));
-    const gameOf = (id: string) => id.split("_")[2];
-    const kept: ProbeRow[] = stored.facts.filter((f: ProbeRow) =>
-      reconciled.has(gameOf(f.id)),
-    );
-    const removed = stored.facts
-      .filter((f: ProbeRow) => !reconciled.has(gameOf(f.id)))
-      .map((f: ProbeRow) => f.id);
-    const { facts: _facts, ...rest } = stored;
-    writeFileSync(
-      reconcile,
-      JSON.stringify(
-        {
-          ...rest,
-          sent: stored.sent ?? stored.facts.length,
-          eligible: kept.length,
-          removedAfterRun: [...(stored.removedAfterRun ?? []), ...removed],
-          eligibility:
-            "Outcome released before the holdout (9 a.m. Eastern on the morning after the game).",
-          ...statistics(kept),
-        },
-        null,
-        2,
-      ) + "\n",
-    );
-    console.log(JSON.stringify({ kept: kept.length, removed }, null, 2));
-  } else if (dryRun) {
+  if (dryRun) {
     const groups = Map.groupBy(facts, (f) => f.group);
     console.log(
       JSON.stringify(
