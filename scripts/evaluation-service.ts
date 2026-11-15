@@ -12,6 +12,8 @@ import {
   finalEvaluation,
 } from "../src/evaluation/service/index.js";
 import { developmentRequest } from "../src/evaluation/service/profile.js";
+import { submissionKinds } from "../src/architect/tools.js";
+import { z } from "zod";
 
 import { seasonScanner } from "../src/evaluation/review/catalog.js";
 import { reviewer } from "../src/evaluation/review/reviewer.js";
@@ -34,8 +36,15 @@ if (
   )
 )
   throw Error(
-    "Usage: npm run evaluation -- MODE POOL_DIRECTORY PINNED_SANDBOX PINNED_PROJECTION [REQUEST_FILE | RUN_ID ...]",
+    "Usage: npm run evaluation -- MODE POOL_DIRECTORY PINNED_SANDBOX PINNED_PROJECTION [REQUEST_FILE | RUN_ID ... | --only=KIND,...]",
   );
+// `architect ... --only=test` restricts what that iteration may submit.
+const only =
+  mode === "architect" && args[0]?.startsWith("--only=")
+    ? z.array(z.enum(submissionKinds)).min(1).parse(args[0].slice(7).split(","))
+    : undefined;
+if (mode === "architect" && args.length && !only)
+  throw Error("Unknown architect option");
 const request =
   mode === "evaluate"
     ? developmentRequest.parse(JSON.parse(readFileSync(args[0], "utf8")))
@@ -87,7 +96,7 @@ try {
     }),
   };
   if (mode === "architect")
-    console.log(JSON.stringify(await architectIteration(host)));
+    console.log(JSON.stringify(await architectIteration(host, { only })));
   else if (mode === "final")
     console.log(JSON.stringify(await finalEvaluation(host, args[0])));
   else {

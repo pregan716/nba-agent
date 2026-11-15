@@ -40,10 +40,22 @@ function slice(text: string, offset = 0) {
       offset + content.length < text.length ? offset + content.length : null,
   };
 }
+export const submissionKinds = [
+  "full",
+  "test",
+  "repeat",
+  "check",
+  "nominate",
+] as const;
+export type SubmissionKind = (typeof submissionKinds)[number];
+/** `only` is an operator restriction on what this iteration may submit (the
+ * pilot's first iteration is a test run). A refused kind leaves the iteration
+ * open. */
 export function architectTools(
   i: Iteration,
   s: Service,
   execute: (code: string) => Promise<unknown>,
+  only?: readonly SubmissionKind[],
 ) {
   const db = i.db;
   function tool<S extends z.ZodType>(
@@ -281,7 +293,7 @@ export function architectTools(
       "submit",
       "End this iteration with a development evaluation or a nomination for the operator. Name an open hypothesis and its expected effect.",
       z.strictObject({
-        kind: z.enum(["full", "test", "repeat", "check", "nominate"]),
+        kind: z.enum(submissionKinds),
         ...proposal,
         games: z
           .array(z.strictObject({ teamId: nonempty, gameId: nonempty }))
@@ -291,6 +303,8 @@ export function architectTools(
       }),
       async (raw) => {
         const a = submission.parse(raw);
+        if (only && !only.includes(a.kind))
+          throw Error("This iteration accepts only: " + only.join(", "));
         const hypothesis = db
           .prepare(
             "SELECT description FROM hypotheses WHERE name=? AND closed=0",

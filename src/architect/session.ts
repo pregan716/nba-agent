@@ -11,7 +11,7 @@ import {
   developmentService,
   type EvaluationHost,
 } from "../evaluation/service/index.js";
-import { architectTools } from "./tools.js";
+import { architectTools, type SubmissionKind } from "./tools.js";
 import { Iteration } from "./iteration.js";
 import { ARCHITECT_PROMPT } from "./prompt.js";
 
@@ -20,6 +20,8 @@ interface ArchitectOptions {
   apiKey?: string;
   baseURL?: string;
   signal?: AbortSignal;
+  /** Operator restriction on what this iteration may submit. */
+  only?: readonly SubmissionKind[];
 }
 function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
   const key = options.apiKey ?? process.env.ANTHROPIC_API_KEY;
@@ -88,7 +90,13 @@ async function converse(
   await runAgentLoop(
     [
       user(
-        "This is the start of a new iteration. Read your notes, the hypothesis list and the results of earlier runs before deciding what to do. Your budget: " +
+        "This is the start of a new iteration. Read your notes, the hypothesis list and the results of earlier runs before deciding what to do. " +
+          (options.only
+            ? "In this iteration submit accepts only these kinds: " +
+              options.only.join(", ") +
+              ". "
+            : "") +
+          "Your budget: " +
           JSON.stringify(i.budget()),
       ),
     ],
@@ -177,16 +185,20 @@ export async function architectIteration(
       );
       try {
         const limits = host.config.budget.sandbox;
-        const tools = architectTools(i, service, (code) =>
-          box.execute(
-            code,
-            {
-              ...limits,
-              wallSeconds: limits.perCallSeconds,
-              computeSeconds: limits.perCallSeconds * limits.cpu,
-            },
-            signal,
-          ),
+        const tools = architectTools(
+          i,
+          service,
+          (code) =>
+            box.execute(
+              code,
+              {
+                ...limits,
+                wallSeconds: limits.perCallSeconds,
+                computeSeconds: limits.perCallSeconds * limits.cpu,
+              },
+              signal,
+            ),
+          options.only,
         );
         if (i.budget().sessionUsd <= 0) i.status = "budget";
         else {
