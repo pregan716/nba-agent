@@ -21,7 +21,10 @@ import {
 } from "./profile.js";
 import { buildModels, type TrainingData } from "./training.js";
 
+import { review, type ReviewGate } from "../review/index.js";
+
 export interface EvaluationHost {
+  review: ReviewGate;
   root: string;
   config: RunConfig;
   source: ReplaySource;
@@ -114,15 +117,19 @@ export function developmentService(host: EvaluationHost) {
     async evaluate(raw: unknown) {
       const req = developmentRequest.parse(raw);
       const parent = "runId" in req ? pool.complete(req.runId) : null;
-      const { pkg, hash } = readPackage(
-        "package" in req ? req.package : parent!.pkg,
-      );
+
       const games = developmentGames(
         host.source.schedule,
         req,
         pool.profile,
         parent?.games,
       );
+      const pkg = await review(
+        host.root,
+        host.review,
+        "package" in req ? req.package : parent!.pkg,
+      );
+      const { hash } = readPackage(pkg);
       const id = pool.reserve(
         req.kind,
         "runId" in req ? req.runId : null,
@@ -170,6 +177,7 @@ export async function finalEvaluation(host: EvaluationHost, id: string) {
     if (!guard.games || guard.guardrailFlag)
       throw Error("Configuration ineligible for nomination");
     const games = finalGames(host.source.schedule);
+    const pkg = await review(host.root, host.review, parent.pkg);
     pool.nominate(id);
     const dir = join(host.root, "final", id);
     mkdirSync(dir, { recursive: true });
@@ -181,7 +189,7 @@ export async function finalEvaluation(host: EvaluationHost, id: string) {
     ]) {
       const root = join(dir, mode);
       if (!existsSync(join(root, "record.sqlite")))
-        await execute(host, pool, root, parent.pkg, games, mode);
+        await execute(host, pool, root, pkg, games, mode);
       runs[mode] = results(root);
     }
     return {

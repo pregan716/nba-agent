@@ -1,3 +1,4 @@
+import { fixtureReview } from "./review-fixture.js";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -169,6 +170,7 @@ test("development requests stay on the pinned games, final mode is separate, rep
   profile.replay.usdPerTeamGame = 0;
   profile.windows.middle.count = profile.windows.opening.count = 1;
   const host: EvaluationHost = {
+    review: fixtureReview,
     config: f.config,
     source,
     root,
@@ -222,6 +224,38 @@ test("development requests stay on the pinned games, final mode is separate, rep
   );
   assert.ok(!calls.some((id) => id.startsWith("final")));
   assert.equal(finalGames(source.schedule).length, 164);
+  const before = calls.length;
+  host.review = {
+    ...fixtureReview,
+    reviewer: async () => ({
+      usd: 0,
+      text: JSON.stringify({
+        verdict: "reject",
+        reasons: [
+          { file: "main.py", line: 1, reason: "Planted season knowledge" },
+        ],
+      }),
+    }),
+  };
+  for (const request of [
+    { kind: "full", package: pkg },
+    {
+      kind: "test",
+      package: pkg,
+      games: [{ gameId: middle.gameId, teamId: middle.teamId }],
+    },
+    { kind: "check", window: "opening", runId: full.id },
+    { kind: "repeat", runId: full.id },
+  ]) {
+    await assert.rejects(s.evaluate(request), /Planted season knowledge/);
+  }
+  await assert.rejects(
+    finalEvaluation(host, full.id),
+    /Planted season knowledge/,
+  );
+  assert.equal(calls.length, before);
+  assert.equal(s.list().length, 3);
+  host.review = fixtureReview;
   const result = await finalEvaluation(host, full.id);
   assert.deepEqual(Object.keys(result.runs), [
     "nominated",
@@ -271,6 +305,7 @@ test(
     games.push(gameRow("prior", "2025-01-05T00:00:00Z", "2024-25"));
     let builds = 0;
     const host: EvaluationHost = {
+      review: fixtureReview,
       root,
       config: f.config,
       runAgent: async (call) => {

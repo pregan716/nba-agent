@@ -5,18 +5,20 @@ import type { RunConfig, Game } from "../runner/config.js";
 import { DockerSandbox } from "../env/sandbox.js";
 import { Session } from "../env/session.js";
 import type { SessionSource } from "../env/source.js";
+import { approvedPackage } from "../evaluation/review/index.js";
 import type { Package } from "./package.js";
 
 export function gameSandbox(
   config: RunConfig,
   data: SessionSource,
   game: Game,
-  pkg: Package,
+  submission: Package,
   context: { teamId: string },
   root: string,
   recordStep: (entry: Record<string, unknown>) => void,
   trainedModels: BuiltModels = {},
 ) {
+  const { pkg } = approvedPackage(submission);
   const session = new Session(
     config,
     game,

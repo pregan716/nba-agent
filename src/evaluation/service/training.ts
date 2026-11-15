@@ -9,13 +9,16 @@ import type { BuiltModels } from "../../game-loop/models.js";
 import { writeSessionExport } from "../../env/export.js";
 import { viewBatches } from "../../data/architect-view.js";
 
+import { approvedPackage } from "../review/index.js";
+
 export type TrainingData = Parameters<typeof viewBatches>[0];
 export async function buildModels(
   config: RunConfig,
-  pkg: Package,
+  submission: Package,
   data: TrainingData,
   root: string,
 ) {
+  const { pkg } = approvedPackage(submission);
   const models: BuiltModels = {};
   if (!pkg.training.length) return models;
   const box = new DockerSandbox(
