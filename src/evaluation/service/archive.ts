@@ -2,9 +2,6 @@ import { RecordStore } from "../../runner/record.js";
 import type { TeamGame } from "../../game-loop/replay.js";
 import type { ScoredGame } from "./scores.js";
 
-/** Free-form provider output, diagnostics and artifacts can quote game lines
- * even when all keys referring to markets have been stripped. Keep the full
- * audit record private and project the public events from trusted fields. */
 export function archiveRun(root: string) {
   const record = new RecordStore(root);
   try {
@@ -39,63 +36,40 @@ export function archiveRun(root: string) {
       scores.length !== games.length
     )
       throw Error("Incomplete evaluation scores");
-    const forecasts = [...receipts].map(([scope, r]) => {
-      const withheld = r.marketExposed !== false;
-      return {
+    const forecasts = [...receipts].map(([scope, r]) => ({
+      game: gameScopes.get(scope),
+      spread: r.spread ?? null,
+      total: r.total ?? null,
+      forecast: r.frozen ?? r.reference,
+      fallback: r.frozen === null,
+      reason: r.reason,
+      artifacts: r.artifacts,
+    }));
+    const events = record.events();
+    const calls = events
+      .filter((e) =>
+        ["agent_start", "agent_transcript", "agent_end"].includes(e.kind),
+      )
+      .map((e) => ({
+        seq: e.seq,
+        kind: e.kind,
+        game: gameScopes.get(e.scope),
+        data: e.data,
+      }));
+    const sandboxSteps = events
+      .filter((e) => e.kind === "sandbox_step")
+      .map(({ seq, scope, data }) => ({
+        seq,
         game: gameScopes.get(scope),
-        forecast: r.frozen ?? r.reference,
-        fallback: r.frozen === null,
-        reason:
-          !withheld ||
-          r.reason === null ||
-          r.reason === "run_budget_exhausted" ||
-          r.reason === "wall_clock"
-            ? r.reason
-            : "forecast_failed",
-        artifacts: withheld
-          ? r.artifacts.map((a: { name: string; team: string | null }) => ({
-              name: a.name,
-              team: a.team,
-              withheld: true,
-            }))
-          : r.artifacts,
-      };
-    });
-    const calls = record.events().flatMap((e) => {
-      if (!["agent_start", "agent_transcript", "agent_end"].includes(e.kind))
-        return [];
-      const withheld = receipts.get(e.scope)?.marketExposed !== false;
-      let data = e.data;
-      if (withheld) {
-        if (e.kind === "agent_start")
-          data = {
-            name: Object.hasOwn(manifest.package.agents, e.data.name)
-              ? e.data.name
-              : null,
-            model: e.data.model,
-            system: e.data.system,
-          };
-        else if (e.kind === "agent_end")
-          data = {
-            call: e.data.call,
-            model: e.data.model,
-            ok: e.data.reply.ok,
-            usd: e.data.usd,
-            unresolvedUsd: e.data.unresolvedUsd,
-          };
-        else data = { call: e.data.call };
-      }
-      return [
-        {
-          seq: e.seq,
-          kind: e.kind,
-          game: gameScopes.get(e.scope),
-          withheld,
-          data,
-        },
-      ];
-    });
+        file: data.file,
+        action: data.action,
+        exitStatus: data.exitStatus,
+        limit: data.limit,
+        stderr: data.stderr,
+        stdoutTruncated: data.stdoutTruncated,
+      }));
     return {
+      sandboxSteps,
       configuration: manifest.package,
       hash: manifest.packageHash,
       forecasts,

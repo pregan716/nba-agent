@@ -114,6 +114,13 @@ test("team-root archive joins by NBA game and exposes both perspectives only at 
     description:
       r.description === "Boston Celtics" ? "Denver Nuggets" : r.description,
   }));
+  // A prop-only event has no mapping in the game-line schedule.
+  rows.push({
+    ...rows[0],
+    market: "player_points",
+    espn_event_id: "unmapped-prop",
+    line: 9999,
+  });
   const games = json("den/games.json", [
     { espn_event_id: "current", nba_game_id: "nba", scheduled_start: cutoff },
   ]);
