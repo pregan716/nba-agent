@@ -248,12 +248,13 @@ export function architectTools(
     ),
     tool(
       "archive_read",
-      "Read a completed development run's configuration, agent calls, forecasts or scores as paginated JSON.",
+      "Read a completed development run's configuration, agent calls, sandbox steps, forecasts or scores as paginated JSON.",
       z.strictObject({
         runId: z.uuid(),
         section: z.enum([
           "configuration",
           "calls",
+          "sandboxSteps",
           "forecasts",
           "scores",
           "summary",

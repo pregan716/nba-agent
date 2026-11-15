@@ -100,8 +100,18 @@ export async function fiveTeamData(c: Corpus, root = process.cwd()) {
       return researchEvidence(kind, cutoff);
     },
   };
-  return { root, corpus, data: source, evidence, games, ids, rosters };
+  const base = { root, corpus, data: source, evidence, games, ids, rosters };
+  return {
+    ...base,
+    gameLines: (beforeTip?: string): Promise<GameLineLookup> =>
+      fiveTeamGameLines(base, beforeTip),
+  };
 }
+type GameLineLookup = (
+  teamId: string,
+  id: string,
+  tip: string,
+) => { spread: number | null; total: number | null };
 export type FiveTeamData = Awaited<ReturnType<typeof fiveTeamData>>;
 
 /** Shared games use Boston's existing convention, otherwise the home team's
@@ -243,7 +253,7 @@ export async function fiveTeamReplay(
     schedule,
     async projection(g) {
       const game = target(g);
-      const gameLines = await (lines ??= fiveTeamGameLines(data, beforeTip));
+      const gameLines = await (lines ??= data.gameLines(beforeTip));
       const input = await source.input(game, g.teamId);
       const { forecast } = await recordReference(
         receiptDirectory,

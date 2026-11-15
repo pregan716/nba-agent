@@ -95,6 +95,15 @@ for (const view of ["architect", "training"] as const)
       ];
       const src: Parameters<typeof writeView>[0] = {
         games,
+        async gameLines(beforeTip) {
+          assert.equal(view, "architect");
+          assert.equal(beforeTip, cutoff);
+          return (team, id, tip) => {
+            assert.ok([BOS, OKC].some((t) => t === team));
+            assert.ok(tip < cutoff && id !== other.id && id !== prior.id);
+            return { spread: -4, total: 210, playerProp: "PROP_LINE_SENTINEL" };
+          };
+        },
         data: {
           async columns() {
             return [{ name: "text", description: "marker" }];
@@ -173,6 +182,28 @@ for (const view of ["architect", "training"] as const)
               .sort(),
             [...expected].sort(),
           );
+          if (view === "architect") {
+            const lines = db
+              .prepare("SELECT * FROM game_lines ORDER BY game_id")
+              .all();
+            assert.deepEqual(
+              lines.map((r) => [r.game_id, r.team_id]),
+              [
+                ...games.slice(0, 70).map((g) => [g.id, BOS]),
+                [overlap.id, OKC],
+              ].sort(([a], [b]) => a.localeCompare(b)),
+            );
+            assert.ok(lines.every((r) => r.spread === -4 && r.total === 210));
+            assert.ok(!JSON.stringify(lines).includes("PROP_LINE_SENTINEL"));
+          } else
+            assert.equal(
+              db
+                .prepare(
+                  "SELECT name FROM sqlite_master WHERE name='game_lines'",
+                )
+                .get(),
+              undefined,
+            );
           for (const t of GAME_HISTORY_TABLES.filter((t) => t !== "games")) {
             const rows = db.prepare("select text from " + t).all();
             assert.equal(rows.length, expected.length);

@@ -16,6 +16,7 @@ import { releaseTime } from "../env/visibility.js";
 import { pick } from "./adapters.js";
 
 type ViewSource = {
+  gameLines: FiveTeamData["gameLines"];
   games: RecordEnvelope[];
   data: Pick<FiveTeamData["data"], "columns" | "exportHistory">;
   corpus: { injuries: Pick<FiveTeamData["corpus"]["injuries"], "partitions"> };
@@ -87,6 +88,27 @@ export async function* viewBatches(
       ]),
     ),
   };
+  if (view === "architect") {
+    const gameLines = await data.gameLines(cutoff);
+    yield {
+      table: "game_lines",
+      columns: ["game_id", "team_id", "scheduled_tipoff", "spread", "total"],
+      rows: [...currentGames.values()].flatMap(({ id, data: g }) =>
+        [g.home_team_id, g.away_team_id]
+          .filter((team) => developmentIds.has(team))
+          .map((team) => {
+            const { spread, total } = gameLines(team, id, g.scheduled_tipoff);
+            return {
+              game_id: id,
+              team_id: team,
+              scheduled_tipoff: g.scheduled_tipoff,
+              spread,
+              total,
+            };
+          }),
+      ),
+    };
+  }
   const released = selected.filter((g) =>
     before(releaseTime(g.data.scheduled_tipoff), cutoff),
   );
