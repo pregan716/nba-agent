@@ -1,3 +1,10 @@
+import { gzipSync } from "node:zlib";
+import { OddsAdapter, envelope } from "../src/data/adapters.js";
+import { Identities } from "../src/data/identity.js";
+import { Release } from "../src/data/release.js";
+import { VerifiedStore, sha256, type ObjectRef } from "../src/data/store.js";
+import { fiveTeamGameLines } from "../src/data/five-team.js";
+import { teamIds } from "../src/data/teams.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -35,9 +42,11 @@ test("pinned game lines preserve spread sign, paired team totals and missing mar
   const rows = quotes();
   function values(data: typeof rows) {
     const [r] = buildGameLines(data);
-    return [r.celtics_spread, r.game_total];
+    return [r.spread, r.game_total];
   }
   assert.deepEqual(values(rows), [-4, 220]);
+  const [away] = buildGameLines(rows, "Opponent");
+  assert.deepEqual([away.spread, away.game_total], [4, 220]);
   assert.deepEqual(values(rows.filter((r) => r.market === "team_totals")), [
     null,
     220,
@@ -74,4 +83,86 @@ test("game-line source pins the SPO-829 methodology", () => {
     gameLineVersion.manifest_sha256,
     "a83d4537b93d028bb856b357bb10438d1b8624ea49d4a6feea442271e7d402ad",
   );
+});
+
+test("team-root archive joins by NBA game and exposes both perspectives only at scheduled tip", async () => {
+  const objects = new Map<string, Buffer>();
+  function put(key: string, bytes: Buffer): ObjectRef {
+    objects.set(key, bytes);
+    return {
+      bucket: "pm-data-platform",
+      key,
+      bytes: bytes.length,
+      sha256: sha256(bytes),
+    };
+  }
+  const json = (key: string, value: unknown) =>
+    put(key, Buffer.from(JSON.stringify(value)));
+  const store = new VerifiedStore({
+    get: async (_bucket, key) => objects.get(key)!,
+  });
+  const archive = json("bos/_MANIFEST.json", {
+    objects: [put("bos/quotes.ndjson.gz", gzipSync(""))],
+  });
+  const consensus = json("bos/consensus/_MANIFEST.json", {
+    sourceManifest: { manifest: archive.key, sha256: archive.sha256 },
+  });
+  const rows = [...quotes(), ...quotes(before)].map((r) => ({
+    ...r,
+    selection:
+      r.selection === "Boston Celtics" ? "Denver Nuggets" : r.selection,
+    description:
+      r.description === "Boston Celtics" ? "Denver Nuggets" : r.description,
+  }));
+  const games = json("den/games.json", [
+    { espn_event_id: "current", nba_game_id: "nba", scheduled_start: cutoff },
+  ]);
+  const pin = json("den/_MANIFEST.json", {
+    objects: [
+      games,
+      put(
+        "den/quotes.ndjson.gz",
+        gzipSync(rows.map((r) => JSON.stringify(r)).join("\n")),
+      ),
+    ],
+  });
+  const schedule = {
+    season: "2025-26",
+    home_team_id: teamIds.DEN,
+    away_team_id: teamIds.MEM,
+    scheduled_tipoff: cutoff,
+  };
+  const lines = await fiveTeamGameLines({
+    games: [
+      envelope(
+        "schedule",
+        "nba",
+        schedule,
+        pin,
+        pin.sha256,
+        cutoff,
+        "schedule_static",
+      ),
+    ],
+    ids: new Identities(),
+    corpus: {
+      verified: store,
+      odds: new OddsAdapter(await Release.open(consensus, store)),
+    },
+    evidence: [{ team: "DEN", teamId: teamIds.DEN, gameLineManifest: pin }],
+  });
+  assert.deepEqual(lines(teamIds.DEN, "nba", cutoff), {
+    spread: -4,
+    total: 220,
+  });
+  assert.deepEqual(lines(teamIds.MEM, "nba", cutoff), {
+    spread: 4,
+    total: 220,
+  });
+  for (const [team, id, tip] of [
+    [teamIds.OKC, "nba", cutoff],
+    [teamIds.DEN, "nba", before],
+    [teamIds.DEN, "current", cutoff],
+  ])
+    assert.deepEqual(lines(team, id, tip), { spread: null, total: null });
 });

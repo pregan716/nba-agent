@@ -1,4 +1,9 @@
 {
+  "gameLines": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=was/_MANIFEST.json",
+    "sha256": "c1f5a6da02b7174167f2994653e307752b2688bfe40e0fb9bbd0412d2a65bfbc"
+  },
   "posts": {
     "key": "v1/research/wizards-2025-26/releases/f9e3ef089f68970192adc376d7bee29c6cda109f6c2e58e73093557a0627c40a/relevance-manifest.json",
     "bucket": "sports-text",

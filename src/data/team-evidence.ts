@@ -21,7 +21,7 @@ import type { Identities } from "./identity.js";
 interface TeamPins {
   posts: ObjectRef;
   lineups: ObjectRef;
-  odds?: ObjectRef;
+  gameLines: ObjectRef;
   games: Record<string, string>;
   transcripts: { entry: Row; root: ObjectRef }[];
 }
@@ -70,8 +70,6 @@ export async function openTeamEvidence(
       ),
       c.verified,
     );
-    if (pins.odds)
-      odds = new OddsAdapter(await Release.open(pins.odds, c.verified));
   }
   const annotate = (r: RecordEnvelope): RecordEnvelope => ({
     ...r,
@@ -127,6 +125,7 @@ export async function openTeamEvidence(
     team,
     teamId,
     versions,
+    gameLineManifest: pins?.gameLines,
     odds,
     transcriptTimes() {
       return index.flatMap((e) => {

@@ -24,7 +24,7 @@ Roster files start with the pinned opening player reference. Each club's officia
 
 Run `python3 scripts/roster-crosscheck.py TEAM` from the repository root to reproduce a team's report in `docs/evidence/roster/`. The check selects games by scheduled tip and next-morning release before reading the pinned box-score identities. Disagreements retain both sets of player IDs and their transaction evidence.
 
-[Coverage counts](coverage.json) use public evidence and the schedule. Posts and transcripts count team-games with a publication since the previous tip. Injuries and lineups require a pre-tip report for that game. A null prop count means there is no pinned team consensus release. The four new teams currently have no such release in the published NBA archive. The optional `odds` field on each team pin accepts the consensus manifest object reference when available. Scheduled-start spreads and team totals are a separate collection under SPO-911.
+[Coverage counts](coverage.json) use public evidence and the schedule. Posts and transcripts count team-games with a publication since the previous tip. Injuries and lineups require a pre-tip report for that game. Game-line counts require a spread or paired game total at the scheduled tip. The four new teams use the SPO-911 team-root quote archives and their ESPN-to-NBA game mappings. Boston uses its original pinned source. Both teams in a shared game see the same total and opposite spreads. To keep selection ties consistent, use Boston’s perspective in Boston games and the home team’s perspective when two new teams meet. A null prop count marks a team outside the player-prop collection scope. Player props are excluded from v5 replay for all five teams.
 
 ## Reference verification
 
