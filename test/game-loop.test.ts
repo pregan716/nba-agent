@@ -6,7 +6,12 @@ import { join } from "node:path";
 import { fixtureCorpus, BOS, cutoff } from "./fixtures/session/corpus.js";
 import { releaseTime } from "../src/env/visibility.js";
 import { readPackage, type Package } from "../src/game-loop/package.js";
-import { replay, type ReplaySource } from "../src/game-loop/replay.js";
+import { review } from "../src/evaluation/review/index.js";
+import { fixtureReview } from "./review-fixture.js";
+import {
+  replay as runReplay,
+  type ReplaySource,
+} from "../src/game-loop/replay.js";
 import { RecordStore } from "../src/runner/record.js";
 import type { Range } from "../src/projection/forecast.js";
 
@@ -171,6 +176,16 @@ test(
         };
       },
     };
+    async function replay(
+      options: Omit<Parameters<typeof runReplay>[0], "package"> & {
+        package: unknown;
+      },
+    ) {
+      return runReplay({
+        ...options,
+        package: await review(parent, fixtureReview, options.package),
+      });
+    }
     const base = {
       config: f.config,
       package: pkg,

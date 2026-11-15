@@ -12,6 +12,9 @@ import {
 } from "../src/evaluation/service/index.js";
 import { developmentRequest } from "../src/evaluation/service/profile.js";
 
+import { seasonScanner } from "../src/evaluation/review/catalog.js";
+import { reviewer } from "../src/evaluation/review/reviewer.js";
+
 const [mode, dir, sandboxImage, projectionImage, ...args] =
   process.argv.slice(2);
 if (
@@ -58,7 +61,15 @@ try {
     join(root, "reference"),
     mode === "final" ? undefined : holdoutBoundary(data.games),
   );
+  let scan: ReturnType<typeof seasonScanner> | undefined;
   const host = {
+    review: {
+      async scan(raw: unknown) {
+        scan ??= seasonScanner(data);
+        return (await scan)(raw);
+      },
+      reviewer: reviewer(),
+    },
     root,
     config,
     source,

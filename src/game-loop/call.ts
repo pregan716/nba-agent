@@ -1,12 +1,13 @@
 import type { RecordStore } from "../runner/record.js";
 import type { AgentRunner } from "./agents.js";
+import { approvedPackage } from "../evaluation/review/index.js";
 import type { Package } from "./package.js";
 import type { GameMeter } from "./meter.js";
 import type { TeamGame } from "./replay.js";
 
 /** Only this host dispatcher can turn a sandbox action into a provider request. */
 export function agentDispatcher(
-  pkg: Package,
+  submission: Package,
   game: TeamGame,
   scope: string,
   record: RecordStore,
@@ -16,6 +17,7 @@ export function agentDispatcher(
   signal: AbortSignal,
   invoke: (file: string, input: unknown) => Promise<unknown>,
 ) {
+  const { pkg } = approvedPackage(submission);
   return async (name: string, input: unknown) => {
     const agent = Object.hasOwn(pkg.agents, name)
       ? pkg.agents[name]

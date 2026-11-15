@@ -49,3 +49,9 @@ npm run evaluation -- refusals POOL_DIR PINNED_SANDBOX PINNED_PROJECTION
 Use the repository's data-store credentials and pinned image references. Live specialists read their credentials from `ANTHROPIC_API_KEY` and `TYPESAFE_API_KEY` in the host process. The service prints JSON to stdout.
 
 The separate operator command `final POOL_DIR PINNED_SANDBOX PINNED_PROJECTION NOMINATED_RUN_ID` closes development and evaluates an eligible nomination on all 164 Denver and Memphis team-games. It runs the nominee, the agents-off ablation if agents are declared, and the per-game artifact reset ablation. Final runs are outside the development pool and archive. The amended brief retains ceiling scores and drops player-prop market tests and big-over picks.
+
+### Leakage reviews
+
+The host scans each submission before reserving evaluation funds or building models. Checks, repeats and final nominations review the stored package again. The scan uses the pinned season player and team identity dimensions, opening player profiles, the Boston staff reference, and the Coaches tables from all 30 archived NBA CommonTeamRoster responses. The roster digests in `config/review-coach-rosters.json` are verified against the existing player-reference release. The reviewer's only user message is the configuration, including its submitted hypothesis. The host uses `ANTHROPIC_API_KEY` for a fresh Opus request after the package passes the scan and schema checks.
+
+Run `npm run evaluation:reviews -- POOL_DIRECTORY` to list accepted submissions. Add a review ID to print its configuration, hash, findings, decision, reasons and reviewer spend. This command reads the local review record without model credentials or data access. A pending entry means the process stopped before recording a decision. A null reviewer spend means the provider's usage was unavailable. Reviewer spend is separate from the evaluation pool.

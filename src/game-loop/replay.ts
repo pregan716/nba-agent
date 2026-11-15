@@ -12,7 +12,8 @@ import { lockForecast } from "../projection/session.js";
 import { validateForecast, type Pregame } from "../projection/validation.js";
 import type { RunConfig } from "../runner/config.js";
 import { RecordStore } from "../runner/record.js";
-import { readPackage } from "./package.js";
+import { approvedPackage } from "../evaluation/review/index.js";
+import type { Package } from "./package.js";
 import type { AgentRunner } from "./agents.js";
 import { ReplayMeter } from "./meter.js";
 import { agentDispatcher } from "./call.js";
@@ -70,7 +71,7 @@ type Score = GameScore | { gameId: string; status: "excluded"; reason: string };
 export async function replay(options: {
   root: string;
   config: RunConfig;
-  package: unknown;
+  package: Package;
   games: TeamGame[];
   source: ReplaySource;
   runAgent: AgentRunner;
@@ -80,7 +81,7 @@ export async function replay(options: {
   clearArtifacts?: boolean;
 }) {
   const { source, config, root } = options;
-  const { pkg, hash } = readPackage(options.package);
+  const { pkg, hash } = approvedPackage(options.package);
   const profile = profileSchema.parse(options.profile ?? defaultProfile);
   const schedule = new Map(source.schedule.map((g) => [scope(g), g]));
   const games = options.games
