@@ -1,0 +1,228 @@
+{
+  "source": {
+    "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+  },
+  "rows": [
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-28T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed forward Julian Reese to a Two-Way Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642882.0,
+      "PLAYER_SLUG": "julian-reese",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1146163"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-26T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards re-signed forward Jamir Watkins to a Rest-of-Season Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642364.0,
+      "PLAYER_SLUG": "jamir-watkins",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1146092"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-21T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards re-signed forward Tristan Vukcevic to a Rest-of-Season Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641774.0,
+      "PLAYER_SLUG": "tristan-vukcevic",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1145862"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-21T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed forward Leaky Black to a Two-Way Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641778.0,
+      "PLAYER_SLUG": "leaky-black",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1145863"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-16T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed guard Alondes Williams to a 10-Day Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1631214.0,
+      "PLAYER_SLUG": "alondes-williams",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1145181"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-11T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed guard Kadary Richmond to a 10-Day Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642955.0,
+      "PLAYER_SLUG": "kadary-richmond",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1145092"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2026-02-08T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Dante Exum.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 203957.0,
+      "PLAYER_SLUG": "dante-exum",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1145020"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed guard Keshon Gilbert to a 10-Day Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642933.0,
+      "PLAYER_SLUG": "keshon-gilbert",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1144918"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Dallas Mavericks received guard AJ Johnson from Washington Wizards.",
+      "TEAM_ID": 1610612742.0,
+      "TEAM_SLUG": "mavericks",
+      "PLAYER_ID": 1642358.0,
+      "PLAYER_SLUG": "aj-johnson",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Dallas Mavericks received forward Marvin Bagley III from Washington Wizards.",
+      "TEAM_ID": 1610612742.0,
+      "TEAM_SLUG": "mavericks",
+      "PLAYER_ID": 1628963.0,
+      "PLAYER_SLUG": "marvin-bagley-iii",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Dallas Mavericks received forward Khris Middleton from Washington Wizards.",
+      "TEAM_ID": 1610612742.0,
+      "TEAM_SLUG": "mavericks",
+      "PLAYER_ID": 203114.0,
+      "PLAYER_SLUG": "khris-middleton",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received guard Jaden Hardy from Dallas Mavericks.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1630702.0,
+      "PLAYER_SLUG": "jaden-hardy",
+      "Additional_Sort": 1610612742.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received guard D'Angelo Russell from Dallas Mavericks.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1626156.0,
+      "PLAYER_SLUG": "dangelo-russell",
+      "Additional_Sort": 1610612742.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received guard Dante Exum from Dallas Mavericks.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 203957.0,
+      "PLAYER_SLUG": "dante-exum",
+      "Additional_Sort": 1610612742.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received forward Anthony Davis from Dallas Mavericks.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 203076.0,
+      "PLAYER_SLUG": "anthony-davis",
+      "Additional_Sort": 1610612742.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Charlotte Hornets received forward Malaki Branham from Washington Wizards.",
+      "TEAM_ID": 1610612766.0,
+      "TEAM_SLUG": "hornets",
+      "PLAYER_ID": 1631103.0,
+      "PLAYER_SLUG": "malaki-branham",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-01-27T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed forward Skal Labissiere to a 10-Day Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1627746.0,
+      "PLAYER_SLUG": "skal-labissiere",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1144237"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-01-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Atlanta Hawks received forward Corey Kispert from Washington Wizards.",
+      "TEAM_ID": 1610612737.0,
+      "TEAM_SLUG": "hawks",
+      "PLAYER_ID": 1630557.0,
+      "PLAYER_SLUG": "corey-kispert",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025019"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-01-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Atlanta Hawks received guard CJ McCollum from Washington Wizards.",
+      "TEAM_ID": 1610612737.0,
+      "TEAM_SLUG": "hawks",
+      "PLAYER_ID": 203468.0,
+      "PLAYER_SLUG": "cj-mccollum",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025019"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-01-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received guard Trae Young from Atlanta Hawks.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1629027.0,
+      "PLAYER_SLUG": "trae-young",
+      "Additional_Sort": 1610612737.0,
+      "GroupSort": "Trade 2025019"
+    }
+  ]
+}

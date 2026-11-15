@@ -138,8 +138,10 @@ export class EvidenceIndex {
         segments,
         starters:
           source === "lineups"
-            ? d.startingLineup.map((name: string) => ({
-                id: ids.resolve("player", "lineup-name", name),
+            ? d.startingLineup.map((name: string, index: number) => ({
+                id:
+                  d.starterIds?.[index] ??
+                  ids.resolve("player", "lineup-name", name),
                 name,
               }))
             : null,

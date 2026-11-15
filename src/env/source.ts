@@ -39,7 +39,7 @@ export interface SessionSource {
   columns(table: HistoryTable, season?: string): Promise<ColumnDefinition[]>;
   injuries(kind: "teams" | "players"): AsyncIterable<RecordEnvelope[]>;
   odds(): Promise<RecordEnvelope[]>;
-  evidence(source: EvidenceSource): Promise<RecordEnvelope[]>;
+  evidence(source: EvidenceSource, cutoff?: string): Promise<RecordEnvelope[]>;
 }
 export const HISTORY_TABLE: Record<GameHistoryTable, string> = {
   games: "games",

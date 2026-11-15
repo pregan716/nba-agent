@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "team": {
+    "teamId": "1610612764",
+    "name": "Washington Wizards"
+  },
+  "season": "2025-26",
+  "openingAvailableFrom": "2025-10-21T23:29:59Z",
+  "openingRoster": [
+    {
+      "playerId": "1628963",
+      "name": "Marvin Bagley III"
+    },
+    {
+      "playerId": "1630264",
+      "name": "Anthony Gill"
+    },
+    {
+      "playerId": "1630536",
+      "name": "Sharife Cooper"
+    },
+    {
+      "playerId": "1630551",
+      "name": "Justin Champagnie"
+    },
+    {
+      "playerId": "1630557",
+      "name": "Corey Kispert"
+    },
+    {
+      "playerId": "1631103",
+      "name": "Malaki Branham"
+    },
+    {
+      "playerId": "1641715",
+      "name": "Cam Whitmore"
+    },
+    {
+      "playerId": "1641731",
+      "name": "Bilal Coulibaly"
+    },
+    {
+      "playerId": "1641774",
+      "name": "Tristan Vukcevic"
+    },
+    {
+      "playerId": "1642259",
+      "name": "Alex Sarr"
+    },
+    {
+      "playerId": "1642267",
+      "name": "Bub Carrington"
+    },
+    {
+      "playerId": "1642273",
+      "name": "Kyshawn George"
+    },
+    {
+      "playerId": "1642358",
+      "name": "AJ Johnson"
+    },
+    {
+      "playerId": "1642364",
+      "name": "Jamir Watkins"
+    },
+    {
+      "playerId": "1642848",
+      "name": "Tre Johnson"
+    },
+    {
+      "playerId": "1642860",
+      "name": "Will Riley"
+    },
+    {
+      "playerId": "203114",
+      "name": "Khris Middleton"
+    },
+    {
+      "playerId": "203468",
+      "name": "CJ McCollum"
+    }
+  ],
+  "players": [
+    {
+      "playerId": "1626156",
+      "name": "D'Angelo Russell"
+    },
+    {
+      "playerId": "1627746",
+      "name": "Skal Labissiere"
+    },
+    {
+      "playerId": "1628963",
+      "name": "Marvin Bagley III"
+    },
+    {
+      "playerId": "1629027",
+      "name": "Trae Young"
+    },
+    {
+      "playerId": "1630557",
+      "name": "Corey Kispert"
+    },
+    {
+      "playerId": "1630702",
+      "name": "Jaden Hardy"
+    },
+    {
+      "playerId": "1631103",
+      "name": "Malaki Branham"
+    },
+    {
+      "playerId": "1631214",
+      "name": "Alondes Williams"
+    },
+    {
+      "playerId": "1641774",
+      "name": "Tristan Vukcevic"
+    },
+    {
+      "playerId": "1641778",
+      "name": "Leaky Black"
+    },
+    {
+      "playerId": "1642358",
+      "name": "AJ Johnson"
+    },
+    {
+      "playerId": "1642364",
+      "name": "Jamir Watkins"
+    },
+    {
+      "playerId": "1642882",
+      "name": "Julian Reese"
+    },
+    {
+      "playerId": "1642933",
+      "name": "Keshon Gilbert"
+    },
+    {
+      "playerId": "1642955",
+      "name": "Kadary Richmond"
+    },
+    {
+      "playerId": "203076",
+      "name": "Anthony Davis"
+    },
+    {
+      "playerId": "203114",
+      "name": "Khris Middleton"
+    },
+    {
+      "playerId": "203468",
+      "name": "CJ McCollum"
+    },
+    {
+      "playerId": "203957",
+      "name": "Dante Exum"
+    }
+  ],
+  "events": [
+    {
+      "announcement": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
+      "id": "000-1630557",
+      "availableAt": "2026-01-09T16:42:26Z",
+      "out": [
+        "1630557"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
+      "id": "001-203468",
+      "availableAt": "2026-01-09T16:42:26Z",
+      "out": [
+        "203468"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
+      "id": "002-1629027",
+      "availableAt": "2026-01-09T16:42:26Z",
+      "out": [],
+      "in": [
+        "1629027"
+      ]
+    },
+    {
+      "announcement": "https://www.nba.com/wizards/news/washington-signs-skal-labissiere-to-10-day-contract",
+      "id": "003-1627746",
+      "availableAt": "2026-01-27T17:17:14Z",
+      "out": [],
+      "in": [
+        "1627746"
+      ]
+    },
+    {
+      "id": "004-1642358",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "1642358"
+      ],
+      "in": []
+    },
+    {
+      "id": "005-1628963",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "1628963"
+      ],
+      "in": []
+    },
+    {
+      "id": "006-203114",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "203114"
+      ],
+      "in": []
+    },
+    {
+      "id": "007-1630702",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [],
+      "in": [
+        "1630702"
+      ]
+    },
+    {
+      "id": "008-1626156",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [],
+      "in": [
+        "1626156"
+      ]
+    },
+    {
+      "id": "009-203957",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [],
+      "in": [
+        "203957"
+      ]
+    },
+    {
+      "id": "010-203076",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [],
+      "in": [
+        "203076"
+      ]
+    },
+    {
+      "id": "011-1631103",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "1631103"
+      ],
+      "in": []
+    },
+    {
+      "id": "012-1627746",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "1627746"
+      ],
+      "in": []
+    },
+    {
+      "id": "013-1642933",
+      "availableAt": "2026-02-07T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642933"
+      ]
+    },
+    {
+      "id": "014-203957",
+      "availableAt": "2026-02-09T05:00:00Z",
+      "out": [
+        "203957"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/wizards/news/washington-signskadary-richmondto-10-day-contract",
+      "id": "015-1642955",
+      "availableAt": "2026-02-11T15:36:40Z",
+      "out": [],
+      "in": [
+        "1642955"
+      ]
+    },
+    {
+      "id": "016-1642933",
+      "availableAt": "2026-02-16T05:00:00Z",
+      "out": [
+        "1642933"
+      ],
+      "in": []
+    },
+    {
+      "id": "017-1631214",
+      "availableAt": "2026-02-17T05:00:00Z",
+      "out": [],
+      "in": [
+        "1631214"
+      ]
+    },
+    {
+      "id": "018-1642955",
+      "availableAt": "2026-02-21T05:00:00Z",
+      "out": [
+        "1642955"
+      ],
+      "in": []
+    },
+    {
+      "id": "019-1641778",
+      "availableAt": "2026-02-22T05:00:00Z",
+      "out": [],
+      "in": [
+        "1641778"
+      ]
+    },
+    {
+      "id": "020-1631214",
+      "availableAt": "2026-02-26T05:00:00Z",
+      "out": [
+        "1631214"
+      ],
+      "in": []
+    },
+    {
+      "id": "021-1642882",
+      "availableAt": "2026-03-01T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642882"
+      ]
+    }
+  ],
+  "sources": {
+    "openingRoster": {
+      "bucket": "sports-nba-data",
+      "key": "nba/player-reference/2025-26-opening/releases/15fef7276244e616b0817be4/manifest.json",
+      "sha256": "7d9e7802344e90852d55eee4895b305a24a4f59e46fd18d87915b17ecfd8837f",
+      "bytes": 648147
+    },
+    "official": {
+      "path": "docs/evidence/five-team/moves-WAS.json",
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    }
+  }
+}

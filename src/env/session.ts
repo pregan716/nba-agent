@@ -80,6 +80,7 @@ export class Session {
     runRoot?: string,
     countMemory?: import("../runner/memory.js").MemoryCounter,
     private readonly strictPregameExport = false,
+    private readonly teamId: string = BOS,
   ) {
     if (isMemoryV3(config.profile.memory))
       validateMemory(config.profile.memory);
@@ -159,7 +160,7 @@ export class Session {
     if (
       !game ||
       compare(game.data.scheduled_tipoff, this.#game.scheduledStart) !== 0 ||
-      ![game.data.home_team_id, game.data.away_team_id].includes(BOS)
+      ![game.data.home_team_id, game.data.away_team_id].includes(this.teamId)
     )
       throw Error("Session game differs from pinned schedule");
     return game;
@@ -167,11 +168,11 @@ export class Session {
   async context(budget: BudgetRemaining): Promise<ContextResult> {
     this.#check("context", {});
     const game = await this.#current(),
-      home = game.data.home_team_id === BOS;
+      home = game.data.home_team_id === this.teamId;
     const { horizon, revision, process, windowGames } =
       this.#config.profile.memory;
     return {
-      team: this.#team(BOS),
+      team: this.#team(this.teamId),
       season: "2025-26",
       game: {
         game_id: game.id,
@@ -216,7 +217,9 @@ export class Session {
       const games = new Map((await this.#games()).map((g) => [g.id, g]));
       const records: RecordEnvelope[] = [];
       for (const source of ["posts", "transcripts", "lineups"] as const) {
-        for (const r of this.#eligible(await this.#source.evidence(source))) {
+        for (const r of this.#eligible(
+          await this.#source.evidence(source, this.#cutoff),
+        )) {
           if (r.source !== source) throw Error("Evidence source mismatch");
           if (source === "lineups") {
             const id = this.#source.identities.resolve(
@@ -253,7 +256,9 @@ export class Session {
         from = (await this.#games())
           .filter(
             (g) =>
-              [g.data.home_team_id, g.data.away_team_id].includes(BOS) &&
+              [g.data.home_team_id, g.data.away_team_id].includes(
+                this.teamId,
+              ) &&
               compare(g.data.scheduled_tipoff, this.#game.scheduledStart) < 0,
           )
           .map((g) => g.data.scheduled_tipoff as string)
@@ -494,7 +499,11 @@ export class Session {
         "invalid_input",
         "Schedule cursor cannot be combined with game_id or team_id",
       );
-    return this.#scheduleAndInjuries(input, input.team_id ?? BOS, bounded);
+    return this.#scheduleAndInjuries(
+      input,
+      input.team_id ?? this.teamId,
+      bounded,
+    );
   }
   async #scheduleAndInjuries(
     input: ReadScheduleAndInjuriesInput,

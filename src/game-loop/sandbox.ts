@@ -11,7 +11,7 @@ export function gameSandbox(
   data: SessionSource,
   game: Game,
   pkg: Package,
-  context: unknown,
+  context: { teamId: string },
   root: string,
   recordStep: (entry: Record<string, unknown>) => void,
 ) {
@@ -25,6 +25,7 @@ export function gameSandbox(
     undefined,
     undefined,
     true,
+    context.teamId,
   );
   const box = new DockerSandbox(
     config,

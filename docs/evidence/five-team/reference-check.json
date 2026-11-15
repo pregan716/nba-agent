@@ -1,0 +1,13 @@
+{
+  "games": 70,
+  "expectedBox": 33.137170881551334,
+  "medianRoster": 31.22083478634693,
+  "image": "local@sha256:602b00b82411ac80770b2a63da787d5f538590760b782c0eeabd0ff80d09c9e9",
+  "game70": "0022501019",
+  "coldRefitHashes": [
+    "cefb750318aea0f05d14af1c403b16f0d5548bf0d0ba417a5136a0ce90104cf7",
+    "cefb750318aea0f05d14af1c403b16f0d5548bf0d0ba417a5136a0ce90104cf7"
+  ],
+  "inputHash": "b8bf9a5fd6d54a5791fa48a04dc01889d82cef6961c3f7b4b4f57392d5596185",
+  "harnessHash": "618ff3923dec0a113c45554763fabebfdb850576a2ea733fbd44215b9ccb4806"
+}

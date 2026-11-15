@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { z } from "zod";
 import { sha256 } from "../data/store.js";
+import { normalizeName } from "../data/identity.js";
+import { teamCode } from "../data/teams.js";
 import { BOS } from "./roster-types.js";
 
 export interface LocalSource {
@@ -12,7 +14,7 @@ export interface LocalSource {
 const player = z.object({ playerId: z.string(), name: z.string() });
 const schema = z.object({
   schemaVersion: z.literal(1),
-  team: z.object({ teamId: z.literal(BOS) }),
+  team: z.object({ teamId: z.string() }),
   season: z.literal("2025-26"),
   openingAvailableFrom: z.iso.datetime(),
   openingRoster: z.array(player),
@@ -31,9 +33,20 @@ const schema = z.object({
 });
 
 /** Verify both committed evidence files before interpreting any membership. */
-export async function loadSeasonRoster(root = process.cwd()) {
+export async function loadSeasonRoster(
+  root = process.cwd(),
+  teamId: string = BOS,
+) {
   const pins = JSON.parse(
-    await readFile(resolve(root, "config/roster-evidence.json"), "utf8"),
+    await readFile(
+      resolve(
+        root,
+        teamId === BOS
+          ? "config/roster-evidence.json"
+          : `config/five-team/roster-${teamCode(teamId)}-pins.json`,
+      ),
+      "utf8",
+    ),
   );
   const sources: LocalSource[] = [];
   const read = async (pin: LocalSource) => {
@@ -46,6 +59,7 @@ export async function loadSeasonRoster(root = process.cwd()) {
   const config = schema.parse(await read(pins.curated));
   const official = await read(pins.official);
   if (
+    config.team.teamId !== teamId ||
     pins.official.path !== config.sources.official.path ||
     official.source.sha256 !== config.sources.official.fullDownloadSha256
   )
@@ -64,6 +78,21 @@ export async function loadSeasonRoster(root = process.cwd()) {
   return {
     sources,
     openingAvailableFrom: config.openingAvailableFrom,
+    departed(key: string, tip: string) {
+      const matching = [...names].filter(
+        ([, name]) => normalizeName(name) === key,
+      );
+      if (matching.length !== 1) return false;
+      const [id] = matching[0];
+      const latest = events
+        .filter(
+          (e) =>
+            Date.parse(e.availableAt) < Date.parse(tip) &&
+            (e.in.includes(id) || e.out.includes(id)),
+        )
+        .at(-1);
+      return !!latest?.out.includes(id);
+    },
     at(tip: string) {
       const time = Date.parse(tip);
       if (

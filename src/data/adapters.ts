@@ -27,7 +27,7 @@ const timestamp = (value: unknown): string | null =>
   value == null
     ? null
     : instant(value instanceof Date ? value.toISOString() : value);
-function envelope(
+export function envelope(
   source: string,
   id: string,
   data: Row,
@@ -337,7 +337,11 @@ export class PlayByPlayAdapter {
       if (!files[name]?.some((entry: unknown[]) => entry[0] === gameId))
         continue;
       const key = m.object_prefix + name;
-      for (const [i, row] of (await this.release.rows(key)).entries()) {
+      for (const [i, row] of await this.exportRows(
+        key,
+        files[name],
+        new Map([[gameId, game]]),
+      )) {
         if (row.game_id !== gameId) continue;
         result.push(
           envelope(
@@ -637,7 +641,7 @@ export class TranscriptsAdapter {
     private manifests: Record<string, ObjectRef>,
     private store: VerifiedStore,
   ) {}
-  async records(): Promise<RecordEnvelope[]> {
+  async records(cutoff?: string): Promise<RecordEnvelope[]> {
     const result: RecordEnvelope[] = [];
     for (const entry of this.index) {
       const availability = transcriptAvailability(entry);
@@ -649,6 +653,8 @@ export class TranscriptsAdapter {
         });
         continue;
       }
+      if (cutoff && Temporal.Instant.compare(availability.at, cutoff) >= 0)
+        continue;
       const root = this.manifests[entry.manifestKey];
       if (!root) throw Error("Unpinned transcript manifest");
       const manifest = await this.store.json(root);

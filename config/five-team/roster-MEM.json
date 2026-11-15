@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "team": {
+    "teamId": "1610612763",
+    "name": "Memphis Grizzlies"
+  },
+  "season": "2025-26",
+  "openingAvailableFrom": "2025-10-21T23:29:59Z",
+  "openingRoster": [
+    {
+      "playerId": "1628991",
+      "name": "Jaren Jackson Jr."
+    },
+    {
+      "playerId": "1629111",
+      "name": "Jock Landale"
+    },
+    {
+      "playerId": "1629630",
+      "name": "Ja Morant"
+    },
+    {
+      "playerId": "1629634",
+      "name": "Brandon Clarke"
+    },
+    {
+      "playerId": "1629660",
+      "name": "Ty Jerome"
+    },
+    {
+      "playerId": "1629723",
+      "name": "John Konchar"
+    },
+    {
+      "playerId": "1630583",
+      "name": "Santi Aldama"
+    },
+    {
+      "playerId": "1630590",
+      "name": "Scotty Pippen Jr."
+    },
+    {
+      "playerId": "1631246",
+      "name": "Vince Williams Jr."
+    },
+    {
+      "playerId": "1641713",
+      "name": "GG Jackson"
+    },
+    {
+      "playerId": "1641744",
+      "name": "Zach Edey"
+    },
+    {
+      "playerId": "1641765",
+      "name": "Olivier-Maxence Prosper"
+    },
+    {
+      "playerId": "1641790",
+      "name": "PJ Hall"
+    },
+    {
+      "playerId": "1642285",
+      "name": "Cam Spencer"
+    },
+    {
+      "playerId": "1642377",
+      "name": "Jaylen Wells"
+    },
+    {
+      "playerId": "1642907",
+      "name": "Cedric Coward"
+    },
+    {
+      "playerId": "1642914",
+      "name": "Javon Small"
+    },
+    {
+      "playerId": "203484",
+      "name": "Kentavious Caldwell-Pope"
+    }
+  ],
+  "players": [
+    {
+      "playerId": "1627777",
+      "name": "Georges Niang"
+    },
+    {
+      "playerId": "1628991",
+      "name": "Jaren Jackson Jr."
+    },
+    {
+      "playerId": "1629111",
+      "name": "Jock Landale"
+    },
+    {
+      "playerId": "1629646",
+      "name": "Charles Bassey"
+    },
+    {
+      "playerId": "1629723",
+      "name": "John Konchar"
+    },
+    {
+      "playerId": "1630610",
+      "name": "Dejon Jarreau"
+    },
+    {
+      "playerId": "1631132",
+      "name": "Christian Koloko"
+    },
+    {
+      "playerId": "1631174",
+      "name": "Tyler Burton"
+    },
+    {
+      "playerId": "1631246",
+      "name": "Vince Williams Jr."
+    },
+    {
+      "playerId": "1631351",
+      "name": "Lucas Williamson"
+    },
+    {
+      "playerId": "1641707",
+      "name": "Taylor Hendricks"
+    },
+    {
+      "playerId": "1641712",
+      "name": "Rayan Rupert"
+    },
+    {
+      "playerId": "1641723",
+      "name": "Kobe Bufkin"
+    },
+    {
+      "playerId": "1641727",
+      "name": "Dariq Whitehead"
+    },
+    {
+      "playerId": "1641765",
+      "name": "Olivier-Maxence Prosper"
+    },
+    {
+      "playerId": "1641790",
+      "name": "PJ Hall"
+    },
+    {
+      "playerId": "1642380",
+      "name": "Adama Bal"
+    },
+    {
+      "playerId": "1642383",
+      "name": "Walter Clayton Jr."
+    },
+    {
+      "playerId": "1642942",
+      "name": "Jahmai Mashack"
+    },
+    {
+      "playerId": "1643133",
+      "name": "Lawson Lovering"
+    },
+    {
+      "playerId": "1643253",
+      "name": "Toby Okani"
+    },
+    {
+      "playerId": "201569",
+      "name": "Eric Gordon"
+    },
+    {
+      "playerId": "201959",
+      "name": "Taj Gibson"
+    },
+    {
+      "playerId": "203937",
+      "name": "Kyle Anderson"
+    }
+  ],
+  "events": [
+    {
+      "id": "000-1629646",
+      "availableAt": "2025-10-28T04:00:00Z",
+      "out": [],
+      "in": [
+        "1629646"
+      ]
+    },
+    {
+      "id": "001-1629646",
+      "availableAt": "2025-11-06T05:00:00Z",
+      "out": [
+        "1629646"
+      ],
+      "in": []
+    },
+    {
+      "id": "002-1642942",
+      "availableAt": "2025-11-17T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642942"
+      ]
+    },
+    {
+      "id": "003-1641790",
+      "availableAt": "2025-11-17T05:00:00Z",
+      "out": [
+        "1641790"
+      ],
+      "in": []
+    },
+    {
+      "id": "004-1641723",
+      "availableAt": "2025-11-25T05:00:00Z",
+      "out": [],
+      "in": [
+        "1641723"
+      ]
+    },
+    {
+      "id": "005-1641723",
+      "availableAt": "2025-12-04T05:00:00Z",
+      "out": [
+        "1641723"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-10-day-contract",
+      "id": "006-1631132",
+      "availableAt": "2025-12-22T16:30:00Z",
+      "out": [],
+      "in": [
+        "1631132"
+      ]
+    },
+    {
+      "id": "007-1631132",
+      "availableAt": "2026-01-01T05:00:00Z",
+      "out": [
+        "1631132"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-second-10-day-contract",
+      "id": "008-1631132",
+      "availableAt": "2026-01-02T18:38:05Z",
+      "out": [],
+      "in": [
+        "1631132"
+      ]
+    },
+    {
+      "id": "009-1631132",
+      "availableAt": "2026-01-12T05:00:00Z",
+      "out": [
+        "1631132"
+      ],
+      "in": []
+    },
+    {
+      "id": "010-1631246",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [
+        "1631246"
+      ],
+      "in": []
+    },
+    {
+      "id": "011-1629723",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [
+        "1629723"
+      ],
+      "in": []
+    },
+    {
+      "id": "012-1629111",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [
+        "1629111"
+      ],
+      "in": []
+    },
+    {
+      "id": "013-1628991",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [
+        "1628991"
+      ],
+      "in": []
+    },
+    {
+      "id": "014-1642383",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642383"
+      ]
+    },
+    {
+      "id": "015-1641707",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [],
+      "in": [
+        "1641707"
+      ]
+    },
+    {
+      "id": "016-1627777",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [],
+      "in": [
+        "1627777"
+      ]
+    },
+    {
+      "id": "017-203937",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "out": [],
+      "in": [
+        "203937"
+      ]
+    },
+    {
+      "id": "018-201569",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [],
+      "in": [
+        "201569"
+      ]
+    },
+    {
+      "id": "019-1627777",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "1627777"
+      ],
+      "in": []
+    },
+    {
+      "id": "020-201569",
+      "availableAt": "2026-02-07T05:00:00Z",
+      "out": [
+        "201569"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-lawson-lovering-to-10-day-contract",
+      "id": "021-1643133",
+      "availableAt": "2026-02-09T21:25:40Z",
+      "out": [],
+      "in": [
+        "1643133"
+      ]
+    },
+    {
+      "id": "022-1643133",
+      "availableAt": "2026-02-21T05:00:00Z",
+      "out": [
+        "1643133"
+      ],
+      "in": []
+    },
+    {
+      "id": "023-1641712",
+      "availableAt": "2026-02-23T05:00:00Z",
+      "out": [],
+      "in": [
+        "1641712"
+      ]
+    },
+    {
+      "id": "024-201959",
+      "availableAt": "2026-02-27T05:00:00Z",
+      "out": [],
+      "in": [
+        "201959"
+      ]
+    },
+    {
+      "id": "025-203937",
+      "availableAt": "2026-02-27T05:00:00Z",
+      "out": [
+        "203937"
+      ],
+      "in": []
+    },
+    {
+      "id": "026-1641712",
+      "availableAt": "2026-03-04T05:00:00Z",
+      "out": [
+        "1641712"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-rayan-rupert-to-two-way-contract",
+      "id": "027-1641712",
+      "availableAt": "2026-03-04T20:10:49Z",
+      "out": [],
+      "in": [
+        "1641712"
+      ]
+    },
+    {
+      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-tyler-burton-to-10-day-contract",
+      "id": "028-1631174",
+      "availableAt": "2026-03-12T17:10:52Z",
+      "out": [],
+      "in": [
+        "1631174"
+      ]
+    },
+    {
+      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-dejon-jarreau-to-10-day-contract-2",
+      "id": "029-1630610",
+      "availableAt": "2026-03-13T19:12:24Z",
+      "out": [],
+      "in": [
+        "1630610"
+      ]
+    },
+    {
+      "id": "030-1631174",
+      "availableAt": "2026-03-22T04:00:00Z",
+      "out": [
+        "1631174"
+      ],
+      "in": []
+    },
+    {
+      "id": "031-1630610",
+      "availableAt": "2026-03-23T04:00:00Z",
+      "out": [
+        "1630610"
+      ],
+      "in": []
+    },
+    {
+      "id": "032-1631174",
+      "availableAt": "2026-03-24T04:00:00Z",
+      "out": [],
+      "in": [
+        "1631174"
+      ]
+    },
+    {
+      "id": "033-1630610",
+      "availableAt": "2026-03-24T04:00:00Z",
+      "out": [],
+      "in": [
+        "1630610"
+      ]
+    },
+    {
+      "id": "034-1642380",
+      "availableAt": "2026-03-29T04:00:00Z",
+      "out": [],
+      "in": [
+        "1642380"
+      ]
+    },
+    {
+      "id": "035-1631351",
+      "availableAt": "2026-04-01T04:00:00Z",
+      "out": [],
+      "in": [
+        "1631351"
+      ]
+    },
+    {
+      "id": "036-1631174",
+      "availableAt": "2026-04-02T04:00:00Z",
+      "out": [
+        "1631174"
+      ],
+      "in": []
+    },
+    {
+      "id": "037-1630610",
+      "availableAt": "2026-04-02T04:00:00Z",
+      "out": [
+        "1630610"
+      ],
+      "in": []
+    },
+    {
+      "id": "038-1641727",
+      "availableAt": "2026-04-04T04:00:00Z",
+      "out": [],
+      "in": [
+        "1641727"
+      ]
+    },
+    {
+      "id": "039-1643253",
+      "availableAt": "2026-04-04T04:00:00Z",
+      "out": [],
+      "in": [
+        "1643253"
+      ]
+    },
+    {
+      "id": "040-1642380",
+      "availableAt": "2026-04-07T04:00:00Z",
+      "out": [
+        "1642380"
+      ],
+      "in": []
+    },
+    {
+      "id": "041-1642380",
+      "availableAt": "2026-04-08T04:00:00Z",
+      "out": [],
+      "in": [
+        "1642380"
+      ]
+    },
+    {
+      "id": "042-1631351",
+      "availableAt": "2026-04-10T04:00:00Z",
+      "out": [
+        "1631351"
+      ],
+      "in": []
+    },
+    {
+      "id": "043-1631351",
+      "availableAt": "2026-04-11T04:00:00Z",
+      "out": [],
+      "in": [
+        "1631351"
+      ]
+    },
+    {
+      "id": "044-1641727",
+      "availableAt": "2026-04-13T04:00:00Z",
+      "out": [
+        "1641727"
+      ],
+      "in": []
+    },
+    {
+      "id": "045-1643253",
+      "availableAt": "2026-04-13T04:00:00Z",
+      "out": [
+        "1643253"
+      ],
+      "in": []
+    },
+    {
+      "id": "046-1642380",
+      "availableAt": "2026-04-17T04:00:00Z",
+      "out": [
+        "1642380"
+      ],
+      "in": []
+    },
+    {
+      "id": "047-1631351",
+      "availableAt": "2026-04-20T04:00:00Z",
+      "out": [
+        "1631351"
+      ],
+      "in": []
+    }
+  ],
+  "sources": {
+    "openingRoster": {
+      "bucket": "sports-nba-data",
+      "key": "nba/player-reference/2025-26-opening/releases/15fef7276244e616b0817be4/manifest.json",
+      "sha256": "7d9e7802344e90852d55eee4895b305a24a4f59e46fd18d87915b17ecfd8837f",
+      "bytes": 648147
+    },
+    "official": {
+      "path": "docs/evidence/five-team/moves-MEM.json",
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    }
+  }
+}

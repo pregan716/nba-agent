@@ -9,7 +9,10 @@ import { projectionModel, recordReference } from "./reference.js";
 import { scoreGame, type Metering } from "./scoring.js";
 import { validateForecast, type Pregame } from "./validation.js";
 
-type Source = Awaited<ReturnType<typeof projectionSource>>;
+type Source = Pick<
+  Awaited<ReturnType<typeof projectionSource>>,
+  "schedule" | "input" | "outcomes"
+>;
 export interface ForecastClock {
   phase: "pregame" | "postgame";
   now: string;

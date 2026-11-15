@@ -1,0 +1,12 @@
+{
+  "official": {
+    "path": "docs/evidence/five-team/moves-DEN.json",
+    "sha256": "bcc6995a5c369178f5726198624d1be43addafd5a7f180a27f4c230898eb8744",
+    "bytes": 2581
+  },
+  "curated": {
+    "path": "config/five-team/roster-DEN.json",
+    "sha256": "e52151defb4e5bb29fcd7d19af76ba4d0492a2d38eba4a690ebbb346a66cdbdb",
+    "bytes": 3139
+  }
+}
