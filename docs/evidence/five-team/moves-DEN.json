@@ -1,0 +1,74 @@
+{
+  "source": {
+    "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+  },
+  "rows": [
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-03-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed guard Tyus Jones to a Rest-of-Season Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1626145.0,
+      "PLAYER_SLUG": "tyus-jones",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1146570"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-03-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed forward David Roddy to a Two-Way Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1631223.0,
+      "PLAYER_SLUG": "david-roddy",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1146569"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2026-03-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived guard Tamar Bates.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1642926.0,
+      "PLAYER_SLUG": "tamar-bates",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1146544"
+    },
+    {
+      "Transaction_Type": "ContractConverted",
+      "TRANSACTION_DATE": "2026-02-19T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets converted the contract of forward Spencer Jones to an NBA Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1642461.0,
+      "PLAYER_SLUG": "spencer-jones",
+      "Additional_Sort": 0.0,
+      "GroupSort": "ContractConverted 1145721"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-19T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed guard KJ Simpson to a Two-Way Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1642354.0,
+      "PLAYER_SLUG": "kj-simpson",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1145738"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Brooklyn Nets received forward Hunter Tyson from Denver Nuggets.",
+      "TEAM_ID": 1610612751.0,
+      "TEAM_SLUG": "nets",
+      "PLAYER_ID": 1641816.0,
+      "PLAYER_SLUG": "hunter-tyson",
+      "Additional_Sort": 1610612743.0,
+      "GroupSort": "Trade 2025047"
+    }
+  ]
+}

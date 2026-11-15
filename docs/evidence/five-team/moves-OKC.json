@@ -1,0 +1,96 @@
+{
+  "source": {
+    "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+  },
+  "rows": [
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-03-02T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder signed forward Payton Sandfort to a Two-Way Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642362.0,
+      "PLAYER_SLUG": "payton-sandfort",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1146228"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2026-03-02T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Buddy Boeheim.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1631205.0,
+      "PLAYER_SLUG": "buddy-boeheim",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1146268"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2026-02-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder signed forward Buddy Boeheim to a Two-Way Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1631205.0,
+      "PLAYER_SLUG": "buddy-boeheim",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1144911"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2026-02-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived guard Chris Youngblood.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642959.0,
+      "PLAYER_SLUG": "chris-youngblood",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1144931"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder received forward Mason Plumlee from Charlotte Hornets.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 203486.0,
+      "PLAYER_SLUG": "mason-plumlee",
+      "Additional_Sort": 1610612766.0,
+      "GroupSort": "Trade 2025025"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Charlotte Hornets received forward Ousmane Dieng from Oklahoma City Thunder.",
+      "TEAM_ID": 1610612766.0,
+      "TEAM_SLUG": "hornets",
+      "PLAYER_ID": 1631172.0,
+      "PLAYER_SLUG": "ousmane-dieng",
+      "Additional_Sort": 1610612760.0,
+      "GroupSort": "Trade 2025025"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder received guard Jared McCain from Philadelphia 76ers.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642272.0,
+      "PLAYER_SLUG": "jared-mccain",
+      "Additional_Sort": 1610612755.0,
+      "GroupSort": "Trade 2025028"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2026-02-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Mason Plumlee.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 203486.0,
+      "PLAYER_SLUG": "mason-plumlee",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1144741"
+    }
+  ]
+}

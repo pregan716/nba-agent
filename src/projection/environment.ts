@@ -21,7 +21,10 @@ import { forecastTool } from "./tools.js";
 export function forecastEnvironment(
   config: RunConfig,
   data: SessionSource,
-  source: Awaited<ReturnType<typeof projectionSource>>,
+  source: Pick<
+    Awaited<ReturnType<typeof projectionSource>>,
+    "schedule" | "input" | "outcomes"
+  >,
   model: ReturnType<typeof projectionModel>,
   lines: (
     id: string,

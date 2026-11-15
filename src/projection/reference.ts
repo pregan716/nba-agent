@@ -13,6 +13,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { sha256 } from "../data/store.js";
 import { digest } from "../runner/config.js";
+import { teamCode } from "../data/teams.js";
 import { BOS } from "./roster-types.js";
 import {
   eligibleHistory,
@@ -24,6 +25,9 @@ import { quantities, type Forecast } from "./forecast.js";
 
 const script = fileURLToPath(
   new URL("../../projection/fit.py", import.meta.url),
+);
+const teamScript = fileURLToPath(
+  new URL("../../projection/team-fit.py", import.meta.url),
 );
 export interface Fit {
   modelHash: string;
@@ -39,6 +43,7 @@ export function projectionModel(image: string) {
         image,
         source: digest([
           sha256(await readFile(script)),
+          sha256(await readFile(teamScript)),
           ...(await Promise.all(
             [
               "./reference.ts",
@@ -67,11 +72,19 @@ export function projectionModel(image: string) {
           "--read-only",
           "--mount",
           "type=bind,source=" + script + ",target=/fit.py,readonly",
+          ...(data.teamId && data.teamId !== BOS
+            ? [
+                "--mount",
+                "type=bind,source=" +
+                  teamScript +
+                  ",target=/team-fit.py,readonly",
+              ]
+            : []),
           "--entrypoint",
           "python",
           image.replace(/^local@/, ""),
           "-B",
-          "/fit.py",
+          data.teamId && data.teamId !== BOS ? "/team-fit.py" : "/fit.py",
         ],
         {
           input: JSON.stringify(data),
@@ -102,7 +115,12 @@ export async function recordReference(
   if (!/^[\w-]+$/.test(input.gameId)) throw Error("Invalid game ID");
   const harnessHash = digest(await model.identity()),
     inputHash = digest(input);
-  const path = resolve(root, harnessHash, input.gameId + ".json");
+  const path = resolve(
+    root,
+    harnessHash,
+    ...(input.teamId && input.teamId !== BOS ? [teamCode(input.teamId)] : []),
+    input.gameId + ".json",
+  );
   const load = () => {
     const { record, checksum } = JSON.parse(readFileSync(path, "utf8")) as {
       record: ReferenceRecord;
@@ -197,22 +215,36 @@ export function releasedErrors(
 
 /** V4 pregame entry point. Backfill missing receipts at each game's original cutoff. */
 export async function referenceTables(
-  source: { schedule: Game[]; input(game: Game): Promise<ModelInput> },
+  source: {
+    schedule: Game[];
+    teamGames?: { gameId: string; teamId: string }[];
+    input(game: Game, teamId?: string): Promise<ModelInput>;
+  },
   gameId: string,
   root: string,
   model: Model,
+  teamId: string = BOS,
 ) {
-  const target = source.schedule.find(
-    (g) => g.gameId === gameId && g.boston && g.season === "2025-26",
+  const ids = new Set(
+    source.teamGames?.filter((g) => g.teamId === teamId).map((g) => g.gameId),
   );
-  if (!target) throw Error("Unknown Celtics target: " + gameId);
-  const input = await source.input(target);
+  const participates = (g: Game) =>
+    source.teamGames ? ids.has(g.gameId) : teamId === BOS && g.boston;
+  const target = source.schedule.find(
+    (g) => g.gameId === gameId && participates(g) && g.season === "2025-26",
+  );
+  if (!target) throw Error("Unknown team-game: " + gameId);
+  const input = await source.input(target, teamId);
   const released = new Map(input.history.map((g) => [g.gameId, g]));
   const history = [];
   for (const game of eligibleHistory(source.schedule, target).filter(
-    (g) => g.boston && g.season === target.season,
+    (g) => participates(g) && g.season === target.season,
   )) {
-    const record = await recordReference(root, model, await source.input(game));
+    const record = await recordReference(
+      root,
+      model,
+      await source.input(game, teamId),
+    );
     const actual = released.get(game.gameId);
     const exclusion = input.exclusions?.find((e) => e.gameId === game.gameId);
     if (!actual && !exclusion)
@@ -222,7 +254,7 @@ export async function referenceTables(
       cutoff: record.cutoff,
       modelHash: record.modelHash,
       forecast: record.forecast,
-      errors: actual ? releasedErrors(record, actual) : [],
+      errors: actual ? releasedErrors(record, actual, teamId) : [],
       exclusion: exclusion?.reason ?? null,
     });
   }

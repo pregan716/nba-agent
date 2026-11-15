@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "team": {
+    "teamId": "1610612760",
+    "name": "Oklahoma City Thunder"
+  },
+  "season": "2025-26",
+  "openingAvailableFrom": "2025-10-21T23:29:59Z",
+  "openingRoster": [
+    {
+      "playerId": "1627936",
+      "name": "Alex Caruso"
+    },
+    {
+      "playerId": "1628392",
+      "name": "Isaiah Hartenstein"
+    },
+    {
+      "playerId": "1628983",
+      "name": "Shai Gilgeous-Alexander"
+    },
+    {
+      "playerId": "1629026",
+      "name": "Kenrich Williams"
+    },
+    {
+      "playerId": "1629652",
+      "name": "Luguentz Dort"
+    },
+    {
+      "playerId": "1630198",
+      "name": "Isaiah Joe"
+    },
+    {
+      "playerId": "1630598",
+      "name": "Aaron Wiggins"
+    },
+    {
+      "playerId": "1631096",
+      "name": "Chet Holmgren"
+    },
+    {
+      "playerId": "1631114",
+      "name": "Jalen Williams"
+    },
+    {
+      "playerId": "1631119",
+      "name": "Jaylin Williams"
+    },
+    {
+      "playerId": "1631172",
+      "name": "Ousmane Dieng"
+    },
+    {
+      "playerId": "1641717",
+      "name": "Cason Wallace"
+    },
+    {
+      "playerId": "1642260",
+      "name": "Nikola Topić"
+    },
+    {
+      "playerId": "1642349",
+      "name": "Ajay Mitchell"
+    },
+    {
+      "playerId": "1642382",
+      "name": "Branden Carlson"
+    },
+    {
+      "playerId": "1642850",
+      "name": "Thomas Sorber"
+    },
+    {
+      "playerId": "1642959",
+      "name": "Chris Youngblood"
+    },
+    {
+      "playerId": "1642964",
+      "name": "Brooks Barnhizer"
+    }
+  ],
+  "players": [
+    {
+      "playerId": "1631172",
+      "name": "Ousmane Dieng"
+    },
+    {
+      "playerId": "1631205",
+      "name": "Buddy Boeheim"
+    },
+    {
+      "playerId": "1642272",
+      "name": "Jared McCain"
+    },
+    {
+      "playerId": "1642362",
+      "name": "Payton Sandfort"
+    },
+    {
+      "playerId": "1642959",
+      "name": "Chris Youngblood"
+    },
+    {
+      "playerId": "203486",
+      "name": "Mason Plumlee"
+    }
+  ],
+  "events": [
+    {
+      "id": "000-203486",
+      "availableAt": "2026-02-05T05:00:00Z",
+      "out": [],
+      "in": [
+        "203486"
+      ]
+    },
+    {
+      "id": "001-1631172",
+      "availableAt": "2026-02-05T05:00:00Z",
+      "out": [
+        "1631172"
+      ],
+      "in": []
+    },
+    {
+      "id": "002-1642272",
+      "availableAt": "2026-02-05T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642272"
+      ]
+    },
+    {
+      "id": "003-203486",
+      "availableAt": "2026-02-05T05:00:00Z",
+      "out": [
+        "203486"
+      ],
+      "in": []
+    },
+    {
+      "id": "004-1631205",
+      "availableAt": "2026-02-07T05:00:00Z",
+      "out": [],
+      "in": [
+        "1631205"
+      ]
+    },
+    {
+      "id": "005-1642959",
+      "availableAt": "2026-02-07T05:00:00Z",
+      "out": [
+        "1642959"
+      ],
+      "in": []
+    },
+    {
+      "id": "006-1642362",
+      "availableAt": "2026-03-03T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642362"
+      ]
+    },
+    {
+      "id": "007-1631205",
+      "availableAt": "2026-03-03T05:00:00Z",
+      "out": [
+        "1631205"
+      ],
+      "in": []
+    }
+  ],
+  "sources": {
+    "openingRoster": {
+      "bucket": "sports-nba-data",
+      "key": "nba/player-reference/2025-26-opening/releases/15fef7276244e616b0817be4/manifest.json",
+      "sha256": "7d9e7802344e90852d55eee4895b305a24a4f59e46fd18d87915b17ecfd8837f",
+      "bytes": 648147
+    },
+    "official": {
+      "path": "docs/evidence/five-team/moves-OKC.json",
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    }
+  }
+}

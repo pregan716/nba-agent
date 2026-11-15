@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "team": {
+    "teamId": "1610612743",
+    "name": "Denver Nuggets"
+  },
+  "season": "2025-26",
+  "openingAvailableFrom": "2025-10-21T23:29:59Z",
+  "openingRoster": [
+    {
+      "playerId": "1627750",
+      "name": "Jamal Murray"
+    },
+    {
+      "playerId": "1628971",
+      "name": "Bruce Brown"
+    },
+    {
+      "playerId": "1629618",
+      "name": "Jalen Pickett"
+    },
+    {
+      "playerId": "1629661",
+      "name": "Cameron Johnson"
+    },
+    {
+      "playerId": "1630192",
+      "name": "Zeke Nnaji"
+    },
+    {
+      "playerId": "1631124",
+      "name": "Julian Strawther"
+    },
+    {
+      "playerId": "1631128",
+      "name": "Christian Braun"
+    },
+    {
+      "playerId": "1631212",
+      "name": "Peyton Watson"
+    },
+    {
+      "playerId": "1641747",
+      "name": "DaRon Holmes II"
+    },
+    {
+      "playerId": "1641816",
+      "name": "Hunter Tyson"
+    },
+    {
+      "playerId": "1642461",
+      "name": "Spencer Jones"
+    },
+    {
+      "playerId": "1642926",
+      "name": "Tamar Bates"
+    },
+    {
+      "playerId": "1642938",
+      "name": "Curtis Jones"
+    },
+    {
+      "playerId": "202685",
+      "name": "Jonas Valanciunas"
+    },
+    {
+      "playerId": "203501",
+      "name": "Tim Hardaway Jr."
+    },
+    {
+      "playerId": "203932",
+      "name": "Aaron Gordon"
+    },
+    {
+      "playerId": "203999",
+      "name": "Nikola Jokić"
+    }
+  ],
+  "players": [
+    {
+      "playerId": "1626145",
+      "name": "Tyus Jones"
+    },
+    {
+      "playerId": "1631223",
+      "name": "David Roddy"
+    },
+    {
+      "playerId": "1641816",
+      "name": "Hunter Tyson"
+    },
+    {
+      "playerId": "1642354",
+      "name": "KJ Simpson"
+    },
+    {
+      "playerId": "1642461",
+      "name": "Spencer Jones"
+    },
+    {
+      "playerId": "1642926",
+      "name": "Tamar Bates"
+    }
+  ],
+  "events": [
+    {
+      "id": "000-1641816",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "out": [
+        "1641816"
+      ],
+      "in": []
+    },
+    {
+      "id": "001-1642354",
+      "availableAt": "2026-02-20T05:00:00Z",
+      "out": [],
+      "in": [
+        "1642354"
+      ]
+    },
+    {
+      "id": "002-1631223",
+      "availableAt": "2026-03-05T05:00:00Z",
+      "out": [],
+      "in": [
+        "1631223"
+      ]
+    },
+    {
+      "id": "003-1642926",
+      "availableAt": "2026-03-05T05:00:00Z",
+      "out": [
+        "1642926"
+      ],
+      "in": []
+    },
+    {
+      "announcement": "https://www.nba.com/nuggets/news/nuggets-sign-tyus-jones",
+      "id": "004-1626145",
+      "availableAt": "2026-03-05T17:05:42Z",
+      "out": [],
+      "in": [
+        "1626145"
+      ]
+    }
+  ],
+  "sources": {
+    "openingRoster": {
+      "bucket": "sports-nba-data",
+      "key": "nba/player-reference/2025-26-opening/releases/15fef7276244e616b0817be4/manifest.json",
+      "sha256": "7d9e7802344e90852d55eee4895b305a24a4f59e46fd18d87915b17ecfd8837f",
+      "bytes": 648147
+    },
+    "official": {
+      "path": "docs/evidence/five-team/moves-DEN.json",
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    }
+  }
+}

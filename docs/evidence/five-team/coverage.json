@@ -1,0 +1,52 @@
+{
+  "developmentVsTestGames": 14,
+  "cutoff": "2026-03-23T00:00:00Z",
+  "method": "Regular-season team-games before the Celtics game 71 tip (March 23 UTC). Posts and publication-eligible transcript index entries count from the previous team tip to strictly before this tip (72 hours for the opener). Injury counts require a published team snapshot; props count pinned game consensus availability. Null means no team consensus release was supplied.",
+  "teams": [
+    {
+      "team": "BOS",
+      "games": 70,
+      "withPosts": 70,
+      "withTranscripts": 56,
+      "withPregameInjuryReport": 70,
+      "withAnnouncedLineup": 54,
+      "withProps": 70
+    },
+    {
+      "team": "DEN",
+      "games": 72,
+      "withPosts": 72,
+      "withTranscripts": 49,
+      "withPregameInjuryReport": 72,
+      "withAnnouncedLineup": 72,
+      "withProps": null
+    },
+    {
+      "team": "MEM",
+      "games": 70,
+      "withPosts": 70,
+      "withTranscripts": 60,
+      "withPregameInjuryReport": 70,
+      "withAnnouncedLineup": 70,
+      "withProps": null
+    },
+    {
+      "team": "OKC",
+      "games": 71,
+      "withPosts": 71,
+      "withTranscripts": 55,
+      "withPregameInjuryReport": 71,
+      "withAnnouncedLineup": 71,
+      "withProps": null
+    },
+    {
+      "team": "WAS",
+      "games": 71,
+      "withPosts": 71,
+      "withTranscripts": 65,
+      "withPregameInjuryReport": 71,
+      "withAnnouncedLineup": 71,
+      "withProps": null
+    }
+  ]
+}

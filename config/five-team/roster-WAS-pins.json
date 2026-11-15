@@ -1,0 +1,12 @@
+{
+  "official": {
+    "path": "docs/evidence/five-team/moves-WAS.json",
+    "sha256": "70a83cd11f6dc68df18b3dc36a1a0ab697cca8e3ed0f93aa20a2d2979e82e9e1",
+    "bytes": 8282
+  },
+  "curated": {
+    "path": "config/five-team/roster-WAS.json",
+    "sha256": "ac38d4088da4e6ce7516376a20b2d4a2111544abe1a7267e57ba1f074d367482",
+    "bytes": 7015
+  }
+}

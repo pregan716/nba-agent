@@ -11,6 +11,7 @@ import {
 import {
   projectionModel,
   referenceTables,
+  recordReference,
 } from "../src/projection/reference.js";
 import { BOS } from "../src/projection/roster-types.js";
 import type { Corpus } from "../src/data/corpus.js";
@@ -240,6 +241,19 @@ test("pregame tables return immutable earlier forecasts paired only with release
       tables,
     );
     assert.equal(fits, 2);
+    const visitor = {
+      ...(await source.input(current)),
+      teamId: "1610612764",
+      roster: [{ playerId: "visitor", inactive: false }],
+    };
+    const other = await recordReference(root, model, visitor);
+    assert.deepEqual(
+      other.forecast.players.map((p) => p.playerId),
+      ["visitor"],
+    );
+    assert.notEqual(other.modelHash, tables.tonight.modelHash);
+    assert.deepEqual(await recordReference(root, model, visitor), other);
+    assert.equal(fits, 3);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

@@ -1,0 +1,12 @@
+{
+  "official": {
+    "path": "docs/evidence/five-team/moves-OKC.json",
+    "sha256": "bf3253e809cf9f6ecfceb1cf2077531a92e54d3c04e409c5cb4a85a09556bfe7",
+    "bytes": 3392
+  },
+  "curated": {
+    "path": "config/five-team/roster-OKC.json",
+    "sha256": "92394be7d97a8d532bd0ed871e3b616191e1c3e8ed01b273da62346524ac306f",
+    "bytes": 3595
+  }
+}

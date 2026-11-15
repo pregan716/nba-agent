@@ -34,6 +34,7 @@ export interface ReleasedGame extends Game {
   players: Outcome[];
 }
 export interface ModelInput {
+  teamId?: string;
   gameId: string;
   tip: string;
   roster: { playerId: string; inactive: boolean }[];
@@ -99,7 +100,7 @@ export function outcome(box: RecordEnvelope, summary: RecordEnvelope): Outcome {
 
 // Select game IDs before opening their history, then guard individual envelopes
 // before joining. Cache only complete games. The session never sees raw inputs.
-export async function projectionSource(c: Corpus) {
+export async function projectionSource(c: Corpus, root = process.cwd()) {
   const seasons = [c.priorPbp, c.pbp];
   const records = (await Promise.all(seasons.map((a) => a.games()))).flat();
   const schedule: Game[] = records.map((g) => ({
@@ -109,6 +110,15 @@ export async function projectionSource(c: Corpus) {
     season: g.data.season,
     boston: [g.data.home_team_id, g.data.away_team_id].includes(BOS),
   }));
+  const teamGames = records
+    .filter((g) => g.data.season === "2025-26")
+    .flatMap((g) =>
+      [g.data.home_team_id, g.data.away_team_id].map((teamId) => ({
+        teamId: String(teamId),
+        gameId: g.id,
+        tip: new Date(g.data.scheduled_tipoff).toISOString(),
+      })),
+    );
   const envelopes = new Map(records.map((g) => [g.id, g]));
   const cache = new Map<string, ReleasedGame>();
   const exclusions = new Map<string, string>();
@@ -182,6 +192,7 @@ export async function projectionSource(c: Corpus) {
   }
   return {
     schedule,
+    teamGames,
     async outcomes(game: Game, cutoff: string) {
       if (!before(game.release, cutoff))
         throw Error("Game outcomes unavailable before release");
@@ -194,19 +205,25 @@ export async function projectionSource(c: Corpus) {
       }
       return result;
     },
-    async input(target: Game): Promise<ModelInput> {
+    async input(target: Game, teamId: string = BOS): Promise<ModelInput> {
+      const participates = (g: Game) => {
+        const row = envelopes.get(g.gameId)?.data;
+        return row && [row.home_team_id, row.away_team_id].includes(teamId);
+      };
+      if (!participates(target)) throw Error("Team not scheduled for game");
+      const rosterKey = (id: string) => teamId + ":" + id;
       const allowed = eligibleHistory(schedule, target);
       await loadReleased(allowed, target.tip);
       const pending = [
-        ...allowed.filter((g) => g.season === target.season && g.boston),
+        ...allowed.filter((g) => g.season === target.season && participates(g)),
         target,
-      ].filter((g) => !rosters.has(g.gameId));
+      ].filter((g) => !rosters.has(rosterKey(g.gameId)));
       if (pending.length) {
         const pregames = await auditPregames(
           c,
           pending.map((g) => g.gameId),
           [],
-          process.cwd(),
+          root,
           undefined,
           {
             throughReportDay: Temporal.Instant.from(target.tip)
@@ -214,6 +231,7 @@ export async function projectionSource(c: Corpus) {
               .toPlainDate()
               .toString(),
             omitLineups: true,
+            teamId,
           },
         );
         for (const pre of pregames) {
@@ -225,7 +243,7 @@ export async function projectionSource(c: Corpus) {
               .map((r) => r.playerId),
           );
           rosters.set(
-            pre.gameId,
+            rosterKey(pre.gameId),
             pre.roster.map((r) => ({
               playerId: r.playerId,
               inactive: out.has(r.playerId),
@@ -236,7 +254,8 @@ export async function projectionSource(c: Corpus) {
       return {
         gameId: target.gameId,
         tip: target.tip,
-        roster: rosters.get(target.gameId)!,
+        ...(teamId === BOS ? {} : { teamId }),
+        roster: rosters.get(rosterKey(target.gameId))!,
         history: allowed
           .filter((g) => cache.has(g.gameId))
           .map((g) => cache.get(g.gameId)!),

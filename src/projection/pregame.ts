@@ -1,5 +1,11 @@
 import type { Corpus } from "../data/corpus.js";
-import { injuryPlayerName, normalizeName } from "../data/identity.js";
+import { openTeamEvidence } from "../data/team-evidence.js";
+import { teamCode } from "../data/teams.js";
+import {
+  Identities,
+  injuryPlayerName,
+  normalizeName,
+} from "../data/identity.js";
 import type { RecordEnvelope, Row } from "../data/contracts.js";
 import { loadSeasonRoster } from "./roster.js";
 import { BOS, type Pregame } from "./roster-types.js";
@@ -9,21 +15,29 @@ export async function auditPregames(
   identityMappings: Row[],
   root = process.cwd(),
   signal?: AbortSignal,
-  options?: { throughReportDay: string; omitLineups: boolean },
+  options?: {
+    throughReportDay?: string;
+    omitLineups?: boolean;
+    teamId?: string;
+    lineups?: RecordEnvelope[];
+  },
 ): Promise<Pregame[]> {
   signal?.throwIfAborted();
-  const membership = await loadSeasonRoster(root);
+  const teamId = options?.teamId ?? BOS;
+  const membership = await loadSeasonRoster(root, teamId);
   const games = (await c.pbp.games()).filter((g) => gameIds.includes(g.id));
   if (
     games.length !== new Set(gameIds).size ||
-    games.some((g) => ![g.data.home_team_id, g.data.away_team_id].includes(BOS))
+    games.some(
+      (g) => ![g.data.home_team_id, g.data.away_team_id].includes(teamId),
+    )
   )
-    throw Error("Unknown or non-Celtics pregame request");
+    throw Error("Unknown pregame request for team " + teamId);
   const eligible = (r: RecordEnvelope) => {
     const game = games.find((g) => g.id === r.data.game_id);
     return (
       !!game &&
-      r.data.team_id === BOS &&
+      r.data.team_id === teamId &&
       Date.parse(r.availableAt) < Date.parse(game.data.scheduled_tipoff)
     );
   };
@@ -62,9 +76,24 @@ export async function auditPregames(
     }
   }
   signal?.throwIfAborted();
-  const announcements = options?.omitLineups
-    ? []
-    : await c.celticsLineups.records();
+  const latestTip = games
+    .map((g) => String(g.data.scheduled_tipoff))
+    .sort()
+    .at(-1);
+  const announcements =
+    options?.omitLineups || !latestTip
+      ? []
+      : (options?.lineups ??
+        (teamId === BOS
+          ? await c.celticsLineups.records()
+          : await (
+              await openTeamEvidence(
+                c,
+                teamCode(teamId),
+                new Identities(),
+                root,
+              )
+            ).evidence("lineups", latestTip)));
   return games.map((g) => {
     const roster = membership.at(g.data.scheduled_tipoff);
     const resolveName = (name: string) => {
@@ -81,13 +110,15 @@ export async function auditPregames(
     const lineup = announcements
       .filter(
         (r) =>
-          identityMappings.some(
-            (m) =>
-              m.entity === "game" &&
-              m.provider === "espn" &&
-              m.providerId === r.data.gameId &&
-              m.canonicalId === g.id,
-          ) && Date.parse(r.availableAt) < Date.parse(g.data.scheduled_tipoff),
+          (r.data.game_id === g.id ||
+            identityMappings.some(
+              (m) =>
+                m.entity === "game" &&
+                m.provider === "espn" &&
+                m.providerId === r.data.gameId &&
+                m.canonicalId === g.id,
+            )) &&
+          Date.parse(r.availableAt) < Date.parse(g.data.scheduled_tipoff),
       )
       .sort((a, b) => a.availableAt.localeCompare(b.availableAt))
       .at(-1);
@@ -112,6 +143,12 @@ export async function auditPregames(
             ? "listed"
             : "unknown",
         players: rows
+          .filter((r) => {
+            // A report can still list an officially waived player as "Not With Team".
+            if (r.data.reason !== "Not With Team") return true;
+            const key = normalizeName(injuryPlayerName(r.data.player_name));
+            return !membership.departed(key, g.data.scheduled_tipoff);
+          })
           .map((r) => ({
             playerId: resolveName(r.data.player_name),
             status: r.data.status,
