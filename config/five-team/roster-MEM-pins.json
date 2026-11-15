@@ -1,12 +1,12 @@
 {
   "official": {
     "path": "docs/evidence/five-team/moves-MEM.json",
-    "sha256": "4ceafe42a4580b64b2a35f0a7808c4fb57e0b12399fb41e7e7bc13a5874e974c",
-    "bytes": 13372
+    "bytes": 21764,
+    "sha256": "f04a556f0a90c0c78d4fcc0e0eb2a68f4cd586eadb186cf27f10ea5655f1cecc"
   },
   "curated": {
     "path": "config/five-team/roster-MEM.json",
-    "sha256": "99480d4bcdadf6147aab88291a45d16d3080c701f9de04bf99b8bf3a9463a6aa",
-    "bytes": 11215
+    "bytes": 40290,
+    "sha256": "9a5465c33f7f13ba6a161ddad0b09b9b3a65f7bb04c25f33772e2896e461f618"
   }
 }

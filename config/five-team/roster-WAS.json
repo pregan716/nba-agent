@@ -160,185 +160,382 @@
   ],
   "events": [
     {
-      "announcement": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
-      "id": "000-1630557",
+      "id": "2026-01-09-cj-mccollum-trade",
+      "officialDate": "2026-01-09",
+      "kind": "trade",
+      "description": "Atlanta Hawks received guard CJ McCollum from Washington Wizards.",
       "availableAt": "2026-01-09T16:42:26Z",
-      "out": [
-        "1630557"
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-four-time-all-star-trae-young"
       ],
-      "in": []
-    },
-    {
-      "announcement": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
-      "id": "001-203468",
-      "availableAt": "2026-01-09T16:42:26Z",
+      "in": [],
       "out": [
         "203468"
-      ],
-      "in": []
+      ]
     },
     {
-      "announcement": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
-      "id": "002-1629027",
+      "id": "2026-01-09-corey-kispert-trade",
+      "officialDate": "2026-01-09",
+      "kind": "trade",
+      "description": "Atlanta Hawks received forward Corey Kispert from Washington Wizards.",
       "availableAt": "2026-01-09T16:42:26Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-four-time-all-star-trae-young"
+      ],
+      "in": [],
+      "out": [
+        "1630557"
+      ]
+    },
+    {
+      "id": "2026-01-09-trae-young-trade",
+      "officialDate": "2026-01-09",
+      "kind": "trade",
+      "description": "Washington Wizards received guard Trae Young from Atlanta Hawks.",
+      "availableAt": "2026-01-09T16:42:26Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-four-time-all-star-trae-young"
+      ],
       "in": [
         "1629027"
-      ]
+      ],
+      "out": []
     },
     {
-      "announcement": "https://www.nba.com/wizards/news/washington-signs-skal-labissiere-to-10-day-contract",
-      "id": "003-1627746",
+      "id": "2026-01-27-skal-labissiere-signing",
+      "officialDate": "2026-01-27",
+      "kind": "signing",
+      "description": "Washington Wizards signed forward Skal Labissiere to a 10-Day Contract.",
       "availableAt": "2026-01-27T17:17:14Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "washington-signs-skal-labissiere-to-10-day-contract"
+      ],
       "in": [
         "1627746"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "004-1642358",
-      "availableAt": "2026-02-06T05:00:00Z",
+      "id": "2026-02-05-aj-johnson-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Dallas Mavericks received guard AJ Johnson from Washington Wizards.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
+      "in": [],
       "out": [
         "1642358"
-      ],
-      "in": []
-    },
-    {
-      "id": "005-1628963",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [
-        "1628963"
-      ],
-      "in": []
-    },
-    {
-      "id": "006-203114",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [
-        "203114"
-      ],
-      "in": []
-    },
-    {
-      "id": "007-1630702",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [],
-      "in": [
-        "1630702"
       ]
     },
     {
-      "id": "008-1626156",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [],
-      "in": [
-        "1626156"
-      ]
-    },
-    {
-      "id": "009-203957",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [],
-      "in": [
-        "203957"
-      ]
-    },
-    {
-      "id": "010-203076",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [],
+      "id": "2026-02-05-anthony-davis-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Washington Wizards received forward Anthony Davis from Dallas Mavericks.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
       "in": [
         "203076"
-      ]
-    },
-    {
-      "id": "011-1631103",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [
-        "1631103"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "012-1627746",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [
-        "1627746"
+      "id": "2026-02-05-dangelo-russell-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Washington Wizards received guard D'Angelo Russell from Dallas Mavericks.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
       ],
-      "in": []
-    },
-    {
-      "id": "013-1642933",
-      "availableAt": "2026-02-07T05:00:00Z",
-      "out": [],
       "in": [
-        "1642933"
-      ]
+        "1626156"
+      ],
+      "out": []
     },
     {
-      "id": "014-203957",
-      "availableAt": "2026-02-09T05:00:00Z",
-      "out": [
+      "id": "2026-02-05-dante-exum-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Washington Wizards received guard Dante Exum from Dallas Mavericks.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
+      "in": [
         "203957"
       ],
-      "in": []
+      "out": []
     },
     {
-      "announcement": "https://www.nba.com/wizards/news/washington-signskadary-richmondto-10-day-contract",
-      "id": "015-1642955",
-      "availableAt": "2026-02-11T15:36:40Z",
-      "out": [],
+      "id": "2026-02-05-jaden-hardy-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Washington Wizards received guard Jaden Hardy from Dallas Mavericks.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
       "in": [
-        "1642955"
+        "1630702"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-05-khris-middleton-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Dallas Mavericks received forward Khris Middleton from Washington Wizards.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
+      "in": [],
+      "out": [
+        "203114"
       ]
     },
     {
-      "id": "016-1642933",
-      "availableAt": "2026-02-16T05:00:00Z",
+      "id": "2026-02-05-malaki-branham-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Charlotte Hornets received forward Malaki Branham from Washington Wizards.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
+      "in": [],
       "out": [
+        "1631103"
+      ]
+    },
+    {
+      "id": "2026-02-05-marvin-bagley-iii-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Dallas Mavericks received forward Marvin Bagley III from Washington Wizards.",
+      "availableAt": "2026-02-06T00:43:55Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-acquire-10-time-all-star-anthony-davis"
+      ],
+      "in": [],
+      "out": [
+        "1628963"
+      ]
+    },
+    {
+      "id": "2026-02-05-skal-labissiere-expires",
+      "officialDate": "2026-02-05",
+      "kind": "expiration",
+      "description": "Contract signed 2026-01-27. Free agency recorded February 6 (Labissiere), 16 (Gilbert), 21 (Richmond) and 26 (Williams).",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "was-expiry"
+      ],
+      "in": [],
+      "out": [
+        "1627746"
+      ]
+    },
+    {
+      "id": "2026-02-06-keshon-gilbert-signing",
+      "officialDate": "2026-02-06",
+      "kind": "signing",
+      "description": "Washington Wizards signed guard Keshon Gilbert to a 10-Day Contract.",
+      "availableAt": "2026-02-07T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
         "1642933"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "017-1631214",
-      "availableAt": "2026-02-17T05:00:00Z",
-      "out": [],
-      "in": [
-        "1631214"
+      "id": "2026-02-08-dante-exum-waive",
+      "officialDate": "2026-02-08",
+      "kind": "waive",
+      "description": "Washington Wizards waived guard Dante Exum.",
+      "availableAt": "2026-02-08T14:36:25Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-waive-dante-exum"
+      ],
+      "in": [],
+      "out": [
+        "203957"
       ]
     },
     {
-      "id": "018-1642955",
-      "availableAt": "2026-02-21T05:00:00Z",
-      "out": [
+      "id": "2026-02-11-kadary-richmond-signing",
+      "officialDate": "2026-02-11",
+      "kind": "signing",
+      "description": "Washington Wizards signed guard Kadary Richmond to a 10-Day Contract.",
+      "availableAt": "2026-02-11T15:36:40Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "washington-signskadary-richmondto-10-day-contract"
+      ],
+      "in": [
         "1642955"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "019-1641778",
-      "availableAt": "2026-02-22T05:00:00Z",
-      "out": [],
-      "in": [
-        "1641778"
+      "id": "2026-02-15-keshon-gilbert-expires",
+      "officialDate": "2026-02-15",
+      "kind": "expiration",
+      "description": "Contract signed 2026-02-06. Free agency recorded February 6 (Labissiere), 16 (Gilbert), 21 (Richmond) and 26 (Williams).",
+      "availableAt": "2026-02-16T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "was-expiry"
+      ],
+      "in": [],
+      "out": [
+        "1642933"
       ]
     },
     {
-      "id": "020-1631214",
-      "availableAt": "2026-02-26T05:00:00Z",
-      "out": [
+      "id": "2026-02-16-alondes-williams-signing",
+      "officialDate": "2026-02-16",
+      "kind": "signing",
+      "description": "Washington Wizards signed guard Alondes Williams to a 10-Day Contract.",
+      "availableAt": "2026-02-17T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
         "1631214"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "021-1642882",
-      "availableAt": "2026-03-01T05:00:00Z",
+      "id": "2026-02-20-kadary-richmond-expires",
+      "officialDate": "2026-02-20",
+      "kind": "expiration",
+      "description": "Contract signed 2026-02-11. Free agency recorded February 6 (Labissiere), 16 (Gilbert), 21 (Richmond) and 26 (Williams).",
+      "availableAt": "2026-02-21T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "was-expiry"
+      ],
+      "in": [],
+      "out": [
+        "1642955"
+      ]
+    },
+    {
+      "id": "2026-02-21-leaky-black-signing",
+      "officialDate": "2026-02-21",
+      "kind": "signing",
+      "description": "Washington Wizards signed forward Leaky Black to a Two-Way Contract.",
+      "availableAt": "2026-02-22T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
+        "1641778"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-21-tristan-vukcevic-conversion",
+      "officialDate": "2026-02-21",
+      "kind": "conversion",
+      "description": "Washington Wizards re-signed forward Tristan Vukcevic to a Rest-of-Season Contract.",
+      "availableAt": "2026-02-22T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [],
+      "playerId": "1641774"
+    },
+    {
+      "id": "2026-02-25-alondes-williams-expires",
+      "officialDate": "2026-02-25",
+      "kind": "expiration",
+      "description": "Contract signed 2026-02-16. Free agency recorded February 6 (Labissiere), 16 (Gilbert), 21 (Richmond) and 26 (Williams).",
+      "availableAt": "2026-02-26T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "was-expiry"
+      ],
+      "in": [],
+      "out": [
+        "1631214"
+      ]
+    },
+    {
+      "id": "2026-02-26-jamir-watkins-conversion",
+      "officialDate": "2026-02-26",
+      "kind": "conversion",
+      "description": "Washington Wizards re-signed forward Jamir Watkins to a Rest-of-Season Contract.",
+      "availableAt": "2026-02-26T18:31:33Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "washingtonsignsjamir-watkinsto-nba-contract"
+      ],
+      "in": [],
+      "out": [],
+      "playerId": "1642364"
+    },
+    {
+      "id": "2026-02-28-julian-reese-signing",
+      "officialDate": "2026-02-28",
+      "kind": "signing",
+      "description": "Washington Wizards signed forward Julian Reese to a Two-Way Contract.",
+      "availableAt": "2026-02-28T19:37:27Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "wizards-sign-julian-reese-to-two-way-contract"
+      ],
       "in": [
         "1642882"
-      ]
+      ],
+      "out": []
     }
   ],
   "sources": {
@@ -350,7 +547,144 @@
     },
     "official": {
       "path": "docs/evidence/five-team/moves-WAS.json",
-      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+      "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+      "retrievedAt": "2026-11-15T02:14:12Z"
+    },
+    "wizards-sign-julian-reese-to-two-way-contract": {
+      "url": "https://www.hoopsrumors.com/2026/02/wizards-sign-julian-reese-to-two-way-contract.html",
+      "pageTimestamp": "2026-02-28T13:37:27-06:00",
+      "quote": "The Wizards have signed free agent forward Julian Reese to a two-way contract, the team announced on Saturday (via Twitter)."
+    },
+    "washingtonsignsjamir-watkinsto-nba-contract": {
+      "url": "https://www.nba.com/wizards/news/washingtonsignsjamir-watkinsto-nba-contract",
+      "pageTimestamp": "2026-02-26T18:31:33Z",
+      "quote": "The Washington Wizards announced today they have signed forward Jamir Watkins to a standard NBA contract."
+    },
+    "was-expiry": {
+      "url": "https://basketball.realgm.com/nba/teams/Washington-Wizards/30/Transaction-History/2026",
+      "description": "Free agency recorded February 6 (Labissiere), 16 (Gilbert), 21 (Richmond) and 26 (Williams)."
+    },
+    "washington-signskadary-richmondto-10-day-contract": {
+      "url": "https://www.nba.com/wizards/news/washington-signskadary-richmondto-10-day-contract",
+      "pageTimestamp": "2026-02-11T15:36:40Z",
+      "quote": "Washington Signs Kadary Richmond To 10-Day Contract"
+    },
+    "wizards-waive-dante-exum": {
+      "url": "https://www.hoopsrumors.com/2026/02/wizards-waive-dante-exum.html",
+      "pageTimestamp": "2026-02-08T08:36:25-06:00",
+      "quote": "The Wizards have placed veteran guard Dante Exum on waivers, the team announced today (via Twitter)"
+    },
+    "wizards-acquire-10-time-all-star-anthony-davis": {
+      "url": "https://www.nba.com/wizards/news/wizards-acquire-10-time-all-star-anthony-davis",
+      "pageTimestamp": "2026-02-06T00:43:55Z",
+      "quote": "Hardy, Russell, and Exum also join Washington in Three-Team Trade with Dallas and Charlotte"
+    },
+    "washington-signs-skal-labissiere-to-10-day-contract": {
+      "url": "https://www.nba.com/wizards/news/washington-signs-skal-labissiere-to-10-day-contract",
+      "pageTimestamp": "2026-01-27T17:17:14Z",
+      "quote": "Washington Signs Skal Labissiere to 10-Day Contract"
+    },
+    "wizards-acquire-four-time-all-star-trae-young": {
+      "url": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
+      "pageTimestamp": "2026-01-09T16:42:26Z",
+      "quote": "acquired guard Trae Young from the Atlanta Hawks in exchange for guard/forward Corey Kispert and guard CJ McCollum."
     }
-  }
+  },
+  "rules": {
+    "membership": "A player is on the roster for a game when scheduled tip falls in [availableFrom, availableUntil) of one of his intervals. A null availableUntil is open-ended.",
+    "defaultAvailability": "The official feed carries a date and no time. A move is available at the end of its official date in America/New_York (05:00Z in standard time, 04:00Z in daylight time).",
+    "timestampedException": "Where a game tips on the official date, a timestamped secondary source may establish an earlier time. The source states no time zone, so its clock time is read as US Pacific, the latest mainland zone, which gives the latest possible instant. Every use is listed under boundaryCases.",
+    "tenDayContracts": "A 10-day contract is treated as running through the tenth calendar day in America/New_York, counting the signing date as day one. Each end date below is corroborated by a secondary source or by the next official signing.",
+    "neverUsed": "The replayed game's own box score or events. Box-score membership from already released games is a cross-check only (scripts/roster-crosscheck.py)."
+  },
+  "boundaryCases": [
+    {
+      "gameId": "0022500534",
+      "scheduledTip": "2026-01-10T00:00:00.000Z",
+      "source": "wizards-acquire-four-time-all-star-trae-young",
+      "url": "https://www.nba.com/wizards/news/wizards-acquire-four-time-all-star-trae-young",
+      "pageTimestamp": "2026-01-09T16:42:26Z",
+      "quote": "acquired guard Trae Young from the Atlanta Hawks in exchange for guard/forward Corey Kispert and guard CJ McCollum.",
+      "eventIds": [
+        "2026-01-09-cj-mccollum-trade",
+        "2026-01-09-corey-kispert-trade",
+        "2026-01-09-trae-young-trade"
+      ]
+    },
+    {
+      "gameId": "0022500664",
+      "scheduledTip": "2026-01-28T00:00:00.000Z",
+      "source": "washington-signs-skal-labissiere-to-10-day-contract",
+      "url": "https://www.nba.com/wizards/news/washington-signs-skal-labissiere-to-10-day-contract",
+      "pageTimestamp": "2026-01-27T17:17:14Z",
+      "quote": "Washington Signs Skal Labissiere to 10-Day Contract",
+      "eventIds": [
+        "2026-01-27-skal-labissiere-signing"
+      ]
+    },
+    {
+      "gameId": "0022500733",
+      "scheduledTip": "2026-02-06T00:00:00.000Z",
+      "source": "wizards-acquire-10-time-all-star-anthony-davis",
+      "url": "https://www.nba.com/wizards/news/wizards-acquire-10-time-all-star-anthony-davis",
+      "pageTimestamp": "2026-02-06T00:43:55Z",
+      "quote": "Hardy, Russell, and Exum also join Washington in Three-Team Trade with Dallas and Charlotte",
+      "eventIds": [
+        "2026-02-05-aj-johnson-trade",
+        "2026-02-05-anthony-davis-trade",
+        "2026-02-05-dangelo-russell-trade",
+        "2026-02-05-dante-exum-trade",
+        "2026-02-05-jaden-hardy-trade",
+        "2026-02-05-khris-middleton-trade",
+        "2026-02-05-malaki-branham-trade",
+        "2026-02-05-marvin-bagley-iii-trade"
+      ],
+      "resolution": "The announcement came after the scheduled tip. All eight player moves become available together at publication."
+    },
+    {
+      "gameId": "0022500758",
+      "scheduledTip": "2026-02-08T19:00:00.000Z",
+      "source": "wizards-waive-dante-exum",
+      "url": "https://www.hoopsrumors.com/2026/02/wizards-waive-dante-exum.html",
+      "pageTimestamp": "2026-02-08T08:36:25-06:00",
+      "quote": "The Wizards have placed veteran guard Dante Exum on waivers, the team announced today (via Twitter)",
+      "eventIds": [
+        "2026-02-08-dante-exum-waive"
+      ]
+    },
+    {
+      "gameId": "0022500776",
+      "scheduledTip": "2026-02-12T00:00:00.000Z",
+      "source": "washington-signskadary-richmondto-10-day-contract",
+      "url": "https://www.nba.com/wizards/news/washington-signskadary-richmondto-10-day-contract",
+      "pageTimestamp": "2026-02-11T15:36:40Z",
+      "quote": "Washington Signs Kadary Richmond To 10-Day Contract",
+      "eventIds": [
+        "2026-02-11-kadary-richmond-signing"
+      ]
+    },
+    {
+      "gameId": "0022500850",
+      "scheduledTip": "2026-02-27T00:30:00.000Z",
+      "source": "washingtonsignsjamir-watkinsto-nba-contract",
+      "url": "https://www.nba.com/wizards/news/washingtonsignsjamir-watkinsto-nba-contract",
+      "pageTimestamp": "2026-02-26T18:31:33Z",
+      "quote": "The Washington Wizards announced today they have signed forward Jamir Watkins to a standard NBA contract.",
+      "eventIds": [
+        "2026-02-26-jamir-watkins-conversion"
+      ]
+    },
+    {
+      "gameId": "0022500865",
+      "scheduledTip": "2026-03-01T00:00:00.000Z",
+      "source": "wizards-sign-julian-reese-to-two-way-contract",
+      "url": "https://www.hoopsrumors.com/2026/02/wizards-sign-julian-reese-to-two-way-contract.html",
+      "pageTimestamp": "2026-02-28T13:37:27-06:00",
+      "quote": "The Wizards have signed free agent forward Julian Reese to a two-way contract, the team announced on Saturday (via Twitter).",
+      "eventIds": [
+        "2026-02-28-julian-reese-signing"
+      ]
+    }
+  ]
 }

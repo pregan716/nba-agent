@@ -1,74 +1,74 @@
-"""SPO-845 cross-check: curated Celtics transactions versus released box-score membership.
+"""Compare the pinned roster at tip with released team boxes before the holdout.
 
-The curated file (config/celtics-transactions-2025-26.json) is the source of truth for
-who is on the roster at each scheduled tip. Box-score membership is used here only to
-check it, game by game; it is never a roster source. Reads the cached export written by
-scripts/decision-window-export.ts against the pinned release.
+Run from the repository root, e.g. python3 scripts/roster-crosscheck.py MEM.
+The reader applies the schedule and release gates before decoding box rows.
+The historical full-season Boston report is preserved separately.
 """
-import collections as C
+import argparse
 import json
-import pathlib
-import sys
-
-BOS = '1610612738'
-CONFIG = pathlib.Path('config/celtics-transactions-2025-26.json')
-EXPORT = pathlib.Path('.cache/spo837/2025-26.json')
-OUT = pathlib.Path('docs/evidence/roster/crosscheck.json')
+from pathlib import Path
+import subprocess
 
 
-def roster_at(config, tip):
-    """Opening roster, then every event available strictly before tip, in availability order."""
-    members = {p['playerId'] for p in config['openingRoster']}
-    assert config['openingAvailableFrom'] < tip
-    for event in sorted(config['events'], key=lambda e: (e['availableAt'], e['id'])):
-        if event['availableAt'] >= tip:
-            break
-        assert set(event['out']) <= members, (event['id'], 'departure of a non-member')
-        assert not set(event['in']) & (members - set(event['out'])), (event['id'], 'arrival of a member')
-        members = (members - set(event['out'])) | set(event['in'])
-    return members
+# Key by the exact two set differences. A changed discrepancy needs fresh review.
+EXPLANATIONS = {
+    ("0022500730", ("203486",), ("1642272",)): (
+        "The box lists Mason Plumlee and omits Jared McCain. Oklahoma City announced "
+        "both McCain's acquisition and Plumlee's waiver at 01:54:46Z, before the 02:30Z tip.",
+        "https://www.nba.com/thunder/news/release-mccain-260204",
+    ),
+    ("0022500758", ("203957",), ()): (
+        "The box still lists Dante Exum. Washington's waiver was public before the 19:00Z tip.",
+        "https://www.hoopsrumors.com/2026/02/wizards-waive-dante-exum.html",
+    ),
+    ("0022500822", (), ("1641778",)): (
+        "The box omits Leaky Black. Washington announced his two-way signing the previous day.",
+        "https://gleague.nba.com/news/washington-signs-tristan-vukcevic-to-multi-year-contract",
+    ),
+    ("0022500865", (), ("1642882",)): (
+        "The box omits Julian Reese. Washington announced his two-way signing before tip.",
+        "https://www.hoopsrumors.com/2026/02/wizards-sign-julian-reese-to-two-way-contract.html",
+    ),
+}
 
 
 def main():
-    config = json.loads(CONFIG.read_text())
-    export = json.loads(EXPORT.read_text())
-    official = json.loads(pathlib.Path(config['sources']['official']['path']).read_text())
-    assert official['source']['sha256'] == config['sources']['official']['fullDownloadSha256']
-    for event in config['events']:
-        assert all(s in config['sources'] for s in event['sources']), event['id']
-    games = sorted(export['games'], key=lambda g: g['scheduled_tipoff'])
-    box, played = C.defaultdict(set), C.defaultdict(set)
-    for row in export['tables']['player_box_scores']:
-        if row['team_id'] == BOS:
-            box[row['game_id']].add(row['player_id'])
-            if (row.get('minutes_seconds') or 0) > 0:
-                played[row['game_id']].add(row['player_id'])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("team", choices=["BOS", "DEN", "MEM", "OKC", "WAS"],
+                        default="BOS", nargs="?")
+    parser.add_argument("--allow-disagreements", action="store_true")
+    args = parser.parse_args()
+    data = json.loads(subprocess.check_output([
+        "node_modules/.bin/tsx", "scripts/roster-crosscheck-input.ts", args.team,
+    ]))
     rows, disagreements = [], []
-    for number, game in enumerate(games, 1):
-        tip = game['scheduled_tipoff'].replace('.000Z', 'Z')
-        roster = roster_at(config, tip)
-        only_curated, only_box = sorted(roster - box[game['game_id']]), sorted(box[game['game_id']] - roster)
-        played_off_roster = sorted(played[game['game_id']] - roster)
-        rows.append(dict(game_number=number, game_id=game['game_id'], scheduled_tip=tip, roster=sorted(roster),
-                         roster_size=len(roster), box_size=len(box[game['game_id']])))
-        if only_curated or only_box:
-            disagreements.append(dict(game_number=number, game_id=game['game_id'], scheduled_tip=tip,
-                                      curated_not_in_box=only_curated, box_not_curated=only_box,
-                                      played_but_not_curated=played_off_roster))
-    result = dict(
-        release_pin=export['pin'], curated_file=str(CONFIG), games=len(rows),
-        distinct_rosters=len({tuple(r['roster']) for r in rows}),
-        disagreements=disagreements, per_game=rows)
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
-    sizes = C.Counter(r['roster_size'] for r in rows)
-    print('games', len(rows), 'distinct rosters', result['distinct_rosters'], 'roster sizes', dict(sorted(sizes.items())))
-    print('disagreements', len(disagreements))
-    for d in disagreements:
-        print(' ', d)
-    if disagreements and '--allow-disagreements' not in sys.argv:
-        sys.exit(1)
+    for game in data["games"]:
+        box_rows = game.pop("box")
+        box = {row["playerId"] for row in box_rows}
+        played = {row["playerId"] for row in box_rows if (row["minutesSeconds"] or 0) > 0}
+        roster = set(game["roster"])
+        rows.append(dict(**game, roster_size=len(roster), box_size=len(box)))
+        only_box, only_roster = sorted(box - roster), sorted(roster - box)
+        if only_box or only_roster:
+            explanation = EXPLANATIONS.get((game["game_id"], tuple(only_box), tuple(only_roster)))
+            disagreements.append(dict(
+                game_id=game["game_id"], scheduled_tip=game["scheduled_tip"],
+                box_not_curated=only_box, curated_not_in_box=only_roster,
+                played_not_curated=sorted(played - roster),
+                explanation=explanation[0] if explanation else None,
+                source=explanation[1] if explanation else None,
+            ))
+
+    report = dict(team=args.team, release_pin=data["release_pin"], cutoff=data["cutoff"],
+                  roster_sources=data["roster_sources"], games=len(rows),
+                  distinct_rosters=len({tuple(row["roster"]) for row in rows}),
+                  disagreements=disagreements, per_game=rows)
+    out = Path(f"docs/evidence/roster/crosscheck-{args.team}.json")
+    out.write_text(json.dumps(report, indent=2) + "\n")
+    print(f"{args.team}: {len(rows)} released games, {len(disagreements)} disagreements")
+    if any(d["explanation"] is None or d["played_not_curated"] for d in disagreements) and not args.allow_disagreements:
+        raise SystemExit(f"Roster discrepancy requires review in {out}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -104,45 +104,96 @@
   ],
   "events": [
     {
-      "id": "000-1641816",
+      "id": "2026-02-05-hunter-tyson-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Brooklyn Nets received forward Hunter Tyson from Denver Nuggets.",
       "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1641816"
-      ],
-      "in": []
+      ]
     },
     {
-      "id": "001-1642354",
-      "availableAt": "2026-02-20T05:00:00Z",
+      "id": "2026-02-19-spencer-jones-conversion",
+      "officialDate": "2026-02-19",
+      "kind": "conversion",
+      "description": "Denver Nuggets converted the contract of forward Spencer Jones to an NBA Contract.",
+      "availableAt": "2026-02-19T18:59:02Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "nuggets-sign-spencer-jones-to-nba-contract"
+      ],
+      "in": [],
       "out": [],
+      "playerId": "1642461"
+    },
+    {
+      "id": "2026-02-19-kj-simpson-signing",
+      "officialDate": "2026-02-19",
+      "kind": "signing",
+      "description": "Denver Nuggets signed guard KJ Simpson to a Two-Way Contract.",
+      "availableAt": "2026-02-19T21:24:04Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "nuggets-sign-kj-simpson-two-way-contract"
+      ],
       "in": [
         "1642354"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "002-1631223",
+      "id": "2026-03-04-david-roddy-signing",
+      "officialDate": "2026-03-04",
+      "kind": "signing",
+      "description": "Denver Nuggets signed forward David Roddy to a Two-Way Contract.",
       "availableAt": "2026-03-05T05:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
         "1631223"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "003-1642926",
+      "id": "2026-03-04-tamar-bates-waive",
+      "officialDate": "2026-03-04",
+      "kind": "waive",
+      "description": "Denver Nuggets waived guard Tamar Bates.",
       "availableAt": "2026-03-05T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1642926"
-      ],
-      "in": []
+      ]
     },
     {
-      "announcement": "https://www.nba.com/nuggets/news/nuggets-sign-tyus-jones",
-      "id": "004-1626145",
+      "id": "2026-03-05-tyus-jones-signing",
+      "officialDate": "2026-03-05",
+      "kind": "signing",
+      "description": "Denver Nuggets signed guard Tyus Jones to a Rest-of-Season Contract.",
       "availableAt": "2026-03-05T17:05:42Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "nuggets-sign-tyus-jones"
+      ],
       "in": [
         "1626145"
-      ]
+      ],
+      "out": []
     }
   ],
   "sources": {
@@ -154,7 +205,66 @@
     },
     "official": {
       "path": "docs/evidence/five-team/moves-DEN.json",
-      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+      "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+      "retrievedAt": "2026-11-15T02:14:12Z"
+    },
+    "nuggets-sign-tyus-jones": {
+      "url": "https://www.nba.com/nuggets/news/nuggets-sign-tyus-jones",
+      "pageTimestamp": "2026-03-05T17:05:42Z",
+      "quote": "NUGGETS SIGN TYUS JONES"
+    },
+    "nuggets-sign-spencer-jones-to-nba-contract": {
+      "url": "https://www.nba.com/nuggets/news/nuggets-sign-spencer-jones-to-nba-contract",
+      "pageTimestamp": "2026-02-19T18:59:02Z",
+      "quote": "NUGGETS SIGN SPENCER JONES TO NBA CONTRACT"
+    },
+    "nuggets-sign-kj-simpson-two-way-contract": {
+      "url": "https://www.nba.com/nuggets/news/nuggets-sign-kj-simpson-two-way-contract",
+      "pageTimestamp": "2026-02-19T21:24:04Z",
+      "quote": "NUGGETS SIGN KJ SIMPSON TO TWO-WAY CONTRACT"
     }
-  }
+  },
+  "rules": {
+    "membership": "A player is on the roster for a game when scheduled tip falls in [availableFrom, availableUntil) of one of his intervals. A null availableUntil is open-ended.",
+    "defaultAvailability": "The official feed carries a date and no time. A move is available at the end of its official date in America/New_York (05:00Z in standard time, 04:00Z in daylight time).",
+    "timestampedException": "Where a game tips on the official date, a timestamped secondary source may establish an earlier time. The source states no time zone, so its clock time is read as US Pacific, the latest mainland zone, which gives the latest possible instant. Every use is listed under boundaryCases.",
+    "tenDayContracts": "A 10-day contract is treated as running through the tenth calendar day in America/New_York, counting the signing date as day one. Each end date below is corroborated by a secondary source or by the next official signing.",
+    "neverUsed": "The replayed game's own box score or events. Box-score membership from already released games is a cross-check only (scripts/roster-crosscheck.py)."
+  },
+  "boundaryCases": [
+    {
+      "gameId": "0022500801",
+      "scheduledTip": "2026-02-20T03:30:00.000Z",
+      "source": "nuggets-sign-kj-simpson-two-way-contract",
+      "url": "https://www.nba.com/nuggets/news/nuggets-sign-kj-simpson-two-way-contract",
+      "pageTimestamp": "2026-02-19T21:24:04Z",
+      "quote": "NUGGETS SIGN KJ SIMPSON TO TWO-WAY CONTRACT",
+      "eventIds": [
+        "2026-02-19-kj-simpson-signing"
+      ]
+    },
+    {
+      "gameId": "0022500801",
+      "scheduledTip": "2026-02-20T03:30:00.000Z",
+      "source": "nuggets-sign-spencer-jones-to-nba-contract",
+      "url": "https://www.nba.com/nuggets/news/nuggets-sign-spencer-jones-to-nba-contract",
+      "pageTimestamp": "2026-02-19T18:59:02Z",
+      "quote": "NUGGETS SIGN SPENCER JONES TO NBA CONTRACT",
+      "eventIds": [
+        "2026-02-19-spencer-jones-conversion"
+      ]
+    },
+    {
+      "gameId": "0022500906",
+      "scheduledTip": "2026-03-06T03:00:00.000Z",
+      "source": "nuggets-sign-tyus-jones",
+      "url": "https://www.nba.com/nuggets/news/nuggets-sign-tyus-jones",
+      "pageTimestamp": "2026-03-05T17:05:42Z",
+      "quote": "NUGGETS SIGN TYUS JONES",
+      "eventIds": [
+        "2026-03-05-tyus-jones-signing"
+      ]
+    }
+  ]
 }

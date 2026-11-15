@@ -1,8 +1,12 @@
 {
   "source": {
     "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
-    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    "retrieved_at": "2026-11-15T02:14:12Z",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+    "bytes": 4286543,
+    "total_rows": 10144
   },
+  "filter": "TEAM_ID == 1610612764 or \"Wizards\" in TRANSACTION_DESCRIPTION (case-insensitive); 2025-07-01 <= TRANSACTION_DATE <= 2026-04-20",
   "rows": [
     {
       "Transaction_Type": "Signing",
@@ -128,6 +132,17 @@
     {
       "Transaction_Type": "Trade",
       "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Dallas Mavericks received draft consideration from Washington Wizards.",
+      "TEAM_ID": 1610612742.0,
+      "TEAM_SLUG": "mavericks",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025039"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
       "TRANSACTION_DESCRIPTION": "Washington Wizards received guard Jaden Hardy from Dallas Mavericks.",
       "TEAM_ID": 1610612764.0,
       "TEAM_SLUG": "wizards",
@@ -223,6 +238,336 @@
       "PLAYER_SLUG": "trae-young",
       "Additional_Sort": 1610612737.0,
       "GroupSort": "Trade 2025019"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-19T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived forward Dillon Jones.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641794.0,
+      "PLAYER_SLUG": "dillon-jones",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138290"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Kadary Richmond.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642955.0,
+      "PLAYER_SLUG": "kadary-richmond",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138175"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Alondes Williams.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1631214.0,
+      "PLAYER_SLUG": "alondes-williams",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138176"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-12T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived forward Leaky Black.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641778.0,
+      "PLAYER_SLUG": "leaky-black",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137308"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-12T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived forward Skal Labissiere.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1627746.0,
+      "PLAYER_SLUG": "skal-labissiere",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137309"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived forward Akoldah Gak.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1631305.0,
+      "PLAYER_SLUG": "akoldah-gak",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137035"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-02T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived forward Jonathan Pierre.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642952.0,
+      "PLAYER_SLUG": "jonathan-pierre",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137014"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-09-30T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Keshon Gilbert.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642933.0,
+      "PLAYER_SLUG": "keshon-gilbert",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1136968"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-09-19T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed guard Sharife Cooper to a Two-Way Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1630536.0,
+      "PLAYER_SLUG": "sharife-cooper",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1136658"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-08-07T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed forward Anthony Gill to a Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1630264.0,
+      "PLAYER_SLUG": "anthony-gill",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1136229"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-08-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Jaylen Martin.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641798.0,
+      "PLAYER_SLUG": "jaylen-martin",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1136190"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-07-20T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Marcus Smart.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 203935.0,
+      "PLAYER_SLUG": "marcus-smart",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1135919"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-07-19T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived guard Blake Wesley.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1631104.0,
+      "PLAYER_SLUG": "blake-wesley",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1135911"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-07-14T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards waived forward Richaun Holmes.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1626158.0,
+      "PLAYER_SLUG": "richaun-holmes",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1135868"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-10T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards re-signed forward Tristan Vukcevic to a Two-Way Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641774.0,
+      "PLAYER_SLUG": "tristan-vukcevic",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135807"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-10T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards signed forward Marvin Bagley III to a Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1628963.0,
+      "PLAYER_SLUG": "marvin-bagley-iii",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135808"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "San Antonio Spurs received forward Kelly Olynyk from Washington Wizards.",
+      "TEAM_ID": 1610612759.0,
+      "TEAM_SLUG": "spurs",
+      "PLAYER_ID": 203482.0,
+      "PLAYER_SLUG": "kelly-olynyk",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025014"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received guard Blake Wesley from San Antonio Spurs.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1631104.0,
+      "PLAYER_SLUG": "blake-wesley",
+      "Additional_Sort": 1610612759.0,
+      "GroupSort": "Trade 2025014"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received forward Malaki Branham from San Antonio Spurs.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1631103.0,
+      "PLAYER_SLUG": "malaki-branham",
+      "Additional_Sort": 1610612759.0,
+      "GroupSort": "Trade 2025014"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received draft consideration from San Antonio Spurs.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612759.0,
+      "GroupSort": "Trade 2025014"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards re-signed forward Will Riley to a Rookie Scale Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642860.0,
+      "PLAYER_SLUG": "will-riley",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135551"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards re-signed forward Jamir Watkins to a Two-Way Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642364.0,
+      "PLAYER_SLUG": "jamir-watkins",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135554"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "New Orleans Pelicans received forward Saddiq Bey from Washington Wizards.",
+      "TEAM_ID": 1610612740.0,
+      "TEAM_SLUG": "pelicans",
+      "PLAYER_ID": 1630180.0,
+      "PLAYER_SLUG": "saddiq-bey",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "New Orleans Pelicans received guard Jordan Poole from Washington Wizards.",
+      "TEAM_ID": 1610612740.0,
+      "TEAM_SLUG": "pelicans",
+      "PLAYER_ID": 1629673.0,
+      "PLAYER_SLUG": "jordan-poole",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Houston Rockets received draft consideration from Washington Wizards.",
+      "TEAM_ID": 1610612745.0,
+      "TEAM_SLUG": "rockets",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612764.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received forward Kelly Olynyk from New Orleans Pelicans.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 203482.0,
+      "PLAYER_SLUG": "kelly-olynyk",
+      "Additional_Sort": 1610612740.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received guard CJ McCollum from New Orleans Pelicans.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 203468.0,
+      "PLAYER_SLUG": "cj-mccollum",
+      "Additional_Sort": 1610612740.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received draft consideration from New Orleans Pelicans.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612740.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards received forward Cam Whitmore from Houston Rockets.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1641715.0,
+      "PLAYER_SLUG": "cam-whitmore",
+      "Additional_Sort": 1610612745.0,
+      "GroupSort": "Trade 2025004"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Washington Wizards re-signed guard Tre Johnson to a Rookie Scale Contract.",
+      "TEAM_ID": 1610612764.0,
+      "TEAM_SLUG": "wizards",
+      "PLAYER_ID": 1642848.0,
+      "PLAYER_SLUG": "tre-johnson",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135486"
     }
   ]
 }
