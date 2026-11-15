@@ -1,4 +1,9 @@
 {
+  "gameLines": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=okc/_MANIFEST.json",
+    "sha256": "3cb4335b3f50660cdde0aeeb6901942a25f1522c84a7d95a9e6a51db7d7b9726"
+  },
   "posts": {
     "key": "v1/research/okc-2025-26/releases/4ff5fd06e26387437d99a79f9afa1d7a4fd47769c9cce7538368a8d8bfc26464/relevance-manifest.json",
     "bucket": "sports-text",

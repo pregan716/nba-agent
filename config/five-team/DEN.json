@@ -1,4 +1,9 @@
 {
+  "gameLines": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=den/_MANIFEST.json",
+    "sha256": "c1b4254b2060670d57c44a67d90ea839f431bc556aa1e825510a89cf393a1da0"
+  },
   "posts": {
     "key": "v1/research/denver-2025-26/releases/c2e48a78d4e0e9729b5e907694f41a67e61aa831c6d443865ac2c6204b053426/relevance-manifest.json",
     "bucket": "sports-text",

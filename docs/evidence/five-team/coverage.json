@@ -1,7 +1,7 @@
 {
   "developmentVsTestGames": 14,
   "cutoff": "2026-03-23T00:00:00Z",
-  "method": "Regular-season team-games before the Celtics game 71 tip (March 23 UTC). Posts and publication-eligible transcript index entries count from the previous team tip to strictly before this tip (72 hours for the opener). Injury counts require a published team snapshot; props count pinned game consensus availability. Null means no team consensus release was supplied.",
+  "method": "Regular-season team-games before the Celtics game 71 tip (March 23 UTC). Posts and publication-eligible transcript index entries count from the previous team tip to strictly before this tip (72 hours for the opener). Injury counts require a published team snapshot; props count pinned game consensus availability. Spread and game total use the scheduled-start snapshot. Player props were collected only for Boston.",
   "teams": [
     {
       "team": "BOS",
@@ -10,6 +10,8 @@
       "withTranscripts": 56,
       "withPregameInjuryReport": 70,
       "withAnnouncedLineup": 54,
+      "withSpread": 70,
+      "withGameTotal": 70,
       "withProps": 70
     },
     {
@@ -19,6 +21,8 @@
       "withTranscripts": 49,
       "withPregameInjuryReport": 72,
       "withAnnouncedLineup": 72,
+      "withSpread": 72,
+      "withGameTotal": 72,
       "withProps": null
     },
     {
@@ -28,6 +32,8 @@
       "withTranscripts": 60,
       "withPregameInjuryReport": 70,
       "withAnnouncedLineup": 70,
+      "withSpread": 70,
+      "withGameTotal": 70,
       "withProps": null
     },
     {
@@ -37,6 +43,8 @@
       "withTranscripts": 55,
       "withPregameInjuryReport": 71,
       "withAnnouncedLineup": 71,
+      "withSpread": 71,
+      "withGameTotal": 71,
       "withProps": null
     },
     {
@@ -46,6 +54,8 @@
       "withTranscripts": 65,
       "withPregameInjuryReport": 71,
       "withAnnouncedLineup": 71,
+      "withSpread": 71,
+      "withGameTotal": 71,
       "withProps": null
     }
   ]

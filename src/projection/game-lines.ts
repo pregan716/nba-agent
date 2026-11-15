@@ -115,26 +115,25 @@ function pairs(rows: Row[], market: string, team: string): Pair[] {
   }
   return result;
 }
-export function buildGameLines(quotes: Row[]) {
+export function buildGameLines(quotes: Row[], teamName = "Boston Celtics") {
   const groups = Map.groupBy(quotes, (r) =>
     JSON.stringify([r.espn_event_id, instant(r.requested_at)]),
   );
   return [...groups.values()]
     .map((rows) => {
-      const celtics = "Boston Celtics";
       const opponents = [
         ...new Set(
           rows
             .filter((r) => ["spreads", "team_totals"].includes(r.market))
             .map((r) => (r.market === "spreads" ? r.selection : r.description))
-            .filter((team) => typeof team === "string" && team !== celtics),
+            .filter((team) => typeof team === "string" && team !== teamName),
         ),
       ];
       const opponent = opponents.length === 1 ? opponents[0] : null;
-      const spread = opponent ? select(pairs(rows, "spreads", celtics)) : null;
-      const bos = main(pairs(rows, "team_totals", celtics));
+      const spread = opponent ? select(pairs(rows, "spreads", teamName)) : null;
+      const teamTotals = main(pairs(rows, "team_totals", teamName));
       const away = opponent ? main(pairs(rows, "team_totals", opponent)) : [];
-      const totals = bos.flatMap((b) => {
+      const totals = teamTotals.flatMap((b) => {
         const a = away.find((a) => a.book === b.book);
         return a
           ? [{ book: b.book, line: b.line + a.line, p: 0.5, overround: 0 }]
@@ -143,7 +142,7 @@ export function buildGameLines(quotes: Row[]) {
       return {
         espn_event_id: String(rows[0].espn_event_id),
         available_at: instant(rows[0].requested_at),
-        celtics_spread: spread,
+        spread,
         game_total: select(totals),
       };
     })
@@ -175,7 +174,7 @@ export async function openingGameLines(
       identities.resolve("game", "espn", r.espn_event_id) +
         "/" +
         instant(r.available_at),
-      { celtics_spread: r.celtics_spread, game_total: r.game_total },
+      { celtics_spread: r.spread, game_total: r.game_total },
     ]),
   );
   return (id: string, tip: string) =>

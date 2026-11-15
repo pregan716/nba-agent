@@ -1,4 +1,9 @@
 {
+  "gameLines": {
+    "bucket": "pm-data-platform",
+    "key": "external/the-odds-api/v1/league=nba/season=2025-26/team=mem/_MANIFEST.json",
+    "sha256": "41e780b47fa8738283002a5d3d75b9a4dd2a10a2d1ebffc90b6075e5257cd176"
+  },
   "posts": {
     "key": "v1/research/memphis-2025-26/releases/e7c4ecd3fe23a831b3779c4077e94792a79cc60baeb0811ead5c7ea9f3033118/relevance-manifest.json",
     "bucket": "sports-text",

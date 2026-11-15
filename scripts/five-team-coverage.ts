@@ -1,5 +1,5 @@
 import { writeFile } from "node:fs/promises";
-import { fiveTeamData } from "../src/data/five-team.js";
+import { fiveTeamData, fiveTeamGameLines } from "../src/data/five-team.js";
 import { teamIds } from "../src/data/teams.js";
 import { holdoutBoundary, viewGames } from "../src/data/architect-view.js";
 import { openCorpus } from "../src/data/corpus.js";
@@ -28,6 +28,7 @@ try {
       )
         injuries.add(r.data.team_id + ":" + r.data.game_id);
     }
+  const gameLines = await fiveTeamGameLines(a);
   const teams = [];
   for (const e of a.evidence) {
     const schedule = games
@@ -65,6 +66,9 @@ try {
           : Temporal.Instant.from(tip).subtract({ hours: 72 }).toString();
         return times.some((t) => !before(t, from) && before(t, tip));
       }).length;
+    const lines = schedule.map((g) =>
+      gameLines(e.teamId, g.id, g.data.scheduled_tipoff),
+    );
     teams.push({
       team: e.team,
       games: schedule.length,
@@ -74,6 +78,8 @@ try {
         injuries.has(e.teamId + ":" + g.id),
       ).length,
       withAnnouncedLineup: schedule.filter((g) => lineups.has(g.id)).length,
+      withSpread: lines.filter((l) => l.spread !== null).length,
+      withGameTotal: lines.filter((l) => l.total !== null).length,
       withProps: e.odds ? schedule.filter((g) => props.has(g.id)).length : null,
     });
   }
@@ -86,7 +92,7 @@ try {
     developmentVsTestGames: overlap,
     cutoff,
     method:
-      "Regular-season team-games before the Celtics game 71 tip (March 23 UTC). Posts and publication-eligible transcript index entries count from the previous team tip to strictly before this tip (72 hours for the opener). Injury counts require a published team snapshot; props count pinned game consensus availability. Null means no team consensus release was supplied.",
+      "Regular-season team-games before the Celtics game 71 tip (March 23 UTC). Posts and publication-eligible transcript index entries count from the previous team tip to strictly before this tip (72 hours for the opener). Injury counts require a published team snapshot; props count pinned game consensus availability. Spread and game total use the scheduled-start snapshot. Player props were collected only for Boston.",
     teams,
   };
   await writeFile(
