@@ -40,6 +40,9 @@ test("the architect prompt matches the harness it describes", () => {
     "{{team}} and {{game}}",
     "/data/models/<script name>.json",
     "/data/session.sqlite",
+    "game_lines (game_id, team_id, scheduled_tipoff, spread, total)",
+    "- sandboxSteps:",
+    "- calls:",
     "5th, 10th, 25th, 50th, 75th, 90th and 95th",
     "$" +
       architectLimits.iterationUsd +

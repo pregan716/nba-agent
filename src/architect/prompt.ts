@@ -147,6 +147,7 @@ data_python runs Python against your own view: one SQLite file at /data/session.
 - The game-history tables listed above except games, for 2024-25 league-wide and for 2025-26 games involving a development team.
 - rosters (game_id, team_id, playerId, name) for the development teams. The three team ids in this table are your development teams.
 - injury_teams and injury_players, posts, transcripts and lineups for the development teams.
+- game_lines (game_id, team_id, scheduled_tipoff, spread, total): the spread and total at the scheduled start, from each development team's side, as the system receives them in ctx.
 - unavailable: games whose data could not be used, with the reason.
 
 Your view stops in late March. Games after that, and the games of teams outside development, are not in it and will not be shown to you. The system in the game sandbox sees more than you do: the whole league up to each cutoff.
@@ -187,9 +188,18 @@ The final evaluation has the same allowance per team-game. A system that only wo
 
 # What you can see of past runs
 
-archive_read gives, for any completed run: the configuration; a summary of the scores, overall and by game, team, tier and player, for your system and the reference, with the paired comparison; the forecast used for each team-game, with whether it was a fallback and why; and the sequence of agent calls with their model, spend and whether they succeeded. compare sets two runs side by side on the games they share.
+archive_read gives, for any completed run, one section at a time:
 
-In a run where the system was given a spread or total, the inputs and replies of agent calls, the values of artifacts and the text of failure messages are withheld from you, and a failed team-game shows only that it failed. Design your loop so that what you most need to learn from a run shows up in the forecasts and scores themselves.
+- configuration: the package as it ran.
+- summary: the scores overall and by game, team, tier and player, for your system and the reference, with the paired comparison.
+- scores: the full score of every team-game.
+- forecasts: for each team-game, the forecast that was scored, the spread and total the system was given, whether it was a fallback and the reason, and the values of the artifacts after the game.
+- calls: every agent call in order, with the instructions as the agent received them, the task, the full transcript including tool calls, the reply, and the spend.
+- sandboxSteps: every run of your code, with the file, the action it returned, its exit status, any limit it hit and the last 4,000 bytes of its stderr.
+
+compare sets two runs side by side on the games they share.
+
+Everything your system did is there to be read. When a result surprises you, read what the agents were told and what they said, and what the code printed, before you form a view of why. What your code writes to stderr is the only commentary it leaves, so have it record the things you will want to know afterwards: which branch it took, what it changed from the reference and why.
 
 # Nominating
 
