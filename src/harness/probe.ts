@@ -19,6 +19,33 @@ export const PROBE_PROMPT = `This is a knowledge audit, not a research task. Ans
 
 For every item, label it [KNOWN], [UNSURE] or [UNKNOWN]. Do not invent plausible-sounding specifics; a short list of genuinely remembered items is the useful answer.`;
 
+/** The same audit for any team (SPO-906). It names no player, so it can be put
+ * to a model about a team whose season the author has not looked at. */
+export const PROBE_TEAMS = {
+  BOS: ["Boston Celtics", "Celtics"],
+  DEN: ["Denver Nuggets", "Nuggets"],
+  MEM: ["Memphis Grizzlies", "Grizzlies"],
+  OKC: ["Oklahoma City Thunder", "Thunder"],
+  WAS: ["Washington Wizards", "Wizards"],
+} as const;
+export type ProbeTeam = keyof typeof PROBE_TEAMS;
+export function teamProbePrompt(team: ProbeTeam) {
+  const [full, short] = PROBE_TEAMS[team];
+  return `This is a knowledge audit, not a research task. Answer from memory only, as fully and specifically as you can, and say explicitly when you do not know or are unsure.
+
+1. State your training data cutoff as you understand it.
+2. ${full} 2025-26 NBA regular season (October 2025 through April 2026): the team's final regular-season record, their seed, and their record at the All-Star break.
+3. List specific ${short} regular-season game results you remember from that season: date, opponent, score, and anything notable about the game.
+4. Notable ${short} events during the 2025-26 regular season: injuries and return dates, trades, signings, waivers, coaching decisions, suspensions.
+5. Season-end statistics for ${short} players in 2025-26: points, rebounds and assists per game for every player on the roster you can recall.
+6. League-wide 2025-26 regular-season facts: standings, award winners, major trades.
+7. Separately, list ${short} roster, coaching and front-office moves from the 2025 offseason (May through September 2025), which may be within your training data.
+8. The ${short}' rotation during the 2025-26 regular season: the usual starting five, who came off the bench first and when, typical minutes by player, who closed games, and any specific games or stretches where the substitution pattern changed.
+9. ${short} player minutes and roles in 2025-26, player by player: minutes per game, games played and missed, games started, any change of role during the season (into or out of the starting five or the rotation) and roughly when, and any individual games you remember for an unusually large or small statistical line, with the date and the line.
+
+For every item, label it [KNOWN], [UNSURE] or [UNKNOWN]. Do not invent plausible-sounding specifics; a short list of genuinely remembered items is the useful answer.`;
+}
+
 export type ManifestProbe = NonNullable<RunConfig["contaminationProbe"]>;
 /** What the probe script writes: the manifest fields plus provenance the manifest does not take. */
 export interface ProbeRecord extends ManifestProbe {

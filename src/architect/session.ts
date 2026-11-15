@@ -13,10 +13,8 @@ import {
 } from "../evaluation/service/index.js";
 import { architectTools } from "./tools.js";
 import { Iteration } from "./iteration.js";
+import { ARCHITECT_PROMPT } from "./prompt.js";
 
-// A5b supplies the final architect instructions.
-export const ARCHITECT_PROMPT =
-  "Design and test a generic NBA forecasting package. Study the filtered data and development archive, maintain notes and hypotheses, then submit or nominate using the provided tools.";
 const model = ANTHROPIC_MODELS["claude-opus-4-6"];
 interface ArchitectOptions {
   apiKey?: string;
@@ -88,7 +86,12 @@ async function converse(
   i.record("system", system);
   let next = "";
   await runAgentLoop(
-    [user("Start a fresh architect iteration. " + JSON.stringify(i.budget()))],
+    [
+      user(
+        "This is the start of a new iteration. Read your notes, the hypothesis list and the results of earlier runs before deciding what to do. Your budget: " +
+          JSON.stringify(i.budget()),
+      ),
+    ],
     { messages: [system], tools },
     {
       model,
@@ -111,7 +114,7 @@ async function converse(
           next =
             message.stopReason === "length"
               ? PI_CONTRACT.recovery.outputLimitContinuation.prompt
-              : "Continue the iteration using the available tools until you submit or nominate.";
+              : "The iteration is still open. It ends only when you call submit. Continue, or save your notes and submit.";
           return { action: "continue" };
         }
       },
