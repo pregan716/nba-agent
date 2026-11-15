@@ -37,6 +37,67 @@ const scan = scanner([
   { kind: "coach", value: "David Adelman" },
   { kind: "coach", value: "1626369" },
 ]);
+test("general basketball prompts and ordinary Python identifiers pass season identity checks", () => {
+  const season = scanner(
+    [
+      { kind: "player", value: "Trae Young" },
+      { kind: "player", value: "Jrue Holiday" },
+      { kind: "coach", value: "Cooper Little" },
+      { kind: "player", value: "201939" },
+    ],
+    [
+      {
+        team_id: "1610612750",
+        name: "Minnesota Timberwolves",
+        abbreviation: "MIN",
+      },
+      { team_id: "1610612748", name: "Miami Heat", abbreviation: "MIA" },
+      { team_id: "1610612753", name: "Orlando Magic", abbreviation: "ORL" },
+    ],
+  );
+  const pkg = {
+    ...clean,
+    agents: {
+      a: {
+        ...clean.agents.a,
+        prompt: [
+          "Young players and players returning from injury carry more uncertainty, so widen their ranges.",
+          "Little evidence of rest days is available.",
+          "Holiday schedules can compress games.",
+        ].join("\n"),
+      },
+    },
+    files: {
+      "main.py": [
+        "MIN_MINUTES = 5",
+        "IND = 1",
+        "DEN = 2",
+        "DET = 3",
+        "SAS = 4",
+        "magic_number = 3",
+        "def heat(x):",
+        "    return x * magic_number",
+        "def run(ctx, arg):",
+        "    heat_level = heat(MIN_MINUTES)",
+        "    return ctx['reference']",
+      ].join("\n"),
+    },
+  };
+  assert.deepEqual(season(pkg), []);
+  for (const leak of [
+    "Trae Young",
+    "Jrue Holiday",
+    "Cooper Little",
+    "Miami Heat",
+    "Heat",
+    "Magic",
+    "201939",
+  ])
+    assert.ok(
+      season({ ...pkg, hypothesis: leak }).some((f) => f.file === "hypothesis"),
+      leak,
+    );
+});
 test("scanner checks package keys, every source line and nested metadata", () => {
   assert.deepEqual(scan(clean), []);
   for (const leak of [

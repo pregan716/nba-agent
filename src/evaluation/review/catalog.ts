@@ -14,14 +14,6 @@ export async function seasonScanner({
   const identities: Identity[] = [];
   const add = (kind: Identity["kind"], value: string) => {
     identities.push({ kind, value });
-    if (kind !== "team" && /\s/.test(value)) {
-      const name = value.replace(/,?\s+(?:Jr\.?|Sr\.?|II|III|IV)$/i, "");
-      identities.push({
-        kind,
-        value: name.split(/\s+/).at(-1)!,
-        caseSensitive: true,
-      });
-    }
   };
   for (const { row } of await corpus.pbp.release.table("players")) {
     add("player", row.name);
@@ -43,24 +35,6 @@ export async function seasonScanner({
   if (new Set(data.teams.map((t) => t.team_id)).size !== 30)
     throw Error("Incomplete team identity table");
   for (const t of data.teams) {
-    add("team", t.name);
-    add("team", t.team_id);
-    const nickname = t.name.endsWith("Trail Blazers")
-      ? "Trail Blazers"
-      : t.name.split(" ").at(-1)!;
-    add("team", nickname);
-    const city = t.name.slice(0, -nickname.length).trim();
-    if (city)
-      identities.push({
-        kind: "team",
-        value: city,
-        caseSensitive: city === "LA",
-      });
-    identities.push({
-      kind: "team",
-      value: t.abbreviation,
-      caseSensitive: true,
-    });
     const hash = pins[t.team_id];
     if (!hash) throw Error("Missing coach roster for " + t.team_id);
     const key = "nba/player-reference/2025-26-opening/archive/raw/" + hash;
@@ -88,5 +62,5 @@ export async function seasonScanner({
     await readFile(join(root, "config/celtics-staff-2025-26.json"), "utf8"),
   );
   for (const name of staff.names) add("coach", name);
-  return scanner(identities);
+  return scanner(identities, data.teams);
 }

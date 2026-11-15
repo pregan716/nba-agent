@@ -1,3 +1,5 @@
+import type { TeamRef } from "../../env/contract.js";
+
 export interface Finding {
   file: string;
   line: number;
@@ -53,7 +55,27 @@ function seasonDate(line: string) {
   return false;
 }
 
-export function scanner(identities: Identity[]) {
+export function scanner(entries: Identity[], teams: TeamRef[] = []) {
+  const identities = [...entries];
+  // Short team codes double as ordinary variables. Leave them and bare
+  // surnames to the contextual reviewer. NBA IDs remain exact indicators.
+  for (const team of teams) {
+    const nickname = team.name.endsWith("Trail Blazers")
+      ? "Trail Blazers"
+      : team.name.split(" ").at(-1)!;
+    const city = team.name.slice(0, -nickname.length).trim();
+    identities.push(
+      { kind: "team", value: team.name },
+      { kind: "team", value: team.team_id },
+      { kind: "team", value: nickname, caseSensitive: true },
+    );
+    if (city)
+      identities.push({
+        kind: "team",
+        value: city,
+        caseSensitive: city === "LA",
+      });
+  }
   const groups = new Map<string, Set<string>>();
   for (const { kind, value, caseSensitive } of identities) {
     const key = kind + (caseSensitive ? " exact" : "");
