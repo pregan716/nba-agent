@@ -26,6 +26,25 @@ interface ArchitectOptions {
   baseURL?: string;
   signal?: AbortSignal;
 }
+// Pi exposes Anthropic SSE error events as their JSON data in errorMessage.
+function streamFailureStatus(message: string | undefined) {
+  if (!message) return;
+  let body;
+  try {
+    body = JSON.parse(message);
+  } catch {
+    return;
+  }
+  if (body?.type !== "error") return;
+  switch (body.error?.type) {
+    case "overloaded_error":
+      return 529;
+    case "api_error":
+      return 500;
+    case "rate_limit_error":
+      return 429;
+  }
+}
 function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
   const key = options.apiKey ?? process.env.ANTHROPIC_API_KEY;
   if (!key) throw Error("Missing architect provider credentials");
@@ -34,6 +53,7 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
     retryArchitectProvider(async () => {
       let settle: ((usd: number) => void) | undefined;
       let transportError: unknown;
+      let streamHeaders: Headers | undefined;
       const events = streamSimple(
         { ...model, baseUrl: options.baseURL ?? model.baseUrl },
         context,
@@ -75,7 +95,8 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
               transportError = new APIConnectionError({ cause: error });
               throw transportError;
             });
-            if (!response.ok) {
+            if (response.ok) streamHeaders = response.headers;
+            else {
               const { status, headers } = response;
               signal.throwIfAborted();
               if (unbilledProviderFailure(response)) {
@@ -96,6 +117,14 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
       signal.throwIfAborted();
       if (reply.stopReason === "error" || reply.stopReason === "aborted") {
         if (transportError) throw transportError;
+        if (streamHeaders) {
+          const status = streamFailureStatus(reply.errorMessage);
+          if (status)
+            throw Object.assign(
+              Error("Architect stream failed (" + status + ")"),
+              { status, headers: streamHeaders },
+            );
+        }
         if (
           settle &&
           /^(terminated|Anthropic stream ended (?:before message_stop|without a stop reason))$/.test(

@@ -5,6 +5,7 @@ import { canonicalJson } from "../../env/tools.js";
 import { readPackage, type Package } from "../../game-loop/package.js";
 import {
   retryArchitectProvider,
+  transientModelFailure,
   unbilledProviderFailure,
 } from "../../runner/retry.js";
 import { type Reviewer, verdict } from "./reviewer.js";
@@ -101,7 +102,9 @@ export async function review(
           file: "package",
           line: 1,
           reason: reviewerFailed
-            ? "Reviewer unavailable. Submit the configuration again."
+            ? transientModelFailure(e, "architect")
+              ? "Reviewer unavailable. Submit the configuration again."
+              : "Reviewer unavailable. Ask the operator to check the reviewer before resubmitting."
             : !scanned
               ? "Season identity scan unavailable"
               : reviewerUsd === 0 && !pkg

@@ -220,12 +220,12 @@ test("review isolates the request, records costs on invalid output and binds app
       {
         ...fixtureReview,
         reviewer: async () => {
-          throw Error("unavailable");
+          throw Object.assign(Error("Unauthorized"), { status: 401 });
         },
       },
       clean,
     ),
-    /Reviewer unavailable/,
+    /Ask the operator to check the reviewer/,
   );
 });
 

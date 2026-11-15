@@ -14,6 +14,7 @@ export async function architectProvider() {
     calls?: { name: string; input: Record<string, unknown> }[];
     truncated?: boolean;
     disconnected?: boolean;
+    streamError?: string;
     inputTokens?: number;
     outputTokens?: number;
   }[] = [];
@@ -99,7 +100,11 @@ export async function architectProvider() {
       });
       emit("content_block_stop", { index: 0 });
     }
-    if (step.disconnected) {
+    if (step.streamError)
+      emit("error", {
+        error: { type: step.streamError, message: "fixture stream error" },
+      });
+    if (step.disconnected || step.streamError) {
       res.end();
       return;
     }

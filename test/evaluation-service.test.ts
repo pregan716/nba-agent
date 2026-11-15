@@ -796,6 +796,7 @@ print("filtered data verified")`,
   provider.steps.push(
     { calls: [call("submit", proposal)], disconnected: true },
     { calls: [call("submit", proposal)] },
+    { calls: [call("submit", proposal)], streamError: "overloaded_error" },
     { calls: [call("submit", proposal)] },
   );
   const recovered = await architectIteration(host, provider.options);
@@ -838,8 +839,33 @@ print("filtered data verified")`,
   const ledger = db
     .prepare("SELECT spent,held FROM iterations WHERE id=?")
     .get(recovered.iteration)!;
-  // Two completed turns, with the 529 and disconnected stream still held. The rate limit
+  // The HTTP 529, disconnect and streamed overload each retain a hold. The rate limit
   // released its reservation and the token count never charged the ledger.
   assert.equal(ledger.spent, 2 * (10 * 5 + 3 * 25) * 1000);
-  assert.equal(ledger.held, 2 * (10 * 5 + 32000 * 25) * 1000);
+  const hold = (10 * 5 + 32000 * 25) * 1000;
+  assert.equal(ledger.held, 3 * hold);
+
+  for (const streamError of [
+    "api_error",
+    "rate_limit_error",
+    "overloaded_error",
+    "api_error",
+  ])
+    provider.steps.push({ calls: [call("submit", proposal)], streamError });
+  const beforeExhaustion = provider.requests.length;
+  await assert.rejects(
+    architectIteration(host, provider.options),
+    /Architect stream failed/,
+  );
+  assert.equal(provider.requests.length - beforeExhaustion, 4);
+  const failed = db
+    .prepare(
+      "SELECT status,spent,held FROM iterations ORDER BY rowid DESC LIMIT 1",
+    )
+    .get()!;
+  assert.deepEqual(
+    { ...failed },
+    { status: "failed", spent: 0, held: 4 * hold },
+  );
+  assert.equal(runCount(), baseline + 1);
 });
