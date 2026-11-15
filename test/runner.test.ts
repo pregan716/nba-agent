@@ -1,4 +1,8 @@
-import { retryModel, modelError } from "../src/runner/retry.js";
+import {
+  retryArchitectProvider,
+  retryModel,
+  modelError,
+} from "../src/runner/retry.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -1472,4 +1476,20 @@ test("Anthropic provider assembles a streamed response at the forecast output li
       server.close((e) => (e ? reject(e) : resolve())),
     );
   }
+});
+
+test("a long architect or reviewer request can retry after the stream fails", async (t) => {
+  const now = Date.now();
+  let elapsed = 0,
+    attempts = 0;
+  t.mock.method(Date, "now", () => now + elapsed);
+  const result = await retryArchitectProvider(async () => {
+    if (++attempts === 1) {
+      elapsed += 61000;
+      throw new Anthropic.APIConnectionError({});
+    }
+    return "recovered";
+  }, new AbortController().signal);
+  assert.equal(result, "recovered");
+  assert.equal(attempts, 2);
 });

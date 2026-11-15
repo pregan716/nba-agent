@@ -2,7 +2,10 @@ import { Type } from "typebox";
 import { z } from "zod";
 import type { AgentTool } from "@earendil-works/pi-agent-core";
 import type { developmentService } from "../evaluation/service/index.js";
-import { ReviewRejection } from "../evaluation/review/index.js";
+import {
+  ReviewerFailure,
+  ReviewRejection,
+} from "../evaluation/review/index.js";
 import { readPackage } from "../game-loop/package.js";
 import type { Iteration } from "./iteration.js";
 
@@ -335,7 +338,7 @@ export function architectTools(
           }
         } catch (e) {
           const message =
-            e instanceof ReviewRejection
+            e instanceof ReviewRejection || e instanceof ReviewerFailure
               ? e.message
               : e instanceof Error &&
                   /^(Full evaluation cap exceeded|Evaluation dollar pool exceeded|Development closed after nomination|Unknown or duplicate development team-game|Nominate a full evaluation|Configuration ineligible for nomination)$/.test(
