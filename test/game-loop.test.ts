@@ -47,6 +47,8 @@ const pkg: Package = {
                 assert b"private:${BOS}" not in data
             assert b"MARKET_SENTINEL" not in data
     assert [s["gameId"] for s in ctx["scores"]] == [r["gameId"] for r in ctx["referenceHistory"]]
+    for score in ctx["scores"]:
+        assert all(p["actual"]["teamId"] == ctx["teamId"] for p in score["agent"]["players"])
     return {"artifacts":ctx["artifacts"],"feedback":ctx["feedback"] is not None,"history":len(ctx["referenceHistory"])}
 `,
   },
