@@ -44,6 +44,9 @@ test("the architect prompt matches the harness it describes", () => {
     "- sandboxSteps:",
     "- calls:",
     "may be up to 1 MB",
+    'nba_data.table("team_box_scores", "game_id, team_id, points")',
+    "It carries no scores",
+    "under about 30,000 bytes",
     "may be up to 256 KB",
     "5th, 10th, 25th, 50th, 75th, 90th and 95th",
     "$" +

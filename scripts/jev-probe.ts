@@ -5,15 +5,25 @@
 //   npx tsx scripts/jev-probe.ts --dry-run
 //   doppler run --project nba-agent --config prd -- npx tsx scripts/jev-probe.ts --out=docs/evidence/v5-probe
 //
-// Truth never enters a request. 2024-25 is the comparison group. No game from
-// the holdout date on is used: the schedule is cut at that date before any
-// box-score row is looked at.
-import { mkdirSync, writeFileSync } from "node:fs";
+// Truth never enters a request. 2024-25 is the comparison group. Only outcomes
+// released before the holdout are used. Eligibility is decided from schedule
+// columns, and only eligible games' row ranges are decoded from the box-score
+// files (src/harness/jev-probe-source.ts).
+//
+// --reconcile=<record> drops facts from a stored record whose game is not
+// eligible and recomputes the statistics. It reads no outcome and calls no model.
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { Temporal } from "@js-temporal/polyfill";
 import { openCorpus } from "../src/data/corpus.js";
 import { DopplerStore } from "../src/data/store.js";
 import { teamIds, teamNames, teams } from "../src/data/teams.js";
-import { before } from "../src/data/time.js";
+import { PlayByPlayAdapter } from "../src/data/adapters.js";
+import { parquet } from "../src/data/release.js";
+import {
+  eligibleGame,
+  readAllowedRows,
+  type GameIndex,
+} from "../src/harness/jev-probe-source.js";
 import { holdout } from "../src/evaluation/service/profile.js";
 import { loadSeasonRoster } from "../src/projection/roster.js";
 import {
@@ -33,6 +43,21 @@ const BATCH = 40;
 const dryRun = process.argv.includes("--dry-run");
 const out =
   process.argv.find((a) => a.startsWith("--out="))?.slice(6) ?? ".cache";
+const reconcile = process.argv
+  .find((a) => a.startsWith("--reconcile="))
+  ?.slice(12);
+const five = new Set<string>(Object.values(teamIds));
+const opened: { table: string; file: string; start: number; end: number }[] =
+  [];
+const reconciled = new Set<string>();
+const kindSeason = (r: ProbeRow) => r.group.split(":").slice(0, 2).join(":");
+const statistics = (rows: ProbeRow[]) => ({
+  chance: { accuracy: 0.5, brier: 0.25, discrimination: 0 },
+  pooled: summarizeGroups(rows, kindSeason),
+  byTeam: summarizeGroups(rows, (r) => r.group),
+  all: summarize(rows),
+  facts: rows,
+});
 const key = process.env.TYPESAFE_API_KEY;
 delete process.env.TYPESAFE_API_KEY;
 const store = new DopplerStore();
@@ -40,34 +65,49 @@ try {
   const corpus = await openCorpus(store, process.cwd(), ".cache/objects");
   const facts: ProbeFact[] = [];
   for (const adapter of [corpus.priorPbp, corpus.pbp]) {
-    const release = adapter.release;
-    const table = async (name: string) => {
-      const rows: any[] = [];
-      for (const part of release.manifest.tables[name])
-        rows.push(
-          ...(await release.rows(release.manifest.object_prefix + part)),
-        );
-      return rows;
-    };
-    const names = new Map(
-      (await table("teams")).map((t) => [t.team_id, t.name]),
-    );
-    // The holdout cut comes first. Nothing below sees a later game.
-    const eligible = (await adapter.games()).filter(
+    const release = adapter.release,
+      m = release.manifest;
+    // The team dimension holds names only, no outcomes.
+    const names = new Map<string, string>();
+    for (const part of m.tables.teams)
+      for (const t of await release.rows(m.object_prefix + part))
+        names.set(t.team_id, t.name);
+    // Eligibility comes from schedule columns alone: the projection-only
+    // adapter decodes no score or status. A game counts when its outcome was
+    // released before the holdout, which is the morning after it was played.
+    const schedule = await new PlayByPlayAdapter(release, true).games();
+    const eligible = schedule.filter(
       (g) =>
-        g.data.phase === "regular_season" &&
-        g.data.status === "completed" &&
-        before(g.data.scheduled_tipoff, holdout),
+        (five.has(g.data.home_team_id) || five.has(g.data.away_team_id)) &&
+        eligibleGame(g.data.scheduled_tipoff, holdout),
     );
     const allowed = new Set(eligible.map((g) => g.id));
+    if (reconcile) {
+      for (const id of allowed) reconciled.add(id);
+      continue;
+    }
+    // Outcome files are opened only where they hold an allowed game, and only
+    // those games' row ranges are decoded.
+    const index: Record<string, GameIndex> = JSON.parse(
+      (await release.bytes(m.object_prefix + m.game_index)).toString(),
+    ).tables;
+    const read = (table: string) =>
+      readAllowedRows<any>(index[table] ?? {}, allowed, async (file, a, b) => {
+        if (!m.tables[table].includes(file))
+          throw Error("Game index references an unlisted table file");
+        opened.push({ table, file, start: a, end: b });
+        return parquet(await release.bytes(m.object_prefix + file), {
+          rowStart: a,
+          rowEnd: b,
+        });
+      });
     const points = new Map<string, number>();
-    for (const r of await table("team_box_scores"))
-      if (allowed.has(r.game_id))
-        points.set(`${r.game_id}:${r.team_id}`, r.points);
+    for (const r of await read("team_box_scores"))
+      points.set(`${r.game_id}:${r.team_id}`, r.points);
     const played = new Map<string, Set<string>>();
     if (adapter === corpus.pbp)
-      for (const r of await table("player_box_scores"))
-        if (allowed.has(r.game_id) && r.minutes_seconds > 0) {
+      for (const r of await read("player_box_scores"))
+        if (r.minutes_seconds > 0) {
           const k = `${r.game_id}:${r.team_id}`;
           played.set(k, (played.get(k) ?? new Set()).add(r.player_id));
         }
@@ -133,12 +173,41 @@ try {
   }
   if (new Set(facts.map((f) => f.id)).size !== facts.length)
     throw Error("Duplicate probe fact");
-  if (dryRun) {
+  if (reconcile) {
+    const stored = JSON.parse(readFileSync(reconcile, "utf8"));
+    const gameOf = (id: string) => id.split("_")[2];
+    const kept: ProbeRow[] = stored.facts.filter((f: ProbeRow) =>
+      reconciled.has(gameOf(f.id)),
+    );
+    const removed = stored.facts
+      .filter((f: ProbeRow) => !reconciled.has(gameOf(f.id)))
+      .map((f: ProbeRow) => f.id);
+    const { facts: _facts, ...rest } = stored;
+    writeFileSync(
+      reconcile,
+      JSON.stringify(
+        {
+          ...rest,
+          sent: stored.sent ?? stored.facts.length,
+          eligible: kept.length,
+          removedAfterRun: [...(stored.removedAfterRun ?? []), ...removed],
+          eligibility:
+            "Outcome released before the holdout (9 a.m. Eastern on the morning after the game).",
+          ...statistics(kept),
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    console.log(JSON.stringify({ kept: kept.length, removed }, null, 2));
+  } else if (dryRun) {
     const groups = Map.groupBy(facts, (f) => f.group);
     console.log(
       JSON.stringify(
         {
           facts: facts.length,
+          rangesDecoded: opened.length,
+          rowsDecoded: opened.reduce((n, r) => n + r.end - r.start, 0),
           groups: Object.fromEntries(
             [...groups].sort().map(([k, v]) => [k, v.length]),
           ),
@@ -201,8 +270,6 @@ try {
         });
       }
     }
-    const kindSeason = (r: ProbeRow) =>
-      r.group.split(":").slice(0, 2).join(":");
     const output = {
       kind: "jev-contamination-probe-v5",
       model: MODEL,
@@ -211,11 +278,11 @@ try {
       batchSize: BATCH,
       inputTokens,
       holdout,
-      chance: { accuracy: 0.5, brier: 0.25, discrimination: 0 },
-      pooled: summarizeGroups(rows, kindSeason),
-      byTeam: summarizeGroups(rows, (r) => r.group),
-      all: summarize(rows),
-      facts: rows,
+      sent: rows.length,
+      eligible: rows.length,
+      eligibility:
+        "Outcome released before the holdout (9 a.m. Eastern on the morning after the game).",
+      ...statistics(rows),
       interpretation:
         "Descriptive. Positive discrimination can come from recall of outcomes or from ordinary inference from team and player priors, and does not by itself distinguish them. baseRateReference is what an outcome-blind predictor that knows only the realised rate scores. 2024-25 is a comparison group, not a control for priors.",
     };
