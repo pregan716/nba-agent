@@ -28,7 +28,8 @@
     "forecast:evaluate": "tsx scripts/forecast-evaluate.ts",
     "projection:build": "tsx scripts/projection-build.ts",
     "data:view": "tsx scripts/five-team-view.ts",
-    "data:coverage": "tsx scripts/five-team-coverage.ts"
+    "data:coverage": "tsx scripts/five-team-coverage.ts",
+    "evaluation": "tsx scripts/evaluation-service.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

@@ -22,6 +22,34 @@ export interface GameResult {
 }
 const avg = (value: number | null): Ratio =>
   value === null ? [0, 0] : [value, 1];
+export function nonMarketMetrics(
+  s: Feedback["agent"]["overall"],
+  side: "agent" | "reference",
+) {
+  const m: Metrics = {};
+  for (const q of quantities)
+    for (const k of ["pinball", "coverage50", "coverage80"] as const)
+      m[q + "." + k] = avg(s.ranges[q][k].mean);
+  m.playBrier = avg(s.playBrier.mean);
+  m.startBrier = avg(s.startBrier.mean);
+  m.misplacedMinutes = avg(s.players ? s.misplacedMinutes : null);
+  for (const k of ["coverage50", "coverage80"] as const)
+    m["minutes.conditional." + k] = avg(s.conditionalMinutesCoverage[k].mean);
+  const c = s.ceiling;
+  m["ceiling.brier"] = [(c.brier.mean ?? 0) * c.brier.count, c.brier.count];
+  m["ceiling.hitRate"] =
+    side === "agent"
+      ? [c.hits, c.picks]
+      : [c.referenceWeighted.numerator, c.referenceWeighted.denominator];
+  m["ceiling.hitRateWithoutVoids"] =
+    side === "reference" ? [0, 0] : [c.hits, c.picks - c.voids];
+  m["ceiling.voidRate"] = side === "reference" ? [0, 0] : [c.voids, c.picks];
+  m["ceiling.referenceWeighted"] = [
+    c.referenceWeighted.numerator,
+    c.referenceWeighted.denominator,
+  ];
+  return m;
+}
 export function gameMetrics(games: GameResult[], side: "agent" | "reference") {
   const rows = games.map((g) => scoreProps(g.feedback, g.market, side));
   const blends = heldOutBlend(rows.flat());
@@ -30,31 +58,7 @@ export function gameMetrics(games: GameResult[], side: "agent" | "reference") {
     for (const tier of tiers) {
       const scores = g.feedback[side];
       const s = tier === "all" ? scores.overall : scores.byTier[tier];
-      const m: Metrics = {};
-      for (const q of quantities)
-        for (const k of ["pinball", "coverage50", "coverage80"] as const)
-          m[q + "." + k] = avg(s.ranges[q][k].mean);
-      m.playBrier = avg(s.playBrier.mean);
-      m.startBrier = avg(s.startBrier.mean);
-      m.misplacedMinutes = avg(s.players ? s.misplacedMinutes : null);
-      for (const k of ["coverage50", "coverage80"] as const)
-        m["minutes.conditional." + k] = avg(
-          s.conditionalMinutesCoverage[k].mean,
-        );
-      const c = s.ceiling;
-      m["ceiling.brier"] = [(c.brier.mean ?? 0) * c.brier.count, c.brier.count];
-      m["ceiling.hitRate"] =
-        side === "agent"
-          ? [c.hits, c.picks]
-          : [c.referenceWeighted.numerator, c.referenceWeighted.denominator];
-      m["ceiling.hitRateWithoutVoids"] =
-        side === "reference" ? [0, 0] : [c.hits, c.picks - c.voids];
-      m["ceiling.voidRate"] =
-        side === "reference" ? [0, 0] : [c.voids, c.picks];
-      m["ceiling.referenceWeighted"] = [
-        c.referenceWeighted.numerator,
-        c.referenceWeighted.denominator,
-      ];
+      const m = nonMarketMetrics(s, side);
       const pool = rows[i].filter((r) => tier === "all" || r.tier === tier),
         picked = pool.filter((r) => r.picked);
       const hits = picked.reduce((a, p) => a + p.hit, 0),

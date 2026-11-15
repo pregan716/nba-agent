@@ -16,6 +16,7 @@ import { readPackage } from "./package.js";
 import type { AgentRunner } from "./agents.js";
 import { ReplayMeter } from "./meter.js";
 import { agentDispatcher } from "./call.js";
+import type { BuiltModels } from "./models.js";
 import { gameSandbox } from "./sandbox.js";
 
 export interface TeamGame {
@@ -74,6 +75,7 @@ export async function replay(options: {
   source: ReplaySource;
   runAgent: AgentRunner;
   profile?: typeof defaultProfile;
+  trainedModels?: BuiltModels;
   agentsOff?: boolean;
   clearArtifacts?: boolean;
 }) {
@@ -98,6 +100,12 @@ export async function replay(options: {
   const record = new RecordStore(root, {
     schemaVersion: "game-loop-v1",
     packageHash: hash,
+    trainedModels: Object.fromEntries(
+      Object.entries(options.trainedModels ?? {}).map(([k, v]) => [
+        k,
+        { format: v.format, sha256: v.sha256, bytes: v.bytes },
+      ]),
+    ),
     package: pkg,
     config,
     profile,
@@ -121,6 +129,8 @@ export async function replay(options: {
     string,
     { name: string; team: string | null; value: unknown }
   >();
+  // An artifact can carry information from an earlier game into later replies.
+  let marketExposed = false;
   let priorTip: string | undefined;
   let visibleArtifacts = new Map(artifacts);
   async function prepare(g: TeamGame) {
@@ -194,6 +204,7 @@ export async function replay(options: {
         reason: string | null = null;
       if (meter.available <= 0) reason = "run_budget_exhausted";
       else {
+        marketExposed ||= spread !== null || total !== null;
         const history = source.schedule
           .filter((h) => h.teamId === team && before(releaseTime(h.tip), g.tip))
           .sort((a, b) => compare(a.tip, b.tip));
@@ -233,6 +244,7 @@ export async function replay(options: {
           ctx,
           root,
           (entry) => record.append("sandbox_step", id, entry),
+          options.trainedModels,
         );
         const invoke = (file: string, input: unknown) =>
           box.invoke(file, input, remainingSeconds(), signal);
@@ -312,6 +324,7 @@ export async function replay(options: {
         ...receipt,
         configurationHash: hash,
         reason,
+        marketExposed,
         artifacts: [...artifacts.values()],
       });
     }

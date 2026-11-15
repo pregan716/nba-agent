@@ -106,15 +106,18 @@ export type FiveTeamData = Awaited<ReturnType<typeof fiveTeamData>>;
 
 /** Shared games use Boston's existing convention, otherwise the home team's
  * perspective, so a selection tie cannot produce different lines for each side. */
-export async function fiveTeamGameLines(data: {
-  games: FiveTeamData["games"];
-  ids: Identities;
-  corpus: Pick<Corpus, "verified" | "odds">;
-  evidence: Pick<
-    FiveTeamData["evidence"][number],
-    "team" | "teamId" | "gameLineManifest"
-  >[];
-}) {
+export async function fiveTeamGameLines(
+  data: {
+    games: FiveTeamData["games"];
+    ids: Identities;
+    corpus: Pick<Corpus, "verified" | "odds">;
+    evidence: Pick<
+      FiveTeamData["evidence"][number],
+      "team" | "teamId" | "gameLineManifest"
+    >[];
+  },
+  beforeTip?: string,
+) {
   const schedule = new Map(
     data.games
       .filter((g) => g.data.season === "2025-26")
@@ -132,7 +135,7 @@ export async function fiveTeamGameLines(data: {
       ? g.home_team_id
       : g.away_team_id;
   }
-  const boston = await openingGameLines(data.corpus.odds, data.ids);
+  const boston = await openingGameLines(data.corpus.odds, data.ids, beforeTip);
   for (const [id, g] of schedule)
     if (primary(g) === teamIds.BOS) {
       const { celtics_spread, game_total } = boston(id, g.scheduled_tipoff);
@@ -172,6 +175,7 @@ export async function fiveTeamGameLines(data: {
     const quotes = (await release.rows(prefix + "quotes.ndjson.gz")).filter(
       (r) =>
         r.snapshot_kind === "scheduled_start" &&
+        (!beforeTip || before(r.requested_at, beforeTip)) &&
         ["spreads", "team_totals"].includes(r.market),
     );
     for (const r of buildGameLines(quotes, teamNames[e.team])) {
@@ -212,13 +216,16 @@ export async function fiveTeamReplay(
   data: FiveTeamData,
   image: string,
   receiptDirectory: string,
+  beforeTip?: string,
 ): Promise<ReplaySource> {
   const source = await projectionSource(data.corpus, data.root);
   const model = projectionModel(image);
-  const gameLines = await fiveTeamGameLines(data);
+  let lines: ReturnType<typeof fiveTeamGameLines> | undefined;
   const games = new Map(source.schedule.map((g) => [g.gameId, g]));
-  const schedule = source.teamGames.filter((g) =>
-    Object.values<string>(teamIds).includes(g.teamId),
+  const schedule = source.teamGames.filter(
+    (g) =>
+      Object.values<string>(teamIds).includes(g.teamId) &&
+      (!beforeTip || before(g.tip, beforeTip)),
   );
   function target(g: TeamGame) {
     teamCode(g.teamId);
@@ -235,7 +242,9 @@ export async function fiveTeamReplay(
     data: data.data,
     schedule,
     async projection(g) {
-      const input = await source.input(target(g), g.teamId);
+      const game = target(g);
+      const gameLines = await (lines ??= fiveTeamGameLines(data, beforeTip));
+      const input = await source.input(game, g.teamId);
       const { forecast } = await recordReference(
         receiptDirectory,
         model,
