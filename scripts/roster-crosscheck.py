@@ -43,7 +43,9 @@ def main():
     ]))
     rows, disagreements = [], []
     for game in data["games"]:
-        box = set(game.pop("box"))
+        box_rows = game.pop("box")
+        box = {row["playerId"] for row in box_rows}
+        played = {row["playerId"] for row in box_rows if (row["minutesSeconds"] or 0) > 0}
         roster = set(game["roster"])
         rows.append(dict(**game, roster_size=len(roster), box_size=len(box)))
         only_box, only_roster = sorted(box - roster), sorted(roster - box)
@@ -52,6 +54,7 @@ def main():
             disagreements.append(dict(
                 game_id=game["game_id"], scheduled_tip=game["scheduled_tip"],
                 box_not_curated=only_box, curated_not_in_box=only_roster,
+                played_not_curated=sorted(played - roster),
                 explanation=explanation[0] if explanation else None,
                 source=explanation[1] if explanation else None,
             ))
@@ -63,8 +66,8 @@ def main():
     out = Path(f"docs/evidence/roster/crosscheck-{args.team}.json")
     out.write_text(json.dumps(report, indent=2) + "\n")
     print(f"{args.team}: {len(rows)} released games, {len(disagreements)} disagreements")
-    if any(d["explanation"] is None for d in disagreements) and not args.allow_disagreements:
-        raise SystemExit(f"Unexplained roster discrepancy in {out}")
+    if any(d["explanation"] is None or d["played_not_curated"] for d in disagreements) and not args.allow_disagreements:
+        raise SystemExit(f"Roster discrepancy requires review in {out}")
 
 
 if __name__ == "__main__":

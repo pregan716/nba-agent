@@ -246,7 +246,7 @@
       "officialDate": "2025-11-24",
       "kind": "signing",
       "description": "Memphis Grizzlies signed guard Kobe Bufkin to a 10-Day Contract.",
-      "availableAt": "2025-11-24T15:11:12Z",
+      "availableAt": "2025-11-24T20:59:13Z",
       "basis": "timestampedException",
       "sources": [
         "official",
@@ -1038,7 +1038,8 @@
     },
     "grizzlies-kobe-bufkin-agree-to-10-day-contract": {
       "url": "https://www.hoopsrumors.com/2025/11/grizzlies-kobe-bufkin-agree-to-10-day-contract.html",
-      "pageTimestamp": "2025-11-24T09:11:12-06:00",
+      "pageTimestamp": "2025-11-24T14:59:13-06:00",
+      "timestampField": "dateModified",
       "quote": "Nov. 24: The signing is official, the Grizzlies’ PR department tweets."
     },
     "kobe-bufkin-expiry": {
@@ -1079,7 +1080,8 @@
       "scheduledTip": "2025-11-25T01:00:00.000Z",
       "source": "grizzlies-kobe-bufkin-agree-to-10-day-contract",
       "url": "https://www.hoopsrumors.com/2025/11/grizzlies-kobe-bufkin-agree-to-10-day-contract.html",
-      "pageTimestamp": "2025-11-24T09:11:12-06:00",
+      "pageTimestamp": "2025-11-24T14:59:13-06:00",
+      "timestampField": "dateModified",
       "quote": "Nov. 24: The signing is official, the Grizzlies’ PR department tweets.",
       "eventIds": [
         "2025-11-24-kobe-bufkin-signing"

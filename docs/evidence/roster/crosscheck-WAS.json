@@ -29,6 +29,7 @@
         "203957"
       ],
       "curated_not_in_box": [],
+      "played_not_curated": [],
       "explanation": "The box still lists Dante Exum. Washington's waiver was public before the 19:00Z tip.",
       "source": "https://www.hoopsrumors.com/2026/02/wizards-waive-dante-exum.html"
     },
@@ -39,6 +40,7 @@
       "curated_not_in_box": [
         "1641778"
       ],
+      "played_not_curated": [],
       "explanation": "The box omits Leaky Black. Washington announced his two-way signing the previous day.",
       "source": "https://gleague.nba.com/news/washington-signs-tristan-vukcevic-to-multi-year-contract"
     },
@@ -49,6 +51,7 @@
       "curated_not_in_box": [
         "1642882"
       ],
+      "played_not_curated": [],
       "explanation": "The box omits Julian Reese. Washington announced his two-way signing before tip.",
       "source": "https://www.hoopsrumors.com/2026/02/wizards-sign-julian-reese-to-two-way-contract.html"
     }

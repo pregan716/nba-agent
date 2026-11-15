@@ -37,7 +37,7 @@ try {
     );
   const roster = await loadSeasonRoster(process.cwd(), teamId);
   // The diagnostic compares membership even when the normalization product
-  // has statistical quality findings. Read just the pinned identity columns.
+  // has statistical quality findings. Minutes distinguish participants from DNP listings.
   const manifest = release.manifest;
   const index = JSON.parse(
     (
@@ -45,7 +45,10 @@ try {
     ).toString(),
   );
   const selected = new Set(games.map((g) => g.id));
-  const rows = new Map<string, string[]>();
+  const rows = new Map<
+    string,
+    { playerId: string; minutesSeconds: number | null }[]
+  >();
   for (const name of manifest.tables.player_box_scores) {
     const ranges: [string, number, number][] =
       index.tables.player_box_scores[name] ?? [];
@@ -56,7 +59,7 @@ try {
       const records = await parquet(bytes, {
         rowStart: start,
         rowEnd: start + count,
-        columns: ["game_id", "team_id", "player_id"],
+        columns: ["game_id", "team_id", "player_id", "minutes_seconds"],
       });
       if (
         records.length !== count ||
@@ -66,7 +69,10 @@ try {
         throw Error("Invalid game index for " + id);
       const players = records
         .filter((r) => r.team_id === teamId)
-        .map((r) => r.player_id);
+        .map((r) => ({
+          playerId: r.player_id,
+          minutesSeconds: r.minutes_seconds,
+        }));
       if (!players.length) throw Error("Empty team box for " + id);
       rows.set(id, players);
     }

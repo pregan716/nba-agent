@@ -10,8 +10,8 @@
   "roster_sources": [
     {
       "path": "config/five-team/roster-MEM.json",
-      "bytes": 40210,
-      "sha256": "eb315a2fd96f337db23231d369b95917fff53798dbf6c13a318e441acb46d373"
+      "bytes": 40290,
+      "sha256": "9a5465c33f7f13ba6a161ddad0b09b9b3a65f7bb04c25f33772e2896e461f618"
     },
     {
       "path": "docs/evidence/five-team/moves-MEM.json",
