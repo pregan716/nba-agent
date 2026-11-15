@@ -44,9 +44,15 @@ export function modelError(error: any) {
     ),
   };
 }
-function transient(error: any): boolean {
+export function transientModelFailure(
+  error: any,
+  scope: "runner" | "architect" = "runner",
+): boolean {
   if (typeof error?.status === "number")
-    return [500, 502, 503, 529, 408].includes(error.status);
+    return (
+      [500, 502, 503, 529, 408].includes(error.status) ||
+      (scope === "architect" && error.status === 429)
+    );
   return (
     error instanceof APIConnectionError ||
     ["APIConnectionError", "APIConnectionTimeoutError"].includes(error?.name) ||
@@ -64,12 +70,32 @@ function transient(error: any): boolean {
   );
 }
 
+export function unbilledProviderFailure(error: unknown) {
+  const status = (error as { status?: unknown } | null)?.status;
+  return (
+    typeof status === "number" &&
+    status >= 400 &&
+    status < 500 &&
+    status !== 408
+  );
+}
+
+function rateLimitDelay(error: any): number | undefined {
+  if (error?.status !== 429) return undefined;
+  const header =
+    error.headers?.get?.("retry-after") ?? error.headers?.["retry-after"];
+  if (!header) return 0;
+  if (/^\d+(?:\.\d+)?$/.test(header)) return Number(header) * 1000;
+  return Math.max(0, Date.parse(header) - Date.now()) || 0;
+}
+
 /** The deadline bounds retry starts, never an in-flight generation. */
 export async function retryModel<T>(
   call: (signal: AbortSignal) => Promise<T>,
   parent: AbortSignal,
-  config: RunConfig,
+  config: Pick<RunConfig, "recovery">,
   failed: (error: unknown, attempt: number, terminal: boolean) => void,
+  scope: "runner" | "architect" = "runner",
 ): Promise<{ value: T; retries: number }> {
   const policy = {
     retries: 3,
@@ -79,7 +105,7 @@ export async function retryModel<T>(
     ...config.recovery?.model,
   };
   const signal = parent;
-  const end = Date.now() + policy.totalMs;
+  const runnerDeadline = Date.now() + policy.totalMs;
   let rejectAbort!: (reason: unknown) => void;
   const aborted = new Promise<never>((_, reject) => {
     rejectAbort = reject;
@@ -96,12 +122,19 @@ export async function retryModel<T>(
         const value = await Promise.race([call(signal), aborted]);
         return { value, retries: attempt };
       } catch (error) {
-        const wait =
+        // Long architect generations may take minutes before a stream fails.
+        // Bound each recovery wait and the attempt count independently.
+        const end =
+          scope === "architect" ? Date.now() + policy.totalMs : runnerDeadline;
+        const retryAfter =
+          scope === "architect" ? rateLimitDelay(error) : undefined;
+        const backoff =
           Math.min(policy.capMs, policy.baseMs * 2 ** attempt) *
           (0.5 + Math.random() * 0.5);
+        const wait = Math.max(backoff, retryAfter ?? 0);
         const terminal =
           signal.aborted ||
-          !transient(error) ||
+          !transientModelFailure(error, scope) ||
           attempt >= policy.retries ||
           Date.now() + wait >= end;
         if (terminal) {
@@ -124,4 +157,12 @@ export async function retryModel<T>(
   } finally {
     signal.removeEventListener("abort", onAbort);
   }
+}
+
+/** Architect and leakage reviewer policy. Replay agents keep their own policy. */
+export async function retryArchitectProvider<T>(
+  call: (signal: AbortSignal) => Promise<T>,
+  signal: AbortSignal,
+) {
+  return (await retryModel(call, signal, {}, () => {}, "architect")).value;
 }

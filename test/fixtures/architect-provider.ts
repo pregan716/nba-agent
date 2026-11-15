@@ -13,13 +13,31 @@ export async function architectProvider() {
   const steps: {
     calls?: { name: string; input: Record<string, unknown> }[];
     truncated?: boolean;
+    disconnected?: boolean;
+    streamError?: string;
     inputTokens?: number;
     outputTokens?: number;
   }[] = [];
+  const failures = { count: [] as number[], model: [] as number[] };
   const server = createServer(async (req, res) => {
     let body = "";
     for await (const chunk of req) body += chunk;
-    if (req.url?.includes("count_tokens")) {
+    const count = req.url?.includes("count_tokens");
+    const status = (count ? failures.count : failures.model).shift();
+    if (status) {
+      res.writeHead(status, {
+        "content-type": "application/json",
+        "retry-after": "0",
+      });
+      res.end(
+        JSON.stringify({
+          type: "error",
+          error: { type: "api_error", message: "fixture failure" },
+        }),
+      );
+      return;
+    }
+    if (count) {
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ input_tokens: steps[0]?.inputTokens ?? 10 }));
       return;
@@ -82,6 +100,14 @@ export async function architectProvider() {
       });
       emit("content_block_stop", { index: 0 });
     }
+    if (step.streamError)
+      emit("error", {
+        error: { type: step.streamError, message: "fixture stream error" },
+      });
+    if (step.disconnected || step.streamError) {
+      res.end();
+      return;
+    }
     emit("message_delta", {
       delta: {
         stop_reason: step.truncated
@@ -101,6 +127,7 @@ export async function architectProvider() {
     throw Error("Fixture failed to bind");
   return {
     requests,
+    failures,
     steps,
     options: { apiKey: "fixture", baseURL: "http://127.0.0.1:" + address.port },
     close: () => server.close(),
