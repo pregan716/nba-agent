@@ -1,0 +1,21 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "prompt": "This is a knowledge audit, not a research task. Answer from memory only, as fully and specifically as you can, and say explicitly when you do not know or are unsure.\n\n1. State your training data cutoff as you understand it.\n2. Oklahoma City Thunder 2025-26 NBA regular season (October 2025 through April 2026): the team's final regular-season record, their seed, and their record at the All-Star break.\n3. List specific Thunder regular-season game results you remember from that season: date, opponent, score, and anything notable about the game.\n4. Notable Thunder events during the 2025-26 regular season: injuries and return dates, trades, signings, waivers, coaching decisions, suspensions.\n5. Season-end statistics for Thunder players in 2025-26: points, rebounds and assists per game for every player on the roster you can recall.\n6. League-wide 2025-26 regular-season facts: standings, award winners, major trades.\n7. Separately, list Thunder roster, coaching and front-office moves from the 2025 offseason (May through September 2025), which may be within your training data.\n8. The Thunder' rotation during the 2025-26 regular season: the usual starting five, who came off the bench first and when, typical minutes by player, who closed games, and any specific games or stretches where the substitution pattern changed.\n9. Thunder player minutes and roles in 2025-26, player by player: minutes per game, games played and missed, games started, any change of role during the season (into or out of the starting five or the rotation) and roughly when, and any individual games you remember for an unusually large or small statistical line, with the date and the line.\n\nFor every item, label it [KNOWN], [UNSURE] or [UNKNOWN]. Do not invent plausible-sounding specifics; a short list of genuinely remembered items is the useful answer.",
+  "output": "I appreciate the structure of this audit. Let me be direct:\n\n1. **Training data cutoff**: [KNOWN] April 2024. My knowledge was last updated in April 2024.\n\n2. **Thunder 2025-26 regular season record, seed, All-Star break record**: [UNKNOWN] This is entirely outside my training data.\n\n3. **Specific Thunder game results from 2025-26**: [UNKNOWN] I have no memory of games from October 2025 onwards.\n\n4. **Thunder events (injuries, trades, signings, etc.) during 2025-26 regular season**: [UNKNOWN]\n\n5. **2025-26 season-end statistics for Thunder players**: [UNKNOWN]\n\n6. **League-wide 2025-26 regular-season facts**: [UNKNOWN]\n\n7. **Thunder offseason moves May-September 2025**: [UNKNOWN] This falls outside my April 2024 cutoff. I cannot reliably distinguish between what might have been announced or speculated about before my cutoff versus what actually happened.\n\n8. **Thunder rotation during 2025-26 regular season**: [UNKNOWN]\n\n9. **Player minutes, roles, and individual games in 2025-26**: [UNKNOWN]\n\n**What I can offer instead:** I have detailed knowledge of the Thunder roster, context, and team composition as of April 2024 (SGA, Chet Holmgren, Jalen Williams, etc.), which might be useful for a different type of question. But I cannot reliably speak to anything that occurred after that point.",
+  "executedAt": "2026-11-15T20:36:58.020Z",
+  "tools": [],
+  "usage": {
+    "input_tokens": 452,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 358,
+    "service_tier": "standard",
+    "inference_geo": "not_available",
+    "speed": "standard"
+  },
+  "responseModel": "claude-haiku-4-5-20251001"
+}
