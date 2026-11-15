@@ -8,12 +8,11 @@ Find out whether an AI agent can design a projection system that adds value to D
 
 The agent that does the designing is the **architect**. It does not forecast games itself. It writes the game loop: the code, the models and the specialist agents that produce each forecast. It submits a configuration, receives the scores of that configuration over about 40 games, studies where it did well and badly, and submits again.
 
-Four questions, in order of difficulty:
+Three questions, in order of difficulty:
 
 1. **Can the architect build a system that beats a plain statistical projection on minutes, on teams it never saw?**
 2. **Do the agents in the game loop add to that system?** The same system with its agents switched off is the control.
 3. **Does knowledge accumulated from game to game help?** The same system with nothing kept between games is the control.
-4. **Does the system know anything the betting market does not?** This is a stretch result, as in v4.
 
 A good score alone does not establish any of these. Findings must connect score differences to what the system did, and a negative result is valuable when the comparison is sound.
 
@@ -31,7 +30,7 @@ This brief supersedes [the v4 brief](NBA%20Team%20Expert%20Projection%20Agent%20
 
 - The forecast (format, validation, the interpolation rule)
 - Reference projection (form and refit), now produced for all five teams
-- Scoring: the primary scores and diagnostics, the market test, big overs and ceiling games, invalid and missing forecasts
+- Scoring: the primary scores and diagnostics, ceiling games, invalid and missing forecasts. The market test and big-over picks are not carried (see Decisions).
 - The paired-bootstrap settings under Comparison between arms
 
 The v3 sections that v4 carried by reference (data contracts and temporal access rules, isolation and reproducibility, the experiment record, contamination) stay in force in the same way.
@@ -64,7 +63,7 @@ The agent's only signal was one game of feedback, and one game is mostly noise. 
 | Teams                | Boston, Denver, Memphis, Oklahoma City and Washington, 2025–26 regular season; 2024–25 games are historical evidence from the start                                   | Agreed (Nov 14, 2026)                           |
 | Development and test | The architect develops on Boston, Oklahoma City and Washington. Denver and Memphis are never shown to it and are the test.                                            | Proposed                                        |
 | Leakage review       | A separate model, `claude-opus-4-6` in its own session, reviews every submission for knowledge of the replayed season                                                 | Agreed (Nov 14, 2026); procedure Proposed       |
-| Prop lines           | Neither the architect nor anything in the game loop sees player prop lines or any score computed from them. The game spread and total stay visible.                   | Agreed, carried                                 |
+| Prop lines           | Not used in v5. Nothing sees player prop lines or a score computed from them, and none are collected for the four new teams. The game spread and total stay visible.  | Agreed (Nov 14, 2026)                           |
 | Replay timing        | Pregame cutoff at scheduled tip; postgame release at 9 a.m. America/New_York the next morning                                                                         | Agreed, carried                                 |
 | Holdout date         | Nothing from Mar 23, 2026 on (the date of the Celtics' 71st game) is read during development, for any team                                                            | Agreed, carried and extended to all teams       |
 | Budgets              | Set for a full replay run, not per game                                                                                                                               | Agreed in form (Nov 14, 2026); numbers Proposed |
@@ -134,7 +133,7 @@ Why minutes: the [headroom check](v4/headroom-check.md) found that the reference
 Status: Proposed for the rest of this section.
 
 - **Guardrails.** Fantasy-point pinball loss and the play Brier score are reported beside the target. A configuration that is reliably worse than the reference on either cannot be nominated as final.
-- **What the architect sees.** Every v4 score that uses no prop line, in aggregate, by game, by team, by role tier and by player. It never sees the market test or big-over results.
+- **What the architect sees.** Every v4 score that uses no prop line, in aggregate, by game, by team, by role tier and by player.
 - **What it does not optimize.** Ceiling picks are reported but three picks a game cannot separate two configurations over 40 games. Optimizing minutes alone will not reward learning how production shifts when a star sits; the target can move to fantasy-point pinball by a brief change once the system reliably beats the reference on minutes.
 
 ### Evaluation games
@@ -154,7 +153,7 @@ Status: Proposed. The architect nominates one configuration. After that there is
 
 - **Games.** Denver and Memphis together in one replay, without the development teams, over their whole seasons: 164 team-games. The architect has seen none of them apart from the 14 against development teams, so all of them count, including those after the holdout date.
 - **Runs.** Each once (Agreed Nov 14, 2026): the nominated configuration; the same configuration with every agent call refused; and the same configuration with the artifact store emptied before every game. The agent ablation is skipped if the nominee uses no agents.
-- **Comparisons.** Each run against the reference projection, and the nominated configuration against each ablation, on the target and the guardrails. Then the market test and the big-over and ceiling scores, computed by the evaluator alone.
+- **Comparisons.** Each run against the reference projection, and the nominated configuration against each ablation, on the target and the guardrails. Then the ceiling score, computed by the evaluator alone.
 - **Celtics holdout.** Games 71–82 become an optional secondary check. Scoring them means replaying Boston's first 70 games to build its artifacts, so it is run only if the user asks. It stays unread until then.
 
 ## Leakage
@@ -242,28 +241,30 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 - **Design choices are fitted to development results.** The leakage rule cannot separate a general design choice from one that happens to suit three teams in 2025–26. Only the test teams can.
 - **The archive can show test-team rows** that agents in the loop printed from league history.
 - **The target and the teams were chosen after seeing results.** Minutes was chosen after the pilot. The teams were chosen by a person and an assistant from box-score summaries that included Denver and Memphis; the architect sees none of that.
-- **Evidence coverage for the new teams is unknown.** Beat reporting and prop lines may be thinner for Memphis and Washington.
-- The v4 limits on the market reference, DFS salaries, the single forecast time and the holdout record carry over.
+- **Evidence coverage for the new teams is uneven.** Beat reporting and coach transcripts are thinner for some of them than for Boston.
+- **No market comparison.** Player prop lines were not collected for the new teams, so v5 says nothing about whether the forecasts would have value against the betting market.
+- The v4 limits on DFS salaries, the single forecast time and the holdout record carry over.
 - Development games are never evidence.
 
 ## Decisions
 
 ### Agreed on Nov 14, 2026
 
-| Decision              | Resolution                                                                                                                                                                                        |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Design                | An architect agent designs the game loop and receives results over a large sample of games after each change. It is the only permanent and mandatory agent role.                                  |
-| Architect's terms     | The must, may and must-not lists under The architect                                                                                                                                              |
-| Target metric         | Minutes pinball loss relative to the reference projection                                                                                                                                         |
-| Models                | The architect is `claude-opus-4-6` to start, with no Jev. The game loop may use `claude-haiku-4-5-20251001`, `claude-sonnet-4-6`, `claude-opus-4-6` and Jev at the version in use (`jev-1.14.0`). |
-| Teams                 | Denver, Memphis, Oklahoma City and Washington are added to Boston                                                                                                                                 |
-| Leakage review        | By a separate model: `claude-opus-4-6` in its own session                                                                                                                                         |
-| Budget form           | Calculated for a full replay run, not per game. The architect's own spend is capped at $30 per iteration.                                                                                         |
-| Agents in the loop    | Permitted, not required                                                                                                                                                                           |
-| Final evaluation runs | Each configuration runs once                                                                                                                                                                      |
-| Pretrained models     | Built by the environment from the architect's training script, on 2024–25 data only                                                                                                               |
-| Agent failure         | A configuration must still produce a valid forecast when its agents are switched off                                                                                                              |
-| v4 scored run         | Withdrawn (SPO-885)                                                                                                                                                                               |
+| Decision                       | Resolution                                                                                                                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Design                         | An architect agent designs the game loop and receives results over a large sample of games after each change. It is the only permanent and mandatory agent role.                                  |
+| Architect's terms              | The must, may and must-not lists under The architect                                                                                                                                              |
+| Target metric                  | Minutes pinball loss relative to the reference projection                                                                                                                                         |
+| Models                         | The architect is `claude-opus-4-6` to start, with no Jev. The game loop may use `claude-haiku-4-5-20251001`, `claude-sonnet-4-6`, `claude-opus-4-6` and Jev at the version in use (`jev-1.14.0`). |
+| Teams                          | Denver, Memphis, Oklahoma City and Washington are added to Boston                                                                                                                                 |
+| Leakage review                 | By a separate model: `claude-opus-4-6` in its own session                                                                                                                                         |
+| Budget form                    | Calculated for a full replay run, not per game. The architect's own spend is capped at $30 per iteration.                                                                                         |
+| Agents in the loop             | Permitted, not required                                                                                                                                                                           |
+| Final evaluation runs          | Each configuration runs once                                                                                                                                                                      |
+| Pretrained models              | Built by the environment from the architect's training script, on 2024–25 data only                                                                                                               |
+| Agent failure                  | A configuration must still produce a valid forecast when its agents are switched off                                                                                                              |
+| v4 scored run                  | Withdrawn (SPO-885)                                                                                                                                                                               |
+| Market test and big-over picks | Dropped (SPO-912). Game lines are collected for all five teams; player props are not collected for the new teams. The ceiling-game score stays.                                                   |
 
 ### Open
 
@@ -300,7 +301,7 @@ Each is one or more Linear issues in `nba-agent-v2`, filed after this brief is a
 | A5 Architect harness  | The architect's tools, prompt, notes and hypothesis list; the contamination probe for every allowed model                                                     | The prompt names no result of the replayed season; a session cannot reach data outside its view                                                                                                   |
 | A6 Architect pilot    | Two iterations end to end on the development teams                                                                                                            | Written up as a pilot, not evidence; the architect's spend is reported against the $30 cap                                                                                                        |
 | A7 Development run    | The architect's iterations within the pool, ending in a nominated configuration                                                                               | Every iteration is in the record; the nominee passed review and the guardrails                                                                                                                    |
-| A8 Final evaluation   | The test-team runs, the ablations, the market test and the write-up                                                                                           | Report generated from the record alone; no development after nomination                                                                                                                           |
+| A8 Final evaluation   | The test-team runs, the ablations and the write-up                                                                                                            | Report generated from the record alone; no development after nomination                                                                                                                           |
 
 Build order: A1 and A2 first, in parallel. A3 against A2's interfaces. A4 and A5 after A2. A6 after A1 to A5. A7 after A6. A8 after A7.
 
