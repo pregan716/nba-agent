@@ -1,3 +1,4 @@
+import { mountModels, type BuiltModels } from "./models.js";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { RunConfig, Game } from "../runner/config.js";
@@ -14,6 +15,7 @@ export function gameSandbox(
   context: { teamId: string },
   root: string,
   recordStep: (entry: Record<string, unknown>) => void,
+  trainedModels: BuiltModels = {},
 ) {
   const session = new Session(
     config,
@@ -33,6 +35,7 @@ export function gameSandbox(
     undefined,
     root,
     (dir) => {
+      mountModels(dir, trainedModels);
       const path = join(dir, "package");
       mkdirSync(path);
       for (const [name, source] of Object.entries(pkg.files))

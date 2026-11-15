@@ -2,7 +2,7 @@ import { sha256 } from "../data/store.js";
 import type { Row } from "../data/contracts.js";
 import type { OddsAdapter } from "../data/adapters.js";
 import type { Identities } from "../data/identity.js";
-import { instant } from "../data/time.js";
+import { before, instant } from "../data/time.js";
 
 export const GAME_LINE_METHOD = {
   version: "game-lines-v1",
@@ -156,6 +156,7 @@ export function buildGameLines(quotes: Row[], teamName = "Boston Celtics") {
 export async function openingGameLines(
   odds: OddsAdapter,
   identities: Identities,
+  beforeTip?: string,
 ) {
   const source = await odds.release.sourceRelease();
   const quotes = [...source.objects.values()].filter((r) =>
@@ -166,6 +167,7 @@ export async function openingGameLines(
     (await source.rows(quotes[0].key)).filter(
       (r) =>
         r.snapshot_kind === "scheduled_start" &&
+        (!beforeTip || before(r.requested_at, beforeTip)) &&
         ["spreads", "team_totals"].includes(r.market),
     ),
   );

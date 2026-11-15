@@ -1,0 +1,51 @@
+# Five-team evaluation service
+
+The host opens one persistent evaluation pool per development experiment and passes the methods returned by `developmentService(host)` to the architect harness. The service owns the schedule, prices, data mounts, pool and sandbox configuration. Packages and run IDs are the architect's inputs. The host keeps the pool directory and raw run records outside the architect's workspace.
+
+## Requests
+
+| Kind | Required fields | Games | Counts toward the full-run cap |
+| --- | --- | --- | --- |
+| `full` | `package` | Jan 5–Feb 1, 43 team-games | Yes |
+| `test` | `package`, `games` | One to five distinct development team-games before the holdout | No |
+| `check` | `runId`, `window` | `opening` (41) or `late` (42) | Yes |
+| `repeat` | `runId` | Same package, trained models and team-games as that run | Yes |
+
+Each request is a JSON object with a `kind`. For a test, each element of `games` has `teamId` and `gameId`. Times in the fixed windows follow the brief's UTC schedule selection. Each run gets a fresh artifact store. The game loop can use the earlier released reference history.
+
+The default pool holds $1,000 and admits up to 12 full evaluations. The SQLite ledger reserves the maximum run cost atomically across processes before starting work. Completion releases the unused reservation and retains actual spend plus unresolved provider charges. A refused budget or cap request is recorded. A failed admitted full run still uses its full-run slot. After a host process dies, the next service instance reconciles its reservation from the run record. Unsettled provider requests remain charged at the reserved amount. Full-run limits, UTC windows and replay allowances belong to the host profile and are pinned when a pool opens.
+
+## Scores and archive
+
+Minutes pinball is averaged over roster players, then over team-games. The target divides the system mean by the reference mean. Paired intervals use 10,000 Mulberry32 resamples with seed 8542026 and the 5th and 95th percentiles. Both sides of a shared NBA game stay together in each draw. Undefined ratios are null. A positive lower endpoint on the system-minus-reference difference for fantasy-point pinball or play Brier flags the configuration. Missing forecasts use the game's reference and carry a fallback flag. Unavailable outcomes are reported separately.
+
+Results include v4 non-prop metrics overall and by game, team, reference role tier and player. Comparisons require matching team-games, tips and outcome availability. They report cost and time, leave-one-game-out influence and the estimate without the five most influential games. Repeat results also compare against their parent.
+
+The archive includes the submitted code and prompts, the forecast used for each team-game, scores, and a chronological call trace. The private run record retains exact replies and artifacts. Once a loop has had access to a spread or total, its free-form replies, transcript payloads, diagnostic text and artifact values may reproduce those quantities. The architect view marks those payloads withheld and retains trusted call metadata and spend. The restriction continues through the run because artifacts can carry earlier information. Runs without game-line exposure retain their intermediate outputs.
+
+## Training
+
+Declare Python filenames in the package's `training` list. Each defines `train(path)`, where `path` is a read-only SQLite database built by the training view. The only data mounted for this build are the 2024–25 training export and the submitted Python source. A script returns a JSON-serializable value or binary bytes. For example:
+
+```python
+def train(path):
+    import sqlite3
+    with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
+        return {"games": db.execute("SELECT count(*) FROM schedule").fetchone()[0]}
+```
+
+A script named `fit.py` produces `/data/models/fit.py.json` or `/data/models/fit.py.binary` in each game sandbox. The host verifies the hash before mounting it, records the model digest with the run, and reuses the same build for checks, repeats and ablations. Only source files are accepted in a submitted package. The separate configuration reviewer checks for season-derived content embedded in source.
+
+## Local operator commands
+
+```sh
+npm run evaluation -- evaluate POOL_DIR PINNED_SANDBOX PINNED_PROJECTION request.json
+npm run evaluation -- list POOL_DIR PINNED_SANDBOX PINNED_PROJECTION
+npm run evaluation -- archive POOL_DIR PINNED_SANDBOX PINNED_PROJECTION RUN_ID
+npm run evaluation -- compare POOL_DIR PINNED_SANDBOX PINNED_PROJECTION LEFT_ID RIGHT_ID
+npm run evaluation -- refusals POOL_DIR PINNED_SANDBOX PINNED_PROJECTION
+```
+
+Use the repository's data-store credentials and pinned image references. Live specialists read their credentials from `ANTHROPIC_API_KEY` and `TYPESAFE_API_KEY` in the host process. The service prints JSON to stdout.
+
+The separate operator command `final POOL_DIR PINNED_SANDBOX PINNED_PROJECTION NOMINATED_RUN_ID` closes development and evaluates an eligible nomination on all 164 Denver and Memphis team-games. It runs the nominee, the agents-off ablation if agents are declared, and the per-game artifact reset ablation. Final runs are outside the development pool and archive. The amended brief retains ceiling scores and drops player-prop market tests and big-over picks.

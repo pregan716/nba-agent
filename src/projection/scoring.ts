@@ -58,7 +58,7 @@ function publicOutcome(row: Outcome) {
     ...perStat((q) => row[q]),
   };
 }
-function score(
+function playerScores(
   pre: Pregame,
   f: Forecast,
   ref: Forecast,
@@ -152,59 +152,69 @@ function score(
       };
     },
   );
-  function summarize(rows: typeof players) {
-    const picked = rows.filter((r) => r.ceiling?.picked),
-      voids = picked.filter((r) => !r.actual.played).length;
-    const hits = picked.filter((r) => r.ceiling?.hit).length;
-    const denominator = rows.reduce((s, r) => s + (r.ceiling?.weight ?? 0), 0);
-    const numerator = rows.reduce(
-      (s, r) => s + (r.ceiling?.hit ? r.ceiling.weight : 0),
-      0,
-    );
-    return {
-      players: rows.length,
-      conditionalMinutesCoverage: {
-        coverage80: average(
-          rows.map((r) => r.conditionalMinutesCoverage?.coverage80 ?? null),
-        ),
-        coverage50: average(
-          rows.map((r) => r.conditionalMinutesCoverage?.coverage50 ?? null),
-        ),
-      },
-      ranges: perStat((q) => ({
-        pinball: average(rows.map((r) => r.ranges[q]?.pinball ?? null)),
-        coverage80: average(rows.map((r) => r.ranges[q]?.coverage80 ?? null)),
-        coverage50: average(rows.map((r) => r.ranges[q]?.coverage50 ?? null)),
-      })),
-      playBrier: average(rows.map((r) => r.playBrier)),
-      startBrier: average(rows.map((r) => r.startBrier)),
-      misplacedMinutes: rows.reduce((s, r) => s + r.misplacedMinutes, 0),
-      ceiling: {
-        brier: average(rows.map((r) => r.ceiling?.brier ?? null)),
-        picks: picked.length,
-        voids,
-        hits,
-        hitRate: picked.length ? hits / picked.length : null,
-        hitRateWithoutVoids:
-          picked.length > voids ? hits / (picked.length - voids) : null,
-        referenceWeighted: {
-          numerator,
-          denominator,
-          rate: denominator ? numerator / denominator : null,
-        },
-      },
-    };
-  }
+
+  return { players, picks };
+}
+function score(...args: Parameters<typeof playerScores>) {
+  const { players, picks } = playerScores(...args);
   return {
     players,
     picks,
-    overall: summarize(players),
+    overall: summarizePlayers(players),
     byTier: Object.fromEntries(
-      tiers.map((t) => [t, summarize(players.filter((r) => r.tier === t))]),
+      tiers.map((t) => [
+        t,
+        summarizePlayers(players.filter((r) => r.tier === t)),
+      ]),
     ),
   };
 }
 
+export function summarizePlayers(
+  rows: ReturnType<typeof playerScores>["players"],
+) {
+  const picked = rows.filter((r) => r.ceiling?.picked),
+    voids = picked.filter((r) => !r.actual.played).length;
+  const hits = picked.filter((r) => r.ceiling?.hit).length;
+  const denominator = rows.reduce((s, r) => s + (r.ceiling?.weight ?? 0), 0);
+  const numerator = rows.reduce(
+    (s, r) => s + (r.ceiling?.hit ? r.ceiling.weight : 0),
+    0,
+  );
+  return {
+    players: rows.length,
+    conditionalMinutesCoverage: {
+      coverage80: average(
+        rows.map((r) => r.conditionalMinutesCoverage?.coverage80 ?? null),
+      ),
+      coverage50: average(
+        rows.map((r) => r.conditionalMinutesCoverage?.coverage50 ?? null),
+      ),
+    },
+    ranges: perStat((q) => ({
+      pinball: average(rows.map((r) => r.ranges[q]?.pinball ?? null)),
+      coverage80: average(rows.map((r) => r.ranges[q]?.coverage80 ?? null)),
+      coverage50: average(rows.map((r) => r.ranges[q]?.coverage50 ?? null)),
+    })),
+    playBrier: average(rows.map((r) => r.playBrier)),
+    startBrier: average(rows.map((r) => r.startBrier)),
+    misplacedMinutes: rows.reduce((s, r) => s + r.misplacedMinutes, 0),
+    ceiling: {
+      brier: average(rows.map((r) => r.ceiling?.brier ?? null)),
+      picks: picked.length,
+      voids,
+      hits,
+      hitRate: picked.length ? hits / picked.length : null,
+      hitRateWithoutVoids:
+        picked.length > voids ? hits / (picked.length - voids) : null,
+      referenceWeighted: {
+        numerator,
+        denominator,
+        rate: denominator ? numerator / denominator : null,
+      },
+    },
+  };
+}
 export interface Metering {
   costUsd: number;
   wallClockMs: number;
