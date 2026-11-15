@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fixtureCorpus, BOS, cutoff } from "./fixtures/session/corpus.js";
+import { stageArtifacts, type Artifacts } from "../src/game-loop/artifacts.js";
 import { releaseTime } from "../src/env/visibility.js";
 import { readPackage, type Package } from "../src/game-loop/package.js";
 import { review } from "../src/evaluation/review/index.js";
@@ -94,6 +95,41 @@ test("package hash covers file contents independent of member order; unknown mod
   );
   assert.throws(() => readPackage({ ...pkg, entry: "../main.py" }));
 });
+test("artifact limits count retained UTF-8 JSON values per owner after replacements", () => {
+  const declarations: Package["artifacts"] = {
+    extra: "team",
+    shared: "league",
+  };
+  const data = "é".repeat(128 * 1024 - 1); // Quotes bring the JSON value to exactly 256 KiB.
+  let store: Artifacts = new Map();
+  for (let n = 0; n < 4; n++) {
+    const t = "team" + n,
+      l = "league" + n;
+    declarations[t] = "team";
+    declarations[l] = "league";
+    store = stageArtifacts(store, declarations, BOS, { [t]: data, [l]: data });
+  }
+  store = stageArtifacts(store, declarations, "other", { extra: data });
+  store = stageArtifacts(store, declarations, BOS, {
+    team0: data,
+    league0: data,
+  });
+  assert.throws(
+    () => stageArtifacts(store, declarations, BOS, { extra: 0 }),
+    /per-team limit/,
+  );
+  assert.throws(
+    () => stageArtifacts(store, declarations, BOS, { shared: 0 }),
+    /league limit/,
+  );
+  assert.throws(
+    () => stageArtifacts(store, declarations, BOS, { team0: data + "a" }),
+    /per-artifact limit/,
+  );
+  assert.doesNotThrow(() =>
+    stageArtifacts(store, declarations, BOS, { extra: 0, team0: "" }),
+  );
+});
 const image = process.env.FORECAST_SANDBOX_IMAGE;
 test(
   "two teams replay a week in isolated sandboxes, including simultaneous tips and ablations",
@@ -104,7 +140,7 @@ test(
     t.after(() => rmSync(parent, { recursive: true, force: true }));
     f.config.harness.sandboxImage = image!;
     Object.assign(f.config.budget.sandbox, {
-      stdoutBytes: 1024 * 1024,
+      stdoutBytes: 16 * 1024,
       memoryBytes: 256 * 1024 * 1024,
     });
     f.records.odds[0].data.secret = "MARKET_SENTINEL";
@@ -262,6 +298,73 @@ test(
         history: 2,
       },
     ]);
+    const largeRoot = join(parent, "large-results");
+    const players = Array.from({ length: 25 }, (_, n) => String(n));
+    const precise = range.map((v) => v + 0.1234567890123456) as Range;
+    await replay({
+      ...base,
+      root: largeRoot,
+      games: [games[0], games[3]],
+      source: {
+        ...source,
+        async projection(g) {
+          const { reference } = await source.projection(g);
+          return {
+            roster: players.map((playerId) => ({ playerId, inactive: false })),
+            reference: {
+              ...reference,
+              players: players.map((playerId) => ({
+                ...reference.players[0],
+                playerId,
+                minutes: precise,
+                points: precise,
+                assists: precise,
+                rebounds: precise,
+                fantasy_points: precise,
+              })),
+            },
+          };
+        },
+        async outcomes(g, at) {
+          const r = await source.outcomes(g, at);
+          return {
+            ...r,
+            players: players.map((playerId) => ({ ...r.players[0], playerId })),
+          };
+        },
+      },
+      package: {
+        ...pkg,
+        files: {
+          "inspect.py": "def run(ctx,args):\n    return 't' * 50000",
+          "main.py": `def run(ctx,arg):
+    if arg is None:
+        return dict(type='agent', name='reader', input='a'*50000, state='s'*50000)
+    assert len(arg['state']) == 50000 and arg['reply']['ok']
+    size = 100 * 1024 if 'note' not in ctx['artifacts'] else 256 * 1024
+    return dict(type='finish',forecast=ctx['reference'],writes={'note':'x'*size})`,
+        },
+      },
+      runAgent: async (call) => {
+        assert.equal(String(call.input.task).length, 50000);
+        assert.equal(String(await call.tool("inspect", {})).length, 50000);
+        return "ok";
+      },
+    });
+    const [success, failure] = read(largeRoot);
+    assert.equal(success.reason, null);
+    assert.equal(success.frozen.players.length, 25);
+    assert.ok(Buffer.byteLength(JSON.stringify(success.frozen)) > 16 * 1024);
+    assert.equal(success.artifacts[0].value.length, 100 * 1024);
+    assert.equal(failure.frozen, null);
+    assert.match(failure.reason, /note exceeds the 256 KiB/);
+    assert.deepEqual(failure.artifacts, success.artifacts);
+    const largeLog = new RecordStore(largeRoot);
+    try {
+      assert.equal(largeLog.events("forecast_freeze").length, 1);
+    } finally {
+      largeLog.close();
+    }
     const oversizedRoot = join(parent, "oversized");
     await replay({
       ...base,
@@ -276,7 +379,7 @@ test(
       },
       runAgent: async () => null,
     });
-    assert.match(read(oversizedRoot)[0].reason, /stdout truncated/);
+    assert.match(read(oversizedRoot)[0].reason, /1 MiB step result limit/);
     const off = join(parent, "off");
     let offCalls = 0;
     const ablated = await replay({

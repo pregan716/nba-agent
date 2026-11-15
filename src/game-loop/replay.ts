@@ -18,6 +18,7 @@ import type { AgentRunner } from "./agents.js";
 import { ReplayMeter } from "./meter.js";
 import { agentDispatcher } from "./call.js";
 import type { BuiltModels } from "./models.js";
+import { stageArtifacts, type Artifacts } from "./artifacts.js";
 import { gameSandbox } from "./sandbox.js";
 
 export interface TeamGame {
@@ -126,10 +127,7 @@ export async function replay(options: {
     }
   >();
   const meter = new ReplayMeter(games.length * profile.usdPerTeamGame);
-  const artifacts = new Map<
-    string,
-    { name: string; team: string | null; value: unknown }
-  >();
+  let artifacts: Artifacts = new Map();
   let priorTip: string | undefined;
   let visibleArtifacts = new Map(artifacts);
   async function prepare(g: TeamGame) {
@@ -263,9 +261,12 @@ export async function replay(options: {
             signal.throwIfAborted();
             const step = action.parse(await invoke(pkg.entry, argument));
             if (step.type === "finish") {
-              for (const name of Object.keys(step.writes ?? {}))
-                if (!Object.hasOwn(pkg.artifacts, name))
-                  throw Error("Undeclared artifact: " + name);
+              const next = stageArtifacts(
+                artifacts,
+                pkg.artifacts,
+                team,
+                step.writes,
+              );
               const frozenAt = Temporal.Instant.from(g.tip)
                 .subtract({ nanoseconds: 1 })
                 .toString();
@@ -290,14 +291,7 @@ export async function replay(options: {
                 },
               );
               if (!result.ok) throw Error(result.reason);
-              for (const [name, value] of Object.entries(step.writes ?? {})) {
-                const owner = pkg.artifacts[name] === "team" ? team : null;
-                artifacts.set(JSON.stringify([owner, name]), {
-                  name,
-                  team: owner,
-                  value,
-                });
-              }
+              artifacts = next;
               break;
             }
             const reply = await call(step.name, step.input);
