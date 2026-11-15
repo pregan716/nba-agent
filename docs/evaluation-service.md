@@ -21,7 +21,9 @@ Minutes pinball is averaged over roster players, then over team-games. The targe
 
 Results include v4 non-prop metrics overall and by game, team, reference role tier and player. Comparisons require matching team-games, tips and outcome availability. They report cost and time, leave-one-game-out influence and the estimate without the five most influential games. Repeat results also compare against their parent.
 
-The archive includes the submitted code and prompts, the forecast used for each team-game, scores, and a chronological call trace. The private run record retains exact replies and artifacts. Once a loop has had access to a spread or total, its free-form replies, transcript payloads, diagnostic text and artifact values may reproduce those quantities. The architect view marks those payloads withheld and retains trusted call metadata and spend. The restriction continues through the run because artifacts can carry earlier information. Runs without game-line exposure retain their intermediate outputs.
+The development archive contains the submitted package and a forecast record for each team-game with its team-perspective spread, game total, artifact values, fallback flag and recorded failure reason. A null line means the value was unavailable or the older replay did not record it. The `calls` section includes rendered instructions, tasks, transcripts and replies. The `sandboxSteps` section includes the file, action, exit status, limit and captured stderr tail, including for code-only failures. Both traces carry the team-game and event sequence number.
+
+The architect's SQLite `game_lines` table contains `game_id`, `team_id`, `scheduled_tipoff`, `spread` and `total`. Each row represents one development team's perspective at scheduled start. A game between two development teams has two rows with opposite spreads. Coverage is limited to 2025–26 games before the holdout involving Boston, Oklahoma City or Washington. Denver and Memphis appear only as opponents in the eligible schedule. Player prop lines and scores derived from them remain excluded from the data view, game loop and archive.
 
 ## Training
 

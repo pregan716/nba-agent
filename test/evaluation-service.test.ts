@@ -340,9 +340,9 @@ test(
       runAgent: async (call) => {
         call.transcript({
           role: "assistant",
-          content: [{ type: "text", text: "MARKET_PRICE_SENTINEL" }],
+          content: [{ type: "text", text: "AGENT_REPLY" }],
         });
-        return "MARKET_PRICE_SENTINEL";
+        return "AGENT_REPLY";
       },
       source: {
         data: f.source,
@@ -351,10 +351,19 @@ test(
           return outcome(g);
         },
         async projection(g) {
-          return { roster, reference: forecast(g, 7), spread: -3, total: 210 };
+          return {
+            roster,
+            reference: forecast(g, 7),
+            spread: -3,
+            total: 210,
+            playerProp: { line: "PROP_LINE_SENTINEL" },
+          };
         },
       },
       training: {
+        gameLines: async () => {
+          throw Error("Training requested game lines");
+        },
         games,
         data: {
           async columns() {
@@ -406,6 +415,7 @@ test(
     const trainingPackage: Package = {
       ...pkg,
       training: ["train.py"],
+      artifacts: { note: "team" },
       agents: {
         a: {
           model: "claude-sonnet-4-6",
@@ -418,8 +428,9 @@ test(
         "main.py": `def run(ctx,arg):
     import json
     assert json.load(open('/data/models/train.py.json'))=={'prior_rows':1}
+    assert 'playerProp' not in ctx
     if arg is None: return dict(type='agent',name='a',input='minutes',state=None)
-    return dict(type='finish',forecast=ctx['reference'])
+    return dict(type='finish',forecast=ctx['reference'],writes={'note':arg['reply']['value']})
 `,
         "train.py": `def train(path):
     import sqlite3, pathlib
@@ -449,8 +460,47 @@ test(
       run.archive.calls.filter((c) => c.kind === "agent_end").length,
       1,
     );
-    assert.ok(!JSON.stringify(run).includes("MARKET_PRICE_SENTINEL"));
-    assert.ok(run.archive.calls.every((c) => c.withheld));
+    assert.deepEqual(
+      run.archive.calls.map((c) => c.kind),
+      ["agent_start", "agent_transcript", "agent_end"],
+    );
+    assert.equal(run.archive.calls[0].data.system, "Estimate minutes");
+    assert.equal(run.archive.calls[0].data.input, "minutes");
+    assert.equal(
+      run.archive.calls[1].data.value.content[0].text,
+      "AGENT_REPLY",
+    );
+    assert.equal(run.archive.calls[2].data.reply.value, "AGENT_REPLY");
+    const archived = run.archive.forecasts[0];
+    assert.equal(archived.spread, -3);
+    assert.equal(archived.total, 210);
+    assert.deepEqual(archived.artifacts, [
+      { name: "note", team: game.teamId, value: "AGENT_REPLY" },
+    ]);
+    assert.deepEqual(
+      run.archive.sandboxSteps.map((s) => s.action),
+      ["agent", "finish"],
+    );
+    assert.ok(!JSON.stringify(run.archive).includes("PROP_LINE_SENTINEL"));
+    const failed = await s.evaluate({
+      kind: "test",
+      games: [{ teamId: game.teamId, gameId: game.gameId }],
+      package: {
+        ...pkg,
+        files: {
+          "main.py":
+            "def run(ctx,arg):\n    raise RuntimeError('bad rotation estimate')",
+        },
+      },
+    });
+    assert.match(failed.archive.forecasts[0].reason, /bad rotation estimate/);
+    assert.equal(failed.archive.forecasts[0].fallback, true);
+    const [step] = failed.archive.sandboxSteps;
+    assert.equal(step.file, "main.py");
+    assert.equal(step.action, null);
+    assert.equal(step.exitStatus, 1);
+    assert.equal(step.limit, null);
+    assert.match(step.stderr, /RuntimeError: bad rotation estimate/);
     const repeat = await s.evaluate({ kind: "repeat", runId: run.id });
     assert.equal(repeat.archive.forecasts[0].fallback, false);
     assert.equal(builds, 1);
@@ -502,7 +552,7 @@ test("fresh Pi architect iterations retain drafts and hypotheses, submit through
         season: "2025-26",
         home_team_id: teamIds.BOS,
         away_team_id: "other",
-        game_total: "MARKET_SENTINEL",
+        player_prop: "PROP_LINE_SENTINEL",
       },
     );
   });
@@ -527,6 +577,7 @@ test("fresh Pi architect iterations retain drafts and hypotheses, submit through
       outcomes: async (g) => outcome(g),
     },
     training: {
+      gameLines: async () => () => ({ spread: -12345, total: 67890 }),
       games,
       data: {
         async columns() {
@@ -575,7 +626,8 @@ test("fresh Pi architect iterations retain drafts and hypotheses, submit through
                 code: `import sqlite3, pathlib
 db=sqlite3.connect("file:/data/session.sqlite?mode=ro",uri=True)
 assert db.execute("select distinct game_id from schedule").fetchall()==[("visible",)]
-assert "game_total" not in [row[1] for row in db.execute("pragma table_info(schedule)")]
+assert "player_prop" not in [row[1] for row in db.execute("pragma table_info(schedule)")]
+assert db.execute("select distinct spread,total from game_lines").fetchall()==[(-12345,67890)]
 assert not pathlib.Path("/data/architect.sqlite").exists()
 print("filtered data verified")`,
               }),
@@ -661,6 +713,10 @@ print("filtered data verified")`,
       calls: [
         call("document_read", { area: "notes", name: "memo" }),
         call("archive_read", { runId: decision.runId, section: "forecasts" }),
+        call("archive_read", {
+          runId: decision.runId,
+          section: "sandboxSteps",
+        }),
         call("final", {}),
         call("budget", {}),
       ],
@@ -686,7 +742,10 @@ print("filtered data verified")`,
   const history = JSON.stringify(provider.requests[before + 1].messages);
   assert.match(history, /PRIVATE_ITERATION_NOTE updated/);
   assert.match(history, /forecast-v1/);
-  assert.doesNotMatch(history, /-12345|67890/);
+  assert.match(history, /-12345/);
+  assert.match(history, /67890/);
+  if (image) assert.match(history, /stdoutTruncated/);
+  assert.doesNotMatch(history, /PROP_LINE_SENTINEL/);
   assert.ok(
     !provider.requests[before].tools.some((tool) => tool.name === "final"),
   );

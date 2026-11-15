@@ -130,8 +130,6 @@ export async function replay(options: {
     string,
     { name: string; team: string | null; value: unknown }
   >();
-  // An artifact can carry information from an earlier game into later replies.
-  let marketExposed = false;
   let priorTip: string | undefined;
   let visibleArtifacts = new Map(artifacts);
   async function prepare(g: TeamGame) {
@@ -205,7 +203,6 @@ export async function replay(options: {
         reason: string | null = null;
       if (meter.available <= 0) reason = "run_budget_exhausted";
       else {
-        marketExposed ||= spread !== null || total !== null;
         const history = source.schedule
           .filter((h) => h.teamId === team && before(releaseTime(h.tip), g.tip))
           .sort((a, b) => compare(a.tip, b.tip));
@@ -325,7 +322,8 @@ export async function replay(options: {
         ...receipt,
         configurationHash: hash,
         reason,
-        marketExposed,
+        spread,
+        total,
         artifacts: [...artifacts.values()],
       });
     }
