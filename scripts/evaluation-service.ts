@@ -1,3 +1,4 @@
+import { architectIteration } from "../src/architect/session.js";
 import { readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { DopplerStore } from "../src/data/store.js";
@@ -18,9 +19,15 @@ import { reviewer } from "../src/evaluation/review/reviewer.js";
 const [mode, dir, sandboxImage, projectionImage, ...args] =
   process.argv.slice(2);
 if (
-  !["evaluate", "list", "archive", "compare", "refusals", "final"].includes(
-    mode,
-  ) ||
+  ![
+    "architect",
+    "evaluate",
+    "list",
+    "archive",
+    "compare",
+    "refusals",
+    "final",
+  ].includes(mode) ||
   !dir ||
   ![sandboxImage, projectionImage].every(
     (s) => s && /@sha256:[a-f0-9]{64}$/.test(s),
@@ -79,7 +86,9 @@ try {
       typesafe: process.env.TYPESAFE_API_KEY,
     }),
   };
-  if (mode === "final")
+  if (mode === "architect")
+    console.log(JSON.stringify(await architectIteration(host)));
+  else if (mode === "final")
     console.log(JSON.stringify(await finalEvaluation(host, args[0])));
   else {
     const service = developmentService(host);

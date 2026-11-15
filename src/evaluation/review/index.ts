@@ -18,7 +18,19 @@ export function approvedPackage(raw: Package) {
   approvals.set(result.pkg, result.hash);
   return result;
 }
-export async function review(root: string, gate: ReviewGate, input: unknown) {
+export type ReviewReceipt = {
+  id: string;
+  hash: string;
+  verdict: "accept" | "reject";
+  reasons: Finding[];
+};
+export class ReviewRejection extends Error {}
+export async function review(
+  root: string,
+  gate: ReviewGate,
+  input: unknown,
+  recorded?: (receipt: ReviewReceipt) => void,
+) {
   const raw = structuredClone(input);
   const json = canonicalJson(raw) ?? "null";
   const hash = createHash("sha256").update(json).digest("hex");
@@ -36,8 +48,10 @@ export async function review(root: string, gate: ReviewGate, input: unknown) {
       reviewerUsd: number | null = 0,
       reviewerVerdict: string | null = null;
     let pkg: Package | undefined;
+    let scanned = false;
     try {
       findings = await gate.scan(raw);
+      scanned = true;
       reasons = findings;
       if (!reasons.length) {
         pkg = readPackage(raw).pkg;
@@ -55,8 +69,9 @@ export async function review(root: string, gate: ReviewGate, input: unknown) {
         {
           file: "package",
           line: 1,
-          reason:
-            reviewerUsd === 0 && !pkg
+          reason: !scanned
+            ? "Season identity scan unavailable"
+            : reviewerUsd === 0 && !pkg
               ? String(e)
               : "Reviewer unavailable or returned an invalid decision",
         },
@@ -73,8 +88,9 @@ export async function review(root: string, gate: ReviewGate, input: unknown) {
       reviewerVerdict,
       id,
     );
+    recorded?.({ id, hash, verdict: accepted ? "accept" : "reject", reasons });
     if (!accepted || !pkg)
-      throw Error(
+      throw new ReviewRejection(
         "Leakage review " +
           id +
           " rejected: " +

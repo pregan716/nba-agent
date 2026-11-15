@@ -21,7 +21,11 @@ import {
 } from "./profile.js";
 import { buildModels, type TrainingData } from "./training.js";
 
-import { review, type ReviewGate } from "../review/index.js";
+import {
+  review,
+  type ReviewGate,
+  type ReviewReceipt,
+} from "../review/index.js";
 
 export interface EvaluationHost {
   review: ReviewGate;
@@ -114,7 +118,7 @@ export function developmentService(host: EvaluationHost) {
     return archiveRun(path(id));
   };
   return {
-    async evaluate(raw: unknown) {
+    async evaluate(raw: unknown, recorded?: (receipt: ReviewReceipt) => void) {
       const req = developmentRequest.parse(raw);
       const parent = "runId" in req ? pool.complete(req.runId) : null;
 
@@ -128,6 +132,7 @@ export function developmentService(host: EvaluationHost) {
         host.root,
         host.review,
         "package" in req ? req.package : parent!.pkg,
+        recorded,
       );
       const { hash } = readPackage(pkg);
       const id = pool.reserve(
@@ -156,13 +161,40 @@ export function developmentService(host: EvaluationHost) {
         throw e;
       }
     },
+    budget: () => pool.remaining(),
+    nominate(id: string) {
+      eligibleNominee(host, pool, id);
+      pool.nominate(id);
+    },
     list: () => pool.list(),
     refusals: () => pool.refusals(),
     archive: previous,
+    summary(id: string) {
+      const { scores } = previous(id);
+      return {
+        system: summarize(scores, "agent"),
+        reference: summarize(scores, "reference"),
+        againstReference: pairedComparison(scores, scores, "reference"),
+      };
+    },
     compare: (a: string, b: string) =>
       pairedComparison(previous(a).scores, previous(b).scores),
     close: () => pool.close(),
   };
+}
+
+function eligibleNominee(
+  host: EvaluationHost,
+  pool: EvaluationPool,
+  id: string,
+) {
+  const parent = pool.complete(id);
+  if (parent.kind !== "full") throw Error("Nominate a full evaluation");
+  const dev = archiveRun(join(host.root, "development", id));
+  const guard = pairedComparison(dev.scores, dev.scores, "reference");
+  if (!guard.games || guard.guardrailFlag)
+    throw Error("Configuration ineligible for nomination");
+  return parent;
 }
 
 /** Operator-only entry point. A completed full development evaluation supplies
@@ -170,12 +202,7 @@ export function developmentService(host: EvaluationHost) {
 export async function finalEvaluation(host: EvaluationHost, id: string) {
   const pool = openPool(host);
   try {
-    const parent = pool.complete(id);
-    if (parent.kind !== "full") throw Error("Nominate a full evaluation");
-    const dev = archiveRun(join(host.root, "development", id));
-    const guard = pairedComparison(dev.scores, dev.scores, "reference");
-    if (!guard.games || guard.guardrailFlag)
-      throw Error("Configuration ineligible for nomination");
+    const parent = eligibleNominee(host, pool, id);
     const games = finalGames(host.source.schedule);
     const pkg = await review(host.root, host.review, parent.pkg);
     pool.nominate(id);
