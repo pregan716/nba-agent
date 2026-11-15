@@ -29,6 +29,12 @@ The example expects an agent named `analyst` and an artifact declaration such as
 
 The context includes team ID, game ID, tip, roster, spread, total, tonight's reference, released reference history and the chronological `scores` list for this team's released games in the replay. The previous-game `feedback` field is also available. Research tables use the existing read-only sandbox export. Python globals are fresh at each invocation. The scratch directory lasts for one team-game. Only declared JSON artifact writes on a valid finish carry forward. Team artifacts are private to that team. League artifacts are shared. Simultaneous tips read the same pre-tip snapshot. Later games see the last write in deterministic team/game order.
 
+## Result and artifact limits
+
+Each Python invocation can return up to 1 MiB (1,048,576 bytes) of JSON on stdout. The whole action counts, including the forecast and writes on a finish or the input and state on an agent call. The same limit applies to a specialist tool's result. Exceeding it fails that step with a size-limit diagnostic. Stderr has a separate diagnostic budget and retains a tail of up to 4 KiB.
+
+An artifact value can occupy up to 256 KiB. The sum of retained values can reach 1 MiB for each team and a separate 1 MiB for the league. Sizes use the UTF-8 byte length of each compact JSON value, including string quotes and escapes. Replacing a value removes its old size from the total. The host checks all writes before freezing the forecast. A rejected finish records the reason, preserves the previous artifacts and scores the team-game on the reference.
+
 ## Metering and records
 
 The default run allowance is $2 times the number of team-games. The game safeguards are $10 and 45 minutes. Pass a budget profile to override them. Set `agentsOff` to refuse all agent calls or `clearArtifacts` to start each team-game with an empty store. A model request reserves from both remaining allowances. A response settles its usage. An ambiguous failure keeps its reservation against the caps and records the amount separately from confirmed spend.
