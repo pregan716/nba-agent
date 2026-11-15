@@ -108,68 +108,128 @@
   ],
   "events": [
     {
-      "id": "000-203486",
-      "availableAt": "2026-02-05T05:00:00Z",
-      "out": [],
+      "id": "2026-02-04-mason-plumlee-trade",
+      "officialDate": "2026-02-04",
+      "kind": "trade",
+      "description": "Oklahoma City Thunder received forward Mason Plumlee from Charlotte Hornets.",
+      "availableAt": "2026-02-04T20:54:12Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "release-plumlee-260204"
+      ],
       "in": [
         "203486"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "001-1631172",
-      "availableAt": "2026-02-05T05:00:00Z",
+      "id": "2026-02-04-ousmane-dieng-trade",
+      "officialDate": "2026-02-04",
+      "kind": "trade",
+      "description": "Charlotte Hornets received forward Ousmane Dieng from Oklahoma City Thunder.",
+      "availableAt": "2026-02-04T20:54:12Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "release-plumlee-260204"
+      ],
+      "in": [],
       "out": [
         "1631172"
-      ],
-      "in": []
+      ]
     },
     {
-      "id": "002-1642272",
-      "availableAt": "2026-02-05T05:00:00Z",
-      "out": [],
+      "id": "2026-02-04-jared-mccain-trade",
+      "officialDate": "2026-02-04",
+      "kind": "trade",
+      "description": "Oklahoma City Thunder received guard Jared McCain from Philadelphia 76ers.",
+      "availableAt": "2026-02-05T01:54:46Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "release-mccain-260204"
+      ],
       "in": [
         "1642272"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "003-203486",
-      "availableAt": "2026-02-05T05:00:00Z",
+      "id": "2026-02-04-mason-plumlee-waive",
+      "officialDate": "2026-02-04",
+      "kind": "waive",
+      "description": "Oklahoma City Thunder waived forward Mason Plumlee.",
+      "availableAt": "2026-02-05T01:54:46Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "release-mccain-260204-mason-plumlee"
+      ],
+      "in": [],
       "out": [
         "203486"
-      ],
-      "in": []
-    },
-    {
-      "id": "004-1631205",
-      "availableAt": "2026-02-07T05:00:00Z",
-      "out": [],
-      "in": [
-        "1631205"
       ]
     },
     {
-      "id": "005-1642959",
+      "id": "2026-02-06-buddy-boeheim-signing",
+      "officialDate": "2026-02-06",
+      "kind": "signing",
+      "description": "Oklahoma City Thunder signed forward Buddy Boeheim to a Two-Way Contract.",
       "availableAt": "2026-02-07T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
+        "1631205"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-06-chris-youngblood-waive",
+      "officialDate": "2026-02-06",
+      "kind": "waive",
+      "description": "Oklahoma City Thunder waived guard Chris Youngblood.",
+      "availableAt": "2026-02-07T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1642959"
-      ],
-      "in": []
-    },
-    {
-      "id": "006-1642362",
-      "availableAt": "2026-03-03T05:00:00Z",
-      "out": [],
-      "in": [
-        "1642362"
       ]
     },
     {
-      "id": "007-1631205",
+      "id": "2026-03-02-buddy-boeheim-waive",
+      "officialDate": "2026-03-02",
+      "kind": "waive",
+      "description": "Oklahoma City Thunder waived forward Buddy Boeheim.",
       "availableAt": "2026-03-03T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1631205"
+      ]
+    },
+    {
+      "id": "2026-03-02-payton-sandfort-signing",
+      "officialDate": "2026-03-02",
+      "kind": "signing",
+      "description": "Oklahoma City Thunder signed forward Payton Sandfort to a Two-Way Contract.",
+      "availableAt": "2026-03-03T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
       ],
-      "in": []
+      "in": [
+        "1642362"
+      ],
+      "out": []
     }
   ],
   "sources": {
@@ -181,7 +241,67 @@
     },
     "official": {
       "path": "docs/evidence/five-team/moves-OKC.json",
-      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+      "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+      "retrievedAt": "2026-11-15T02:14:12Z"
+    },
+    "release-plumlee-260204": {
+      "url": "https://www.nba.com/thunder/news/release-plumlee-260204",
+      "pageTimestamp": "2026-02-04T20:54:12Z",
+      "quote": "acquired center Mason Plumlee from the Charlotte Hornets in exchange for forward Ousmane Dieng"
+    },
+    "release-mccain-260204": {
+      "url": "https://www.nba.com/thunder/news/release-mccain-260204",
+      "pageTimestamp": "2026-02-05T01:54:46Z",
+      "quote": "Thunder Acquires Jared McCain"
+    },
+    "release-mccain-260204-mason-plumlee": {
+      "url": "https://www.nba.com/thunder/news/release-mccain-260204",
+      "pageTimestamp": "2026-02-05T01:54:46Z",
+      "quote": "the Thunder has waived center Mason Plumlee"
     }
-  }
+  },
+  "rules": {
+    "membership": "A player is on the roster for a game when scheduled tip falls in [availableFrom, availableUntil) of one of his intervals. A null availableUntil is open-ended.",
+    "defaultAvailability": "The official feed carries a date and no time. A move is available at the end of its official date in America/New_York (05:00Z in standard time, 04:00Z in daylight time).",
+    "timestampedException": "Where a game tips on the official date, a timestamped secondary source may establish an earlier time. The source states no time zone, so its clock time is read as US Pacific, the latest mainland zone, which gives the latest possible instant. Every use is listed under boundaryCases.",
+    "tenDayContracts": "A 10-day contract is treated as running through the tenth calendar day in America/New_York, counting the signing date as day one. Each end date below is corroborated by a secondary source or by the next official signing.",
+    "neverUsed": "The replayed game's own box score or events. Box-score membership from already released games is a cross-check only (scripts/roster-crosscheck.py)."
+  },
+  "boundaryCases": [
+    {
+      "gameId": "0022500730",
+      "scheduledTip": "2026-02-05T02:30:00.000Z",
+      "source": "release-mccain-260204",
+      "url": "https://www.nba.com/thunder/news/release-mccain-260204",
+      "pageTimestamp": "2026-02-05T01:54:46Z",
+      "quote": "Thunder Acquires Jared McCain",
+      "eventIds": [
+        "2026-02-04-jared-mccain-trade"
+      ]
+    },
+    {
+      "gameId": "0022500730",
+      "scheduledTip": "2026-02-05T02:30:00.000Z",
+      "source": "release-plumlee-260204",
+      "url": "https://www.nba.com/thunder/news/release-plumlee-260204",
+      "pageTimestamp": "2026-02-04T20:54:12Z",
+      "quote": "acquired center Mason Plumlee from the Charlotte Hornets in exchange for forward Ousmane Dieng",
+      "eventIds": [
+        "2026-02-04-mason-plumlee-trade",
+        "2026-02-04-ousmane-dieng-trade"
+      ]
+    },
+    {
+      "gameId": "0022500730",
+      "scheduledTip": "2026-02-05T02:30:00.000Z",
+      "source": "release-mccain-260204-mason-plumlee",
+      "url": "https://www.nba.com/thunder/news/release-mccain-260204",
+      "pageTimestamp": "2026-02-05T01:54:46Z",
+      "quote": "the Thunder has waived center Mason Plumlee",
+      "eventIds": [
+        "2026-02-04-mason-plumlee-waive"
+      ]
+    }
+  ]
 }

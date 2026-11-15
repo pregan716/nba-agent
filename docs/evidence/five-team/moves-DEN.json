@@ -1,8 +1,12 @@
 {
   "source": {
     "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
-    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    "retrieved_at": "2026-11-15T02:14:12Z",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+    "bytes": 4286543,
+    "total_rows": 10144
   },
+  "filter": "TEAM_ID == 1610612743 or \"Nuggets\" in TRANSACTION_DESCRIPTION (case-insensitive); 2025-07-01 <= TRANSACTION_DATE <= 2026-04-20",
   "rows": [
     {
       "Transaction_Type": "Signing",
@@ -62,6 +66,17 @@
     {
       "Transaction_Type": "Trade",
       "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets received draft consideration from Brooklyn Nets.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612751.0,
+      "GroupSort": "Trade 2025047"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
       "TRANSACTION_DESCRIPTION": "Brooklyn Nets received forward Hunter Tyson from Denver Nuggets.",
       "TEAM_ID": 1610612751.0,
       "TEAM_SLUG": "nets",
@@ -69,6 +84,226 @@
       "PLAYER_SLUG": "hunter-tyson",
       "Additional_Sort": 1610612743.0,
       "GroupSort": "Trade 2025047"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Brooklyn Nets received draft consideration from Denver Nuggets.",
+      "TEAM_ID": 1610612751.0,
+      "TEAM_SLUG": "nets",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612743.0,
+      "GroupSort": "Trade 2025047"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-10-20T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets re-signed guard Christian Braun to a Rookie Scale Extension.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1631128.0,
+      "PLAYER_SLUG": "christian-braun",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1138395"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-17T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived center Moses Brown.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1629650.0,
+      "PLAYER_SLUG": "moses-brown",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138115"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-17T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived forward Kessler Edwards.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1630556.0,
+      "PLAYER_SLUG": "kessler-edwards",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138116"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-15T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived guard James Akinjo.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1631231.0,
+      "PLAYER_SLUG": "james-akinjo",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137740"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived forward Terrence Hargrove Jr..",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1643075.0,
+      "PLAYER_SLUG": "terrence-hargrove-jr",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137129"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived forward Coleman Hawkins.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1641746.0,
+      "PLAYER_SLUG": "coleman-hawkins",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137130"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-09-26T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived forward Justyn Hamilton.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1641939.0,
+      "PLAYER_SLUG": "justyn-hamilton",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1136845"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-09-26T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived guard Javante McCoy.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1631322.0,
+      "PLAYER_SLUG": "javante-mccoy",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1136846"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-09-19T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets waived guard Dane Goodwin.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1641863.0,
+      "PLAYER_SLUG": "dane-goodwin",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1136654"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-21T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed guard Curtis Jones to a Two-Way Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1642938.0,
+      "PLAYER_SLUG": "curtis-jones",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135934"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets received center Jonas Valanciunas from Sacramento Kings.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 202685.0,
+      "PLAYER_SLUG": "jonas-valanciunas",
+      "Additional_Sort": 1610612758.0,
+      "GroupSort": "Trade 2025015"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Sacramento Kings received forward Dario Saric from Denver Nuggets.",
+      "TEAM_ID": 1610612758.0,
+      "TEAM_SLUG": "kings",
+      "PLAYER_ID": 203967.0,
+      "PLAYER_SLUG": "dario-saric",
+      "Additional_Sort": 1610612743.0,
+      "GroupSort": "Trade 2025015"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-10T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed guard Tim Hardaway Jr. to a Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 203501.0,
+      "PLAYER_SLUG": "tim-hardaway-jr",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135797"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-09T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed guard Bruce Brown to a Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1628971.0,
+      "PLAYER_SLUG": "bruce-brown",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135777"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-08T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets received forward Cameron Johnson from Brooklyn Nets.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1629661.0,
+      "PLAYER_SLUG": "cameron-johnson",
+      "Additional_Sort": 1610612751.0,
+      "GroupSort": "Trade 2025013"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-08T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Brooklyn Nets received forward Michael Porter Jr. from Denver Nuggets.",
+      "TEAM_ID": 1610612751.0,
+      "TEAM_SLUG": "nets",
+      "PLAYER_ID": 1629008.0,
+      "PLAYER_SLUG": "michael-porter-jr",
+      "Additional_Sort": 1610612743.0,
+      "GroupSort": "Trade 2025013"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-08T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Brooklyn Nets received draft consideration from Denver Nuggets.",
+      "TEAM_ID": 1610612751.0,
+      "TEAM_SLUG": "nets",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612743.0,
+      "GroupSort": "Trade 2025013"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-03T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets re-signed forward Spencer Jones to a Two-Way Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1642461.0,
+      "PLAYER_SLUG": "spencer-jones",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135461"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-02T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Denver Nuggets signed guard Tamar Bates to a Two-Way Contract.",
+      "TEAM_ID": 1610612743.0,
+      "TEAM_SLUG": "nuggets",
+      "PLAYER_ID": 1642926.0,
+      "PLAYER_SLUG": "tamar-bates",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135412"
     }
   ]
 }

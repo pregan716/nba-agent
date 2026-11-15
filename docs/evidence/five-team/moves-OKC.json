@@ -1,8 +1,12 @@
 {
   "source": {
     "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
-    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    "retrieved_at": "2026-11-15T02:14:12Z",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+    "bytes": 4286543,
+    "total_rows": 10144
   },
+  "filter": "TEAM_ID == 1610612760 or \"Thunder\" in TRANSACTION_DESCRIPTION (case-insensitive); 2025-07-01 <= TRANSACTION_DATE <= 2026-04-20",
   "rows": [
     {
       "Transaction_Type": "Signing",
@@ -73,6 +77,28 @@
     {
       "Transaction_Type": "Trade",
       "TRANSACTION_DATE": "2026-02-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Charlotte Hornets received draft consideration from Oklahoma City Thunder.",
+      "TEAM_ID": 1610612766.0,
+      "TEAM_SLUG": "hornets",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612760.0,
+      "GroupSort": "Trade 2025025"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Philadelphia 76ers received draft consideration from Oklahoma City Thunder.",
+      "TEAM_ID": 1610612755.0,
+      "TEAM_SLUG": "sixers",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612760.0,
+      "GroupSort": "Trade 2025028"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-04T00:00:00",
       "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder received guard Jared McCain from Philadelphia 76ers.",
       "TEAM_ID": 1610612760.0,
       "TEAM_SLUG": "thunder",
@@ -91,6 +117,193 @@
       "PLAYER_SLUG": "mason-plumlee",
       "Additional_Sort": 0.0,
       "GroupSort": "Waive 1144741"
+    },
+    {
+      "Transaction_Type": "ContractConverted",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder converted the contract of guard Chris Youngblood to a Two-Way Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642959.0,
+      "PLAYER_SLUG": "chris-youngblood",
+      "Additional_Sort": 0.0,
+      "GroupSort": "ContractConverted 1138077"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived guard Zack Austin.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1643113.0,
+      "PLAYER_SLUG": "zack-austin",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138151"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Malevy Leons.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642502.0,
+      "PLAYER_SLUG": "malevy-leons",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138152"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived guard Dariq Whitehead.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1641727.0,
+      "PLAYER_SLUG": "dariq-whitehead",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138153"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-17T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Cameron Brown.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642637.0,
+      "PLAYER_SLUG": "cameron-brown",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138004"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-16T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived guard Erik Reynolds II.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1643115.0,
+      "PLAYER_SLUG": "erik-reynolds-ii",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137890"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-15T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Buddy Boeheim.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1631205.0,
+      "PLAYER_SLUG": "buddy-boeheim",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137743"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-14T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Payton Sandfort.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642362.0,
+      "PLAYER_SLUG": "payton-sandfort",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137547"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived forward Viktor Lakhin.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642940.0,
+      "PLAYER_SLUG": "viktor-lakhin",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137305"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-12T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder waived guard Jazian Gortman.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1641789.0,
+      "PLAYER_SLUG": "jazian-gortman",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137173"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-09-26T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed center Branden Carlson to a Two-Way Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642382.0,
+      "PLAYER_SLUG": "branden-carlson",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1136822"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed guard Jalen Williams to a Rookie Scale Extension.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1631114.0,
+      "PLAYER_SLUG": "jalen-williams",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135845"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed center Chet Holmgren to a Rookie Scale Extension.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1631096.0,
+      "PLAYER_SLUG": "chet-holmgren",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135855"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-07T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed guard Shai Gilgeous-Alexander to a Veteran Extension.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1628983.0,
+      "PLAYER_SLUG": "shai-gilgeous-alexander",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135692"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed guard Ajay Mitchell to a Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642349.0,
+      "PLAYER_SLUG": "ajay-mitchell",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135547"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-03T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed guard Brooks Barnhizer to a Two-Way Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642964.0,
+      "PLAYER_SLUG": "brooks-barnhizer",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135442"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-03T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Oklahoma City Thunder re-signed center Thomas Sorber to a Rookie Scale Contract.",
+      "TEAM_ID": 1610612760.0,
+      "TEAM_SLUG": "thunder",
+      "PLAYER_ID": 1642850.0,
+      "PLAYER_SLUG": "thomas-sorber",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135450"
     }
   ]
 }

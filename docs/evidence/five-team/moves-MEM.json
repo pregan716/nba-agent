@@ -1,8 +1,12 @@
 {
   "source": {
     "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
-    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+    "retrieved_at": "2026-11-15T02:14:12Z",
+    "sha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+    "bytes": 4286543,
+    "total_rows": 10144
   },
+  "filter": "TEAM_ID == 1610612763 or \"Grizzlies\" in TRANSACTION_DESCRIPTION (case-insensitive); 2025-07-01 <= TRANSACTION_DATE <= 2026-04-20",
   "rows": [
     {
       "Transaction_Type": "Signing",
@@ -203,6 +207,17 @@
       "GroupSort": "Trade 2025037"
     },
     {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-05T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies received draft consideration from Philadelphia 76ers.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612755.0,
+      "GroupSort": "Trade 2025037"
+    },
+    {
       "Transaction_Type": "Waive",
       "TRANSACTION_DATE": "2026-02-05T00:00:00",
       "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived forward Georges Niang.",
@@ -302,6 +317,17 @@
       "GroupSort": "Trade 2025022"
     },
     {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2026-02-03T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies received draft consideration from Utah Jazz.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612762.0,
+      "GroupSort": "Trade 2025022"
+    },
+    {
       "Transaction_Type": "Signing",
       "TRANSACTION_DATE": "2026-01-02T00:00:00",
       "TRANSACTION_DESCRIPTION": "Memphis Grizzlies signed center Christian Koloko to a 10-Day Contract.",
@@ -366,6 +392,215 @@
       "PLAYER_SLUG": "charles-bassey",
       "Additional_Sort": 0.0,
       "GroupSort": "Signing 1139430"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived guard Nate Hinton.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1630207.0,
+      "PLAYER_SLUG": "nate-hinton",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138135"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived guard DeJon Jarreau.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1630610.0,
+      "PLAYER_SLUG": "dejon-jarreau",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138136"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived forward Braxton Key.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1630296.0,
+      "PLAYER_SLUG": "braxton-key",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138137"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-18T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived center Lawson Lovering.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1643133.0,
+      "PLAYER_SLUG": "lawson-lovering",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1138138"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-16T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived guard Charlie Brown Jr..",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1629718.0,
+      "PLAYER_SLUG": "charlie-brown-jr",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137885"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-10-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived forward Tyler Burton.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1631174.0,
+      "PLAYER_SLUG": "tyler-burton",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1137300"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-09-04T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies signed forward Olivier-Maxence Prosper to a Two-Way Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1641765.0,
+      "PLAYER_SLUG": "olivier-maxence-prosper",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1136449"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-20T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies signed center PJ Hall to a Two-Way Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1641790.0,
+      "PLAYER_SLUG": "pj-hall",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135917"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-07-20T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived guard Zyon Pullin.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1642389.0,
+      "PLAYER_SLUG": "zyon-pullin",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1135916"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-15T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies signed center Jock Landale to a Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1629111.0,
+      "PLAYER_SLUG": "jock-landale",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135875"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-15T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies re-signed forward Santi Aldama to a Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1630583.0,
+      "PLAYER_SLUG": "santi-aldama",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135877"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-14T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies re-signed guard Cam Spencer to a Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1642285.0,
+      "PLAYER_SLUG": "cam-spencer",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135856"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-14T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies signed guard Ty Jerome to a Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1629660.0,
+      "PLAYER_SLUG": "ty-jerome",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135871"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-13T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies re-signed forward Jaren Jackson Jr. to a Veteran Extension.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1628991.0,
+      "PLAYER_SLUG": "jaren-jackson-jr",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135851"
+    },
+    {
+      "Transaction_Type": "Waive",
+      "TRANSACTION_DATE": "2025-07-12T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies waived guard Cole Anthony.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1630175.0,
+      "PLAYER_SLUG": "cole-anthony",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Waive 1135841"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-10T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies re-signed guard Javon Small to a Two-Way Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1642914.0,
+      "PLAYER_SLUG": "javon-small",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135806"
+    },
+    {
+      "Transaction_Type": "Signing",
+      "TRANSACTION_DATE": "2025-07-07T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies re-signed guard Cedric Coward to a Rookie Scale Contract.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 1642907.0,
+      "PLAYER_SLUG": "cedric-coward",
+      "Additional_Sort": 0.0,
+      "GroupSort": "Signing 1135682"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Indiana Pacers received center Jay Huff from Memphis Grizzlies.",
+      "TEAM_ID": 1610612754.0,
+      "TEAM_SLUG": "pacers",
+      "PLAYER_ID": 1630643.0,
+      "PLAYER_SLUG": "jay-huff",
+      "Additional_Sort": 1610612763.0,
+      "GroupSort": "Trade 2025003"
+    },
+    {
+      "Transaction_Type": "Trade",
+      "TRANSACTION_DATE": "2025-07-06T00:00:00",
+      "TRANSACTION_DESCRIPTION": "Memphis Grizzlies received draft consideration from Indiana Pacers.",
+      "TEAM_ID": 1610612763.0,
+      "TEAM_SLUG": "grizzlies",
+      "PLAYER_ID": 0.0,
+      "PLAYER_SLUG": "",
+      "Additional_Sort": 1610612754.0,
+      "GroupSort": "Trade 2025003"
     }
   ]
 }

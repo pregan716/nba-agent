@@ -180,394 +180,766 @@
   ],
   "events": [
     {
-      "id": "000-1629646",
-      "availableAt": "2025-10-28T04:00:00Z",
-      "out": [],
+      "id": "2025-10-27-charles-bassey-signing",
+      "officialDate": "2025-10-27",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed forward Charles Bassey to a 10-Day Contract.",
+      "availableAt": "2025-10-27T16:20:33Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-charles-bassey-to-10-day-contract"
+      ],
       "in": [
+        "1629646"
+      ],
+      "out": []
+    },
+    {
+      "id": "2025-11-05-charles-bassey-expires",
+      "officialDate": "2025-11-05",
+      "kind": "expiration",
+      "description": "Contract signed 2025-10-27. Free agency recorded November 6, 2025.",
+      "availableAt": "2025-11-06T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "charles-bassey-expiry"
+      ],
+      "in": [],
+      "out": [
         "1629646"
       ]
     },
     {
-      "id": "001-1629646",
-      "availableAt": "2025-11-06T05:00:00Z",
-      "out": [
-        "1629646"
-      ],
-      "in": []
-    },
-    {
-      "id": "002-1642942",
+      "id": "2025-11-16-jahmai-mashack-signing",
+      "officialDate": "2025-11-16",
+      "kind": "signing",
+      "description": "Memphis Grizzlies re-signed guard Jahmai Mashack to a Two-Way Contract.",
       "availableAt": "2025-11-17T05:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
         "1642942"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "003-1641790",
+      "id": "2025-11-16-pj-hall-waive",
+      "officialDate": "2025-11-16",
+      "kind": "waive",
+      "description": "Memphis Grizzlies waived center PJ Hall.",
       "availableAt": "2025-11-17T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1641790"
-      ],
-      "in": []
-    },
-    {
-      "id": "004-1641723",
-      "availableAt": "2025-11-25T05:00:00Z",
-      "out": [],
-      "in": [
-        "1641723"
       ]
     },
     {
-      "id": "005-1641723",
+      "id": "2025-11-24-kobe-bufkin-signing",
+      "officialDate": "2025-11-24",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Kobe Bufkin to a 10-Day Contract.",
+      "availableAt": "2025-11-24T15:11:12Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-kobe-bufkin-agree-to-10-day-contract"
+      ],
+      "in": [
+        "1641723"
+      ],
+      "out": []
+    },
+    {
+      "id": "2025-12-03-kobe-bufkin-expires",
+      "officialDate": "2025-12-03",
+      "kind": "expiration",
+      "description": "Contract signed 2025-11-24. Free agency recorded December 4, 2025.",
       "availableAt": "2025-12-04T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "kobe-bufkin-expiry"
+      ],
+      "in": [],
       "out": [
         "1641723"
-      ],
-      "in": []
+      ]
     },
     {
-      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-10-day-contract",
-      "id": "006-1631132",
+      "id": "2025-12-22-christian-koloko-signing",
+      "officialDate": "2025-12-22",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed center Christian Koloko to a 10-Day Contract.",
       "availableAt": "2025-12-22T16:30:00Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-christian-koloko-to-10-day-contract"
+      ],
       "in": [
         "1631132"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "007-1631132",
+      "id": "2025-12-31-christian-koloko-expires",
+      "officialDate": "2025-12-31",
+      "kind": "expiration",
+      "description": "Contract signed 2025-12-22. Free agency recorded January 1 and January 12, 2026.",
       "availableAt": "2026-01-01T05:00:00Z",
-      "out": [
-        "1631132"
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "christian-koloko-expiry"
       ],
-      "in": []
-    },
-    {
-      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-second-10-day-contract",
-      "id": "008-1631132",
-      "availableAt": "2026-01-02T18:38:05Z",
-      "out": [],
-      "in": [
+      "in": [],
+      "out": [
         "1631132"
       ]
     },
     {
-      "id": "009-1631132",
-      "availableAt": "2026-01-12T05:00:00Z",
-      "out": [
+      "id": "2026-01-02-christian-koloko-signing",
+      "officialDate": "2026-01-02",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed center Christian Koloko to a 10-Day Contract.",
+      "availableAt": "2026-01-02T18:38:05Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-christian-koloko-to-second-10-day-contract"
+      ],
+      "in": [
         "1631132"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "010-1631246",
-      "availableAt": "2026-02-04T05:00:00Z",
-      "out": [
-        "1631246"
+      "id": "2026-01-11-christian-koloko-expires",
+      "officialDate": "2026-01-11",
+      "kind": "expiration",
+      "description": "Contract signed 2026-01-02. Free agency recorded January 1 and January 12, 2026.",
+      "availableAt": "2026-01-12T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "christian-koloko-expiry"
       ],
-      "in": []
-    },
-    {
-      "id": "011-1629723",
-      "availableAt": "2026-02-04T05:00:00Z",
+      "in": [],
       "out": [
-        "1629723"
-      ],
-      "in": []
+        "1631132"
+      ]
     },
     {
-      "id": "012-1629111",
+      "id": "2026-02-03-georges-niang-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Memphis Grizzlies received forward Georges Niang from Utah Jazz.",
       "availableAt": "2026-02-04T05:00:00Z",
-      "out": [
-        "1629111"
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
       ],
-      "in": []
+      "in": [
+        "1627777"
+      ],
+      "out": []
     },
     {
-      "id": "013-1628991",
+      "id": "2026-02-03-jaren-jackson-jr-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Utah Jazz received forward Jaren Jackson Jr. from Memphis Grizzlies.",
       "availableAt": "2026-02-04T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1628991"
-      ],
-      "in": []
-    },
-    {
-      "id": "014-1642383",
-      "availableAt": "2026-02-04T05:00:00Z",
-      "out": [],
-      "in": [
-        "1642383"
       ]
     },
     {
-      "id": "015-1641707",
+      "id": "2026-02-03-jock-landale-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Utah Jazz received center Jock Landale from Memphis Grizzlies.",
       "availableAt": "2026-02-04T05:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
+      "out": [
+        "1629111"
+      ]
+    },
+    {
+      "id": "2026-02-03-john-konchar-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Utah Jazz received guard John Konchar from Memphis Grizzlies.",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
+      "out": [
+        "1629723"
+      ]
+    },
+    {
+      "id": "2026-02-03-kyle-anderson-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Memphis Grizzlies received forward Kyle Anderson from Utah Jazz.",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
+        "203937"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-03-taylor-hendricks-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Memphis Grizzlies received forward Taylor Hendricks from Utah Jazz.",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
         "1641707"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-03-vince-williams-jr-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Utah Jazz received guard Vince Williams Jr. from Memphis Grizzlies.",
+      "availableAt": "2026-02-04T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
+      "out": [
+        "1631246"
       ]
     },
     {
-      "id": "016-1627777",
+      "id": "2026-02-03-walter-clayton-jr-trade",
+      "officialDate": "2026-02-03",
+      "kind": "trade",
+      "description": "Memphis Grizzlies received guard Walter Clayton Jr. from Utah Jazz.",
       "availableAt": "2026-02-04T05:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
+        "1642383"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-05-eric-gordon-trade",
+      "officialDate": "2026-02-05",
+      "kind": "trade",
+      "description": "Memphis Grizzlies received guard Eric Gordon from Philadelphia 76ers.",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
+        "201569"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-05-georges-niang-waive",
+      "officialDate": "2026-02-05",
+      "kind": "waive",
+      "description": "Memphis Grizzlies waived forward Georges Niang.",
+      "availableAt": "2026-02-06T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
+      "out": [
         "1627777"
       ]
     },
     {
-      "id": "017-203937",
-      "availableAt": "2026-02-04T05:00:00Z",
-      "out": [],
+      "id": "2026-02-06-eric-gordon-waive",
+      "officialDate": "2026-02-06",
+      "kind": "waive",
+      "description": "Memphis Grizzlies waived guard Eric Gordon.",
+      "availableAt": "2026-02-06T17:45:24Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-waive-eric-gordon"
+      ],
+      "in": [],
+      "out": [
+        "201569"
+      ]
+    },
+    {
+      "id": "2026-02-09-lawson-lovering-signing",
+      "officialDate": "2026-02-09",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed center Lawson Lovering to a 10-Day Contract.",
+      "availableAt": "2026-02-09T21:25:40Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-lawson-lovering-to-10-day-contract"
+      ],
       "in": [
+        "1643133"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-20-lawson-lovering-expires",
+      "officialDate": "2026-02-20",
+      "kind": "expiration",
+      "description": "Contract signed 2026-02-09. Free agency on February 21. The All-Star break extended the contract through the third game on February 20.",
+      "availableAt": "2026-02-21T05:00:00Z",
+      "basis": "documentedContractException",
+      "sources": [
+        "official",
+        "lawson-lovering-expiry"
+      ],
+      "in": [],
+      "out": [
+        "1643133"
+      ]
+    },
+    {
+      "id": "2026-02-22-rayan-rupert-signing",
+      "officialDate": "2026-02-22",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Rayan Rupert to a 10-Day Contract.",
+      "availableAt": "2026-02-23T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [
+        "1641712"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-02-26-kyle-anderson-waive",
+      "officialDate": "2026-02-26",
+      "kind": "waive",
+      "description": "Memphis Grizzlies waived forward Kyle Anderson.",
+      "availableAt": "2026-02-27T05:00:00Z",
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
+      "in": [],
+      "out": [
         "203937"
       ]
     },
     {
-      "id": "018-201569",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [],
-      "in": [
-        "201569"
-      ]
-    },
-    {
-      "id": "019-1627777",
-      "availableAt": "2026-02-06T05:00:00Z",
-      "out": [
-        "1627777"
-      ],
-      "in": []
-    },
-    {
-      "id": "020-201569",
-      "availableAt": "2026-02-07T05:00:00Z",
-      "out": [
-        "201569"
-      ],
-      "in": []
-    },
-    {
-      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-lawson-lovering-to-10-day-contract",
-      "id": "021-1643133",
-      "availableAt": "2026-02-09T21:25:40Z",
-      "out": [],
-      "in": [
-        "1643133"
-      ]
-    },
-    {
-      "id": "022-1643133",
-      "availableAt": "2026-02-21T05:00:00Z",
-      "out": [
-        "1643133"
-      ],
-      "in": []
-    },
-    {
-      "id": "023-1641712",
-      "availableAt": "2026-02-23T05:00:00Z",
-      "out": [],
-      "in": [
-        "1641712"
-      ]
-    },
-    {
-      "id": "024-201959",
+      "id": "2026-02-26-taj-gibson-signing",
+      "officialDate": "2026-02-26",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed forward Taj Gibson to a Rest-of-Season Contract.",
       "availableAt": "2026-02-27T05:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
         "201959"
-      ]
-    },
-    {
-      "id": "025-203937",
-      "availableAt": "2026-02-27T05:00:00Z",
-      "out": [
-        "203937"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "026-1641712",
+      "id": "2026-03-03-rayan-rupert-expires",
+      "officialDate": "2026-03-03",
+      "kind": "expiration",
+      "description": "Contract signed 2026-02-22. Next official signing: 2026-03-04 — Memphis Grizzlies signed guard Rayan Rupert to a Two-Way Contract.",
       "availableAt": "2026-03-04T05:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1641712"
-      ],
-      "in": []
+      ]
     },
     {
-      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-rayan-rupert-to-two-way-contract",
-      "id": "027-1641712",
+      "id": "2026-03-04-olivier-maxence-prosper-conversion",
+      "officialDate": "2026-03-04",
+      "kind": "conversion",
+      "description": "Memphis Grizzlies re-signed forward Olivier-Maxence Prosper to a Rest-of-Season Contract.",
+      "availableAt": "2026-03-04T17:20:36Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-olivier-maxence-prosper-to-multi-year-contract"
+      ],
+      "in": [],
+      "out": [],
+      "playerId": "1641765"
+    },
+    {
+      "id": "2026-03-04-rayan-rupert-signing",
+      "officialDate": "2026-03-04",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Rayan Rupert to a Two-Way Contract.",
       "availableAt": "2026-03-04T20:10:49Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-rayan-rupert-to-two-way-contract"
+      ],
       "in": [
         "1641712"
-      ]
+      ],
+      "out": []
     },
     {
-      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-tyler-burton-to-10-day-contract",
-      "id": "028-1631174",
+      "id": "2026-03-12-tyler-burton-signing",
+      "officialDate": "2026-03-12",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed forward Tyler Burton to a 10-Day Contract.",
       "availableAt": "2026-03-12T17:10:52Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-tyler-burton-to-10-day-contract"
+      ],
       "in": [
         "1631174"
-      ]
+      ],
+      "out": []
     },
     {
-      "announcement": "https://www.nba.com/grizzlies/news/grizzlies-sign-dejon-jarreau-to-10-day-contract-2",
-      "id": "029-1630610",
+      "id": "2026-03-13-dejon-jarreau-signing",
+      "officialDate": "2026-03-13",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard DeJon Jarreau to a 10-Day Contract.",
       "availableAt": "2026-03-13T19:12:24Z",
-      "out": [],
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-dejon-jarreau-to-10-day-contract-2"
+      ],
       "in": [
         "1630610"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "030-1631174",
+      "id": "2026-03-21-tyler-burton-expires",
+      "officialDate": "2026-03-21",
+      "kind": "expiration",
+      "description": "Contract signed 2026-03-12. Free agency reported March 22.",
       "availableAt": "2026-03-22T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "tyler-burton-expiry"
+      ],
+      "in": [],
       "out": [
         "1631174"
-      ],
-      "in": []
+      ]
     },
     {
-      "id": "031-1630610",
+      "id": "2026-03-22-dejon-jarreau-expires",
+      "officialDate": "2026-03-22",
+      "kind": "expiration",
+      "description": "Contract signed 2026-03-13. Next official signing: 2026-03-23 — Memphis Grizzlies signed guard DeJon Jarreau to a 10-Day Contract.",
       "availableAt": "2026-03-23T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1630610"
-      ],
-      "in": []
-    },
-    {
-      "id": "032-1631174",
-      "availableAt": "2026-03-24T04:00:00Z",
-      "out": [],
-      "in": [
-        "1631174"
       ]
     },
     {
-      "id": "033-1630610",
-      "availableAt": "2026-03-24T04:00:00Z",
-      "out": [],
+      "id": "2026-03-23-dejon-jarreau-signing",
+      "officialDate": "2026-03-23",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard DeJon Jarreau to a 10-Day Contract.",
+      "availableAt": "2026-03-23T16:30:04Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-tyler-burton-and-dejon-jarreau-to-second-10-day-contracts"
+      ],
       "in": [
         "1630610"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "034-1642380",
-      "availableAt": "2026-03-29T04:00:00Z",
-      "out": [],
+      "id": "2026-03-23-tyler-burton-signing",
+      "officialDate": "2026-03-23",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed forward Tyler Burton to a 10-Day Contract.",
+      "availableAt": "2026-03-23T16:30:04Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-tyler-burton-and-dejon-jarreau-to-second-10-day-contracts"
+      ],
+      "in": [
+        "1631174"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-03-28-adama-bal-signing",
+      "officialDate": "2026-03-28",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Adama Bal to a 10-Day Contract.",
+      "availableAt": "2026-03-28T17:00:00Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-adama-bal-to-10-day-contract"
+      ],
       "in": [
         "1642380"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "035-1631351",
+      "id": "2026-03-31-lucas-williamson-signing",
+      "officialDate": "2026-03-31",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Lucas Williamson to a 10-Day Contract.",
       "availableAt": "2026-04-01T04:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
         "1631351"
-      ]
-    },
-    {
-      "id": "036-1631174",
-      "availableAt": "2026-04-02T04:00:00Z",
-      "out": [
-        "1631174"
       ],
-      "in": []
+      "out": []
     },
     {
-      "id": "037-1630610",
+      "id": "2026-04-01-dejon-jarreau-expires",
+      "officialDate": "2026-04-01",
+      "kind": "expiration",
+      "description": "Contract signed 2026-03-23. Both second deals expired Wednesday night, April 1.",
       "availableAt": "2026-04-02T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "second-burton-jarreau-expiry"
+      ],
+      "in": [],
       "out": [
         "1630610"
-      ],
-      "in": []
+      ]
     },
     {
-      "id": "038-1641727",
-      "availableAt": "2026-04-04T04:00:00Z",
-      "out": [],
+      "id": "2026-04-01-tyler-burton-expires",
+      "officialDate": "2026-04-01",
+      "kind": "expiration",
+      "description": "Contract signed 2026-03-23. Both second deals expired Wednesday night, April 1.",
+      "availableAt": "2026-04-02T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "second-burton-jarreau-expiry"
+      ],
+      "in": [],
+      "out": [
+        "1631174"
+      ]
+    },
+    {
+      "id": "2026-04-03-dariq-whitehead-signing",
+      "officialDate": "2026-04-03",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Dariq Whitehead to a 10-Day Contract.",
+      "availableAt": "2026-04-03T13:00:00Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-dariq-whitehead-and-toby-okani-to-10-day-contracts"
+      ],
       "in": [
         "1641727"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "039-1643253",
-      "availableAt": "2026-04-04T04:00:00Z",
-      "out": [],
+      "id": "2026-04-03-toby-okani-signing",
+      "officialDate": "2026-04-03",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed forward Toby Okani to a 10-Day Contract.",
+      "availableAt": "2026-04-03T13:00:00Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-dariq-whitehead-and-toby-okani-to-10-day-contracts"
+      ],
       "in": [
         "1643253"
-      ]
+      ],
+      "out": []
     },
     {
-      "id": "040-1642380",
+      "id": "2026-04-06-adama-bal-expires",
+      "officialDate": "2026-04-06",
+      "kind": "expiration",
+      "description": "Contract signed 2026-03-28. Next official signing: 2026-04-07 — Memphis Grizzlies signed guard Adama Bal to a 10-Day Contract.",
       "availableAt": "2026-04-07T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official"
+      ],
+      "in": [],
       "out": [
         "1642380"
-      ],
-      "in": []
+      ]
     },
     {
-      "id": "041-1642380",
+      "id": "2026-04-07-adama-bal-signing",
+      "officialDate": "2026-04-07",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Adama Bal to a 10-Day Contract.",
       "availableAt": "2026-04-08T04:00:00Z",
-      "out": [],
+      "basis": "defaultAvailability",
+      "sources": [
+        "official"
+      ],
       "in": [
+        "1642380"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-04-09-lucas-williamson-expires",
+      "officialDate": "2026-04-09",
+      "kind": "expiration",
+      "description": "Contract signed 2026-03-31. Next official signing: 2026-04-10 — Memphis Grizzlies signed guard Lucas Williamson to a 10-Day Contract.",
+      "availableAt": "2026-04-10T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official"
+      ],
+      "in": [],
+      "out": [
+        "1631351"
+      ]
+    },
+    {
+      "id": "2026-04-10-lucas-williamson-signing",
+      "officialDate": "2026-04-10",
+      "kind": "signing",
+      "description": "Memphis Grizzlies signed guard Lucas Williamson to a 10-Day Contract.",
+      "availableAt": "2026-04-10T17:33:06Z",
+      "basis": "timestampedException",
+      "sources": [
+        "official",
+        "grizzlies-sign-lucas-williamson-to-second-10-day-contract"
+      ],
+      "in": [
+        "1631351"
+      ],
+      "out": []
+    },
+    {
+      "id": "2026-04-12-adama-bal-expires",
+      "officialDate": "2026-04-12",
+      "kind": "expiration",
+      "description": "Contract signed 2026-04-07. All four hardship contracts end with the regular-season finale on April 12.",
+      "availableAt": "2026-04-13T04:00:00Z",
+      "basis": "documentedContractException",
+      "sources": [
+        "official",
+        "april-expiry"
+      ],
+      "in": [],
+      "out": [
         "1642380"
       ]
     },
     {
-      "id": "042-1631351",
-      "availableAt": "2026-04-10T04:00:00Z",
-      "out": [
-        "1631351"
-      ],
-      "in": []
-    },
-    {
-      "id": "043-1631351",
-      "availableAt": "2026-04-11T04:00:00Z",
-      "out": [],
-      "in": [
-        "1631351"
-      ]
-    },
-    {
-      "id": "044-1641727",
+      "id": "2026-04-12-dariq-whitehead-expires",
+      "officialDate": "2026-04-12",
+      "kind": "expiration",
+      "description": "Contract signed 2026-04-03. All four hardship contracts end with the regular-season finale on April 12.",
       "availableAt": "2026-04-13T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "april-expiry"
+      ],
+      "in": [],
       "out": [
         "1641727"
-      ],
-      "in": []
+      ]
     },
     {
-      "id": "045-1643253",
+      "id": "2026-04-12-lucas-williamson-expires",
+      "officialDate": "2026-04-12",
+      "kind": "expiration",
+      "description": "Contract signed 2026-04-10. All four hardship contracts end with the regular-season finale on April 12.",
       "availableAt": "2026-04-13T04:00:00Z",
-      "out": [
-        "1643253"
+      "basis": "documentedContractException",
+      "sources": [
+        "official",
+        "april-expiry"
       ],
-      "in": []
-    },
-    {
-      "id": "046-1642380",
-      "availableAt": "2026-04-17T04:00:00Z",
-      "out": [
-        "1642380"
-      ],
-      "in": []
-    },
-    {
-      "id": "047-1631351",
-      "availableAt": "2026-04-20T04:00:00Z",
+      "in": [],
       "out": [
         "1631351"
+      ]
+    },
+    {
+      "id": "2026-04-12-toby-okani-expires",
+      "officialDate": "2026-04-12",
+      "kind": "expiration",
+      "description": "Contract signed 2026-04-03. All four hardship contracts end with the regular-season finale on April 12.",
+      "availableAt": "2026-04-13T04:00:00Z",
+      "basis": "tenDayContracts",
+      "sources": [
+        "official",
+        "april-expiry"
       ],
-      "in": []
+      "in": [],
+      "out": [
+        "1643253"
+      ]
     }
   ],
   "sources": {
@@ -579,7 +951,273 @@
     },
     "official": {
       "path": "docs/evidence/five-team/moves-MEM.json",
-      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b"
+      "fullDownloadSha256": "27f33ea01008038b987b31056be05ff087bc4a363957d476fcd5053e83c5aa8b",
+      "url": "https://stats.nba.com/js/data/playermovement/NBA_Player_Movement.json",
+      "retrievedAt": "2026-11-15T02:14:12Z"
+    },
+    "grizzlies-sign-lucas-williamson-to-second-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-lucas-williamson-to-second-10-day-contract",
+      "pageTimestamp": "2026-04-10T17:33:06Z",
+      "quote": "The Memphis Grizzlies today announced the team signed wing Lucas Williamson to a second 10-Day contract."
+    },
+    "april-expiry": {
+      "url": "https://www.hoopsrumors.com/2026/04/grizzlies-re-sign-lucas-williamson-to-hardship-deal.html",
+      "description": "All four hardship contracts end with the regular-season finale on April 12."
+    },
+    "grizzlies-sign-dariq-whitehead-and-toby-okani-to-10-day-contracts": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-dariq-whitehead-and-toby-okani-to-10-day-contracts",
+      "pageTimestamp": "2026-04-03T13:00:00Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forwards Dariq Whitehead (duh-REEK) and Toby Okani (oh-CON-knee)to 10-day contracts."
+    },
+    "grizzlies-sign-adama-bal-to-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-adama-bal-to-10-day-contract",
+      "pageTimestamp": "2026-03-28T17:00:00Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Adama Bal (uh-DAHM-uh Ball) to a 10-day contract."
+    },
+    "grizzlies-sign-tyler-burton-and-dejon-jarreau-to-second-10-day-contracts": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-tyler-burton-and-dejon-jarreau-to-second-10-day-contracts",
+      "pageTimestamp": "2026-03-23T16:30:04Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Tyler Burton and guard DeJon Jarreau to second 10-day contracts."
+    },
+    "second-burton-jarreau-expiry": {
+      "url": "https://www.hoopsrumors.com/2026/04/grizzlies-to-sign-dariq-whitehead-toby-okani-to-10-day-deals.html",
+      "description": "Both second deals expired Wednesday night, April 1."
+    },
+    "grizzlies-sign-dejon-jarreau-to-10-day-contract-2": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-dejon-jarreau-to-10-day-contract-2",
+      "pageTimestamp": "2026-03-13T19:12:24Z",
+      "quote": "The Memphis Grizzlies today announced the team signed guard DeJon Jarreau to a 10-day contract. Per team policy, terms of the deal were not disclosed."
+    },
+    "grizzlies-sign-tyler-burton-to-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-tyler-burton-to-10-day-contract",
+      "pageTimestamp": "2026-03-12T17:10:52Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Tyler Burton to a 10-day contract. Per team policy, terms of the deal were not disclosed."
+    },
+    "tyler-burton-expiry": {
+      "url": "https://www.cbssports.com/fantasy/basketball/news/tyler-burton-contract-expires/",
+      "description": "Free agency reported March 22."
+    },
+    "grizzlies-sign-olivier-maxence-prosper-to-multi-year-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-olivier-maxence-prosper-to-multi-year-contract",
+      "pageTimestamp": "2026-03-04T17:20:36Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Olivier-Maxence Prosper to a multi-year contract."
+    },
+    "grizzlies-sign-rayan-rupert-to-two-way-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-rayan-rupert-to-two-way-contract",
+      "pageTimestamp": "2026-03-04T20:10:49Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Rayan Rupert to a two-way contract."
+    },
+    "grizzlies-sign-lawson-lovering-to-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-lawson-lovering-to-10-day-contract",
+      "pageTimestamp": "2026-02-09T21:25:40Z",
+      "quote": "Grizzlies Sign Lawson Lovering to 10-Day Contract"
+    },
+    "lawson-lovering-expiry": {
+      "url": "https://www.hoopsrumors.com/2026/02/lovering-richmond-now-free-agents-after-10-day-contracts-expire.html",
+      "description": "Free agency on February 21. The All-Star break extended the contract through the third game on February 20.",
+      "extensionSource": "https://www.hoopsrumors.com/2026/02/checking-in-on-active-10-day-contracts-5.html"
+    },
+    "grizzlies-waive-eric-gordon": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-waive-eric-gordon",
+      "pageTimestamp": "2026-02-06T17:45:24Z",
+      "quote": "The Memphis Grizzlies today announced the team waived guard Eric Gordon."
+    },
+    "grizzlies-sign-christian-koloko-to-second-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-second-10-day-contract",
+      "pageTimestamp": "2026-01-02T18:38:05Z",
+      "quote": "The Memphis Grizzlies today announced the team signed center Christian Koloko to a second 10-day contract."
+    },
+    "christian-koloko-expiry": {
+      "url": "https://basketball.realgm.com/player/Christian-Koloko/Summary/131565",
+      "description": "Free agency recorded January 1 and January 12, 2026."
+    },
+    "grizzlies-sign-christian-koloko-to-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-10-day-contract",
+      "pageTimestamp": "2025-12-22T16:30:00Z",
+      "quote": "The Memphis Grizzlies today announced the team signed center Christian Koloko to a 10-day contract."
+    },
+    "grizzlies-kobe-bufkin-agree-to-10-day-contract": {
+      "url": "https://www.hoopsrumors.com/2025/11/grizzlies-kobe-bufkin-agree-to-10-day-contract.html",
+      "pageTimestamp": "2025-11-24T09:11:12-06:00",
+      "quote": "Nov. 24: The signing is official, the Grizzlies’ PR department tweets."
+    },
+    "kobe-bufkin-expiry": {
+      "url": "https://basketball.realgm.com/player/Kobe-Bufkin/Summary/151485",
+      "description": "Free agency recorded December 4, 2025."
+    },
+    "grizzlies-sign-charles-bassey-to-10-day-contract": {
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-charles-bassey-to-10-day-contract",
+      "pageTimestamp": "2025-10-27T16:20:33Z",
+      "quote": "The Memphis Grizzlies today announced the team signed center Charles Bassey to a 10-day contract."
+    },
+    "charles-bassey-expiry": {
+      "url": "https://basketball.realgm.com/player/Charles-Bassey/Summary/88593",
+      "description": "Free agency recorded November 6, 2025."
     }
-  }
+  },
+  "rules": {
+    "membership": "A player is on the roster for a game when scheduled tip falls in [availableFrom, availableUntil) of one of his intervals. A null availableUntil is open-ended.",
+    "defaultAvailability": "The official feed carries a date and no time. A move is available at the end of its official date in America/New_York (05:00Z in standard time, 04:00Z in daylight time).",
+    "timestampedException": "Where a game tips on the official date, a timestamped secondary source may establish an earlier time. The source states no time zone, so its clock time is read as US Pacific, the latest mainland zone, which gives the latest possible instant. Every use is listed under boundaryCases.",
+    "tenDayContracts": "A 10-day contract is treated as running through the tenth calendar day in America/New_York, counting the signing date as day one. Each end date below is corroborated by a secondary source or by the next official signing.",
+    "neverUsed": "The replayed game's own box score or events. Box-score membership from already released games is a cross-check only (scripts/roster-crosscheck.py)."
+  },
+  "boundaryCases": [
+    {
+      "gameId": "0022500121",
+      "scheduledTip": "2025-10-28T02:00:00.000Z",
+      "source": "grizzlies-sign-charles-bassey-to-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-charles-bassey-to-10-day-contract",
+      "pageTimestamp": "2025-10-27T16:20:33Z",
+      "quote": "The Memphis Grizzlies today announced the team signed center Charles Bassey to a 10-day contract.",
+      "eventIds": [
+        "2025-10-27-charles-bassey-signing"
+      ]
+    },
+    {
+      "gameId": "0022500287",
+      "scheduledTip": "2025-11-25T01:00:00.000Z",
+      "source": "grizzlies-kobe-bufkin-agree-to-10-day-contract",
+      "url": "https://www.hoopsrumors.com/2025/11/grizzlies-kobe-bufkin-agree-to-10-day-contract.html",
+      "pageTimestamp": "2025-11-24T09:11:12-06:00",
+      "quote": "Nov. 24: The signing is official, the Grizzlies’ PR department tweets.",
+      "eventIds": [
+        "2025-11-24-kobe-bufkin-signing"
+      ]
+    },
+    {
+      "gameId": "0022500406",
+      "scheduledTip": "2025-12-23T02:30:00.000Z",
+      "source": "grizzlies-sign-christian-koloko-to-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-10-day-contract",
+      "pageTimestamp": "2025-12-22T16:30:00Z",
+      "quote": "The Memphis Grizzlies today announced the team signed center Christian Koloko to a 10-day contract.",
+      "eventIds": [
+        "2025-12-22-christian-koloko-signing"
+      ]
+    },
+    {
+      "gameId": "0022500485",
+      "scheduledTip": "2026-01-03T03:30:00.000Z",
+      "source": "grizzlies-sign-christian-koloko-to-second-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-christian-koloko-to-second-10-day-contract",
+      "pageTimestamp": "2026-01-02T18:38:05Z",
+      "quote": "The Memphis Grizzlies today announced the team signed center Christian Koloko to a second 10-day contract.",
+      "eventIds": [
+        "2026-01-02-christian-koloko-signing"
+      ]
+    },
+    {
+      "gameId": "0022500745",
+      "scheduledTip": "2026-02-07T03:00:00.000Z",
+      "source": "grizzlies-waive-eric-gordon",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-waive-eric-gordon",
+      "pageTimestamp": "2026-02-06T17:45:24Z",
+      "quote": "The Memphis Grizzlies today announced the team waived guard Eric Gordon.",
+      "eventIds": [
+        "2026-02-06-eric-gordon-waive"
+      ]
+    },
+    {
+      "gameId": "0022500768",
+      "scheduledTip": "2026-02-10T03:00:00.000Z",
+      "source": "grizzlies-sign-lawson-lovering-to-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-lawson-lovering-to-10-day-contract",
+      "pageTimestamp": "2026-02-09T21:25:40Z",
+      "quote": "Grizzlies Sign Lawson Lovering to 10-Day Contract",
+      "eventIds": [
+        "2026-02-09-lawson-lovering-signing"
+      ]
+    },
+    {
+      "gameId": "0022500896",
+      "scheduledTip": "2026-03-05T01:00:00.000Z",
+      "source": "grizzlies-sign-olivier-maxence-prosper-to-multi-year-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-olivier-maxence-prosper-to-multi-year-contract",
+      "pageTimestamp": "2026-03-04T17:20:36Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Olivier-Maxence Prosper to a multi-year contract.",
+      "eventIds": [
+        "2026-03-04-olivier-maxence-prosper-conversion"
+      ]
+    },
+    {
+      "gameId": "0022500896",
+      "scheduledTip": "2026-03-05T01:00:00.000Z",
+      "source": "grizzlies-sign-rayan-rupert-to-two-way-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-rayan-rupert-to-two-way-contract",
+      "pageTimestamp": "2026-03-04T20:10:49Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Rayan Rupert to a two-way contract.",
+      "eventIds": [
+        "2026-03-04-rayan-rupert-signing"
+      ]
+    },
+    {
+      "gameId": "0022501111",
+      "scheduledTip": "2026-03-13T00:00:00.000Z",
+      "source": "grizzlies-sign-tyler-burton-to-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-tyler-burton-to-10-day-contract",
+      "pageTimestamp": "2026-03-12T17:10:52Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Tyler Burton to a 10-day contract. Per team policy, terms of the deal were not disclosed.",
+      "eventIds": [
+        "2026-03-12-tyler-burton-signing"
+      ]
+    },
+    {
+      "gameId": "0022500961",
+      "scheduledTip": "2026-03-13T23:30:00.000Z",
+      "source": "grizzlies-sign-dejon-jarreau-to-10-day-contract-2",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-dejon-jarreau-to-10-day-contract-2",
+      "pageTimestamp": "2026-03-13T19:12:24Z",
+      "quote": "The Memphis Grizzlies today announced the team signed guard DeJon Jarreau to a 10-day contract. Per team policy, terms of the deal were not disclosed.",
+      "eventIds": [
+        "2026-03-13-dejon-jarreau-signing"
+      ]
+    },
+    {
+      "gameId": "0022501037",
+      "scheduledTip": "2026-03-23T23:30:00.000Z",
+      "source": "grizzlies-sign-tyler-burton-and-dejon-jarreau-to-second-10-day-contracts",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-tyler-burton-and-dejon-jarreau-to-second-10-day-contracts",
+      "pageTimestamp": "2026-03-23T16:30:04Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Tyler Burton and guard DeJon Jarreau to second 10-day contracts.",
+      "eventIds": [
+        "2026-03-23-dejon-jarreau-signing",
+        "2026-03-23-tyler-burton-signing"
+      ]
+    },
+    {
+      "gameId": "0022501079",
+      "scheduledTip": "2026-03-29T00:00:00.000Z",
+      "source": "grizzlies-sign-adama-bal-to-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-adama-bal-to-10-day-contract",
+      "pageTimestamp": "2026-03-28T17:00:00Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forward Adama Bal (uh-DAHM-uh Ball) to a 10-day contract.",
+      "eventIds": [
+        "2026-03-28-adama-bal-signing"
+      ]
+    },
+    {
+      "gameId": "0022501125",
+      "scheduledTip": "2026-04-04T00:00:00.000Z",
+      "source": "grizzlies-sign-dariq-whitehead-and-toby-okani-to-10-day-contracts",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-dariq-whitehead-and-toby-okani-to-10-day-contracts",
+      "pageTimestamp": "2026-04-03T13:00:00Z",
+      "quote": "The Memphis Grizzlies today announced the team signed forwards Dariq Whitehead (duh-REEK) and Toby Okani (oh-CON-knee)to 10-day contracts.",
+      "eventIds": [
+        "2026-04-03-dariq-whitehead-signing",
+        "2026-04-03-toby-okani-signing"
+      ]
+    },
+    {
+      "gameId": "0022501181",
+      "scheduledTip": "2026-04-11T01:30:00.000Z",
+      "source": "grizzlies-sign-lucas-williamson-to-second-10-day-contract",
+      "url": "https://www.nba.com/grizzlies/news/grizzlies-sign-lucas-williamson-to-second-10-day-contract",
+      "pageTimestamp": "2026-04-10T17:33:06Z",
+      "quote": "The Memphis Grizzlies today announced the team signed wing Lucas Williamson to a second 10-Day contract.",
+      "eventIds": [
+        "2026-04-10-lucas-williamson-signing"
+      ]
+    }
+  ]
 }

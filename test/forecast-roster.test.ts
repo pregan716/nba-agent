@@ -165,3 +165,18 @@ test("silent edits to either roster evidence file fail integrity verification", 
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("Memphis hardship exceptions include the last covered day and expire at the Eastern boundary", async () => {
+  const roster = await loadSeasonRoster(process.cwd(), "1610612763");
+  for (const [lastDay, afterMidnight, ids] of [
+    ["2026-02-21T04:59:59Z", "2026-02-21T05:00:01Z", ["1643133"]],
+    ["2026-04-13T03:59:59Z", "2026-04-13T04:00:01Z", ["1642380", "1631351"]],
+  ] as const) {
+    const before = roster.at(lastDay).map((p) => p.playerId);
+    const after = roster.at(afterMidnight).map((p) => p.playerId);
+    for (const id of ids) {
+      assert(before.includes(id));
+      assert(!after.includes(id));
+    }
+  }
+});
