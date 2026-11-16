@@ -116,6 +116,16 @@ export async function writeSessionExport(
   return file;
 }
 
+export function publicHistoryDefinitions(definitions: ColumnDefinition[]) {
+  return definitions.filter(
+    (column) => !PROVENANCE_COLUMNS.includes(column.name),
+  );
+}
+
+export function historyColumns(definitions: ColumnDefinition[]) {
+  return definitions.map(({ name }) => (name === "type" ? "kind" : name));
+}
+
 /** Shared published-column allowlist: no internal envelope or arbitrary source fields. */
 export function projectHistory(
   record: RecordEnvelope,
@@ -160,8 +170,8 @@ export async function mountGameShards(
     mkdirSync(cache, { recursive: true });
     const entries = games.map((game) => {
       const key = digest([
-        // Keep the existing forecast shard identity across the task cleanup.
-        "forecast-history-v1",
+        // Shared game-loop tables omit provenance columns. Older shards have a different schema.
+        exclusive ? "game-loop-history-v2" : "forecast-history-v1",
         false,
         null,
         source.versions,
@@ -180,10 +190,12 @@ export async function mountGameShards(
       const selected = new Map(missing.map((e) => [e.game.id, e]));
       try {
         for (const table of GAME_HISTORY_TABLES) {
-          const definitions = await source.columns(table);
-          const columns = definitions.map((c) =>
-            c.name === "type" ? "kind" : c.name,
-          );
+          const allDefinitions = await source.columns(table);
+          const definitions =
+            exclusive && table !== "games"
+              ? publicHistoryDefinitions(allDefinitions)
+              : allDefinitions;
+          const columns = historyColumns(definitions);
           async function* fallback() {
             for (const { game } of missing)
               yield { gameId: game.id, ...(await source.history(table, game)) };
@@ -246,6 +258,11 @@ export async function mountGameShards(
           for (const entry of missing.filter((e) => !seen.has(e.game.id))) {
             async function* empty() {
               yield { table, columns, rows: [] };
+              yield {
+                table: "unavailable",
+                columns: ["table", "game_id", "reason"],
+                rows: [],
+              };
               yield {
                 table: "_history_metadata",
                 columns: [

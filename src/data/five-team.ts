@@ -82,9 +82,19 @@ export async function fiveTeamData(c: Corpus, root = process.cwd()) {
     // V4 carries the opposing lineup for Boston games too.
     if (kind === "lineups")
       grouped.push(
-        (await corpus.opponentLineups.records()).filter((r) =>
-          before(r.availableAt, cutoff),
-        ),
+        (await corpus.opponentLineups.records())
+          .filter((r) => before(r.availableAt, cutoff))
+          .flatMap((r) => {
+            const game_id = ids.resolve("game", "espn", r.data.gameId);
+            const game = schedule.get(game_id);
+            if (!game) return [];
+            const { home_team_id, away_team_id } = game.data;
+            if (home_team_id !== teamIds.BOS && away_team_id !== teamIds.BOS)
+              throw Error("Opponent lineup outside Boston schedule");
+            const team_id =
+              home_team_id === teamIds.BOS ? away_team_id : home_team_id;
+            return [{ ...r, data: { ...r.data, game_id, team_id } }];
+          }),
       );
     return grouped.flat();
   }
