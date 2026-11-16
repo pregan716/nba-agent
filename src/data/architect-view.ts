@@ -1,3 +1,4 @@
+import { latestPosts } from "./posts.js";
 import { Temporal } from "@js-temporal/polyfill";
 import { mkdtemp, mkdir, rename, rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -7,18 +8,19 @@ import type { RecordEnvelope } from "./contracts.js";
 import { before, instant } from "./time.js";
 import { GAME_HISTORY_TABLES } from "../env/contract.js";
 import {
-  PROVENANCE_COLUMNS,
+  publicHistoryDefinitions,
+  historyColumns,
   projectHistory,
   writeSessionExport,
   type ExportBatch,
 } from "../env/export.js";
 import { releaseTime } from "../env/visibility.js";
-import { pick } from "./adapters.js";
+import { sharedBatch } from "./shared-tables.js";
 
 type ViewSource = {
   gameLines: FiveTeamData["gameLines"];
   games: RecordEnvelope[];
-  data: Pick<FiveTeamData["data"], "columns" | "exportHistory">;
+  data: Pick<FiveTeamData["data"], "columns" | "exportHistory" | "identities">;
   corpus: { injuries: Pick<FiveTeamData["corpus"]["injuries"], "partitions"> };
   evidence: Pick<FiveTeamData["evidence"][number], "teamId" | "evidence">[];
   rosters: ReadonlyMap<
@@ -76,18 +78,7 @@ export async function* viewBatches(
     selected.filter((g) => g.data.season === "2025-26").map((g) => [g.id, g]),
   );
   const games = new Map(selected.map((g) => [g.id, g]));
-  yield {
-    table: "schedule",
-    rows: selected.map((g) =>
-      pick(g.data, [
-        "game_id",
-        "season",
-        "home_team_id",
-        "away_team_id",
-        "scheduled_tipoff",
-      ]),
-    ),
-  };
+  yield sharedBatch("schedule", selected, data.data.identities);
   if (view === "architect") {
     const gameLines = await data.gameLines(cutoff);
     yield {
@@ -112,11 +103,19 @@ export async function* viewBatches(
   const released = selected.filter((g) =>
     before(releaseTime(g.data.scheduled_tipoff), cutoff),
   );
+  yield {
+    table: "unavailable",
+    columns: ["table", "game_id", "reason"],
+    rows: [],
+  };
   for (const table of GAME_HISTORY_TABLES) {
     if (table === "games") continue;
-    const defs = (await data.data.columns(table)).filter(
-      (c) => !PROVENANCE_COLUMNS.includes(c.name),
-    );
+    const defs = publicHistoryDefinitions(await data.data.columns(table));
+    yield {
+      table,
+      columns: historyColumns(defs),
+      rows: [],
+    };
     for await (const batch of data.data.exportHistory!(table, released)) {
       signal.throwIfAborted();
       const game = games.get(batch.gameId);
@@ -152,36 +151,30 @@ export async function* viewBatches(
     .toPlainDate()
     .toString();
   for (const kind of ["teams", "players"] as const) {
+    const table = kind === "teams" ? "injury_teams" : "injury_players";
+    yield sharedBatch(table, [], data.data.identities);
     for await (const batch of data.corpus.injuries.partitions(kind, day)) {
       signal.throwIfAborted();
-      yield {
-        table: "injury_" + kind,
-        rows: batch
-          .filter((r) => {
-            const g = currentGames.get(r.data.game_id);
-            return (
-              g &&
-              [g.data.home_team_id, g.data.away_team_id].includes(
-                r.data.team_id,
-              ) &&
-              (!r.eventTime || before(r.eventTime, cutoff)) &&
-              before(r.availableAt, g.data.scheduled_tipoff)
-            );
-          })
-          .map((r) => ({
-            ...pick(r.data, [
-              "game_id",
-              "team_id",
-              "player_name",
-              "status",
-              "reason",
-              "observed_state",
-            ]),
-            available_at: r.availableAt,
-          })),
-      };
+      yield sharedBatch(
+        table,
+        batch.filter((r) => {
+          const g = currentGames.get(r.data.game_id);
+          return (
+            g &&
+            [g.data.home_team_id, g.data.away_team_id].includes(
+              r.data.team_id,
+            ) &&
+            (!r.eventTime || before(r.eventTime, cutoff)) &&
+            before(r.availableAt, g.data.scheduled_tipoff)
+          );
+        }),
+        data.data.identities,
+      );
     }
   }
+  for (const kind of ["posts", "transcripts", "lineups"] as const)
+    yield sharedBatch(kind, [], data.data.identities);
+  const posts: RecordEnvelope[] = [];
   for (const team of data.evidence.filter((e) =>
     developmentIds.has(e.teamId),
   )) {
@@ -197,46 +190,31 @@ export async function* viewBatches(
         };
     for (const kind of ["posts", "transcripts", "lineups"] as const) {
       const rows = await team.evidence(kind, cutoff);
-      yield {
-        table: kind,
-        rows: rows
-          .filter((r) => {
-            if (
-              r.data.team_id !== team.teamId ||
-              !before(r.availableAt, cutoff) ||
-              (r.eventTime && !before(r.eventTime, cutoff))
-            )
-              return false;
-            const id = r.data.game_id;
-            if (id === undefined) return kind !== "lineups";
-            const game = currentGames.get(id);
-            return (
-              game &&
-              [game.data.home_team_id, game.data.away_team_id].includes(
-                team.teamId,
-              ) &&
-              (kind !== "lineups" ||
-                before(r.availableAt, game.data.scheduled_tipoff))
-            );
-          })
-          .map((r) => ({
-            id: r.id,
-            available_at: r.availableAt,
-            ...pick(r.data, [
-              "team_id",
-              "game_id",
-              "text",
-              "title",
-              "readable",
-              "source",
-              "startingLineup",
-              "url",
-              "accountId",
-            ]),
-          })),
-      };
+      const eligible = rows.filter((r) => {
+        if (
+          r.data.team_id !== team.teamId ||
+          !before(r.availableAt, cutoff) ||
+          (r.eventTime && !before(r.eventTime, cutoff))
+        )
+          return false;
+        const id = r.data.game_id;
+        if (id === undefined) return kind !== "lineups";
+        const game = currentGames.get(id);
+        return (
+          game &&
+          [game.data.home_team_id, game.data.away_team_id].includes(
+            team.teamId,
+          ) &&
+          (kind !== "lineups" ||
+            before(r.availableAt, game.data.scheduled_tipoff))
+        );
+      });
+      if (kind === "posts") posts.push(...eligible);
+      else
+        yield sharedBatch(kind, eligible, data.data.identities, currentGames);
     }
   }
+  yield sharedBatch("posts", latestPosts(posts), data.data.identities);
 }
 /** Publish a fresh, complete directory. The caller mounts it read-only. */
 export async function writeView(

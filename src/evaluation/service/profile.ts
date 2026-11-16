@@ -1,3 +1,4 @@
+import { developmentHoldout } from "../../data/development-evidence.js";
 import { z } from "zod";
 import { teamIds, developmentTeams } from "../../data/teams.js";
 import {
@@ -51,7 +52,7 @@ export const developmentRequest = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("repeat"), runId: z.uuid() }),
 ]);
 export type Request = z.infer<typeof developmentRequest>;
-export const holdout = "2026-03-23T00:00:00Z";
+export { developmentHoldout as holdout };
 export function developmentGames(
   schedule: TeamGame[],
   request: Request,
@@ -61,7 +62,7 @@ export function developmentGames(
   const allowed = schedule.filter(
     (g) =>
       developmentTeams.some((t) => teamIds[t] === g.teamId) &&
-      before(g.tip, holdout),
+      before(g.tip, developmentHoldout),
   );
   if (request.kind === "test" || request.kind === "repeat") {
     const wanted = request.kind === "test" ? request.games : prior;

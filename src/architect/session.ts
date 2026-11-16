@@ -197,7 +197,7 @@ async function converse(
           next =
             message.stopReason === "length"
               ? PI_CONTRACT.recovery.outputLimitContinuation.prompt
-              : "The iteration is still open. It ends only when you call submit. Continue, or save your notes and submit.";
+              : "The iteration is still open. It ends only when you submit a full, repeat or check evaluation or a nomination. Continue, or save your notes and submit.";
           return { action: "continue" };
         }
       },

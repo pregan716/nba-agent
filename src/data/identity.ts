@@ -113,6 +113,16 @@ export class Identities {
       throw Error(`Identity mapping requires matching team: ${provider}:${id}`);
     return row.canonicalId;
   }
+  playerId(
+    provider: "lineup-name" | "injury-name",
+    name: string,
+    teamId: string,
+  ): string | null {
+    const row = this.mappings.get(`player:${provider}:${name}`);
+    return row && (!row.scope || row.scope.teamId === teamId)
+      ? row.canonicalId
+      : null;
+  }
   rows(): Mapping[] {
     return [...this.mappings.values()].sort((a, b) =>
       `${a.entity}:${a.provider}:${a.providerId}`.localeCompare(
@@ -120,4 +130,19 @@ export class Identities {
       ),
     );
   }
+}
+
+/** A team roster match, including an explicit unresolved slot, takes precedence
+ * over the pinned name map used for Boston and opponent announcements. */
+export function lineupPlayerIds(
+  ids: Identities,
+  names: string[],
+  teamId: string,
+  rosterIds?: (string | null)[],
+) {
+  return names.map((name, i) =>
+    rosterIds
+      ? (rosterIds[i] ?? null)
+      : ids.playerId("lineup-name", name, teamId),
+  );
 }

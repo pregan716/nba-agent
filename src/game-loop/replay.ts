@@ -80,8 +80,9 @@ export async function replay(options: {
   trainedModels?: BuiltModels;
   agentsOff?: boolean;
   clearArtifacts?: boolean;
+  development?: boolean;
 }) {
-  const { source, config, root } = options;
+  const { source, config, root, development = true } = options;
   const { pkg, hash } = approvedPackage(options.package);
   const profile = profileSchema.parse(options.profile ?? defaultProfile);
   const schedule = new Map(source.schedule.map((g) => [scope(g), g]));
@@ -101,6 +102,7 @@ export async function replay(options: {
   mkdirSync(root, { mode: 0o700 }); // Exclusive creation: one owner and an empty run.
   const record = new RecordStore(root, {
     schemaVersion: "game-loop-v1",
+    development,
     packageHash: hash,
     trainedModels: Object.fromEntries(
       Object.entries(options.trainedModels ?? {}).map(([k, v]) => [
@@ -233,7 +235,7 @@ export async function replay(options: {
             gameId: g.gameId,
             scheduledStart: g.tip,
             index,
-            development: true,
+            development,
             release: releaseTime(g.tip),
           },
           pkg,

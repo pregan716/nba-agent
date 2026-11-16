@@ -1,3 +1,5 @@
+import { developmentEvidence } from "../data/development-evidence.js";
+import { sharedBatch } from "../data/shared-tables.js";
 import { PROVENANCE_COLUMNS } from "./export.js";
 import { boundaryNames, auditBoundary } from "./memory-audit.js";
 import { isMemoryV3, validateMemory } from "./memory.js";
@@ -10,7 +12,7 @@ import {
 } from "./export.js";
 import { Workspace, WorkspacePolicy } from "./workspace.js";
 import { Lifecycle, type LifecyclePhase } from "./lifecycle.js";
-import { EvidenceIndex } from "./evidence.js";
+import { EvidenceIndex, evidenceId } from "./evidence.js";
 import { Temporal } from "@js-temporal/polyfill";
 import type { RecordEnvelope } from "../data/contracts.js";
 import { Identities } from "../data/identity.js";
@@ -69,6 +71,7 @@ export class Session {
   #closed = false;
   #workspace?: Workspace;
   #lifecycle: Lifecycle;
+  #developmentEvidence?: Promise<ReturnType<typeof developmentEvidence>>;
   #evidenceIndex?: Promise<EvidenceIndex>;
   constructor(
     config: RunConfig,
@@ -212,31 +215,55 @@ export class Session {
           },
     };
   }
-  async #evidence() {
-    this.#evidenceIndex ??= (async () => {
-      const games = new Map((await this.#games()).map((g) => [g.id, g]));
-      const records: RecordEnvelope[] = [];
-      for (const source of ["posts", "transcripts", "lineups"] as const) {
-        for (const r of this.#eligible(
-          await this.#source.evidence(source, this.#cutoff),
-        )) {
-          if (r.source !== source) throw Error("Evidence source mismatch");
-          if (source === "lineups") {
-            const id = this.#source.identities.resolve(
-              "game",
-              "espn",
-              r.data.gameId,
-            );
-            const game = games.get(id);
-            if (!game || !visible(r, game.data.scheduled_tipoff)) continue;
-          }
-          records.push(r);
-        }
+  #evidencePolicy() {
+    if (this.strictPregameExport && this.#game.development) {
+      return (this.#developmentEvidence ??=
+        this.#games().then(developmentEvidence));
+    }
+  }
+  async #reference(table: PlayerReferenceTable) {
+    const records = this.#eligible(await this.#source.reference(table));
+    const allow = await this.#evidencePolicy();
+    return allow ? records.filter((r) => allow(r)) : records;
+  }
+  async #evidenceRecords(games: Map<string, RecordEnvelope>) {
+    const allow = await this.#evidencePolicy();
+    const records: RecordEnvelope[] = [];
+    for (const source of ["posts", "transcripts", "lineups"] as const) {
+      for (const r of this.#eligible(
+        await this.#source.evidence(source, this.#cutoff),
+      )) {
+        if (r.source !== source) throw Error("Evidence source mismatch");
+        if (source === "lineups") {
+          const id = this.#source.identities.resolve(
+            "game",
+            "espn",
+            r.data.gameId,
+          );
+          if (allow && !allow(r, id)) continue;
+          const game = games.get(id);
+          if (
+            !game ||
+            !visible(r, game.data.scheduled_tipoff, this.strictPregameExport)
+          )
+            continue;
+        } else if (allow && !allow(r)) continue;
+        records.push(r);
       }
+    }
+    return records;
+  }
+  async #evidence(exported?: RecordEnvelope[]) {
+    this.#evidenceIndex ??= (async () => {
+      const records =
+        exported ??
+        (await this.#evidenceRecords(
+          new Map((await this.#games()).map((g) => [g.id, g])),
+        ));
       return new EvidenceIndex(
         records,
         this.#source.identities,
-        this.#eligible(await this.#source.reference("player_profiles")),
+        await this.#reference("player_profiles"),
       );
     })().catch((error) => {
       this.#evidenceIndex = undefined;
@@ -320,9 +347,7 @@ export class Session {
       eventPlayers = new Map<string, string[]>();
     const unavailable: QueryGameHistoryResult["unavailable"] = [];
     if (ref)
-      records = this.#eligible(
-        await this.#source.reference(input.table as PlayerReferenceTable),
-      );
+      records = await this.#reference(input.table as PlayerReferenceTable);
     else
       for (const game of (await this.#games()).filter((g) =>
         visible(releasedGame(g), this.#cutoff, this.strictPregameExport),
@@ -499,19 +524,24 @@ export class Session {
         "invalid_input",
         "Schedule cursor cannot be combined with game_id or team_id",
       );
-    return this.#scheduleAndInjuries(
+    const result = await this.#scheduleAndInjuries(
       input,
       input.team_id ?? this.teamId,
       bounded,
-    );
+    ).next();
+    if (!result.done) throw Error("Unexpected SQL export during tool call");
+    return result.value;
   }
-  async #scheduleAndInjuries(
+  async *#scheduleAndInjuries(
     input: ReadScheduleAndInjuriesInput,
     team?: string,
     bounded = false,
-  ): Promise<ReadScheduleAndInjuriesResult> {
+    sharedExport = false,
+  ): AsyncGenerator<ExportBatch, ReadScheduleAndInjuriesResult> {
+    const allow = await this.#evidencePolicy();
     let games = (await this.#games()).filter(
       (g) =>
+        (!allow || allow(g)) &&
         (!team || [g.data.home_team_id, g.data.away_team_id].includes(team)) &&
         (!input.game_id || input.game_id === g.id),
     );
@@ -566,21 +596,34 @@ export class Session {
     const knownTeams = new Set(this.#source.teams.map((t) => t.team_id));
     const snapshots = new Map<string, RecordEnvelope>();
     const matches = (r: RecordEnvelope) =>
+      (!allow || allow(r)) &&
       gameIds.has(r.data.game_id) &&
       (team
         ? r.data.team_id === team
         : knownTeams.has(r.data.team_id) &&
           !!gameTeams.get(r.data.game_id)?.includes(r.data.team_id)) &&
       inWindow(r.availableAt, input, this.#cutoff);
-    for await (const batch of this.#source.injuries("teams"))
-      for (const r of this.#eligible(batch).filter(matches)) {
+    if (sharedExport) {
+      yield sharedBatch("schedule", games, this.#source.identities);
+      yield sharedBatch("injury_teams", [], this.#source.identities);
+      yield sharedBatch("injury_players", [], this.#source.identities);
+    }
+    for await (const batch of this.#source.injuries("teams")) {
+      const eligible = this.#eligible(batch).filter(matches);
+      if (sharedExport)
+        yield sharedBatch("injury_teams", eligible, this.#source.identities);
+      for (const r of eligible) {
         const key = `${r.data.game_id}:${r.data.team_id}`,
           previous = snapshots.get(key);
         if (!previous || stable(previous, r) < 0) snapshots.set(key, r);
       }
+    }
     const injury_reports: ReadScheduleAndInjuriesResult["injury_reports"] = [];
-    for await (const batch of this.#source.injuries("players"))
-      for (const r of this.#eligible(batch).filter(matches)) {
+    for await (const batch of this.#source.injuries("players")) {
+      const eligible = this.#eligible(batch).filter(matches);
+      if (sharedExport)
+        yield sharedBatch("injury_players", eligible, this.#source.identities);
+      for (const r of eligible) {
         const snapshot = snapshots.get(`${r.data.game_id}:${r.data.team_id}`);
         // An absent/latest placeholder cannot carry an earlier player's status forward.
         if (
@@ -589,27 +632,21 @@ export class Session {
           compare(snapshot.availableAt, r.availableAt) !== 0
         )
           continue;
-        let player_id: string | null = null;
-        try {
-          player_id = this.#source.identities.resolve(
-            "player",
-            "injury-name",
-            r.data.player_name,
-            { teamId: r.data.team_id },
-          );
-        } catch {
-          /* Refused/ambiguous joins remain explicit null. */
-        }
         injury_reports.push({
           report_time: r.availableAt,
           game_id: r.data.game_id,
           team_id: r.data.team_id,
-          player_id,
+          player_id: this.#source.identities.playerId(
+            "injury-name",
+            r.data.player_name,
+            r.data.team_id,
+          ),
           player_name: r.data.player_name,
           status: r.data.status,
           reason: r.data.reason ?? null,
         });
       }
+    }
     return {
       ...(bounded ? { next_cursor } : {}),
       schedule: games
@@ -744,7 +781,7 @@ export class Session {
         const definitions = await this.#source.columns(table);
         yield {
           table,
-          rows: this.#eligible(await this.#source.reference(table)).map((r) =>
+          rows: (await this.#reference(table)).map((r) =>
             projectHistory(r, definitions, this.#cutoff),
           ),
           columns: definitions.map((c) =>
@@ -754,19 +791,49 @@ export class Session {
       }
     }
     if (enabled.includes("game_history")) {
-      const result = await this.#scheduleAndInjuries({});
+      const result = yield* this.#scheduleAndInjuries(
+        {},
+        undefined,
+        false,
+        this.strictPregameExport,
+      );
       yield { table: "injuries", rows: result.injury_reports };
       yield { table: "injury_team_snapshots", rows: result.team_snapshots };
-      yield { table: "schedule", rows: result.schedule };
+      if (!this.strictPregameExport)
+        yield { table: "schedule", rows: result.schedule };
     }
     if (enabled.includes("search_and_fetch")) {
-      const evidence = (await this.#evidence()).all();
-      yield { table: "evidence", rows: evidence };
-      for (const source of ["posts", "transcripts", "lineups"] as const)
-        yield {
-          table: source,
-          rows: evidence.filter((e) => e.source === source),
-        };
+      if (this.strictPregameExport) {
+        const games = new Map((await this.#games()).map((g) => [g.id, g]));
+        const records = await this.#evidenceRecords(games);
+        const evidence = (await this.#evidence(records)).all();
+        yield { table: "evidence", rows: evidence };
+        // Keep the session's latest eligible post version in the SQL table too.
+        const selectedPosts = new Set(
+          evidence
+            .filter((e) => e.source === "posts")
+            .map((e) => e.evidence_id),
+        );
+        for (const kind of ["posts", "transcripts", "lineups"] as const)
+          yield sharedBatch(
+            kind,
+            records.filter(
+              (r) =>
+                r.source === kind &&
+                (kind !== "posts" || selectedPosts.has(evidenceId(r))),
+            ),
+            this.#source.identities,
+            games,
+          );
+      } else {
+        const evidence = (await this.#evidence()).all();
+        yield { table: "evidence", rows: evidence };
+        for (const source of ["posts", "transcripts", "lineups"] as const)
+          yield {
+            table: source,
+            rows: evidence.filter((e) => e.source === source),
+          };
+      }
     }
   }
   /** Trusted P3f integration; all calls use the same service and live policy as tools. */

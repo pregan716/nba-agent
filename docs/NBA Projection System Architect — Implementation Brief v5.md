@@ -105,7 +105,7 @@ Status: Agreed (Nov 14, 2026).
 
 Status: Proposed.
 
-- **Iterations.** One architect session per iteration. A session starts with no conversation history and has the archive, the hypothesis list and a notes workspace of its own. It ends by submitting a configuration, requesting a test run, or nominating a final configuration.
+- **Iterations.** One architect session per iteration. A session starts with no conversation history and has the archive, the hypothesis list and a notes workspace of its own. It ends by submitting a configuration for a full, repeat or check evaluation, or by nominating a final configuration. A test run does not end it: the result comes back in the same session, so the architect can fix its code and test again (Agreed Nov 16, 2026, after the pilot).
 - **Configuration.** A package containing the game-loop entry point, any other code, the agent definitions (model, prompt, tools, skills), the artifact declarations, the training scripts for any pretrained model, and the hypothesis statement.
 - **Team identity.** The environment tells the game loop which team and game it is working on at run time. Prompts and skills are therefore templates, and nothing in them needs to name a team.
 - **One system.** A configuration is a single system for every team and every date. It is not designed for a particular team or stretch of the season.

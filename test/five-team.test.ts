@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, readdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { gunzipSync } from "node:zlib";
+import { Session } from "../src/env/session.js";
+import { fixtureCorpus } from "./fixtures/session/corpus.js";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { writeView } from "../src/data/architect-view.js";
@@ -105,6 +108,7 @@ for (const view of ["architect", "training"] as const)
           };
         },
         data: {
+          identities: fixtureCorpus().source.identities,
           async columns() {
             return [{ name: "text", description: "marker" }];
           },
@@ -241,3 +245,182 @@ for (const view of ["architect", "training"] as const)
       }
     },
   );
+
+test("architect and game exports agree on every shared SQL schema and pregame evidence rows", async (t) => {
+  const f = fixtureCorpus();
+  const { BOS } = teamIds;
+  const lineupNames = ["Unmapped Starter", "Fixture Player"];
+  f.records.lineups[0].data.startingLineup = lineupNames;
+  const unknown = structuredClone(f.records.injuries[0]);
+  unknown.id = "unknown-injury";
+  unknown.data.player_name = "Unmapped, Player";
+  // A source payload cannot supply the answer for an unmapped name.
+  unknown.data.player_id = "untrusted-id";
+  const injuries = f.source.injuries;
+  f.source.injuries = async function* (kind) {
+    yield* injuries(kind);
+    if (kind === "players") yield [unknown];
+  };
+  const post = f.records.posts[0];
+  f.records.posts.push({
+    ...post,
+    id: "superseded",
+    availableAt: "2025-11-02T20:00:00Z",
+    data: { ...post.data, text: "old edition" },
+  });
+  const tip = f.game.scheduledStart;
+  // Supply the architect's pinned Boston boundary without adding any new
+  // released games to the sandbox fixture.
+  const games = [
+    ...f.schedule,
+    ...Array.from({ length: 78 }, (_, i) =>
+      game("extra" + i, BOS, "other", i < 66 ? "2026-01-01T00:00:00Z" : cutoff),
+    ),
+  ];
+  const dir = await mkdtemp(join(tmpdir(), "shared-game-schema-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const signal = new AbortController().signal;
+  const data = {
+    ...f.source,
+    async columns(table: Parameters<typeof f.source.columns>[0]) {
+      return [
+        ...(await f.source.columns(table)),
+        { name: "retrieved_at", description: "internal" },
+      ];
+    },
+    async *exportHistory(
+      table: Parameters<typeof f.source.history>[0],
+      selected: RecordEnvelope[],
+    ) {
+      for (const g of selected)
+        yield { gameId: g.id, ...(await f.source.history(table, g)) };
+    },
+  };
+  const viewDir = join(dir, "architect"),
+    gameDir = join(dir, "game");
+  await writeView(
+    {
+      games,
+      data,
+      gameLines: async () => () => ({ spread: null, total: null }),
+      corpus: {
+        injuries: {
+          async *partitions(kind = "teams") {
+            yield* data.injuries(kind);
+          },
+        },
+      },
+      evidence: [
+        {
+          teamId: BOS,
+          evidence: (kind, cutoff) => data.evidence(kind, cutoff),
+        },
+      ],
+      rosters: new Map([[BOS, { at: () => [] }]]),
+    },
+    "architect",
+    viewDir,
+    signal,
+  );
+  const session = new Session(
+    f.config,
+    f.game,
+    "pregame",
+    tip,
+    data,
+    undefined,
+    undefined,
+    undefined,
+    true,
+    BOS,
+  );
+  try {
+    await session.exportTo(gameDir, signal);
+  } finally {
+    await session.close();
+  }
+  const open = (path: string) => {
+    const db = new DatabaseSync(path, { readOnly: true });
+    t.after(() => db.close());
+    return db;
+  };
+  const view = open(join(viewDir, "session.sqlite")),
+    sandbox = open(join(gameDir, "session.sqlite"));
+  for (const db of [view, sandbox]) {
+    assert.deepEqual(
+      db
+        .prepare("SELECT text FROM posts WHERE url=?")
+        .all("https://x.com/i/status/" + post.data.postId)
+        .map((r) => r.text),
+      [post.data.text],
+    );
+    assert.equal(
+      db
+        .prepare("SELECT player_id FROM injury_players WHERE player_name=?")
+        .get(unknown.data.player_name)?.player_id,
+      null,
+    );
+  }
+  const shards = await readdir(join(gameDir, "games"));
+  assert.equal(shards.length, 1);
+  const path = join(dir, "prior.sqlite");
+  await writeFile(
+    path,
+    gunzipSync(await readFile(join(gameDir, "games", shards[0]))),
+  );
+  const history = open(path);
+  const names = (db: DatabaseSync) =>
+    db
+      .prepare("select name from sqlite_master where type='table'")
+      .all()
+      .map((r) => String(r.name));
+  const schema = (db: DatabaseSync, name: string) =>
+    db.prepare("select * from pragma_table_info(?) order by cid").all(name);
+  const shared = [];
+  const architectTables = names(view);
+  for (const db of [sandbox, history])
+    for (const name of names(db)) {
+      if (architectTables.includes(name)) {
+        assert.deepEqual(schema(view, name), schema(db, name), name);
+        shared.push(name);
+      }
+    }
+  assert.deepEqual(
+    shared.sort(),
+    [
+      "schedule",
+      "posts",
+      "transcripts",
+      "lineups",
+      "injury_teams",
+      "injury_players",
+      ...GAME_HISTORY_TABLES.filter((t) => t !== "games"),
+      "unavailable",
+    ].sort(),
+  );
+  for (const [table, columns, expected] of [
+    [
+      "lineups",
+      "startingLineup, starterIds, scheduled_tipoff",
+      [JSON.stringify(lineupNames), JSON.stringify([null, "player"]), tip],
+    ],
+    [
+      "injury_players",
+      "player_name, player_id, status, reason",
+      ["Player, Fixture", "player", "Questionable", "Fixture reason"],
+    ],
+    ["injury_teams", "observed_state", ["players_listed"]],
+  ] as const) {
+    const sql =
+      "select " +
+      columns +
+      " from " +
+      table +
+      " where game_id=? and team_id=?" +
+      (table === "injury_players" ? " and player_id is not null" : "") +
+      " order by available_at";
+    const rows = view.prepare(sql).all("current", BOS);
+    assert.deepEqual(rows.map(Object.values), [expected]);
+    assert.deepEqual(sandbox.prepare(sql).all("current", BOS), rows);
+  }
+});

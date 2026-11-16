@@ -112,7 +112,7 @@ export interface TeamRef {
   name: string;
 }
 export interface PlayerRef {
-  id: PlayerId;
+  id: PlayerId | null;
   name: string;
 }
 export interface Page {

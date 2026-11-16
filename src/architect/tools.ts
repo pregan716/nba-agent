@@ -294,7 +294,7 @@ export function architectTools(
     ),
     tool(
       "submit",
-      "End this iteration with a development evaluation or a nomination for the operator. Name an open hypothesis and its expected effect.",
+      "Request a development evaluation or a nomination. A test run returns in this conversation and the iteration continues; any other kind ends the iteration. Name an open hypothesis and its expected effect.",
       z.strictObject({
         kind: z.enum(submissionKinds),
         ...proposal,
@@ -350,7 +350,8 @@ export function architectTools(
           i.record("decision", { kind: a.kind, error: message });
           throw Error(message);
         }
-        i.status = a.kind;
+        // A test run reports back in the same session (SPO-919).
+        if (a.kind !== "test") i.status = a.kind;
         i.record("decision", { kind: a.kind, runId });
         return { runId };
       },
