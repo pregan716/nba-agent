@@ -94,6 +94,17 @@ test("package hash covers file contents independent of member order; unknown mod
     }),
   );
   assert.throws(() => readPackage({ ...pkg, entry: "../main.py" }));
+  // A thinking level is part of the configuration: optional, from a fixed
+  // list, covered by the hash, and not for Jev.
+  const thinking = (level: unknown, model = pkg.agents.reader.model) =>
+    readPackage({
+      ...pkg,
+      agents: { reader: { ...pkg.agents.reader, model, thinking: level } },
+    });
+  assert.notEqual(thinking("high").hash, hash);
+  assert.notEqual(thinking("high").hash, thinking("low").hash);
+  assert.throws(() => thinking("max"));
+  assert.throws(() => thinking("high", "jev-1.14.0"), /Jev agents/);
 });
 test("artifact limits count retained UTF-8 JSON values per owner after replacements", () => {
   const declarations: Package["artifacts"] = {
@@ -610,11 +621,46 @@ test("Pi specialist uses the declared model and sandbox tool, streams each turn 
     assert.equal(r.stream, true);
     assert.equal(r.model, pkg.agents.reader.model);
     assert.equal(r.max_tokens, 64);
+    // No level declared: thinking is off.
+    assert.deepEqual(r.thinking, { type: "disabled" });
   }
   assert.deepEqual(
     charges.map((usd) => Math.round(usd * 1e9)),
     [75000, 75000],
   );
+  // A declared level reaches the provider. The reply is still the text only.
+  const call = (agentSpec: Package["agents"][string], remaining: number) =>
+    agent({
+      agent: agentSpec,
+      system: "Use inspect.",
+      input: { teamId: BOS, gameId: "fixture", task: {} },
+      signal: AbortSignal.timeout(10000),
+      remaining: () => remaining,
+      reserve: () => () => {},
+      transcript() {},
+      tool: async () => "tool fixture",
+    });
+  assert.equal(
+    await call({ ...pkg.agents.reader, thinking: "medium" }, 0.001),
+    "done",
+  );
+  assert.equal(requests.at(-1).thinking.type, "adaptive");
+  assert.equal(requests.at(-1).output_config.effort, "medium");
+  // A model with a fixed thinking budget keeps it below the output allowance,
+  // and is refused when the balance leaves no room to think.
+  const fixed = {
+    ...pkg.agents.reader,
+    model: "claude-haiku-4-5-20251001" as const,
+    thinking: "high" as const,
+  };
+  assert.equal(await call(fixed, 0.02), "done");
+  const sent = requests.at(-1);
+  assert.equal(sent.thinking.type, "enabled");
+  assert.ok(sent.thinking.budget_tokens >= 1024);
+  assert.ok(sent.thinking.budget_tokens < sent.max_tokens);
+  const before = requests.length;
+  await assert.rejects(call(fixed, 0.001), /Specialist failed|Insufficient/);
+  assert.equal(requests.length, before);
 });
 
 test("Jev receives only the declared instructions, runtime team, task and sandbox tool output", async (t) => {

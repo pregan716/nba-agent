@@ -150,7 +150,11 @@ test("review isolates the request, records costs on invalid output and binds app
         "model",
         "output_config",
         "system",
+        "thinking",
       ]);
+      assert.deepEqual(request.thinking, { type: "adaptive" });
+      assert.equal(request.output_config?.effort, "high");
+      assert.equal(request.max_tokens, 16000);
       assert.equal(request.system, REVIEW_PROMPT);
       assert.equal(request.model, "claude-opus-4-6");
       assert.equal(request.messages.length, 1);
@@ -159,7 +163,11 @@ test("review isolates the request, records costs on invalid output and binds app
       return {
         usage: { input_tokens: 100, output_tokens: 20 },
         stop_reason: "end_turn",
-        content: [{ type: "text", text, citations: null }],
+        // The verdict is read past a thinking block.
+        content: [
+          { type: "thinking", thinking: "…", signature: "s" },
+          { type: "text", text, citations: null },
+        ],
       } as Awaited<ReturnType<NonNullable<Parameters<typeof reviewer>[0]>>>;
     }),
   };

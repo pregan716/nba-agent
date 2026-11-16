@@ -106,7 +106,7 @@ Status: Agreed (Nov 14, 2026).
 Status: Proposed.
 
 - **Iterations.** One architect session per iteration. A session starts with no conversation history and has the archive, the hypothesis list and a notes workspace of its own. It ends by submitting a configuration for a full, repeat or check evaluation, or by nominating a final configuration. A test run does not end it: the result comes back in the same session, so the architect can fix its code and test again (Agreed Nov 16, 2026, after the pilot).
-- **Configuration.** A package containing the game-loop entry point, any other code, the agent definitions (model, prompt, tools, skills), the artifact declarations, the training scripts for any pretrained model, and the hypothesis statement.
+- **Configuration.** A package containing the game-loop entry point, any other code, the agent definitions (model, prompt, tools, skills and an optional thinking level), the artifact declarations, the training scripts for any pretrained model, and the hypothesis statement.
 - **Team identity.** The environment tells the game loop which team and game it is working on at run time. Prompts and skills are therefore templates, and nothing in them needs to name a team.
 - **One system.** A configuration is a single system for every team and every date. It is not designed for a particular team or stretch of the season.
 - **Agent failure.** A configuration must still freeze a valid forecast when an agent call fails or is refused (Agreed Nov 14, 2026). This is also what makes the agent ablation possible.
@@ -212,7 +212,7 @@ Status: budgets at the level of a full replay run are Agreed in form (Nov 14, 20
 - **The cap on full evaluations matters as much as the dollars.** Each evaluation on the same games is another chance to fit them by luck.
 - **When a run's budget is exhausted**, the remaining team-games are scored on the reference projection and flagged.
 - **The architect pilot** runs two iterations before the development run, to check the whole path end to end and to report how the $30 cap behaves.
-- **After the pilot** (Agreed Nov 16, 2026). The architect's requests use prompt caching, and the $30 and $350 caps count what is actually charged. The development run starts from an empty pool: no draft, notes, hypotheses or archive carry over from the pilot.
+- **After the pilot** (Agreed Nov 16, 2026). The architect's requests use prompt caching, and the $30 and $350 caps count what is actually charged. The development run starts from an empty pool: no draft, notes, hypotheses or archive carry over from the pilot. The architect and the configuration reviewer use adaptive thinking at high effort; both pilot runs had thinking off, which nobody had chosen. Each agent in a configuration has a thinking level chosen by the architect.
 - The total is about $2,000. Fewer full evaluations is the cheapest way to cut it: eight instead of twelve saves about $320.
 
 ## Teams

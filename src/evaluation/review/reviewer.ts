@@ -72,18 +72,24 @@ export function reviewer(
   return async (pkg) => {
     const response = await send({
       model: "claude-opus-4-6",
-      max_tokens: 2048,
+      // Thinking counts against the output allowance, so leave it room.
+      max_tokens: 16000,
       system: REVIEW_PROMPT,
-      output_config: { format: zodOutputFormat(decision) },
+      thinking: { type: "adaptive" },
+      output_config: { effort: "high", format: zodOutputFormat(decision) },
       messages: [{ role: "user", content: canonicalJson(pkg) }],
     });
     const usd = cost(normalizeUsage(response.usage), PILOT_BUDGET.price);
-    const block = response.content[0];
+    // The verdict is the one text block. Thinking blocks may come before it.
+    const blocks = response.content.filter(
+      (b) => b.type !== "thinking" && b.type !== "redacted_thinking",
+    );
+    const block = blocks[0];
     return {
       usd,
       text:
         response.stop_reason === "end_turn" &&
-        response.content.length === 1 &&
+        blocks.length === 1 &&
         block?.type === "text"
           ? block.text
           : "",
