@@ -655,15 +655,24 @@ print("filtered data verified")`,
     // A test run leaves the iteration open: its result is read in the same
     // session, and the full evaluation ends it.
     { calls: [call("submit", proposal)] },
-    { calls: [call("iterations", {})] },
+    {
+      calls: ({ messages }) => [
+        call("archive_read", {
+          runId: /runId\\*":\\*"([0-9a-f-]{36})/.exec(
+            JSON.stringify(messages.at(-1)),
+          )![1],
+          section: "forecasts",
+        }),
+      ],
+    },
     { calls: [call("submit", ending)] },
   );
   const first = await architectIteration(host, provider.options);
   assert.equal(first.status, "full");
-  assert.match(
-    JSON.stringify(provider.requests.at(-1)!.messages),
-    /kind\\+":\\+"test\\+",\\+"runId.*status\\+":\\+"complete/,
-  );
+  // The test run's forecast reached the architect before it submitted full.
+  const readBack = JSON.stringify(provider.requests.at(-1)!.messages.at(-1));
+  assert.match(readBack, /forecast-v1/);
+  assert.match(readBack, /-12345/);
   assert.match(
     JSON.stringify(provider.requests[1].messages),
     /last response reached the output limit/,

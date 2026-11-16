@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 
 // Local streaming Messages endpoint. Each step is an assistant turn, including
 // turns that request multiple tools or exhaust the output limit.
+type Call = { name: string; input: Record<string, unknown> };
 export async function architectProvider() {
   const requests: {
     model: string;
@@ -11,7 +12,8 @@ export async function architectProvider() {
     max_tokens: number;
   }[] = [];
   const steps: {
-    calls?: { name: string; input: Record<string, unknown> }[];
+    // A function builds the calls from the request, to use an earlier result.
+    calls?: Call[] | ((request: { messages: unknown[] }) => Call[]);
     truncated?: boolean;
     disconnected?: boolean;
     streamError?: string;
@@ -50,6 +52,8 @@ export async function architectProvider() {
       res.end("No fixture turn");
       return;
     }
+    const calls =
+      typeof step.calls === "function" ? step.calls(request) : step.calls;
     res.writeHead(200, { "content-type": "text/event-stream" });
     const emit = (type: string, data: Record<string, unknown>) =>
       res.write(
@@ -70,7 +74,7 @@ export async function architectProvider() {
         stop_reason: null,
       },
     });
-    for (const [index, call] of (step.calls ?? []).entries()) {
+    for (const [index, call] of (calls ?? []).entries()) {
       emit("content_block_start", {
         index,
         content_block: {
@@ -89,7 +93,7 @@ export async function architectProvider() {
       });
       emit("content_block_stop", { index });
     }
-    if (!step.calls?.length) {
+    if (!calls?.length) {
       emit("content_block_start", {
         index: 0,
         content_block: { type: "text", text: "" },
@@ -112,7 +116,7 @@ export async function architectProvider() {
       delta: {
         stop_reason: step.truncated
           ? "max_tokens"
-          : step.calls?.length
+          : calls?.length
             ? "tool_use"
             : "end_turn",
       },
