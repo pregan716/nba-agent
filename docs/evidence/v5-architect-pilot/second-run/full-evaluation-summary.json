@@ -1,0 +1,196 @@
+{
+  "system": {
+    "minutes.pinball": 0.9584470098950262,
+    "minutes.coverage50": 0.7101383188934489,
+    "minutes.coverage80": 0.8904848761209913,
+    "points.pinball": 1.2236807973704693,
+    "points.coverage50": 0.5339585479120363,
+    "points.coverage80": 0.8305135433042409,
+    "rebounds.pinball": 0.5573701356025804,
+    "rebounds.coverage50": 0.48189859236370863,
+    "rebounds.coverage80": 0.7652237942935621,
+    "assists.pinball": 0.3499556993358823,
+    "assists.coverage50": 0.4753573300084929,
+    "assists.coverage80": 0.820572450805009,
+    "fantasy_points.pinball": 2.097759890849381,
+    "fantasy_points.coverage50": 0.4880224426736054,
+    "fantasy_points.coverage80": 0.7945131096293889,
+    "playBrier": 0.0687331340960507,
+    "startBrier": 0.03540611342409801,
+    "misplacedMinutes": 28.340873970611113,
+    "minutes.conditional.coverage50": 0.5207161055998267,
+    "minutes.conditional.coverage80": 0.8002755642290527,
+    "ceiling.brier": 0.0910148885781119,
+    "ceiling.hitRate": 0.09302325581395349,
+    "ceiling.hitRateWithoutVoids": 0.09375,
+    "ceiling.voidRate": 0.007751937984496124,
+    "ceiling.referenceWeighted": 0.10934185638841135
+  },
+  "reference": {
+    "minutes.pinball": 0.9590327611933177,
+    "minutes.coverage50": 0.7088463292293663,
+    "minutes.coverage80": 0.9064447484420125,
+    "points.pinball": 1.2236807973704693,
+    "points.coverage50": 0.5339585479120363,
+    "points.coverage80": 0.8305135433042409,
+    "rebounds.pinball": 0.5573701356025804,
+    "rebounds.coverage50": 0.48189859236370863,
+    "rebounds.coverage80": 0.7652237942935621,
+    "assists.pinball": 0.3499556993358823,
+    "assists.coverage50": 0.4753573300084929,
+    "assists.coverage80": 0.820572450805009,
+    "fantasy_points.pinball": 2.097759890849381,
+    "fantasy_points.coverage50": 0.4880224426736054,
+    "fantasy_points.coverage80": 0.7945131096293889,
+    "playBrier": 0.06893218956695257,
+    "startBrier": 0.03588016897925251,
+    "misplacedMinutes": 28.377036850636827,
+    "minutes.conditional.coverage50": 0.5197692488390164,
+    "minutes.conditional.coverage80": 0.8033293579805207,
+    "ceiling.brier": 0.09089951088468813,
+    "ceiling.hitRate": 0.10934185638841135,
+    "ceiling.hitRateWithoutVoids": null,
+    "ceiling.voidRate": null,
+    "ceiling.referenceWeighted": 0.10934185638841135
+  },
+  "againstReference": {
+    "bootstrap": {
+      "resamples": 10000,
+      "seed": 8542026,
+      "interval": 0.9
+    },
+    "games": 43,
+    "teamGames": 43,
+    "metrics": {
+      "minutes.pinball": {
+        "ratio": 0.9993892270191455,
+        "delta": -0.0005857512982911928,
+        "ratio90": [0.9897702524376935, 1.0084644969143053],
+        "delta90": [-0.009299310978302399, 0.008476007539333917],
+        "validRatioDraws": 10000,
+        "lossReductionPerExtraUsd": null,
+        "lossReductionPerExtraHour": null,
+        "influence": [
+          {
+            "gameId": "0022500594",
+            "omitted": -0.00273235673247485,
+            "shift": -0.002146605434183657
+          },
+          {
+            "gameId": "0022500641",
+            "omitted": 0.001521577776810501,
+            "shift": 0.0021073290751016938
+          },
+          {
+            "gameId": "0022500525",
+            "omitted": -0.002150423840378002,
+            "shift": -0.001564672542086809
+          },
+          {
+            "gameId": "0022500707",
+            "omitted": -0.0020017994784179427,
+            "shift": -0.00141604818012675
+          },
+          {
+            "gameId": "0022500667",
+            "omitted": 0.0007922930960849728,
+            "shift": 0.0013780443943761655
+          }
+        ],
+        "withoutFive": {
+          "ratio": 0.9973163055702045,
+          "delta": -0.0024005411101489793
+        }
+      },
+      "fantasy_points.pinball": {
+        "ratio": 1,
+        "delta": 0,
+        "ratio90": [1, 1],
+        "delta90": [0, 0],
+        "validRatioDraws": 10000,
+        "lossReductionPerExtraUsd": null,
+        "lossReductionPerExtraHour": null,
+        "influence": [
+          {
+            "gameId": "0022500015",
+            "omitted": 0,
+            "shift": 0
+          },
+          {
+            "gameId": "0022500017",
+            "omitted": 0,
+            "shift": 0
+          },
+          {
+            "gameId": "0022500499",
+            "omitted": 0,
+            "shift": 0
+          },
+          {
+            "gameId": "0022500503",
+            "omitted": 0,
+            "shift": 0
+          },
+          {
+            "gameId": "0022500506",
+            "omitted": 0,
+            "shift": 0
+          }
+        ],
+        "withoutFive": {
+          "ratio": 1,
+          "delta": 0
+        }
+      },
+      "playBrier": {
+        "ratio": 0.9971123001872944,
+        "delta": -0.00019905547090187659,
+        "ratio90": [0.9741399921718272, 1.0191513889333559],
+        "delta90": [-0.0016634865718596124, 0.0014039751802803818],
+        "validRatioDraws": 10000,
+        "lossReductionPerExtraUsd": null,
+        "lossReductionPerExtraHour": null,
+        "influence": [
+          {
+            "gameId": "0022500600",
+            "omitted": -0.0006610027032853821,
+            "shift": -0.00046194723238350555
+          },
+          {
+            "gameId": "0022500594",
+            "omitted": -0.0005984508366681518,
+            "shift": -0.0003993953657662752
+          },
+          {
+            "gameId": "0022500707",
+            "omitted": -0.00044489549421346253,
+            "shift": -0.00024584002331158594
+          },
+          {
+            "gameId": "0022500534",
+            "omitted": -0.000407792149316466,
+            "shift": -0.00020873667841458943
+          },
+          {
+            "gameId": "0022500559",
+            "omitted": 0.000008750626379422366,
+            "shift": 0.00020780609728129895
+          }
+        ],
+        "withoutFive": {
+          "ratio": 0.9763362542407182,
+          "delta": -0.001423812168506483
+        }
+      }
+    },
+    "spend": {
+      "left": {
+        "usd": 0,
+        "unresolvedUsd": 0,
+        "ms": 4996.9458199949
+      },
+      "right": null
+    },
+    "guardrailFlag": false
+  }
+}

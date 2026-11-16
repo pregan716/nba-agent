@@ -4,6 +4,8 @@ Run on Nov 16, 2026 (UTC) on the cloud host. Three architect iterations ran end 
 
 This is a pilot, not evidence. Its one full evaluation scored slightly worse than the reference, because most of the configuration's logic did nothing in the game sandbox. The causes were defects in the environment and the prompt, and they are fixed (see [Defects](#defects)).
 
+A second run later the same day, with the fixes merged, ran one iteration through six test runs to a full evaluation for $3.68. Its configuration read its data correctly and scored level with the reference (see [Second run, with the fixes](#second-run-with-the-fixes)).
+
 Records are in [`docs/evidence/v5-architect-pilot/`](../evidence/v5-architect-pilot/). The pilot used its own pool directory, so none of its evaluations count against the development run's pool.
 
 ## What ran
@@ -92,7 +94,7 @@ Two things that were choices, not defects:
 - No configuration with agents ran in a full evaluation, so agent spend, the per-game dollar limit and agent failures were exercised only by the two-game check.
 - No repeat, check or nomination was submitted, and no submission was rejected by the reviewer.
 - The watcher never had to stop a run, so its stop path was exercised only by tests.
-- The fixes above were made after the pilot. No architect iteration has run with them.
+- The fixes above were made after this run. They were exercised in the [second run](#second-run-with-the-fixes).
 
 ## Decisions after the pilot
 
@@ -100,9 +102,38 @@ Decided by the user on Nov 16, 2026:
 
 - **The development run starts empty.** Nothing from the pilot's pool carries over: no draft, notes, hypotheses or archive.
 - **Prompt caching for the architect is on**, with five-minute retention. The caps count what is actually charged.
-- **The second full evaluation is funded**: one more pilot iteration with the fixes in place, ending in a full evaluation. Its result will be added here.
+- **The second full evaluation is funded**: one more pilot iteration with the fixes in place, ending in a full evaluation. See [Second run, with the fixes](#second-run-with-the-fixes).
+
+## Second run, with the fixes
+
+Run on Nov 16, 2026 (UTC) on the cloud host at commit `aafff7d`, after every fix above was merged, on a fresh pool. The full suite passed on the host first (275 tests, 260 passed, 15 skipped, plus the sandbox and forecast tests with images). This run supplies the second full evaluation SPO-907 asks for. It is still a pilot, not evidence.
+
+One unrestricted iteration ran under the watcher. Records are in [`second-run/`](../evidence/v5-architect-pilot/second-run/).
+
+| Step   | Team-games | Minutes ratio             | Play Brier ratio          | Fantasy ratio | What the architect changed                                                                  |
+| ------ | ---------- | ------------------------- | ------------------------- | ------------- | ------------------------------------------------------------------------------------------- |
+| Test 1 | 3          | 0.973                     | 0.866                     | 1.046         | First draft: correct minutes from the reference's past errors, rescale the other statistics |
+| Test 2 | 5          | 0.983                     | 0.940                     | 1.002         | Scale fantasy points in proportion                                                          |
+| Test 3 | 5          | 0.988                     | 0.953                     | 1.000         | Leave everything but minutes and the two probabilities alone; add lineup and injury reading |
+| Test 4 | 2          | 0.980                     | 0.982                     | 1.000         | Same, with logging                                                                          |
+| Test 5 | 5          | 1.018                     | 1.749                     | 1.000         | Corrections by role tier                                                                    |
+| Test 6 | 5          | 0.990                     | 0.943                     | 1.000         | Back to the simple correction; lineup and injury reading removed                            |
+| Full   | 43         | 0.9994 (0.9898 to 1.0085) | 0.9971 (0.9741 to 1.0192) | 1.0000        | Same configuration as test 6                                                                |
+
+Ratios on a handful of games are noise; they are listed to show the loop the architect ran, not as results. On the full evaluation the configuration is indistinguishable from the reference and is not flagged on either guardrail.
+
+- **Every submission was accepted** by the scan and the reviewer, and all 68 forecasts froze. The watcher never stopped the run, and the launcher exited 0.
+- **The fixes worked together.** The iteration continued through six test runs and ended on the full evaluation (SPO-919). The configuration read the reference history, the lineup announcements and the injury reports in the game sandbox with the names the architect had seen in its own view (SPO-918, SPO-921, SPO-922). Its stderr shows per-player corrections in every game.
+- **What it built.** A code-only configuration of about 250 lines that shifts each player's minutes, chance of playing and chance of starting by a fraction of the reference's recent error on him, and recalibrates the width of the minutes range. The architect tried lineup and injury reading, saw the play Brier on five test games rise to 1.75 times the reference's, and removed both. It wrote its notes before the full submission.
+- **Spend.** $3.68 in total: $3.47 for the architect, $0.21 for seven reviews, nothing for the evaluations.
+- **Caching.** The architect made 55 requests. They read 3.43 million input tokens from the cache, wrote 148,000 to it and sent 57 uncached, with 33,000 output tokens. The same requests without caching would have cost about $18.7. The $30 cap now allows several hundred requests instead of about a hundred.
+- **Time.** The iteration took 95 minutes: about 50 of architect work and test replays, and 45 for the full evaluation. The first test run took 18 minutes, because a fresh pool prepares each team's history once; later test runs took 1.5 to 4 minutes. The configuration itself used at most 0.3 seconds per team-game.
+
+Still not exercised by either run: agents in a full evaluation, a rejected submission, repeat and check evaluations, a nomination, the budget warning and the watcher's stop path.
 
 ## Evidence files
+
+The first run's files are listed here; `second-run/` holds the same files for the second run.
 
 - `pilot.json`: per iteration, the spend, request and token counts, tool calls and submissions; the three reviews; per run, each team-game's status, times and the configuration's stderr.
 - `full-evaluation-summary.json`: the full evaluation's scores for the system and the reference, and the paired comparison.
