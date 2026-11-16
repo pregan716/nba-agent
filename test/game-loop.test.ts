@@ -414,6 +414,47 @@ test(
     assert.deepEqual(missing.agent, missing.reference);
     assert.ok(read(off)[0].frozen);
     assert.equal(read(off)[1].frozen, null);
+    const preparedRoot = join(parent, "slow-preparation");
+    const preparationDelay = 1600;
+    const waitForSource = () =>
+      new Promise((resolve) => setTimeout(resolve, preparationDelay));
+    const prepared = await replay({
+      ...base,
+      root: preparedRoot,
+      games: [games[3]],
+      profile: { usdPerTeamGame: 2, gameUsd: 10, gameMinutes: 0.025 },
+      source: {
+        ...source,
+        async projection(g) {
+          if (g.gameId === games[0].gameId) await waitForSource();
+          return source.projection(g);
+        },
+        data: {
+          ...source.data,
+          async games() {
+            await waitForSource();
+            return source.data.games();
+          },
+        },
+      },
+      package: {
+        ...pkg,
+        files: {
+          ...pkg.files,
+          "main.py":
+            "def run(ctx, arg):\n    return dict(type='finish',forecast=ctx['reference'])",
+        },
+      },
+      runAgent: async () => null,
+    });
+    const [receipt] = read(preparedRoot);
+    assert.equal(receipt.reason, null);
+    assert.ok(receipt.hostPreparationMs >= 2 * preparationDelay - 5);
+    assert.ok(receipt.wallClockMs > 0 && receipt.wallClockMs < 1500);
+    const [score] = prepared.scores.values();
+    assert.ok(score.status !== "excluded");
+    assert.equal(score.wallClockMs, receipt.wallClockMs);
+
     const timed = await replay({
       ...base,
       root: join(parent, "timeout"),
@@ -423,12 +464,13 @@ test(
         ...pkg,
         files: {
           ...pkg.files,
-          "main.py": "def run(ctx, arg):\n    while True: pass",
+          "main.py": "def run(ctx, arg):\n    import time; time.sleep(5)",
         },
       },
       runAgent: async () => null,
     });
     assert.equal([...timed.scores.values()][0].status, "no_forecast");
+    assert.equal(read(join(parent, "timeout"))[0].reason, "wall_clock");
     const perGame = await replay({
       ...base,
       root: join(parent, "safeguard"),
@@ -456,6 +498,11 @@ test(
     assert.deepEqual(
       read(budget).map((r) => r.reason),
       [null, ...Array(3).fill("run_budget_exhausted")],
+    );
+    assert.ok(
+      read(budget)
+        .slice(1)
+        .every((r) => r.wallClockMs === 0),
     );
     for (const s of limited.scores.values())
       if (s.status === "no_forecast") assert.deepEqual(s.agent, s.reference);

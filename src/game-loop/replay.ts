@@ -184,6 +184,7 @@ export async function replay(options: {
   }
   try {
     for (const [index, g] of games.entries()) {
+      const preparationStart = performance.now();
       const id = scope(g),
         team = g.teamId;
       if (options.clearArtifacts) artifacts.clear();
@@ -191,16 +192,15 @@ export async function replay(options: {
         visibleArtifacts = new Map(artifacts);
       priorTip = g.tip;
       const { pre, reference, spread, total } = await prepare(g);
-      const start = performance.now(),
-        duration = profile.gameMinutes * 60000;
-      const signal = AbortSignal.timeout(Math.max(1, Math.ceil(duration)));
-      const remainingSeconds = () =>
-        Math.max(0, (duration - (performance.now() - start)) / 1000);
+      let hostPreparationMs: number;
+      let wallClockMs = 0;
       const gameMeter = meter.game(profile.gameUsd, record, id);
       let frozen: Forecast | null = null,
         reason: string | null = null;
-      if (meter.available <= 0) reason = "run_budget_exhausted";
-      else {
+      if (meter.available <= 0) {
+        reason = "run_budget_exhausted";
+        hostPreparationMs = performance.now() - preparationStart;
+      } else {
         const history = source.schedule
           .filter((h) => h.teamId === team && before(releaseTime(h.tip), g.tip))
           .sort((a, b) => compare(a.tip, b.tip));
@@ -242,20 +242,35 @@ export async function replay(options: {
           (entry) => record.append("sandbox_step", id, entry),
           options.trainedModels,
         );
-        const invoke = (file: string, input: unknown) =>
-          box.invoke(file, input, remainingSeconds(), signal);
-        const call = agentDispatcher(
-          pkg,
-          g,
-          id,
-          record,
-          gameMeter,
-          !!options.agentsOff,
-          options.runAgent,
-          signal,
-          invoke,
-        );
+        const duration = profile.gameMinutes * 60000;
+        const controller = new AbortController();
+        const { signal } = controller;
+        let started: number | undefined;
+        let timeout: ReturnType<typeof setTimeout> | undefined;
         try {
+          await box.prepare();
+          let deadline: number;
+          const remainingSeconds = () =>
+            Math.max(0, (deadline - performance.now()) / 1000);
+          const invoke = (file: string, input: unknown) =>
+            box.invoke(file, input, remainingSeconds(), signal);
+          const call = agentDispatcher(
+            pkg,
+            g,
+            id,
+            record,
+            gameMeter,
+            !!options.agentsOff,
+            options.runAgent,
+            signal,
+            invoke,
+          );
+          started = performance.now();
+          deadline = started + duration;
+          timeout = setTimeout(
+            () => controller.abort(),
+            Math.ceil(duration),
+          ).unref();
           let argument: unknown = null;
           for (;;) {
             signal.throwIfAborted();
@@ -298,8 +313,16 @@ export async function replay(options: {
             argument = { state: step.state, reply };
           }
         } catch (error) {
-          reason = signal.aborted ? "wall_clock" : String(error);
+          reason =
+            signal.aborted ||
+            (started !== undefined && performance.now() - started >= duration)
+              ? "wall_clock"
+              : String(error);
         } finally {
+          const end = performance.now();
+          hostPreparationMs = (started ?? end) - preparationStart;
+          if (started !== undefined) wallClockMs = end - started;
+          clearTimeout(timeout);
           await box.close();
         }
       }
@@ -309,11 +332,12 @@ export async function replay(options: {
         frozen,
         costUsd: gameMeter.usd,
         unresolvedUsd: gameMeter.unresolvedUsd,
-        wallClockMs: performance.now() - start,
+        wallClockMs,
       };
       receipts.set(id, receipt);
       record.append("team_game", id, {
         ...receipt,
+        hostPreparationMs,
         configurationHash: hash,
         reason,
         spread,
