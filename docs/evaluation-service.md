@@ -25,6 +25,16 @@ The development archive contains the submitted package and a forecast record for
 
 The architect's SQLite `game_lines` table contains `game_id`, `team_id`, `scheduled_tipoff`, `spread` and `total`. Each row represents one development team's perspective at scheduled start. A game between two development teams has two rows with opposite spreads. Coverage is limited to 2025–26 games before the holdout involving Boston, Oklahoma City or Washington. Denver and Memphis appear only as opponents in the eligible schedule. Player prop lines and scores derived from them remain excluded from the data view, game loop and archive.
 
+| SQLite table location | Tables |
+| --- | --- |
+| Architect view and game session | `schedule`, `posts`, `transcripts`, `lineups`, `injury_players`, `injury_teams` |
+| Architect view and released game shards | `player_box_scores`, `team_box_scores`, `team_period_scores`, `events`, `lineup_stints`, `player_stints`, `matchup_stints`, `player_game_summary`, `team_game_summary`, `possessions`, `unavailable` |
+| Architect view only | `rosters`, `game_lines` |
+| Game session only | `session`, `evidence`, `injuries` and `injury_team_snapshots` (latest report), `player_profiles`, `player_reference`, `player_season_stats`, `player_2024_25_summary`, `player_career_summary`, `player_identity_exceptions` |
+| Game shards only | `games`, `_history_metadata` |
+
+Filter lineup and injury rows by `game_id` and `team_id`. In `lineups`, `startingLineup` is a JSON array of player names. In `injury_players` and `injury_teams`, `available_at` is the printed report time. These tables retain earlier eligible observations. The game sandbox reads session tables through `nba_data.session()` and released shards through `nba_data.query()`.
+
 ## Training
 
 Declare Python filenames in the package's `training` list. Each defines `train(path)`, where `path` is a read-only SQLite database built by the training view. The only data mounted for this build are the 2024–25 training export and the submitted Python source. A script returns a JSON-serializable value or binary bytes. For example:
