@@ -1,0 +1,652 @@
+{
+  "iterations": [
+    {
+      "id": "a03e5c31-98de-4a15-8704-ed6621a2dd44",
+      "started": "2026-11-16 03:45:58",
+      "status": "test",
+      "usd": 1.7089750000000001,
+      "modelRequests": 18,
+      "toolCalls": {
+        "data_python": 12,
+        "document_list": 2,
+        "document_write": 2,
+        "hypotheses": 1,
+        "hypothesis_write": 1,
+        "iterations": 1,
+        "submit": 1,
+        "validate_package": 1
+      },
+      "tokens": {
+        "i": 297425,
+        "o": 8874
+      },
+      "submissions": [
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500503"
+            },
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            }
+          ],
+          "hypothesis": "baseline_error_correction",
+          "expectedEffect": "The system should run without errors, producing valid forecasts. On a single game it should show small adjustments from the reference based on player history. This test is primarily to verify the code works and to understand the ctx data structure.",
+          "hash": "8d8ec09474e47f7ec3eeb56afa6c517869311cd5e1c992821c5c31ffd0ba80a1"
+        },
+        {
+          "event": "review",
+          "id": "65d94fb5-9c7c-480a-99a2-45ab5bf26b83",
+          "hash": "8d8ec09474e47f7ec3eeb56afa6c517869311cd5e1c992821c5c31ffd0ba80a1",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "3afba32c-f383-4f34-b041-282dd5ab656b"
+        }
+      ]
+    },
+    {
+      "id": "9d255524-7a75-4d58-8c96-05fedec0b014",
+      "started": "2026-11-16 04:03:49",
+      "status": "test",
+      "usd": 4.67415,
+      "modelRequests": 23,
+      "toolCalls": {
+        "archive_read": 3,
+        "data_python": 17,
+        "document_list": 2,
+        "document_read": 2,
+        "document_write": 1,
+        "hypotheses": 1,
+        "iterations": 1,
+        "submit": 1,
+        "validate_package": 1
+      },
+      "tokens": {
+        "i": 850125,
+        "o": 16941
+      },
+      "submissions": [
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            },
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500520"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500511"
+            }
+          ],
+          "hypothesis": "baseline_error_correction",
+          "expectedEffect": "The system should run without errors, correctly read lineup announcements and injury reports, and produce adjusted forecasts. On these test games I expect to see starters correctly identified from lineup data, p_play adjustments from injury reports, and minutes adjustments from historical bias correction. The key test is that the code runs clean.",
+          "hash": "8668a45a3a94f6bd6a7ddb7d6057f1bd0413e3ad30889ea02270cbd3fed2f75c"
+        },
+        {
+          "event": "review",
+          "id": "bcf12cd7-e6b3-414d-a294-b35721ec6fbd",
+          "hash": "8668a45a3a94f6bd6a7ddb7d6057f1bd0413e3ad30889ea02270cbd3fed2f75c",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "5aaf426a-28fa-4c5e-b685-2fcd4e87df24"
+        }
+      ]
+    },
+    {
+      "id": "f80ae285-be0a-4939-b8a1-638e9436397e",
+      "started": "2026-11-16 04:20:35",
+      "status": "full",
+      "usd": 8.167295000000001,
+      "modelRequests": 34,
+      "toolCalls": {
+        "archive_read": 4,
+        "data_python": 24,
+        "document_list": 2,
+        "document_read": 3,
+        "document_write": 2,
+        "hypotheses": 1,
+        "iterations": 1,
+        "submit": 1,
+        "validate_package": 1
+      },
+      "tokens": {
+        "i": 1501114,
+        "o": 26469
+      },
+      "submissions": [
+        {
+          "event": "proposal",
+          "kind": "full",
+          "hypothesis": "baseline_error_correction",
+          "expectedEffect": "The system should produce a minutes pinball loss ratio below 1.0 (better than reference). Key improvements expected: (1) Lineup-based starter identification should improve p_start accuracy and minutes allocation for 37/43 games, (2) Historical per-player bias correction should shift median minutes toward actual trends, (3) Width calibration should adjust range width based on observed coverage. If lineup reading still fails in sandbox, the ratio will likely be near 1.0 with slight improvement from historical bias correction only. The fallback to reference ensures ratio cannot be much worse than 1.0.",
+          "hash": "2a494415272c6d7cef74b703b210ae0b68839b92af2c9ae01e8da57d5c30745a"
+        },
+        {
+          "event": "review",
+          "id": "bc58d385-ed05-471a-913e-c36c3926be8b",
+          "hash": "2a494415272c6d7cef74b703b210ae0b68839b92af2c9ae01e8da57d5c30745a",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "full",
+          "runId": "0b2a902c-dc8f-4322-8bf9-426c66dea8a9"
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "65d94fb5-9c7c-480a-99a2-45ab5bf26b83",
+      "created": "2026-11-16 03:54:01",
+      "hash": "8d8ec09474e47f7ec3eeb56afa6c517869311cd5e1c992821c5c31ffd0ba80a1",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.03509,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "bcf12cd7-e6b3-414d-a294-b35721ec6fbd",
+      "created": "2026-11-16 04:13:38",
+      "hash": "8668a45a3a94f6bd6a7ddb7d6057f1bd0413e3ad30889ea02270cbd3fed2f75c",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.052955,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "bc58d385-ed05-471a-913e-c36c3926be8b",
+      "created": "2026-11-16 04:33:46",
+      "hash": "2a494415272c6d7cef74b703b210ae0b68839b92af2c9ae01e8da57d5c30745a",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.062875,
+      "findings": "[]",
+      "reasons": "[]"
+    }
+  ],
+  "runs": [
+    {
+      "id": "3afba32c-f383-4f34-b041-282dd5ab656b",
+      "kind": "test",
+      "status": "complete",
+      "hash": "8d8ec09474e47f7ec3eeb56afa6c517869311cd5e1c992821c5c31ffd0ba80a1",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 100,
+          "hostPreparationMs": 268260,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 98,
+          "hostPreparationMs": 254435,
+          "costUsd": 0
+        }
+      ],
+      "stderr": ["", ""]
+    },
+    {
+      "id": "5aaf426a-28fa-4c5e-b685-2fcd4e87df24",
+      "kind": "test",
+      "status": "complete",
+      "hash": "8668a45a3a94f6bd6a7ddb7d6057f1bd0413e3ad30889ea02270cbd3fed2f75c",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 277,
+          "hostPreparationMs": 53539,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 274,
+          "hostPreparationMs": 257039,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 283,
+          "hostPreparationMs": 54947,
+          "costUsd": 0
+        }
+      ],
+      "stderr": [
+        "Error reading lineups: no such column: startingLineup\nTraceback (most recent call last):\n  File \"/data/package/main.py\", line 225, in read_lineup_announcement\n    cursor = session.execute(\n             ^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: no such column: startingLineup\nAnnounced starters: set()\nError reading injuries: no such table: injury_players\nInjury info: {}\n",
+        "Error reading lineups: no such column: startingLineup\nTraceback (most recent call last):\n  File \"/data/package/main.py\", line 225, in read_lineup_announcement\n    cursor = session.execute(\n             ^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: no such column: startingLineup\nAnnounced starters: set()\nError reading injuries: no such table: injury_players\nInjury info: {}\n",
+        "Error reading lineups: no such column: startingLineup\nTraceback (most recent call last):\n  File \"/data/package/main.py\", line 225, in read_lineup_announcement\n    cursor = session.execute(\n             ^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: no such column: startingLineup\nAnnounced starters: set()\nError reading injuries: no such table: injury_players\nInjury info: {}\n"
+      ]
+    },
+    {
+      "id": "0b2a902c-dc8f-4322-8bf9-426c66dea8a9",
+      "kind": "full",
+      "status": "complete",
+      "hash": "2a494415272c6d7cef74b703b210ae0b68839b92af2c9ae01e8da57d5c30745a",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 279,
+          "hostPreparationMs": 54510,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 279,
+          "hostPreparationMs": 47202,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500506"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 279,
+          "hostPreparationMs": 51812,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 278,
+          "hostPreparationMs": 47083,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 276,
+          "hostPreparationMs": 46619,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 283,
+          "hostPreparationMs": 53611,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500525"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 281,
+          "hostPreparationMs": 53411,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500532"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 280,
+          "hostPreparationMs": 61022,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500534"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 282,
+          "hostPreparationMs": 54810,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500536"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 285,
+          "hostPreparationMs": 55636,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500545"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 284,
+          "hostPreparationMs": 58496,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500553"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 285,
+          "hostPreparationMs": 58150,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500555"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 282,
+          "hostPreparationMs": 55675,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500559"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 285,
+          "hostPreparationMs": 59280,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500568"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 296,
+          "hostPreparationMs": 58843,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500577"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 283,
+          "hostPreparationMs": 59360,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500580"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 289,
+          "hostPreparationMs": 60374,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500581"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 284,
+          "hostPreparationMs": 57010,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500592"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 285,
+          "hostPreparationMs": 60591,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500594"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 291,
+          "hostPreparationMs": 59567,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500597"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 285,
+          "hostPreparationMs": 58015,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500600"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 287,
+          "hostPreparationMs": 58603,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500015"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 293,
+          "hostPreparationMs": 63471,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500608"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 288,
+          "hostPreparationMs": 58829,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500017"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 296,
+          "hostPreparationMs": 58959,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500621"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 291,
+          "hostPreparationMs": 64582,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500625"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 290,
+          "hostPreparationMs": 59109,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500629"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 298,
+          "hostPreparationMs": 63501,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500637"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 290,
+          "hostPreparationMs": 64625,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500641"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 289,
+          "hostPreparationMs": 61024,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500645"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 288,
+          "hostPreparationMs": 64505,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500647"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 286,
+          "hostPreparationMs": 61237,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500653"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 295,
+          "hostPreparationMs": 65268,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500660"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 290,
+          "hostPreparationMs": 66362,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500664"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 289,
+          "hostPreparationMs": 64965,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500667"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 292,
+          "hostPreparationMs": 62798,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500673"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 292,
+          "hostPreparationMs": 65102,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500681"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 300,
+          "hostPreparationMs": 66373,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500686"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 296,
+          "hostPreparationMs": 63267,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500688"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 295,
+          "hostPreparationMs": 67957,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500689"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 290,
+          "hostPreparationMs": 64457,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500702"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 297,
+          "hostPreparationMs": 68657,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500707"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 301,
+          "hostPreparationMs": 65476,
+          "costUsd": 0
+        }
+      ],
+      "stderr": [
+        "History analyzed: 0 players from 35 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 7 players\n",
+        "History analyzed: 0 players from 34 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 36 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 34 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 35 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 35 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 8 players\n",
+        "History analyzed: 0 players from 37 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 36 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 36 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 38 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 7 players\n",
+        "History analyzed: 0 players from 37 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 3 players\n",
+        "History analyzed: 0 players from 39 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 2 players\n",
+        "History analyzed: 0 players from 37 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 38 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 40 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 3 players\n",
+        "History analyzed: 0 players from 38 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 39 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 2 players\n",
+        "History analyzed: 0 players from 41 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 3 players\n",
+        "History analyzed: 0 players from 39 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 40 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 42 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 2 players\n",
+        "History analyzed: 0 players from 40 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 43 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 41 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 41 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 7 players\n",
+        "History analyzed: 0 players from 42 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 44 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 42 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 7 players\n",
+        "History analyzed: 0 players from 43 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 45 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 7 players\n",
+        "History analyzed: 0 players from 43 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 7 players\n",
+        "History analyzed: 0 players from 44 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 46 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 45 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 44 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 47 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 46 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 3 players\n",
+        "History analyzed: 0 players from 45 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 48 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n",
+        "History analyzed: 0 players from 46 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 47 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 6 players\n",
+        "History analyzed: 0 players from 48 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 4 players\n",
+        "History analyzed: 0 players from 47 games\nLineups columns: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nNo lineup column found in: ['_row', 'evidence_id', 'source', 'available_at', 'author', 'title', 'url', 'text', 'segments', 'starters', 'references', 'provenance']\nAnnounced starters: 0 players\nInjury table: injuries, columns: ['_row', 'report_time', 'game_id', 'team_id', 'player_id', 'player_name', 'status', 'reason']\nInjury info: 5 players\n"
+      ]
+    }
+  ]
+}

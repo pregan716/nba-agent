@@ -1,0 +1,8 @@
+{
+  "version": "game-loop-v1",
+  "hypothesis": "A code-only system that adjusts the reference forecast by correcting systematic errors in minutes prediction, using referenceHistory to detect and fix biases per player.",
+  "entry": "main.py",
+  "training": [],
+  "artifacts": {"team_state": "team"},
+  "agents": {}
+}
