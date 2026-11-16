@@ -13,7 +13,7 @@ const injuryKeys = [
   "observed_state",
   "available_at",
 ];
-const sharedColumns = {
+export const sharedColumns = {
   schedule: [
     "game_id",
     "season",

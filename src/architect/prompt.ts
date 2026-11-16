@@ -83,7 +83,7 @@ Each call to run is a fresh Python process. Nothing in memory survives from one 
 - roster: a list of {"playerId", "inactive"} for every player the forecast must cover.
 - reference: tonight's reference forecast.
 - spread and total: the team's point spread and the game total at the scheduled start, or null.
-- referenceHistory: for each of this team's earlier released games this season, the reference forecast made before it, what each player actually did, and its errors.
+- referenceHistory: a list, oldest first, with one entry for each of this team's earlier released games this season: {"gameId", "forecast", "errors"}. "forecast" is the reference forecast made before that game, in the forecast format above. "errors" is a list with one row per player in that forecast: {"playerId", "played", "started", "actual", "playError", "startError", "conditionalMedianError"}. "actual" is what he did, {"minutes", "points", "rebounds", "assists", "fantasy_points"}, all zero if he did not play. playError is played minus p_play and startError is started minus p_start. conditionalMedianError is actual minus the reference's median for each quantity, or null if he did not play. A game whose result could not be used has an empty "errors" list and an "exclusion" reason.
 - scores: for each of this team's earlier games in this replay run, the released score of your system's forecast beside the reference's, player by player, with the box score. feedback is the entry for the previous game, or null.
 - artifacts: the current values of the artifacts this team may read.
 
@@ -123,7 +123,7 @@ A model fitted inside the loop, on data available before that game, is always al
 
 # Data
 
-There are two views of the data, and they are laid out differently.
+There are two views of the data: the one the system reads during a game, and the one you read while designing. The text evidence, injury reports and schedule have the same table and column names in both, so a query you work out against your view runs unchanged in the game sandbox. The game history has the same tables in both but is reached differently, and each view has a few tables the other lacks. Both differences are described below.
 
 ## What the system reads during a game
 
@@ -137,16 +137,24 @@ Game history is one SQLite database per completed game, for every NBA team in 20
 - player_stints: one row per continuous stretch on the floor, with period, start and end clock, duration, reasons, cumulative minutes and fouls at entry and exit, and the margin before and after. lineup_stints is the same for a team's five; matchup_stints has both fives.
 - events: one row per play-by-play event, with period, clock, kind, subtype, team, description, the score before and after, and both lineups before and after.
 
-nba_data.session() returns a SQLite connection to the tables that are not per game: player_profiles and player_reference (ids, names, positions, opening teams), player_season_stats, player_2024_25_summary, player_career_summary, injuries and injury_team_snapshots (the official injury reports), schedule, and the team's text evidence: posts (beat reporters), transcripts (the head coach's media sessions), lineups (starting-lineup announcements for the team and its opponents) and evidence (all three together). ctx is also on disk at /data/game.json.
+nba_data.session() returns a SQLite connection to the tables that are not per game. Six of them are shared with your view, with identical columns:
+
+- schedule (game_id, season, home_team_id, away_team_id, scheduled_tipoff).
+- posts (id, available_at, team_id, game_id, text, title, url, accountId): beat reporters' posts. game_id and title are usually null.
+- transcripts (id, available_at, team_id, game_id, text, title, readable, url): the head coach's media sessions. readable is the transcript with speakers and times.
+- lineups (id, available_at, team_id, game_id, text, scheduled_tipoff, source, startingLineup, starterIds, url): starting-lineup announcements. startingLineup is a JSON array of five names, and starterIds is the JSON array of their player ids in the same order, with null for a name that could not be matched. One game can have several announcements; filter by game_id and team_id and take the latest.
+- injury_players (game_id, team_id, player_name, status, reason, observed_state, available_at, player_id): the official injury report, one row per player per report. player_name is printed as "Last, First"; use player_id, which is null when the name could not be matched. Every report before the cutoff is kept, so take the latest available_at for the game and team.
+- injury_teams (game_id, team_id, player_name, status, reason, observed_state, available_at): one row per team per report, which records whether the team had submitted its report yet.
+
+The session also has tables your view does not: player_profiles and player_reference (ids, names, positions, opening teams), player_season_stats, player_2024_25_summary, player_career_summary, injuries and injury_team_snapshots (only the latest report, in a different layout), and evidence (posts, transcripts and lineups together, in a different layout). You cannot inspect these from data_python; if you want to use one, have a test run print its columns to stderr first. ctx is also on disk at /data/game.json.
 
 ## What you read while designing
 
 data_python runs Python against your own view: one SQLite file at /data/session.sqlite (sqlite3, or nba_data.session()). nba_data.table and nba_data.query find nothing here, because this view has no per-game files. It holds:
 
-- schedule (game_id, season, home_team_id, away_team_id, scheduled_tipoff).
-- The game-history tables listed above except games, for 2024-25 league-wide and for 2025-26 games involving a development team.
-- rosters (game_id, team_id, playerId, name) for the development teams. The three team ids in this table are your development teams.
-- injury_teams and injury_players, posts, transcripts and lineups for the development teams.
+- The six shared tables described above, with the same columns: schedule, and posts, transcripts, lineups, injury_players and injury_teams for the development teams. Here they cover the whole of your view instead of stopping at one game's cutoff, so restrict by available_at when you want to see what a game would have had.
+- The game-history tables listed above except games, with the same columns, for 2024-25 league-wide and for 2025-26 games involving a development team. In the game sandbox the same tables are reached through nba_data.table and nba_data.query, not through the session.
+- rosters (game_id, team_id, playerId, name) for the development teams, which the game sandbox does not have: there the roster is in ctx. The three team ids in this table are your development teams.
 - game_lines (game_id, team_id, scheduled_tipoff, spread, total): the spread and total at the scheduled start, from each development team's side, as the system receives them in ctx.
 - unavailable: games whose data could not be used, with the reason.
 
