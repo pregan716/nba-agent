@@ -35,6 +35,8 @@ The architect's SQLite `game_lines` table contains `game_id`, `team_id`, `schedu
 
 Filter lineup and injury rows by `game_id` and `team_id`. In `lineups`, `startingLineup` is a JSON array of player names. In `injury_players` and `injury_teams`, `available_at` is the printed report time. These tables retain earlier eligible observations. The game sandbox reads session tables through `nba_data.session()` and released shards through `nba_data.query()`.
 
+Development runs exclude Denver and Memphis from session evidence, including team-keyed player reference rows. The 14 games against development teams before the holdout remain on the session schedule, and attached evidence must precede both the replay cutoff and the attached game's tip. Released-game shards remain league-wide. Final evaluation uses the full pregame session evidence for the nominated run and both ablations.
+
 ## Training
 
 Declare Python filenames in the package's `training` list. Each defines `train(path)`, where `path` is a read-only SQLite database built by the training view. The only data mounted for this build are the 2024–25 training export and the submitted Python source. A script returns a JSON-serializable value or binary bytes. For example:
