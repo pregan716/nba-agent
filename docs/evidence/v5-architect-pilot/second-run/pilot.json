@@ -1,0 +1,1011 @@
+{
+  "iterations": [
+    {
+      "id": "34b56f37-f02c-4bd1-a775-5121c6eb046f",
+      "started": "2026-11-16 16:36:14",
+      "status": "full",
+      "usd": 3.4739287500000002,
+      "modelRequests": 55,
+      "toolCalls": {
+        "archive_read": 14,
+        "data_python": 16,
+        "document_edit": 3,
+        "document_list": 2,
+        "document_write": 7,
+        "hypotheses": 1,
+        "hypothesis_write": 1,
+        "iterations": 1,
+        "submit": 7,
+        "validate_package": 6
+      },
+      "tokens": {
+        "uncachedInput": 57,
+        "cacheRead": 3434625,
+        "cacheWrite": 147505,
+        "output": 33377
+      },
+      "submissions": [
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500503"
+            },
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500511"
+            }
+          ],
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "The system should produce valid forecasts and show some improvement over reference on minutes prediction, especially for players where the reference has been systematically biased.",
+          "hash": "053f100762f5a6379059fbaf1acab7bf8e01a1f2e2ec3559a1644de0127048f9"
+        },
+        {
+          "event": "review",
+          "id": "309dce4c-8c7d-4688-b8ad-b7199bc1278a",
+          "hash": "053f100762f5a6379059fbaf1acab7bf8e01a1f2e2ec3559a1644de0127048f9",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "c6aa0214-7291-4177-99c7-c591cc130e3f"
+        },
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500503"
+            },
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500511"
+            },
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500520"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500518"
+            }
+          ],
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "Should produce valid forecasts with minutes ratio below 1.0 and improved fantasy guardrail by scaling fantasy proportionally instead of recomputing.",
+          "hash": "6fbf782b87902be945ec1b2c9600ccd2ae857bc7324592d73d5d94d7a54f3dfd"
+        },
+        {
+          "event": "review",
+          "id": "b688b075-d018-41e1-a866-00a665fe1a39",
+          "hash": "6fbf782b87902be945ec1b2c9600ccd2ae857bc7324592d73d5d94d7a54f3dfd",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "484b17c7-d715-48e6-ad4d-06c1a10e4dd7"
+        },
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500503"
+            },
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500511"
+            },
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500520"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500518"
+            }
+          ],
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "Should produce minutes ratio below 1.0 with improved fantasy guardrail by not modifying fantasy/stats at all. Only modifying minutes percentiles and p_play/p_start.",
+          "hash": "69575eb2aa0379cdadc07b5212264610042e08761762a46cd79cbbaedafce0a3"
+        },
+        {
+          "event": "review",
+          "id": "2474f5ca-d2ba-4aaa-9fa7-d2e37f8e7f80",
+          "hash": "69575eb2aa0379cdadc07b5212264610042e08761762a46cd79cbbaedafce0a3",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "4bd296ba-9257-4d52-bc2a-1a5d7a33ee7c"
+        },
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500520"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500518"
+            }
+          ],
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "Same as before but with logging to see what adjustments are being made",
+          "hash": "473232d78c08e31a151506066dccdbbcf81d09b04f226b814c26782d0ff6f305"
+        },
+        {
+          "event": "review",
+          "id": "e64a54be-7b31-47a4-aa96-cd4d039fd924",
+          "hash": "473232d78c08e31a151506066dccdbbcf81d09b04f226b814c26782d0ff6f305",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "1816a329-b5ed-4417-b93e-02d4f407638c"
+        },
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500503"
+            },
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500511"
+            },
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500520"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500518"
+            }
+          ],
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "With tier-aware correction (less aggressive for core, more for fringe), expect minutes ratio below 0.98 and no guardrail issues.",
+          "hash": "777684e0b35dc7658e2b43128d159c59b2d14d772e03664f93c9ac1cb4e7b96d"
+        },
+        {
+          "event": "review",
+          "id": "8c1164cf-d749-449b-9101-b250a813ad74",
+          "hash": "777684e0b35dc7658e2b43128d159c59b2d14d772e03664f93c9ac1cb4e7b96d",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "c3ce933d-8294-4ddd-b31a-03a091c62924"
+        },
+        {
+          "event": "proposal",
+          "kind": "test",
+          "games": [
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500503"
+            },
+            {
+              "teamId": "1610612760",
+              "gameId": "0022500499"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500511"
+            },
+            {
+              "teamId": "1610612738",
+              "gameId": "0022500520"
+            },
+            {
+              "teamId": "1610612764",
+              "gameId": "0022500518"
+            }
+          ],
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "Clean simple approach: only adjust minutes/p_play/p_start from ref error history with 0.3 correction strength. No injury/lineup reading. Expect minutes ratio ~0.98, clean guardrails.",
+          "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745"
+        },
+        {
+          "event": "review",
+          "id": "28a409da-9345-4ff3-94f6-9ff178b6a17a",
+          "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "test",
+          "runId": "ff03c9ae-9bfe-4240-9296-e2a9ef538124"
+        },
+        {
+          "event": "proposal",
+          "kind": "full",
+          "hypothesis": "reference-error-correction",
+          "expectedEffect": "Minutes pinball ratio should be below 1.0 (around 0.98-0.99 based on test runs), with clean guardrails (fantasy = 1.0 exactly, play Brier below 1.0). The improvement comes from detecting and correcting systematic bias in the reference's minutes predictions for individual players.",
+          "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745"
+        },
+        {
+          "event": "review",
+          "id": "a80af568-46fc-4519-b992-f5ce091e3ba0",
+          "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745",
+          "verdict": "accept",
+          "reasons": []
+        },
+        {
+          "event": "decision",
+          "kind": "full",
+          "runId": "edaa911a-6b55-4218-a5ae-4e7609288072"
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "309dce4c-8c7d-4688-b8ad-b7199bc1278a",
+      "created": "2026-11-16 16:43:30",
+      "hash": "053f100762f5a6379059fbaf1acab7bf8e01a1f2e2ec3559a1644de0127048f9",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.02466,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "b688b075-d018-41e1-a866-00a665fe1a39",
+      "created": "2026-11-16 17:03:42",
+      "hash": "6fbf782b87902be945ec1b2c9600ccd2ae857bc7324592d73d5d94d7a54f3dfd",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.029625,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "2474f5ca-d2ba-4aaa-9fa7-d2e37f8e7f80",
+      "created": "2026-11-16 17:09:33",
+      "hash": "69575eb2aa0379cdadc07b5212264610042e08761762a46cd79cbbaedafce0a3",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.03533,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "e64a54be-7b31-47a4-aa96-cd4d039fd924",
+      "created": "2026-11-16 17:13:48",
+      "hash": "473232d78c08e31a151506066dccdbbcf81d09b04f226b814c26782d0ff6f305",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.03641,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "8c1164cf-d749-449b-9101-b250a813ad74",
+      "created": "2026-11-16 17:17:03",
+      "hash": "777684e0b35dc7658e2b43128d159c59b2d14d772e03664f93c9ac1cb4e7b96d",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.03284,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "28a409da-9345-4ff3-94f6-9ff178b6a17a",
+      "created": "2026-11-16 17:21:44",
+      "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.02371,
+      "findings": "[]",
+      "reasons": "[]"
+    },
+    {
+      "id": "a80af568-46fc-4519-b992-f5ce091e3ba0",
+      "created": "2026-11-16 17:25:58",
+      "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.02371,
+      "findings": "[]",
+      "reasons": "[]"
+    }
+  ],
+  "runs": [
+    {
+      "id": "c6aa0214-7291-4177-99c7-c591cc130e3f",
+      "kind": "test",
+      "status": "complete",
+      "hash": "053f100762f5a6379059fbaf1acab7bf8e01a1f2e2ec3559a1644de0127048f9",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 110,
+          "hostPreparationMs": 538645,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 108,
+          "hostPreparationMs": 268470,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 108,
+          "hostPreparationMs": 270212,
+          "costUsd": 0
+        }
+      ],
+      "stderr": ["", "", ""]
+    },
+    {
+      "id": "484b17c7-d715-48e6-ad4d-06c1a10e4dd7",
+      "kind": "test",
+      "status": "complete",
+      "hash": "6fbf782b87902be945ec1b2c9600ccd2ae857bc7324592d73d5d94d7a54f3dfd",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 117,
+          "hostPreparationMs": 42589,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 104,
+          "hostPreparationMs": 42869,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 106,
+          "hostPreparationMs": 43765,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 106,
+          "hostPreparationMs": 58704,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 108,
+          "hostPreparationMs": 56836,
+          "costUsd": 0
+        }
+      ],
+      "stderr": ["", "", "", "", ""]
+    },
+    {
+      "id": "4bd296ba-9257-4d52-bc2a-1a5d7a33ee7c",
+      "kind": "test",
+      "status": "complete",
+      "hash": "69575eb2aa0379cdadc07b5212264610042e08761762a46cd79cbbaedafce0a3",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 324,
+          "hostPreparationMs": 42835,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 328,
+          "hostPreparationMs": 43420,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 325,
+          "hostPreparationMs": 43459,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 327,
+          "hostPreparationMs": 42669,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 336,
+          "hostPreparationMs": 43474,
+          "costUsd": 0
+        }
+      ],
+      "stderr": ["", "", "", "", ""]
+    },
+    {
+      "id": "1816a329-b5ed-4417-b93e-02d4f407638c",
+      "kind": "test",
+      "status": "complete",
+      "hash": "473232d78c08e31a151506066dccdbbcf81d09b04f226b814c26782d0ff6f305",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 330,
+          "hostPreparationMs": 44116,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 336,
+          "hostPreparationMs": 43811,
+          "costUsd": 0
+        }
+      ],
+      "stderr": [
+        "Player 1627759: p_play 0.990->0.990, p_start 0.990->0.990, median_min 35.8->35.5\nPlayer 1628449: p_play 0.112->0.080, p_start 0.003->0.003, median_min 9.6->9.6\nPlayer 1629674: p_play 0.994->0.994, p_start 0.978->0.978, median_min 27.0->26.5\nPlayer 1630214: p_play 0.189->0.132, p_start 0.010->0.010, median_min 6.2->6.2\nPlayer 1630568: p_play 0.919->0.947, p_start 0.027->0.027, median_min 19.9->21.5\nPlayer 1630573: p_play 0.985->0.985, p_start 0.432->0.492, median_min 23.4->22.8\nPlayer 1631248: p_play 0.877->0.911, p_start 0.010->0.010, median_min 9.0->8.5\nPlayer 1641775: p_play 0.976->0.976, p_start 0.282->0.282, median_min 20.2->19.2\nPlayer 1642864: p_play 0.949->0.975, p_start 0.019->0.019, median_min 16.7->17.0\n",
+        "Player 1628963: p_play 0.940->0.956, p_start 0.346->0.314, median_min 26.9->26.4\nPlayer 1630264: p_play 0.775->0.732, p_start 0.030->0.030, median_min 14.7->12.8\nPlayer 1631103: p_play 0.946->0.961, p_start 0.115->0.115, median_min 22.1->22.1\nPlayer 1641774: p_play 0.894->0.842, p_start 0.151->0.151, median_min 23.3->22.4\nPlayer 1642259: p_play 0.972->0.972, p_start 0.972->0.972, median_min 30.0->29.6\nPlayer 1642358: p_play 0.942->1.000, p_start 0.179->0.179, median_min 21.6->21.8\nPlayer 1642848: p_play 0.966->0.966, p_start 0.846->0.966, median_min 30.0->30.3\n"
+      ]
+    },
+    {
+      "id": "c3ce933d-8294-4ddd-b31a-03a091c62924",
+      "kind": "test",
+      "status": "complete",
+      "hash": "777684e0b35dc7658e2b43128d159c59b2d14d772e03664f93c9ac1cb4e7b96d",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 334,
+          "hostPreparationMs": 42690,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 330,
+          "hostPreparationMs": 42855,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 327,
+          "hostPreparationMs": 43761,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 327,
+          "hostPreparationMs": 42860,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 325,
+          "hostPreparationMs": 42414,
+          "costUsd": 0
+        }
+      ],
+      "stderr": ["", "", "", "", ""]
+    },
+    {
+      "id": "ff03c9ae-9bfe-4240-9296-e2a9ef538124",
+      "kind": "test",
+      "status": "complete",
+      "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 111,
+          "hostPreparationMs": 41416,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 103,
+          "hostPreparationMs": 42560,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 105,
+          "hostPreparationMs": 42762,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 109,
+          "hostPreparationMs": 41986,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 106,
+          "hostPreparationMs": 42130,
+          "costUsd": 0
+        }
+      ],
+      "stderr": ["", "", "", "", ""]
+    },
+    {
+      "id": "edaa911a-6b55-4218-a5ae-4e7609288072",
+      "kind": "full",
+      "status": "complete",
+      "hash": "5b3a0b0c547df4749eb3a59e41a04b8bbd6c78ff2052db49ae669eafbfae4745",
+      "usd": 0,
+      "teamGames": [
+        {
+          "teamGame": ["1610612760", "0022500499"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 104,
+          "hostPreparationMs": 42369,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500503"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 109,
+          "hostPreparationMs": 42956,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500506"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 106,
+          "hostPreparationMs": 54571,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500511"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 105,
+          "hostPreparationMs": 42936,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500520"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 106,
+          "hostPreparationMs": 41976,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500518"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 104,
+          "hostPreparationMs": 42228,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500525"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 100,
+          "hostPreparationMs": 56044,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500532"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 120,
+          "hostPreparationMs": 63168,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500534"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 120,
+          "hostPreparationMs": 58191,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500536"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 113,
+          "hostPreparationMs": 58239,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500545"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 109,
+          "hostPreparationMs": 61496,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500553"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 112,
+          "hostPreparationMs": 61280,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500555"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 113,
+          "hostPreparationMs": 59168,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500559"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 110,
+          "hostPreparationMs": 62272,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500568"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 115,
+          "hostPreparationMs": 61922,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500577"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 117,
+          "hostPreparationMs": 62845,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500580"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 114,
+          "hostPreparationMs": 63227,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500581"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 122,
+          "hostPreparationMs": 60734,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500592"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 123,
+          "hostPreparationMs": 63706,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500594"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 114,
+          "hostPreparationMs": 63425,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500597"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 116,
+          "hostPreparationMs": 61199,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500600"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 121,
+          "hostPreparationMs": 61886,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500015"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 117,
+          "hostPreparationMs": 66209,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500608"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 114,
+          "hostPreparationMs": 62432,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500017"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 115,
+          "hostPreparationMs": 62269,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500621"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 124,
+          "hostPreparationMs": 68020,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500625"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 120,
+          "hostPreparationMs": 63621,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500629"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 125,
+          "hostPreparationMs": 66343,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500637"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 118,
+          "hostPreparationMs": 66826,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500641"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 120,
+          "hostPreparationMs": 64107,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500645"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 118,
+          "hostPreparationMs": 67284,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500647"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 118,
+          "hostPreparationMs": 65936,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500653"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 120,
+          "hostPreparationMs": 68702,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500660"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 121,
+          "hostPreparationMs": 70306,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500664"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 119,
+          "hostPreparationMs": 69005,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500667"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 120,
+          "hostPreparationMs": 66379,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500673"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 119,
+          "hostPreparationMs": 69333,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500681"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 122,
+          "hostPreparationMs": 70265,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612760", "0022500686"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 123,
+          "hostPreparationMs": 67780,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500688"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 123,
+          "hostPreparationMs": 72007,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500689"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 123,
+          "hostPreparationMs": 68043,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612738", "0022500702"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 122,
+          "hostPreparationMs": 72328,
+          "costUsd": 0
+        },
+        {
+          "teamGame": ["1610612764", "0022500707"],
+          "frozen": true,
+          "reason": null,
+          "wallClockMs": 124,
+          "hostPreparationMs": 69979,
+          "costUsd": 0
+        }
+      ],
+      "stderr": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  ]
+}

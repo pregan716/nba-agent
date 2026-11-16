@@ -1,0 +1,8 @@
+{
+  "version": "game-loop-v1",
+  "hypothesis": "Correct the reference forecast's systematic errors by analyzing its own error history. For each player, detect bias in minutes prediction and adjust percentiles accordingly. Also adjust p_play based on observed play rates vs predicted.",
+  "entry": "main.py",
+  "training": [],
+  "artifacts": {},
+  "agents": {}
+}
