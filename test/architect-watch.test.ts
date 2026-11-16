@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -105,6 +106,88 @@ test("watcher stops a full-size run on repeated agent failures", (t) => {
   assert.equal(inspectPool(p.root, limits).stop, null);
   event("agent_error", { message: "x" });
   assert.match(inspectPool(p.root, limits).stop!, /3 failed agent calls/);
+});
+
+test("watcher stops on a run that failed since the snapshot, of any kind, and ignores earlier failures", (t) => {
+  const p = pool(t);
+  p.run("old", "full", "failed", 2);
+  const known = new Set(inspectPool(p.root, limits).runs);
+  assert.deepEqual([...known], ["old"]);
+  assert.equal(inspectPool(p.root, limits, known).stop, null);
+  // Started and failed between two polls: never seen running.
+  p.run("new", "test", "failed", 0);
+  assert.equal(inspectPool(p.root, limits).stop, null);
+  assert.match(
+    inspectPool(p.root, limits, known).stop!,
+    /The test run new failed/,
+  );
+});
+
+const watcher = (...args: string[]) =>
+  spawnSync("npx", ["tsx", "scripts/pilot-watch.ts", ...args], {
+    encoding: "utf8",
+  });
+function victim(t: test.TestContext) {
+  const child = spawn("sleep", ["60"], { detached: true, stdio: "ignore" });
+  t.after(() => child.kill("SIGKILL"));
+  const gone = new Promise<void>((resolve) =>
+    child.once("exit", () => resolve()),
+  );
+  return { pid: String(child.pid), gone };
+}
+
+test("watcher script refuses bad arguments before a run starts and takes a snapshot", (t) => {
+  const p = pool(t);
+  p.run("old", "full", "failed", 2);
+  assert.notEqual(watcher(p.root, "--max-usd=abc", "--snapshot").status, 0);
+  assert.notEqual(watcher(p.root, "--snapshot").status, 0);
+  const snapshot = watcher(p.root, "--max-usd=5", "--snapshot");
+  assert.equal(snapshot.status, 0);
+  assert.deepEqual(JSON.parse(snapshot.stdout), ["old"]);
+});
+
+test("watcher script stops the run when it cannot monitor it", async (t) => {
+  const p = pool(t);
+  const known = join(p.root, "known.json");
+  writeFileSync(known, "[]");
+  // No snapshot file given: the watcher fails, and takes the run with it.
+  const first = victim(t);
+  assert.notEqual(
+    watcher(p.root, "--max-usd=5", "--pid=" + first.pid).status,
+    0,
+  );
+  await first.gone;
+  // The pool cannot be read: bounded retries, then the run is stopped.
+  writeFileSync(join(p.root, "architect.sqlite"), "not a database");
+  const second = victim(t);
+  const unreadable = watcher(
+    p.root,
+    "--max-usd=5",
+    "--pid=" + second.pid,
+    "--known=" + known,
+    "--every=0.05",
+    "--max-read-failures=2",
+  );
+  assert.equal(unreadable.status, 4);
+  assert.match(unreadable.stdout, /Pool unreadable 2 times in a row/);
+  await second.gone;
+});
+
+test("watcher script stops the run on a newly failed evaluation and exits 3", async (t) => {
+  const p = pool(t);
+  const known = join(p.root, "known.json");
+  writeFileSync(known, "[]");
+  p.run("new", "full", "failed", 0);
+  const run = victim(t);
+  const result = watcher(
+    p.root,
+    "--max-usd=5",
+    "--pid=" + run.pid,
+    "--known=" + known,
+  );
+  assert.equal(result.status, 3);
+  assert.match(result.stdout, /The full run new failed/);
+  await run.gone;
 });
 
 test("an operator restriction refuses other submission kinds and leaves the iteration open", async (t) => {

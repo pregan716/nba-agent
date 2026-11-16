@@ -21,7 +21,19 @@ The host was at commit `3d230c8`. Before the pilot, the full suite passed there 
 - **Game clock.** The configuration used at most 0.3 seconds of its 45 minutes per team-game. Host preparation, now recorded separately (SPO-917), was 47 to 69 seconds per team-game in the full evaluation.
 - **Watcher.** Each iteration ran under `scripts/pilot-watch.ts` with a spend ceiling. It never stopped a run.
 
-The brief asks for two iterations. A third was added, with the user's approval, so the first could be limited to a test run.
+## Scope against SPO-907
+
+The issue asks for a five-game test run first, then two iterations each ending in a full evaluation. The pilot differs in three ways:
+
+| SPO-907                       | What ran                                                                                              | Decided by                                                                |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Two iterations                | Three: a third was added so the first could be limited to a test run                                  | The user, before launch                                                   |
+| First test on five team-games | First test on two team-games                                                                          | The architect, which chooses the games; the operator did not require five |
+| Two full evaluations          | One. Iteration 2, unrestricted, ended in a second test run, and the approval covered three iterations | Not decided: outstanding                                                  |
+
+The second full evaluation is outstanding, not waived. The user has not accepted one full evaluation as the revised scope. Running it on the pilot's configuration as it stands would repeat a design that could not read its data, so it is better spent as a further pilot iteration with the fixes in place; that needs a fresh approval of the spend (see [Open for the user](#open-for-the-user)).
+
+The watcher as it ran also fell short of the issue's "any infrastructure failure": it would have missed an evaluation that failed between two polls, and the launcher did not stop the run if the watcher itself failed. Neither happened in the pilot. Both were fixed in review of this PR, with the launcher's exit status.
 
 ## The $30 cap
 
@@ -79,13 +91,14 @@ Two things that were choices, not defects:
 
 - No configuration with agents ran in a full evaluation, so agent spend, the per-game dollar limit and agent failures were exercised only by the two-game check.
 - No repeat, check or nomination was submitted, and no submission was rejected by the reviewer.
+- The watcher never had to stop a run, so its stop path was exercised only by tests.
 - The fixes above were made after the pilot. No architect iteration has run with them.
 
 ## Open for the user
 
 - **Starting point of the development run.** The pilot's archive, notes and draft are in the pilot's pool, not the development pool. The development run can start empty, or from the pilot's draft and notes. Starting empty keeps the run clean of a design built on a broken view.
 - **Prompt caching for the architect.** See [The $30 cap](#the-30-cap).
-- **Whether to run one more pilot iteration** with the fixes before the development run starts.
+- **The outstanding second full evaluation.** Either fund one more pilot iteration with the fixes, ending in a full evaluation (up to about $30 for the architect plus up to about $85 if the configuration uses agents), or accept one full evaluation as the pilot's scope. SPO-907 stays open until one of these is chosen.
 
 ## Evidence files
 

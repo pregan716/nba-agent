@@ -1,8 +1,10 @@
 // Read-only inspection of a pool directory while an architect iteration runs
 // (SPO-907). The pilot's watcher polls this and stops the run on the first
 // team-game of a full-size evaluation with no forecast, on repeated agent
-// failures, or on spend. Test runs are left alone: showing the architect a
-// failing configuration is what a test run is for.
+// failures, on an evaluation that failed since the watcher started, or on
+// spend. A test run's missing forecasts are left alone: showing the architect
+// a failing configuration is what a test run is for. A failed run of any kind
+// is different: the replay itself threw, which is an infrastructure failure.
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -41,7 +43,14 @@ function recordSpend(db: DatabaseSync) {
   return [...holds.values()].reduce((s, n) => s + n, 0);
 }
 
-export function inspectPool(root: string, limits: WatchLimits) {
+/** `known` holds the run ids that existed before this invocation started.
+ * A run outside it that has failed stops the watcher, even if it started and
+ * failed between two polls. Without `known`, failed runs are history. */
+export function inspectPool(
+  root: string,
+  limits: WatchLimits,
+  known?: ReadonlySet<string>,
+) {
   const architectUsd =
     read(join(root, "architect.sqlite"), (db) =>
       usd(
@@ -72,12 +81,14 @@ export function inspectPool(root: string, limits: WatchLimits) {
     usd: number;
   }[] = [];
   for (const run of runs) {
-    if (run.status !== "running") {
-      evaluationUsd += usd(run.charge);
-      continue;
-    }
     const id = String(run.id),
       kind = String(run.kind);
+    if (run.status !== "running") {
+      evaluationUsd += usd(run.charge);
+      if (run.status === "failed" && known && !known.has(id))
+        stop ??= `The ${kind} run ${id} failed`;
+      continue;
+    }
     const state = read(
       join(root, "development", id, "record.sqlite"),
       (db) => ({
@@ -121,5 +132,13 @@ export function inspectPool(root: string, limits: WatchLimits) {
   const totalUsd = architectUsd + reviewerUsd + evaluationUsd;
   if (totalUsd > limits.maxUsd)
     stop ??= `Spend $${totalUsd.toFixed(2)} is over the $${limits.maxUsd} limit`;
-  return { stop, totalUsd, architectUsd, reviewerUsd, evaluationUsd, active };
+  return {
+    stop,
+    totalUsd,
+    architectUsd,
+    reviewerUsd,
+    evaluationUsd,
+    active,
+    runs: runs.map((r) => String(r.id)),
+  };
 }
