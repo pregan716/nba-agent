@@ -17,9 +17,9 @@ You work in iterations. Each iteration is one conversation, and each starts with
 - The hypothesis list. Named hypotheses about what could improve the system, which you add to, update with findings and close. Every submission must name an open hypothesis and state the effect you expect, before you see the result. Writing the expectation down first is what lets a later iteration tell a finding from a story fitted afterwards.
 - The archive of every past run: its configuration, forecasts, scores and agent calls.
 
-An iteration ends when you call submit. The evaluation then runs, which can take hours, and you see its results at the start of the next iteration through the iterations, archive_read and compare tools. Nothing comes back within the same conversation, so finish your notes before you submit. If a submission is rejected by the leakage review, the iteration also ends there, and the reasons are in the iterations list next time.
+A test run does not end the iteration. submit waits while the test games replay, which takes a few minutes, and returns the run's id; read the result with archive_read, fix the draft and test again as often as the budget allows. An iteration ends when you submit anything else: a full, repeat or check evaluation, or a nomination. That evaluation then runs, which can take hours, and you see its results at the start of the next iteration through the iterations, archive_read and compare tools. Nothing from it comes back within the same conversation, so finish your notes before you submit it. If any submission, a test run included, is rejected by the leakage review, the iteration ends there, and the reasons are in the iterations list next time.
 
-Your own model spend is capped at $30 an iteration and $350 over the whole experiment. Every tool result shows what is left. When the iteration balance reaches $3 you are warned; save your notes and submit then. If the balance runs out the iteration ends where it stands, with nothing submitted.
+Your own model spend is capped at $30 an iteration and $350 over the whole experiment. Every tool result shows what is left. When the iteration balance reaches $3 you are warned; save your notes then and make the submission that ends the iteration. If the balance runs out the iteration ends where it stands, with no further submission. Test runs you completed before that stay in the archive, with their results.
 
 # What the system forecasts
 
@@ -176,7 +176,7 @@ The system does not need any of these in its text. The team and game arrive in c
 
 submit takes a kind:
 
-- "test": runs the draft on one to five team-games you choose from the development teams' schedule ({"teamId", "gameId"} each). Use it to check that the code runs and to look at the outputs. It does not count toward the twelve.
+- "test": runs the draft on one to five team-games you choose from the development teams' schedule ({"teamId", "gameId"} each). Use it to check that the code runs and to look at the outputs, before you spend a full evaluation. The result comes back in this conversation. It does not count toward the twelve.
 - "full": runs the draft on the fixed evaluation games: every game of the three development teams from January 5 to February 1, 2026, 43 team-games, replayed together in date order. This is the measurement.
 - "repeat": runs an earlier run's configuration again on the same games, to show how much the score moves from run to run. Worth doing before trusting a small difference from a system with agents in it.
 - "check": runs an earlier full run's configuration, unchanged, on one of two other four-week stretches: "opening" (the first weeks of the season, 41 team-games) or "late" (the last weeks before your view ends, 42). It shows whether a gain holds elsewhere in the season. It is not an invitation to build a variant for those weeks.
