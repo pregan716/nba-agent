@@ -1,3 +1,4 @@
+import { latestPosts } from "./posts.js";
 import { Temporal } from "@js-temporal/polyfill";
 import { mkdtemp, mkdir, rename, rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -19,7 +20,7 @@ import { sharedBatch } from "./shared-tables.js";
 type ViewSource = {
   gameLines: FiveTeamData["gameLines"];
   games: RecordEnvelope[];
-  data: Pick<FiveTeamData["data"], "columns" | "exportHistory">;
+  data: Pick<FiveTeamData["data"], "columns" | "exportHistory" | "identities">;
   corpus: { injuries: Pick<FiveTeamData["corpus"]["injuries"], "partitions"> };
   evidence: Pick<FiveTeamData["evidence"][number], "teamId" | "evidence">[];
   rosters: ReadonlyMap<
@@ -77,7 +78,7 @@ export async function* viewBatches(
     selected.filter((g) => g.data.season === "2025-26").map((g) => [g.id, g]),
   );
   const games = new Map(selected.map((g) => [g.id, g]));
-  yield sharedBatch("schedule", selected);
+  yield sharedBatch("schedule", selected, data.data.identities);
   if (view === "architect") {
     const gameLines = await data.gameLines(cutoff);
     yield {
@@ -151,7 +152,7 @@ export async function* viewBatches(
     .toString();
   for (const kind of ["teams", "players"] as const) {
     const table = kind === "teams" ? "injury_teams" : "injury_players";
-    yield sharedBatch(table, []);
+    yield sharedBatch(table, [], data.data.identities);
     for await (const batch of data.corpus.injuries.partitions(kind, day)) {
       signal.throwIfAborted();
       yield sharedBatch(
@@ -167,11 +168,13 @@ export async function* viewBatches(
             before(r.availableAt, g.data.scheduled_tipoff)
           );
         }),
+        data.data.identities,
       );
     }
   }
   for (const kind of ["posts", "transcripts", "lineups"] as const)
-    yield sharedBatch(kind, []);
+    yield sharedBatch(kind, [], data.data.identities);
+  const posts: RecordEnvelope[] = [];
   for (const team of data.evidence.filter((e) =>
     developmentIds.has(e.teamId),
   )) {
@@ -187,31 +190,31 @@ export async function* viewBatches(
         };
     for (const kind of ["posts", "transcripts", "lineups"] as const) {
       const rows = await team.evidence(kind, cutoff);
-      yield sharedBatch(
-        kind,
-        rows.filter((r) => {
-          if (
-            r.data.team_id !== team.teamId ||
-            !before(r.availableAt, cutoff) ||
-            (r.eventTime && !before(r.eventTime, cutoff))
-          )
-            return false;
-          const id = r.data.game_id;
-          if (id === undefined) return kind !== "lineups";
-          const game = currentGames.get(id);
-          return (
-            game &&
-            [game.data.home_team_id, game.data.away_team_id].includes(
-              team.teamId,
-            ) &&
-            (kind !== "lineups" ||
-              before(r.availableAt, game.data.scheduled_tipoff))
-          );
-        }),
-        currentGames,
-      );
+      const eligible = rows.filter((r) => {
+        if (
+          r.data.team_id !== team.teamId ||
+          !before(r.availableAt, cutoff) ||
+          (r.eventTime && !before(r.eventTime, cutoff))
+        )
+          return false;
+        const id = r.data.game_id;
+        if (id === undefined) return kind !== "lineups";
+        const game = currentGames.get(id);
+        return (
+          game &&
+          [game.data.home_team_id, game.data.away_team_id].includes(
+            team.teamId,
+          ) &&
+          (kind !== "lineups" ||
+            before(r.availableAt, game.data.scheduled_tipoff))
+        );
+      });
+      if (kind === "posts") posts.push(...eligible);
+      else
+        yield sharedBatch(kind, eligible, data.data.identities, currentGames);
     }
   }
+  yield sharedBatch("posts", latestPosts(posts), data.data.identities);
 }
 /** Publish a fresh, complete directory. The caller mounts it read-only. */
 export async function writeView(

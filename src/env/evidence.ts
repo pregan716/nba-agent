@@ -1,7 +1,8 @@
 import { stemmer } from "stemmer";
 import { Temporal } from "@js-temporal/polyfill";
 import type { RecordEnvelope } from "../data/contracts.js";
-import type { Identities } from "../data/identity.js";
+import { latestPosts, postUrl } from "../data/posts.js";
+import { lineupPlayerIds, type Identities } from "../data/identity.js";
 import { digest } from "../runner/config.js";
 import {
   SessionError,
@@ -74,18 +75,13 @@ export class EvidenceIndex {
       )
         addName(p.data.full_name, p.data.player_id);
 
-    const posts = new Map<string, RecordEnvelope>();
-    for (const r of records.filter((r) => r.source === "posts")) {
-      const key = JSON.stringify([r.data.accountId, r.data.postId]);
-      const previous = posts.get(key);
-      if (!previous || cmp(previous, r) < 0) posts.set(key, r);
-    }
+    const posts = latestPosts(records.filter((r) => r.source === "posts"));
     const selected = [
       ...records.filter((r) => r.source !== "posts"),
-      ...posts.values(),
+      ...posts,
     ].sort(cmp);
     const postIds = new Map<string, string[]>();
-    for (const r of posts.values())
+    for (const r of posts)
       postIds.set(r.data.postId, [
         ...(postIds.get(r.data.postId) ?? []),
         evidenceId(r),
@@ -130,20 +126,17 @@ export class EvidenceIndex {
               ? nullable(d.source)
               : null,
         title: source === "transcripts" ? nullable(d.title) : null,
-        url:
-          source === "posts"
-            ? `https://x.com/i/status/${encodeURIComponent(d.postId)}`
-            : nullable(d.url),
+        url: source === "posts" ? postUrl(d.postId) : nullable(d.url),
         text,
         segments,
         starters:
           source === "lineups"
-            ? d.startingLineup.map((name: string, index: number) => ({
-                id:
-                  d.starterIds?.[index] ??
-                  ids.resolve("player", "lineup-name", name),
-                name,
-              }))
+            ? lineupPlayerIds(
+                ids,
+                d.startingLineup,
+                d.team_id,
+                d.starterIds,
+              ).map((id, i) => ({ id, name: d.startingLineup[i] }))
             : null,
         references:
           source === "posts"
@@ -203,7 +196,7 @@ export class EvidenceIndex {
         ...(Array.isArray(d.player_ids)
           ? d.player_ids.filter((id: unknown) => typeof id === "string")
           : []),
-        ...(result.starters ?? []).map((p) => p.id),
+        ...(result.starters ?? []).flatMap((p) => (p.id ? [p.id] : [])),
       ]);
       this.#strongPlayers.set(
         result.evidence_id,

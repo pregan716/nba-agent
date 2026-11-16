@@ -108,6 +108,7 @@ for (const view of ["architect", "training"] as const)
           };
         },
         data: {
+          identities: fixtureCorpus().source.identities,
           async columns() {
             return [{ name: "text", description: "marker" }];
           },
@@ -248,6 +249,18 @@ for (const view of ["architect", "training"] as const)
 test("architect and game exports agree on every shared SQL schema and pregame evidence rows", async (t) => {
   const f = fixtureCorpus();
   const { BOS } = teamIds;
+  const lineupNames = ["Unmapped Starter", "Fixture Player"];
+  f.records.lineups[0].data.startingLineup = lineupNames;
+  const unknown = structuredClone(f.records.injuries[0]);
+  unknown.id = "unknown-injury";
+  unknown.data.player_name = "Unmapped, Player";
+  // A source payload cannot supply the answer for an unmapped name.
+  unknown.data.player_id = "untrusted-id";
+  const injuries = f.source.injuries;
+  f.source.injuries = async function* (kind) {
+    yield* injuries(kind);
+    if (kind === "players") yield [unknown];
+  };
   const post = f.records.posts[0];
   f.records.posts.push({
     ...post,
@@ -333,13 +346,21 @@ test("architect and game exports agree on every shared SQL schema and pregame ev
   };
   const view = open(join(viewDir, "session.sqlite")),
     sandbox = open(join(gameDir, "session.sqlite"));
-  assert.deepEqual(
-    sandbox
-      .prepare("SELECT text FROM posts")
-      .all()
-      .map((r) => r.text),
-    [post.data.text],
-  );
+  for (const db of [view, sandbox]) {
+    assert.deepEqual(
+      db
+        .prepare("SELECT text FROM posts WHERE url=?")
+        .all("https://x.com/i/status/" + post.data.postId)
+        .map((r) => r.text),
+      [post.data.text],
+    );
+    assert.equal(
+      db
+        .prepare("SELECT player_id FROM injury_players WHERE player_name=?")
+        .get(unknown.data.player_name)?.player_id,
+      null,
+    );
+  }
   const shards = await readdir(join(gameDir, "games"));
   assert.equal(shards.length, 1);
   const path = join(dir, "prior.sqlite");
@@ -380,13 +401,13 @@ test("architect and game exports agree on every shared SQL schema and pregame ev
   for (const [table, columns, expected] of [
     [
       "lineups",
-      "startingLineup, scheduled_tipoff",
-      [JSON.stringify(["Fixture Player"]), tip],
+      "startingLineup, starterIds, scheduled_tipoff",
+      [JSON.stringify(lineupNames), JSON.stringify([null, "player"]), tip],
     ],
     [
       "injury_players",
-      "player_name, status, reason",
-      ["Player, Fixture", "Questionable", "Fixture reason"],
+      "player_name, player_id, status, reason",
+      ["Player, Fixture", "player", "Questionable", "Fixture reason"],
     ],
     ["injury_teams", "observed_state", ["players_listed"]],
   ] as const) {
@@ -395,7 +416,9 @@ test("architect and game exports agree on every shared SQL schema and pregame ev
       columns +
       " from " +
       table +
-      " where game_id=? and team_id=? order by available_at";
+      " where game_id=? and team_id=?" +
+      (table === "injury_players" ? " and player_id is not null" : "") +
+      " order by available_at";
     const rows = view.prepare(sql).all("current", BOS);
     assert.deepEqual(rows.map(Object.values), [expected]);
     assert.deepEqual(sandbox.prepare(sql).all("current", BOS), rows);
