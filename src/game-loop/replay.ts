@@ -69,6 +69,26 @@ type Receipt = {
 };
 type GameScore = ReturnType<typeof scoreGame>;
 type Score = GameScore | { gameId: string; status: "excluded"; reason: string };
+/** One entry of ctx.referenceHistory. The architect prompt documents these keys. */
+export function referenceEntry(
+  gameId: string,
+  forecast: Forecast,
+  outcome: Parameters<typeof releasedErrors>[1] | string,
+  teamId?: string,
+): {
+  gameId: string;
+  forecast: Forecast;
+  errors: ReturnType<typeof releasedErrors>;
+  exclusion?: string;
+} {
+  return typeof outcome === "string"
+    ? { gameId, forecast, errors: [], exclusion: outcome }
+    : {
+        gameId,
+        forecast,
+        errors: releasedErrors({ gameId, forecast }, outcome, teamId),
+      };
+}
 export async function replay(options: {
   root: string;
   config: RunConfig;
@@ -161,23 +181,20 @@ export async function replay(options: {
     let result: Score | undefined;
     try {
       const outcome = await source.outcomes(g, cutoff);
-      const referenceRecord = { gameId: g.gameId, forecast: p.reference };
-      priorReferences.set(id, {
-        ...referenceRecord,
-        errors: releasedErrors(referenceRecord, outcome, g.teamId),
-      });
+      priorReferences.set(
+        id,
+        referenceEntry(g.gameId, p.reference, outcome, g.teamId),
+      );
       if (r)
         result = scoreGame(r.pre, r.frozen, r.reference, outcome, r, g.teamId);
     } catch (error) {
       if (!(error instanceof ExcludedOutcome) || error.gameId !== g.gameId)
         throw error;
       result = { gameId: g.gameId, status: "excluded", reason: error.reason };
-      priorReferences.set(id, {
-        gameId: g.gameId,
-        forecast: p.reference,
-        errors: [],
-        exclusion: error.reason,
-      });
+      priorReferences.set(
+        id,
+        referenceEntry(g.gameId, p.reference, error.reason),
+      );
     }
     if (r && result) {
       scores.set(id, result);
