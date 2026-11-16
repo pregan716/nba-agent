@@ -212,6 +212,7 @@ Status: budgets at the level of a full replay run are Agreed in form (Nov 14, 20
 - **The cap on full evaluations matters as much as the dollars.** Each evaluation on the same games is another chance to fit them by luck.
 - **When a run's budget is exhausted**, the remaining team-games are scored on the reference projection and flagged.
 - **The architect pilot** runs two iterations before the development run, to check the whole path end to end and to report how the $30 cap behaves.
+- **After the pilot** (Agreed Nov 16, 2026). The architect's requests use prompt caching, and the $30 and $350 caps count what is actually charged. The development run starts from an empty pool: no draft, notes, hypotheses or archive carry over from the pilot.
 - The total is about $2,000. Fewer full evaluations is the cheapest way to cut it: eight instead of twelve saves about $320.
 
 ## Teams

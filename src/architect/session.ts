@@ -62,7 +62,9 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
         {
           ...streamOptions,
           apiKey: key,
-          cacheRetention: "none",
+          // The conversation is re-read on every request, so its prefix is
+          // cached (five-minute retention; user decision after the pilot).
+          cacheRetention: "short",
           maxRetries: 0,
           maxTokens: 32000,
           async onPayload(raw) {
@@ -73,7 +75,9 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
             );
             if (!Number.isSafeInteger(tokens) || tokens < 0)
               throw Error("Invalid architect input token count");
-            const input = tokens * model.cost.input;
+            // Reserve at the cache-write price, the dearest an input token can
+            // be. Reads and uncached tokens settle for less.
+            const input = tokens * model.cost.cacheWrite;
             const max = Math.min(
               req.max_tokens,
               Math.floor(

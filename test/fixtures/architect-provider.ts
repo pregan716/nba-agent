@@ -19,6 +19,8 @@ export async function architectProvider() {
     streamError?: string;
     inputTokens?: number;
     outputTokens?: number;
+    // Report the input tokens as written to the prompt cache.
+    cacheWrite?: boolean;
   }[] = [];
   const failures = { count: [] as number[], model: [] as number[] };
   const server = createServer(async (req, res) => {
@@ -70,7 +72,13 @@ export async function architectProvider() {
         type: "message",
         role: "assistant",
         content: [],
-        usage: { input_tokens: step.inputTokens ?? 10, output_tokens: 0 },
+        usage: step.cacheWrite
+          ? {
+              input_tokens: 0,
+              cache_creation_input_tokens: step.inputTokens ?? 10,
+              output_tokens: 0,
+            }
+          : { input_tokens: step.inputTokens ?? 10, output_tokens: 0 },
         stop_reason: null,
       },
     });

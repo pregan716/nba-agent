@@ -759,13 +759,21 @@ print("filtered data verified")`,
     },
     // Near the iteration cap, force a warning on an ordinary tool result and
     // then use the exact remaining amount in the last fixture response.
-    { inputTokens: 5599900, outputTokens: 10, calls: [call("hypotheses", {})] },
+    // Both large turns report their input as cache writes, the price the
+    // reservation assumes, so the last one can use the balance exactly.
+    {
+      inputTokens: 4479900,
+      outputTokens: 10,
+      cacheWrite: true,
+      calls: [call("hypotheses", {})],
+    },
   );
   const chargedFirstTurn = 10 * 5 + 3 * 25;
-  const remainingMicro = 30e6 - chargedFirstTurn - (5599900 * 5 + 10 * 25);
+  const remainingMicro = 30e6 - chargedFirstTurn - (4479900 * 6.25 + 10 * 25);
   provider.steps.push({
-    inputTokens: (remainingMicro - 25) / 5,
+    inputTokens: (remainingMicro - 25) / 6.25,
     outputTokens: 1,
+    cacheWrite: true,
   });
   const second = await architectIteration(host, provider.options);
   assert.equal(second.status, "budget");
@@ -792,6 +800,13 @@ print("filtered data verified")`,
   assert.ok(
     provider.requests.every((r) => r.stream && r.model === "claude-opus-4-6"),
   );
+  // Every request marks its system prompt and its latest message for caching.
+  for (const r of provider.requests) {
+    const marks = JSON.stringify(r).match(
+      /"cache_control":\{"type":"ephemeral"\}/g,
+    );
+    assert.ok(marks && marks.length >= 2, "request is not cached");
+  }
   assert.equal(db.prepare("SELECT count(*) AS n FROM documents").get()?.n, 3);
   assert.equal(db.prepare("SELECT count(*) AS n FROM hypotheses").get()?.n, 1);
   host.review = {
@@ -878,7 +893,8 @@ print("filtered data verified")`,
   // The HTTP 529, disconnect and streamed overload each retain a hold. The rate limit
   // released its reservation and the token count never charged the ledger.
   assert.equal(ledger.spent, 2 * (10 * 5 + 3 * 25) * 1000);
-  const hold = (10 * 5 + 32000 * 25) * 1000;
+  // Holds are taken at the cache-write price for input.
+  const hold = (10 * 6.25 + 32000 * 25) * 1000;
   assert.equal(ledger.held, 3 * hold);
 
   for (const streamError of [
