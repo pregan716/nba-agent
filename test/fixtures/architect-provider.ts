@@ -18,6 +18,9 @@ export async function architectProvider() {
     disconnected?: boolean;
     streamError?: string;
     inputTokens?: number;
+    // What the token-count endpoint answers for this turn, when it should
+    // differ from the billed inputTokens.
+    preflightTokens?: number;
     outputTokens?: number;
     // Report the input tokens as written to the prompt cache.
     cacheWrite?: boolean;
@@ -43,7 +46,12 @@ export async function architectProvider() {
     }
     if (count) {
       res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify({ input_tokens: steps[0]?.inputTokens ?? 10 }));
+      res.end(
+        JSON.stringify({
+          input_tokens:
+            steps[0]?.preflightTokens ?? steps[0]?.inputTokens ?? 10,
+        }),
+      );
       return;
     }
     const request = JSON.parse(body);

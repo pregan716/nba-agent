@@ -757,27 +757,32 @@ print("filtered data verified")`,
         call("budget", {}),
       ],
     },
-    // Near the iteration cap, force a warning on an ordinary tool result and
-    // then use the exact remaining amount in the last fixture response.
-    // Both large turns report their input as cache writes, the price the
-    // reservation assumes, so the last one can use the balance exactly.
+    // Near the iteration cap, force a warning on an ordinary tool result. The
+    // turn reports its input as cache writes, the price the hold assumes, and
+    // leaves five cents.
     {
-      inputTokens: 4479900,
+      inputTokens: 4791940,
       outputTokens: 10,
       cacheWrite: true,
       calls: [call("hypotheses", {})],
     },
+    // The preflight count says this turn is tiny, and five cents would cover
+    // it. Its bill would not be: the conversation is tens of kilobytes. The
+    // hold is sized from the request, so the turn is never sent and the cap
+    // holds. Sized from the count, it was sent and overran the $30.
+    {
+      preflightTokens: 10,
+      inputTokens: 20000,
+      cacheWrite: true,
+      calls: [call("budget", {})],
+    },
   );
-  const chargedFirstTurn = 10 * 5 + 3 * 25;
-  const remainingMicro = 30e6 - chargedFirstTurn - (4479900 * 6.25 + 10 * 25);
-  provider.steps.push({
-    inputTokens: (remainingMicro - 25) / 6.25,
-    outputTokens: 1,
-    cacheWrite: true,
-  });
   const second = await architectIteration(host, provider.options);
   assert.equal(second.status, "budget");
-  assert.equal(second.budget.sessionUsd, 0);
+  assert.equal(provider.steps.length, 1);
+  provider.steps.length = 0;
+  assert.equal(provider.requests.length, before + 2);
+  assert.equal(Math.round(second.budget.sessionUsd * 1e6), 50000);
   assert.ok(
     !JSON.stringify(provider.requests[before].messages).includes(
       "PRIVATE_ITERATION_NOTE",
@@ -794,7 +799,13 @@ print("filtered data verified")`,
     !provider.requests[before].tools.some((tool) => tool.name === "final"),
   );
   assert.match(
-    JSON.stringify(provider.requests.at(-1)!.messages),
+    String(
+      db
+        .prepare(
+          "SELECT data FROM events WHERE iteration=? AND kind='tool_result' ORDER BY seq DESC",
+        )
+        .get(second.iteration)!.data,
+    ),
     /Budget low/,
   );
   assert.ok(
@@ -893,9 +904,14 @@ print("filtered data verified")`,
   // The HTTP 529, disconnect and streamed overload each retain a hold. The rate limit
   // released its reservation and the token count never charged the ledger.
   assert.equal(ledger.spent, 2 * (10 * 5 + 3 * 25) * 1000);
-  // Holds are taken at the cache-write price for input.
-  const hold = (10 * 6.25 + 32000 * 25) * 1000;
-  assert.equal(ledger.held, 3 * hold);
+  // A hold is the full output allowance plus the input, bounded by the size
+  // of the request (tens of kilobytes here) at the cache-write price.
+  const output = 32000 * 25 * 1000;
+  const holds = (n: number, held: unknown) => {
+    const input = Number(held) / n - output;
+    assert.ok(input > 20000 * 6250 && input < 200000 * 6250, String(held));
+  };
+  holds(3, ledger.held);
 
   for (const streamError of [
     "api_error",
@@ -916,8 +932,9 @@ print("filtered data verified")`,
     )
     .get()!;
   assert.deepEqual(
-    { ...failed },
-    { status: "failed", spent: 0, held: 4 * hold },
+    { status: failed.status, spent: failed.spent },
+    { status: "failed", spent: 0 },
   );
+  holds(4, failed.held);
   assert.equal(runCount(), baseline + 1);
 });
