@@ -249,9 +249,14 @@ export function specialists(keys: {
       ["error", "aborted"].includes(last.stopReason)
     )
       throw Error("Specialist failed");
-    return last.content
+    const text = last.content
       .filter((b) => b.type === "text")
       .map((b) => b.text)
       .join("\n");
+    // An agent that spent its whole output allowance, on thinking or on an
+    // answer it could not finish, has not answered. Usage is already settled.
+    if (last.stopReason === "length" && !text.trim())
+      throw Error("Specialist ran out of output before answering");
+    return text;
   };
 }

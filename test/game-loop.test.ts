@@ -524,6 +524,8 @@ test("Pi specialist uses the declared model and sandbox tool, streams each turn 
   const { createServer } = await import("node:http");
   const { specialists } = await import("../src/game-loop/agents.js");
   let turns = 0;
+  // When set, the next reply is thinking only, cut off at the output limit.
+  let cut = false;
   const requests: any[] = [];
   const slow = process.env.GAME_LOOP_LONG_STREAM === "1";
   const server = createServer(async (req, res) => {
@@ -537,41 +539,80 @@ test("Pi specialist uses the declared model and sandbox tool, streams each turn 
     const request = JSON.parse(body);
     requests.push(request);
     const tool = ++turns === 1;
-    const events = [
-      {
-        type: "message_start",
-        message: {
-          id: "fixture",
-          model: request.model,
-          type: "message",
-          role: "assistant",
-          content: [],
-          usage: { input_tokens: 10, output_tokens: 0 },
-          stop_reason: null,
-        },
-      },
-      {
-        type: "content_block_start",
-        index: 0,
-        content_block: tool
-          ? { type: "tool_use", id: "toolu_1", name: "inspect", input: {} }
-          : { type: "text", text: "" },
-      },
-      {
-        type: "content_block_delta",
-        index: 0,
-        delta: tool
-          ? { type: "input_json_delta", partial_json: '{"value":2}' }
-          : { type: "text_delta", text: "done" },
-      },
-      { type: "content_block_stop", index: 0 },
-      {
-        type: "message_delta",
-        delta: { stop_reason: tool ? "tool_use" : "end_turn" },
-        usage: { output_tokens: 3 },
-      },
-      { type: "message_stop" },
-    ];
+    const thinkingOnly = cut;
+    cut = false;
+    const events = thinkingOnly
+      ? [
+          {
+            type: "message_start",
+            message: {
+              id: "fixture",
+              model: request.model,
+              type: "message",
+              role: "assistant",
+              content: [],
+              usage: { input_tokens: 10, output_tokens: 0 },
+              stop_reason: null,
+            },
+          },
+          {
+            type: "content_block_start",
+            index: 0,
+            content_block: { type: "thinking", thinking: "", signature: "" },
+          },
+          {
+            type: "content_block_delta",
+            index: 0,
+            delta: { type: "thinking_delta", thinking: "weighing" },
+          },
+          {
+            type: "content_block_delta",
+            index: 0,
+            delta: { type: "signature_delta", signature: "s" },
+          },
+          { type: "content_block_stop", index: 0 },
+          {
+            type: "message_delta",
+            delta: { stop_reason: "max_tokens" },
+            usage: { output_tokens: 64 },
+          },
+          { type: "message_stop" },
+        ]
+      : [
+          {
+            type: "message_start",
+            message: {
+              id: "fixture",
+              model: request.model,
+              type: "message",
+              role: "assistant",
+              content: [],
+              usage: { input_tokens: 10, output_tokens: 0 },
+              stop_reason: null,
+            },
+          },
+          {
+            type: "content_block_start",
+            index: 0,
+            content_block: tool
+              ? { type: "tool_use", id: "toolu_1", name: "inspect", input: {} }
+              : { type: "text", text: "" },
+          },
+          {
+            type: "content_block_delta",
+            index: 0,
+            delta: tool
+              ? { type: "input_json_delta", partial_json: '{"value":2}' }
+              : { type: "text_delta", text: "done" },
+          },
+          { type: "content_block_stop", index: 0 },
+          {
+            type: "message_delta",
+            delta: { stop_reason: tool ? "tool_use" : "end_turn" },
+            usage: { output_tokens: 3 },
+          },
+          { type: "message_stop" },
+        ];
     res.writeHead(200, { "content-type": "text/event-stream" });
     if (slow && tool) {
       res.write(": stream open\n\n");
@@ -636,7 +677,7 @@ test("Pi specialist uses the declared model and sandbox tool, streams each turn 
       input: { teamId: BOS, gameId: "fixture", task: {} },
       signal: AbortSignal.timeout(10000),
       remaining: () => remaining,
-      reserve: () => () => {},
+      reserve: () => (usd) => charges.push(usd),
       transcript() {},
       tool: async () => "tool fixture",
     });
@@ -661,6 +702,16 @@ test("Pi specialist uses the declared model and sandbox tool, streams each turn 
   const before = requests.length;
   await assert.rejects(call(fixed, 0.001), /Specialist failed|Insufficient/);
   assert.equal(requests.length, before);
+  // An agent that spends its whole allowance thinking has not answered: the
+  // call fails, after its usage is charged, instead of returning "".
+  cut = true;
+  const charged = charges.length;
+  await assert.rejects(
+    call({ ...pkg.agents.reader, thinking: "high" }, 0.001),
+    /ran out of output before answering/,
+  );
+  assert.equal(charges.length, charged + 1);
+  assert.equal(Math.round(charges.at(-1)! * 1e9), (10 * 3 + 64 * 15) * 1000);
 });
 
 test("Jev receives only the declared instructions, runtime team, task and sandbox tool output", async (t) => {

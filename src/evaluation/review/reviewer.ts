@@ -61,7 +61,11 @@ const decision = z.strictObject({
 export const verdict = decision.refine((r) =>
   r.verdict === "accept" ? r.reasons.length === 0 : r.reasons.length > 0,
 );
-export type Reviewer = (pkg: Package) => Promise<{ text: string; usd: number }>;
+/** `truncated` means the reviewer hit its output limit before a verdict: a
+ * failure of the review, not a finding against the configuration. */
+export type Reviewer = (
+  pkg: Package,
+) => Promise<{ text: string; usd: number; truncated?: boolean }>;
 export function reviewer(
   send: (
     request: Anthropic.MessageCreateParamsNonStreaming,
@@ -87,6 +91,7 @@ export function reviewer(
     const block = blocks[0];
     return {
       usd,
+      truncated: response.stop_reason === "max_tokens",
       text:
         response.stop_reason === "end_turn" &&
         blocks.length === 1 &&
