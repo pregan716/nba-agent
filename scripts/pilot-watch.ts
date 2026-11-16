@@ -7,7 +7,8 @@
 //   npx tsx scripts/pilot-watch.ts POOL_DIR --max-usd=N --pid=PID --known=FILE
 //     [--max-agent-errors=5] [--every=20] [--max-read-failures=6]
 //
-// --snapshot checks the arguments and prints the pool's run ids as JSON, to be
+// --snapshot checks the arguments, fails if the pool is already over a limit,
+// and prints the pool's run ids as JSON, to be
 // taken before the run starts and passed back as --known. PID is the leader of
 // the run's process group (start the run with setsid).
 // Exit status: 0 the run ended by itself, 3 the watcher stopped it, 4 the
@@ -33,7 +34,10 @@ const limits = {
   maxAgentErrors: number("max-agent-errors", 5),
 };
 if (flags.includes("--snapshot")) {
-  console.log(JSON.stringify(inspectPool(root, limits).runs));
+  // A pool already over a limit must not start another paid run.
+  const state = inspectPool(root, limits);
+  if (state.stop) throw Error(state.stop);
+  console.log(JSON.stringify(state.runs));
   process.exit(0);
 }
 const pid = number("pid"),

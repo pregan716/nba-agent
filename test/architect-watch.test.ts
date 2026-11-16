@@ -123,6 +123,32 @@ test("watcher stops on a run that failed since the snapshot, of any kind, and ig
   );
 });
 
+test("watcher reads a full-size run that completed since the snapshot", (t) => {
+  const p = pool(t);
+  const missing = { frozen: null, reason: "Error: bad forecast" };
+  p.run("old", "full", "complete", 2)("team_game", missing, "x");
+  const known = new Set(inspectPool(p.root, limits).runs);
+  // A test run's gaps stay the architect's business after it completes too.
+  p.run("t", "test", "complete", 0)("team_game", missing, "x");
+  assert.equal(inspectPool(p.root, limits, known).stop, null);
+  // Completed between two polls with no forecast on its last game.
+  const event = p.run("f", "full", "complete", 2);
+  event("team_game", { frozen: { p: 1 }, reason: null }, "first");
+  assert.equal(inspectPool(p.root, limits, known).stop, null);
+  event("team_game", missing, "last");
+  const state = inspectPool(p.root, limits, known);
+  assert.match(state.stop!, /No forecast for team-game last in full run f/);
+  // Its settled charge is counted once, and it is not listed as active.
+  assert.equal(state.evaluationUsd, 4);
+  assert.deepEqual(state.active, []);
+  const errors = p.run("e", "repeat", "complete", 0);
+  for (let n = 0; n < 3; n++) errors("agent_error", { message: "x" });
+  assert.match(
+    inspectPool(p.root, limits, new Set([...known, "f"])).stop!,
+    /3 failed agent calls in repeat run e/,
+  );
+});
+
 const watcher = (...args: string[]) =>
   spawnSync("npx", ["tsx", "scripts/pilot-watch.ts", ...args], {
     encoding: "utf8",
@@ -141,6 +167,11 @@ test("watcher script refuses bad arguments before a run starts and takes a snaps
   p.run("old", "full", "failed", 2);
   assert.notEqual(watcher(p.root, "--max-usd=abc", "--snapshot").status, 0);
   assert.notEqual(watcher(p.root, "--snapshot").status, 0);
+  // The pool already holds $2 of evaluation spend: over a $1 ceiling.
+  const over = watcher(p.root, "--max-usd=1", "--snapshot");
+  assert.notEqual(over.status, 0);
+  assert.equal(over.stdout, "");
+  assert.match(over.stderr, /Spend \$2.00 is over the \$1 limit/);
   const snapshot = watcher(p.root, "--max-usd=5", "--snapshot");
   assert.equal(snapshot.status, 0);
   assert.deepEqual(JSON.parse(snapshot.stdout), ["old"]);

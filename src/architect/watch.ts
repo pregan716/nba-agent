@@ -45,7 +45,9 @@ function recordSpend(db: DatabaseSync) {
 
 /** `known` holds the run ids that existed before this invocation started.
  * A run outside it that has failed stops the watcher, even if it started and
- * failed between two polls. Without `known`, failed runs are history. */
+ * failed between two polls, and a full-size run outside it is checked for
+ * missing forecasts and agent failures after it completes as well as while it
+ * runs. Without `known`, every run that is not running is history. */
 export function inspectPool(
   root: string,
   limits: WatchLimits,
@@ -83,11 +85,15 @@ export function inspectPool(
   for (const run of runs) {
     const id = String(run.id),
       kind = String(run.kind);
-    if (run.status !== "running") {
+    const running = run.status === "running",
+      fresh = !!known && !known.has(id);
+    if (!running) {
       evaluationUsd += usd(run.charge);
-      if (run.status === "failed" && known && !known.has(id))
+      if (run.status === "failed" && fresh)
         stop ??= `The ${kind} run ${id} failed`;
-      continue;
+      // A full-size run that finished since the snapshot is still read, so a
+      // missing forecast on its last games is not lost between two polls.
+      if (!fresh || kind === "test") continue;
     }
     const state = read(
       join(root, "development", id, "record.sqlite"),
@@ -112,16 +118,18 @@ export function inspectPool(
         ),
       }),
     ) ?? { usd: 0, done: 0, missing: [], agentErrors: 0 };
-    evaluationUsd += state.usd;
-    active.push({
-      id,
-      kind,
-      teamGames: JSON.parse(String(run.games)).length,
-      done: state.done,
-      missing: state.missing.length,
-      agentErrors: state.agentErrors,
-      usd: state.usd,
-    });
+    if (running) {
+      evaluationUsd += state.usd;
+      active.push({
+        id,
+        kind,
+        teamGames: JSON.parse(String(run.games)).length,
+        done: state.done,
+        missing: state.missing.length,
+        agentErrors: state.agentErrors,
+        usd: state.usd,
+      });
+    }
     if (kind === "test") continue;
     const first = state.missing[0];
     if (first)
