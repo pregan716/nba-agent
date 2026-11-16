@@ -108,8 +108,8 @@ export async function review(
             ? e instanceof ReviewerTruncated
               ? "Reviewer ran out of output before reaching a verdict. Submit the configuration again."
               : transientModelFailure(e, "architect")
-              ? "Reviewer unavailable. Submit the configuration again."
-              : "Reviewer unavailable. Ask the operator to check the reviewer before resubmitting."
+                ? "Reviewer unavailable. Submit the configuration again."
+                : "Reviewer unavailable. Ask the operator to check the reviewer before resubmitting."
             : !scanned
               ? "Season identity scan unavailable"
               : reviewerUsd === 0 && !pkg
