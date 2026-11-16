@@ -366,6 +366,7 @@ test(
         },
         games,
         data: {
+          identities: f.source.identities,
           async columns() {
             return [{ name: "marker", description: "test" }];
           },
@@ -581,6 +582,7 @@ test("fresh Pi architect iterations retain drafts and hypotheses, submit through
       gameLines: async () => () => ({ spread: -12345, total: 67890 }),
       games,
       data: {
+        identities: f.source.identities,
         async columns() {
           return [];
         },

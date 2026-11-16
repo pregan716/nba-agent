@@ -604,13 +604,14 @@ export class Session {
           !!gameTeams.get(r.data.game_id)?.includes(r.data.team_id)) &&
       inWindow(r.availableAt, input, this.#cutoff);
     if (sharedExport) {
-      yield sharedBatch("schedule", games);
-      yield sharedBatch("injury_teams", []);
-      yield sharedBatch("injury_players", []);
+      yield sharedBatch("schedule", games, this.#source.identities);
+      yield sharedBatch("injury_teams", [], this.#source.identities);
+      yield sharedBatch("injury_players", [], this.#source.identities);
     }
     for await (const batch of this.#source.injuries("teams")) {
       const eligible = this.#eligible(batch).filter(matches);
-      if (sharedExport) yield sharedBatch("injury_teams", eligible);
+      if (sharedExport)
+        yield sharedBatch("injury_teams", eligible, this.#source.identities);
       for (const r of eligible) {
         const key = `${r.data.game_id}:${r.data.team_id}`,
           previous = snapshots.get(key);
@@ -620,7 +621,8 @@ export class Session {
     const injury_reports: ReadScheduleAndInjuriesResult["injury_reports"] = [];
     for await (const batch of this.#source.injuries("players")) {
       const eligible = this.#eligible(batch).filter(matches);
-      if (sharedExport) yield sharedBatch("injury_players", eligible);
+      if (sharedExport)
+        yield sharedBatch("injury_players", eligible, this.#source.identities);
       for (const r of eligible) {
         const snapshot = snapshots.get(`${r.data.game_id}:${r.data.team_id}`);
         // An absent/latest placeholder cannot carry an earlier player's status forward.
@@ -630,22 +632,15 @@ export class Session {
           compare(snapshot.availableAt, r.availableAt) !== 0
         )
           continue;
-        let player_id: string | null = null;
-        try {
-          player_id = this.#source.identities.resolve(
-            "player",
-            "injury-name",
-            r.data.player_name,
-            { teamId: r.data.team_id },
-          );
-        } catch {
-          /* Refused/ambiguous joins remain explicit null. */
-        }
         injury_reports.push({
           report_time: r.availableAt,
           game_id: r.data.game_id,
           team_id: r.data.team_id,
-          player_id,
+          player_id: this.#source.identities.playerId(
+            "injury-name",
+            r.data.player_name,
+            r.data.team_id,
+          ),
           player_name: r.data.player_name,
           status: r.data.status,
           reason: r.data.reason ?? null,
@@ -827,6 +822,7 @@ export class Session {
                 r.source === kind &&
                 (kind !== "posts" || selectedPosts.has(evidenceId(r))),
             ),
+            this.#source.identities,
             games,
           );
       } else {

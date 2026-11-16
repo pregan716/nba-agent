@@ -12,7 +12,7 @@ import { projectionSource } from "../projection/input.js";
 import { projectionModel, recordReference } from "../projection/reference.js";
 import type { ReplaySource, TeamGame } from "../game-loop/replay.js";
 import { Release } from "./release.js";
-import type { Row } from "./contracts.js";
+import type { RecordEnvelope, Row } from "./contracts.js";
 import {
   buildGameLines,
   openingGameLines,
@@ -33,7 +33,7 @@ export async function fiveTeamData(c: Corpus, root = process.cwd()) {
     await readFile(resolve(root, "config/identities.json"), "utf8"),
   );
   for (const m of mappings) ids.add(m);
-  const evidence = await Promise.all(
+  const providers = await Promise.all(
     teams.map((t) => openTeamEvidence(corpus, t, ids, root)),
   );
   const data = await corpusSource(corpus, ids);
@@ -47,6 +47,30 @@ export async function fiveTeamData(c: Corpus, root = process.cwd()) {
       ),
     ),
   );
+  const evidence = providers.map((e) => ({
+    ...e,
+    async evidence(
+      kind: EvidenceSource,
+      cutoff: string,
+    ): Promise<RecordEnvelope[]> {
+      const rows = await e.evidence(kind, cutoff);
+      if (kind !== "lineups" || e.team === "BOS") return rows;
+      return rows.flatMap((r) => {
+        const tip = schedule.get(r.data.game_id)?.data.scheduled_tipoff;
+        if (!tip || !before(r.availableAt, tip)) return [];
+        const roster = rosters
+          .get(e.teamId)!
+          .at(before(tip, cutoff) ? tip : cutoff);
+        const starterIds = r.data.startingLineup.map((name: string) => {
+          const match = roster.filter(
+            (p) => normalizeName(p.name) === normalizeName(name),
+          );
+          return match.length === 1 ? match[0].playerId : null;
+        });
+        return [{ ...r, data: { ...r.data, starterIds } }];
+      });
+    },
+  }));
   const versions = evidence.flatMap((e) => e.versions);
   for (const [team, roster] of rosters)
     for (const pin of roster.sources)
@@ -57,27 +81,7 @@ export async function fiveTeamData(c: Corpus, root = process.cwd()) {
       });
   async function researchEvidence(kind: EvidenceSource, cutoff: string) {
     const grouped = await Promise.all(
-      evidence.map(async (e) => {
-        const rows = await e.evidence(kind, cutoff);
-        if (kind !== "lineups" || e.team === "BOS") return rows;
-        return rows.filter((r) => {
-          const g = schedule.get(r.data.game_id);
-          if (!g || !before(r.availableAt, g.data.scheduled_tipoff))
-            return false;
-          const roster = rosters.get(e.teamId)!.at(g.data.scheduled_tipoff);
-          r.data.starterIds = r.data.startingLineup.map((name: string) => {
-            const match = roster.filter(
-              (p) => normalizeName(p.name) === normalizeName(name),
-            );
-            if (match.length !== 1)
-              throw Error(
-                "Unresolved lineup: " + e.team + " " + g.id + " " + name,
-              );
-            return match[0].playerId;
-          });
-          return true;
-        });
-      }),
+      evidence.map((e) => e.evidence(kind, cutoff)),
     );
     // V4 carries the opposing lineup for Boston games too.
     if (kind === "lineups")
