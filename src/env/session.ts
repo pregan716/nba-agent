@@ -1,3 +1,4 @@
+import { developmentEvidence } from "../data/development-evidence.js";
 import { sharedBatch } from "../data/shared-tables.js";
 import { PROVENANCE_COLUMNS } from "./export.js";
 import { boundaryNames, auditBoundary } from "./memory-audit.js";
@@ -70,6 +71,7 @@ export class Session {
   #closed = false;
   #workspace?: Workspace;
   #lifecycle: Lifecycle;
+  #developmentEvidence?: Promise<ReturnType<typeof developmentEvidence>>;
   #evidenceIndex?: Promise<EvidenceIndex>;
   constructor(
     config: RunConfig,
@@ -213,7 +215,19 @@ export class Session {
           },
     };
   }
+  #evidencePolicy() {
+    if (this.strictPregameExport && this.#game.development) {
+      return (this.#developmentEvidence ??=
+        this.#games().then(developmentEvidence));
+    }
+  }
+  async #reference(table: PlayerReferenceTable) {
+    const records = this.#eligible(await this.#source.reference(table));
+    const allow = await this.#evidencePolicy();
+    return allow ? records.filter((r) => allow(r)) : records;
+  }
   async #evidenceRecords(games: Map<string, RecordEnvelope>) {
+    const allow = await this.#evidencePolicy();
     const records: RecordEnvelope[] = [];
     for (const source of ["posts", "transcripts", "lineups"] as const) {
       for (const r of this.#eligible(
@@ -226,13 +240,14 @@ export class Session {
             "espn",
             r.data.gameId,
           );
+          if (allow && !allow(r, id)) continue;
           const game = games.get(id);
           if (
             !game ||
             !visible(r, game.data.scheduled_tipoff, this.strictPregameExport)
           )
             continue;
-        }
+        } else if (allow && !allow(r)) continue;
         records.push(r);
       }
     }
@@ -248,7 +263,7 @@ export class Session {
       return new EvidenceIndex(
         records,
         this.#source.identities,
-        this.#eligible(await this.#source.reference("player_profiles")),
+        await this.#reference("player_profiles"),
       );
     })().catch((error) => {
       this.#evidenceIndex = undefined;
@@ -332,9 +347,7 @@ export class Session {
       eventPlayers = new Map<string, string[]>();
     const unavailable: QueryGameHistoryResult["unavailable"] = [];
     if (ref)
-      records = this.#eligible(
-        await this.#source.reference(input.table as PlayerReferenceTable),
-      );
+      records = await this.#reference(input.table as PlayerReferenceTable);
     else
       for (const game of (await this.#games()).filter((g) =>
         visible(releasedGame(g), this.#cutoff, this.strictPregameExport),
@@ -525,8 +538,10 @@ export class Session {
     bounded = false,
     sharedExport = false,
   ): AsyncGenerator<ExportBatch, ReadScheduleAndInjuriesResult> {
+    const allow = await this.#evidencePolicy();
     let games = (await this.#games()).filter(
       (g) =>
+        (!allow || allow(g)) &&
         (!team || [g.data.home_team_id, g.data.away_team_id].includes(team)) &&
         (!input.game_id || input.game_id === g.id),
     );
@@ -581,6 +596,7 @@ export class Session {
     const knownTeams = new Set(this.#source.teams.map((t) => t.team_id));
     const snapshots = new Map<string, RecordEnvelope>();
     const matches = (r: RecordEnvelope) =>
+      (!allow || allow(r)) &&
       gameIds.has(r.data.game_id) &&
       (team
         ? r.data.team_id === team
@@ -770,7 +786,7 @@ export class Session {
         const definitions = await this.#source.columns(table);
         yield {
           table,
-          rows: this.#eligible(await this.#source.reference(table)).map((r) =>
+          rows: (await this.#reference(table)).map((r) =>
             projectHistory(r, definitions, this.#cutoff),
           ),
           columns: definitions.map((c) =>

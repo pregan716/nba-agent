@@ -75,6 +75,7 @@ async function execute(
   root: string,
   pkg: Package,
   games: TeamGame[],
+  development: boolean,
   ablation?: string,
 ) {
   const { hash } = readPackage(pkg);
@@ -91,6 +92,7 @@ async function execute(
     package: pkg,
     profile: pool.profile.replay,
     games,
+    development,
     trainedModels,
     agentsOff: ablation === "agents-off",
     clearArtifacts: ablation === "clear-artifacts",
@@ -146,7 +148,7 @@ export function developmentService(host: EvaluationHost) {
       const root = path(id);
       try {
         mkdirSync(join(host.root, "development"), { recursive: true });
-        const run = await execute(host, pool, root, pkg, games);
+        const run = await execute(host, pool, root, pkg, games, true);
         const report = results(root);
         const againstPrevious =
           req.kind === "repeat"
@@ -222,7 +224,7 @@ export async function finalEvaluation(host: EvaluationHost, id: string) {
     ]) {
       const root = join(dir, mode);
       if (!existsSync(join(root, "record.sqlite")))
-        await execute(host, pool, root, pkg, games, mode);
+        await execute(host, pool, root, pkg, games, false, mode);
       runs[mode] = results(root);
     }
     return {
