@@ -68,6 +68,8 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
           // The conversation is re-read on every request, so its prefix is
           // cached (five-minute retention; user decision after the pilot).
           cacheRetention: "short",
+          // Adaptive thinking at high effort (user decision, Nov 16, 2026).
+          reasoning: "high",
           maxRetries: 0,
           maxTokens: 32000,
           async onPayload(raw) {

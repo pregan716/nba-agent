@@ -9,6 +9,7 @@ import {
   approvedPackage,
   restoreAcceptance,
   humanReviews,
+  ReviewerFailure,
 } from "../src/evaluation/review/index.js";
 import { reviewer, REVIEW_PROMPT } from "../src/evaluation/review/reviewer.js";
 import { readPackage, type Package } from "../src/game-loop/package.js";
@@ -140,6 +141,7 @@ test("review isolates the request, records costs on invalid output and binds app
   t.after(() => rmSync(root, { recursive: true, force: true }));
   let calls = 0;
   let text = '{"verdict":"accept","reasons":[]}';
+  let truncated = false;
   const gate = {
     scan,
     reviewer: reviewer(async (request) => {
@@ -150,16 +152,30 @@ test("review isolates the request, records costs on invalid output and binds app
         "model",
         "output_config",
         "system",
+        "thinking",
       ]);
+      assert.deepEqual(request.thinking, { type: "adaptive" });
+      assert.equal(request.output_config?.effort, "high");
+      assert.equal(request.max_tokens, 16000);
       assert.equal(request.system, REVIEW_PROMPT);
       assert.equal(request.model, "claude-opus-4-6");
       assert.equal(request.messages.length, 1);
       assert.equal(request.messages[0].role, "user");
       assert.deepEqual(JSON.parse(String(request.messages[0].content)), clean);
+      if (truncated)
+        return {
+          usage: { input_tokens: 100, output_tokens: 20 },
+          stop_reason: "max_tokens",
+          content: [{ type: "thinking", thinking: "…", signature: "s" }],
+        } as Awaited<ReturnType<NonNullable<Parameters<typeof reviewer>[0]>>>;
       return {
         usage: { input_tokens: 100, output_tokens: 20 },
         stop_reason: "end_turn",
-        content: [{ type: "text", text, citations: null }],
+        // The verdict is read past a thinking block.
+        content: [
+          { type: "thinking", thinking: "…", signature: "s" },
+          { type: "text", text, citations: null },
+        ],
       } as Awaited<ReturnType<NonNullable<Parameters<typeof reviewer>[0]>>>;
     }),
   };
@@ -213,6 +229,30 @@ test("review isolates the request, records costs on invalid output and binds app
   assert.deepEqual(
     (humanReviews(root, rows[0].id) as Record<string, unknown>).configuration,
     clean,
+  );
+  // A reviewer that spends its output allowance before a verdict has failed,
+  // not rejected: the charge is kept, nothing is held against the
+  // configuration, and the same bytes can be submitted again.
+  truncated = true;
+  let receipt: { id: string; verdict: string } | undefined;
+  await assert.rejects(
+    review(root, gate, clean, (r) => (receipt = r)),
+    (e) =>
+      e instanceof ReviewerFailure &&
+      /ran out of output before reaching a verdict. Submit the configuration again/.test(
+        e.message,
+      ),
+  );
+  assert.equal(calls, 4);
+  assert.equal(receipt!.verdict, "failed");
+  const cut = humanReviews(root, receipt!.id) as Record<string, unknown>;
+  assert.equal(cut.reviewerUsd, 0.001);
+  assert.equal(cut.reviewerVerdict, null);
+  truncated = false;
+  text = '{"verdict":"accept","reasons":[]}';
+  assert.equal(
+    approvedPackage(await review(root, gate, clean)).hash,
+    readPackage(clean).hash,
   );
   await assert.rejects(
     review(

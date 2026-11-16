@@ -817,6 +817,13 @@ print("filtered data verified")`,
       /"cache_control":\{"type":"ephemeral"\}/g,
     );
     assert.ok(marks && marks.length >= 2, "request is not cached");
+    // Adaptive thinking at high effort.
+    const sent = r as unknown as {
+      thinking?: { type: string };
+      output_config?: { effort: string };
+    };
+    assert.equal(sent.thinking?.type, "adaptive");
+    assert.equal(sent.output_config?.effort, "high");
   }
   assert.equal(db.prepare("SELECT count(*) AS n FROM documents").get()?.n, 3);
   assert.equal(db.prepare("SELECT count(*) AS n FROM hypotheses").get()?.n, 1);

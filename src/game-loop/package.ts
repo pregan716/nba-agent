@@ -8,6 +8,7 @@ export const models = z.enum([
   "claude-opus-4-6",
   "jev-1.14.0",
 ]);
+export const thinkingLevels = z.enum(["low", "medium", "high"]);
 const name = z
   .string()
   .regex(/^[A-Za-z][A-Za-z0-9_]{0,63}$/)
@@ -49,19 +50,26 @@ const schema = z.strictObject({
   artifacts: z.record(name, z.enum(["team", "league"])),
   agents: z.record(
     name,
-    z.strictObject({
-      model: models,
-      prompt: z.string().min(1),
-      skills: z.array(z.string()),
-      tools: z.record(
-        name,
-        z.strictObject({
-          file,
-          description: z.string().min(1),
-          parameters: parameters.optional(),
-        }),
+    z
+      .strictObject({
+        model: models,
+        prompt: z.string().min(1),
+        skills: z.array(z.string()),
+        // How much the agent thinks before it answers. Absent means none.
+        thinking: thinkingLevels.optional(),
+        tools: z.record(
+          name,
+          z.strictObject({
+            file,
+            description: z.string().min(1),
+            parameters: parameters.optional(),
+          }),
+        ),
+      })
+      .refine(
+        (a) => a.thinking === undefined || a.model !== "jev-1.14.0",
+        "Jev agents take no thinking level",
       ),
-    }),
   ),
 });
 export type Package = z.infer<typeof schema>;

@@ -61,7 +61,11 @@ const decision = z.strictObject({
 export const verdict = decision.refine((r) =>
   r.verdict === "accept" ? r.reasons.length === 0 : r.reasons.length > 0,
 );
-export type Reviewer = (pkg: Package) => Promise<{ text: string; usd: number }>;
+/** `truncated` means the reviewer hit its output limit before a verdict: a
+ * failure of the review, not a finding against the configuration. */
+export type Reviewer = (
+  pkg: Package,
+) => Promise<{ text: string; usd: number; truncated?: boolean }>;
 export function reviewer(
   send: (
     request: Anthropic.MessageCreateParamsNonStreaming,
@@ -72,18 +76,25 @@ export function reviewer(
   return async (pkg) => {
     const response = await send({
       model: "claude-opus-4-6",
-      max_tokens: 2048,
+      // Thinking counts against the output allowance, so leave it room.
+      max_tokens: 16000,
       system: REVIEW_PROMPT,
-      output_config: { format: zodOutputFormat(decision) },
+      thinking: { type: "adaptive" },
+      output_config: { effort: "high", format: zodOutputFormat(decision) },
       messages: [{ role: "user", content: canonicalJson(pkg) }],
     });
     const usd = cost(normalizeUsage(response.usage), PILOT_BUDGET.price);
-    const block = response.content[0];
+    // The verdict is the one text block. Thinking blocks may come before it.
+    const blocks = response.content.filter(
+      (b) => b.type !== "thinking" && b.type !== "redacted_thinking",
+    );
+    const block = blocks[0];
     return {
       usd,
+      truncated: response.stop_reason === "max_tokens",
       text:
         response.stop_reason === "end_turn" &&
-        response.content.length === 1 &&
+        blocks.length === 1 &&
         block?.type === "text"
           ? block.text
           : "",

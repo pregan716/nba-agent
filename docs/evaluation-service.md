@@ -4,12 +4,12 @@ The host opens one persistent evaluation pool per development experiment and pas
 
 ## Requests
 
-| Kind | Required fields | Games | Counts toward the full-run cap |
-| --- | --- | --- | --- |
-| `full` | `package` | Jan 5–Feb 1, 43 team-games | Yes |
-| `test` | `package`, `games` | One to five distinct development team-games before the holdout | No |
-| `check` | `runId`, `window` | `opening` (41) or `late` (42) | Yes |
-| `repeat` | `runId` | Same package, trained models and team-games as that run | Yes |
+| Kind     | Required fields    | Games                                                          | Counts toward the full-run cap |
+| -------- | ------------------ | -------------------------------------------------------------- | ------------------------------ |
+| `full`   | `package`          | Jan 5–Feb 1, 43 team-games                                     | Yes                            |
+| `test`   | `package`, `games` | One to five distinct development team-games before the holdout | No                             |
+| `check`  | `runId`, `window`  | `opening` (41) or `late` (42)                                  | Yes                            |
+| `repeat` | `runId`            | Same package, trained models and team-games as that run        | Yes                            |
 
 Each request is a JSON object with a `kind`. For a test, each element of `games` has `teamId` and `gameId`. Times in the fixed windows follow the brief's UTC schedule selection. Each run gets a fresh artifact store. The game loop can use the earlier released reference history.
 
@@ -25,13 +25,13 @@ The development archive contains the submitted package and a forecast record for
 
 The architect's SQLite `game_lines` table contains `game_id`, `team_id`, `scheduled_tipoff`, `spread` and `total`. Each row represents one development team's perspective at scheduled start. A game between two development teams has two rows with opposite spreads. Coverage is limited to 2025–26 games before the holdout involving Boston, Oklahoma City or Washington. Denver and Memphis appear only as opponents in the eligible schedule. Player prop lines and scores derived from them remain excluded from the data view, game loop and archive.
 
-| SQLite table location | Tables |
-| --- | --- |
-| Architect view and game session | `schedule`, `posts`, `transcripts`, `lineups`, `injury_players`, `injury_teams` |
-| Architect view and released game shards | `player_box_scores`, `team_box_scores`, `team_period_scores`, `events`, `lineup_stints`, `player_stints`, `matchup_stints`, `player_game_summary`, `team_game_summary`, `possessions`, `unavailable` |
-| Architect view only | `rosters`, `game_lines` |
-| Game session only | `session`, `evidence`, `injuries` and `injury_team_snapshots` (latest report), `player_profiles`, `player_reference`, `player_season_stats`, `player_2024_25_summary`, `player_career_summary`, `player_identity_exceptions` |
-| Game shards only | `games`, `_history_metadata` |
+| SQLite table location                   | Tables                                                                                                                                                                                                                       |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architect view and game session         | `schedule`, `posts`, `transcripts`, `lineups`, `injury_players`, `injury_teams`                                                                                                                                              |
+| Architect view and released game shards | `player_box_scores`, `team_box_scores`, `team_period_scores`, `events`, `lineup_stints`, `player_stints`, `matchup_stints`, `player_game_summary`, `team_game_summary`, `possessions`, `unavailable`                         |
+| Architect view only                     | `rosters`, `game_lines`                                                                                                                                                                                                      |
+| Game session only                       | `session`, `evidence`, `injuries` and `injury_team_snapshots` (latest report), `player_profiles`, `player_reference`, `player_season_stats`, `player_2024_25_summary`, `player_career_summary`, `player_identity_exceptions` |
+| Game shards only                        | `games`, `_history_metadata`                                                                                                                                                                                                 |
 
 Filter lineup and injury rows by `game_id` and `team_id`. In `lineups`, `startingLineup` is a JSON array of player names. The parallel JSON array `starterIds` gives their canonical IDs in announcement order. In `injury_players`, `player_id` is the canonical ID for the printed name and team. An unresolved name has a null ID in either table. Both views select the latest eligible post edition per account and post ID, with a permalink in `posts.url`. In `injury_players` and `injury_teams`, `available_at` is the printed report time. These tables retain earlier eligible observations. The game sandbox reads session tables through `nba_data.session()` and released shards through `nba_data.query()`.
 
@@ -80,4 +80,4 @@ On the cloud host, `scripts/cloud/architect-iteration.sh POOL_DIR MAX_USD [--onl
 
 The architect can run Python against the filtered SQLite export at `/data/session.sqlite`. Its notes and draft files live in a separate persistent workspace. Write package metadata in `package.json` and Python files separately. Each submission records the draft or archived package, the named open hypothesis, and its expected effect before evaluation. The submission record identifies the experiment hypothesis for analysis. A test run returns its run ID in the same conversation and the iteration continues; a full, repeat or check evaluation, a nomination or a review rejection ends it. The package’s hypothesis text describes the configuration and is part of its reviewed bytes. The iteration waits for evaluation to finish, which may take hours for a full run. The architect makes no model requests during this wait. The next iteration can inspect development scores, forecasts, agent calls and code through the filtered archive.
 
-Architect requests use prompt caching with five-minute retention. Each model request reserves its input and maximum output. The input is bounded by the size of the serialised request in bytes plus 1,000 tokens (the preflight count is only an estimate), and priced as a cache write. The reservation is held within the remaining $30 iteration and $350 experiment budgets. Actual usage settles the reservation. Because the bound is several times the real token count, an iteration ends once the balance cannot hold one more request of the conversation's size, which in a long conversation can leave a few dollars unspent; the low-budget warning starts at $3 or at $2 above the current hold, whichever is higher. An interrupted request with unknown usage continues to count against the budget. Tool results include the current balance and a warning at $3 remaining. The host keeps the transcript, submission decisions, review receipts, documents and spend in `architect.sqlite` outside the sandbox.
+Architect requests use adaptive thinking at high effort and prompt caching with five-minute retention. The configuration reviewer also uses adaptive thinking at high effort. Each model request reserves its input and maximum output. The input is bounded by the size of the serialised request in bytes plus 1,000 tokens (the preflight count is only an estimate), and priced as a cache write. The reservation is held within the remaining $30 iteration and $350 experiment budgets. Actual usage settles the reservation. Because the bound is several times the real token count, an iteration ends once the balance cannot hold one more request of the conversation's size, which in a long conversation can leave a few dollars unspent; the low-budget warning starts at $3 or at $2 above the current hold, whichever is higher. An interrupted request with unknown usage continues to count against the budget. Tool results include the current balance and a warning at $3 remaining. The host keeps the transcript, submission decisions, review receipts, documents and spend in `architect.sqlite` outside the sandbox.

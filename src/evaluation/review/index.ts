@@ -30,6 +30,7 @@ export type ReviewReceipt = {
   reasons: Finding[];
 };
 export class ReviewerFailure extends Error {}
+class ReviewerTruncated extends Error {}
 export class ReviewRejection extends Error {}
 // Reviewer spend is outside the architect and evaluation budgets. Keep the
 // successful usage even if an earlier attempt left the review total unknown.
@@ -53,6 +54,8 @@ async function requestVerdict(
     if (!Number.isFinite(response.usd) || response.usd < 0)
       throw Error("Invalid reviewer spend");
     settle.run(response.usd, attempt);
+    // Charged, but no verdict: the reviewer spent its output allowance first.
+    if (response.truncated) throw new ReviewerTruncated();
     return response.text;
   }, new AbortController().signal);
 }
@@ -102,9 +105,11 @@ export async function review(
           file: "package",
           line: 1,
           reason: reviewerFailed
-            ? transientModelFailure(e, "architect")
-              ? "Reviewer unavailable. Submit the configuration again."
-              : "Reviewer unavailable. Ask the operator to check the reviewer before resubmitting."
+            ? e instanceof ReviewerTruncated
+              ? "Reviewer ran out of output before reaching a verdict. Submit the configuration again."
+              : transientModelFailure(e, "architect")
+                ? "Reviewer unavailable. Submit the configuration again."
+                : "Reviewer unavailable. Ask the operator to check the reviewer before resubmitting."
             : !scanned
               ? "Season identity scan unavailable"
               : reviewerUsd === 0 && !pkg

@@ -164,6 +164,8 @@ export function specialists(keys: {
         cacheRetention: "none",
         maxRetries: 0,
         timeoutMs: 45 * 60 * 1000,
+        // The level the configuration declared for this agent, if any.
+        reasoning: agent.thinking,
         async onPayload(raw) {
           const req = raw as MessageCreateParamsNonStreaming;
           const tokens = await provider.count(req, signal);
@@ -177,6 +179,14 @@ export function specialists(keys: {
           if (!Number.isSafeInteger(max) || max < 1)
             throw Error("Insufficient model budget");
           req.max_tokens = max;
+          // Models with a fixed thinking budget need it below the allowance.
+          if (
+            req.thinking?.type === "enabled" &&
+            req.thinking.budget_tokens >= max
+          ) {
+            if (max <= 1024) throw Error("Insufficient model budget");
+            req.thinking.budget_tokens = max - 1;
+          }
           settle = call.reserve(
             (tokens * model.cost.input + max * model.cost.output) / 1e6,
           );
@@ -239,9 +249,14 @@ export function specialists(keys: {
       ["error", "aborted"].includes(last.stopReason)
     )
       throw Error("Specialist failed");
-    return last.content
+    const text = last.content
       .filter((b) => b.type === "text")
       .map((b) => b.text)
       .join("\n");
+    // An agent that spent its whole output allowance, on thinking or on an
+    // answer it could not finish, has not answered. Usage is already settled.
+    if (last.stopReason === "length" && !text.trim())
+      throw Error("Specialist ran out of output before answering");
+    return text;
   };
 }
