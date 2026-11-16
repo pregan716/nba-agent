@@ -938,3 +938,73 @@ print("filtered data verified")`,
   holds(4, failed.held);
   assert.equal(runCount(), baseline + 1);
 });
+
+test("a cache-write-priced architect request settles the iteration at exactly $30", async (t) => {
+  const { architectIteration } = await import("../src/architect/session.js");
+  const { architectProvider } =
+    await import("./fixtures/architect-provider.js");
+  const { DatabaseSync } = await import("node:sqlite");
+  const provider = await architectProvider();
+  t.after(() => provider.close());
+  const f = fixtureCorpus(),
+    root = mkdtempSync(join(tmpdir(), "architect-exact-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const unused = async (): Promise<never> => {
+    throw Error("Unexpected call");
+  };
+  const host: EvaluationHost = {
+    root,
+    profile: structuredClone(evaluationProfile),
+    config: f.config,
+    review: fixtureReview,
+    runAgent: unused,
+    source: {
+      data: f.source,
+      schedule: [middle],
+      projection: unused,
+      outcomes: unused,
+    },
+    training: {
+      gameLines: unused,
+      games: [],
+      data: {
+        identities: f.source.identities,
+        async columns() {
+          return [];
+        },
+        async *exportHistory() {},
+      },
+      evidence: [],
+      rosters: new Map(),
+      corpus: { injuries: { async *partitions() {} } },
+    },
+  };
+  // The first turn costs 10 input and 3 output tokens. The second is billed
+  // as cache writes and 10 output tokens, which is the whole balance: its
+  // hold, at the cache-write price, leaves room for exactly those 10.
+  const first = 10 * 5 + 3 * 25,
+    cached = (30e6 - first - 10 * 25) / 6.25;
+  assert.ok(Number.isInteger(cached));
+  provider.steps.push(
+    { calls: [{ name: "budget", input: {} }] },
+    {
+      inputTokens: cached,
+      outputTokens: 10,
+      cacheWrite: true,
+      calls: [{ name: "hypotheses", input: {} }],
+    },
+  );
+  const result = await architectIteration(host, provider.options);
+  assert.equal(result.status, "budget");
+  assert.equal(result.budget.sessionUsd, 0);
+  assert.equal(provider.steps.length, 0);
+  assert.equal(provider.requests.at(-1)!.max_tokens, 10);
+  const db = new DatabaseSync(join(root, "architect.sqlite"), {
+    readOnly: true,
+  });
+  t.after(() => db.close());
+  assert.deepEqual(
+    { ...db.prepare("SELECT status,spent,held FROM iterations").get()! },
+    { status: "budget", spent: 30e9, held: 0 },
+  );
+});
