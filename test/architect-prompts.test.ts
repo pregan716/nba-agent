@@ -9,6 +9,8 @@ import { evaluationProfile } from "../src/evaluation/service/profile.js";
 import { models } from "../src/game-loop/package.js";
 import { scanner } from "../src/evaluation/review/scan.js";
 import { PROBE_PROMPT, teamProbePrompt } from "../src/harness/probe.js";
+import { sharedColumns } from "../src/data/shared-tables.js";
+import { referenceEntry } from "../src/game-loop/replay.js";
 
 const has = (text: string, part: string) =>
   assert.ok(text.includes(part), "missing: " + part);
@@ -118,5 +120,54 @@ test("the team probe asks every team the Celtics questions without naming player
     prompt.split("\n").length,
     PROBE_PROMPT.split("\n").length,
     "same items as the carried probe",
+  );
+});
+
+test("the architect prompt lists the shared tables' columns and the reference history as the harness builds them", () => {
+  for (const [table, columns] of Object.entries(sharedColumns))
+    has(ARCHITECT_PROMPT, `${table} (${columns.join(", ")})`);
+  const p = {
+    playerId: "p",
+    p_play: 1,
+    p_start: 0,
+    ...Object.fromEntries(
+      ["minutes", "points", "rebounds", "assists", "fantasy_points"].map(
+        (q) => [q, [0, 0, 0, 0, 0, 0, 0]],
+      ),
+    ),
+  };
+  const forecast = { players: [p] } as never;
+  const keys = (o: object) =>
+    `{${Object.keys(o)
+      .map((k) => `"${k}"`)
+      .join(", ")}}`;
+  // The entry replay puts in ctx for a released game, and for an excluded one.
+  const released = referenceEntry(
+    "g",
+    forecast,
+    {
+      gameId: "g",
+      players: [{ teamId: "t", playerId: "p", played: true, starter: true }],
+    } as never,
+    "t",
+  );
+  has(
+    ARCHITECT_PROMPT,
+    `one entry for each of this team's earlier released games this season: ${keys(released)}`,
+  );
+  const excluded = referenceEntry("g", forecast, "reason");
+  assert.deepEqual(Object.keys(excluded), [
+    ...Object.keys(released),
+    "exclusion",
+  ]);
+  assert.deepEqual(excluded.errors, []);
+  has(ARCHITECT_PROMPT, 'has an empty "errors" list and an "exclusion" reason');
+  const [row] = released.errors;
+  has(ARCHITECT_PROMPT, `one row per player in that forecast: ${keys(row)}`);
+  has(ARCHITECT_PROMPT, `"actual" is what he did, ${keys(row.actual)}`);
+  // The injury-report rule the harness and the reference projection apply.
+  has(
+    ARCHITECT_PROMPT,
+    'Only if its observed_state is "players_listed", read the injury_players rows for that game and team with the same available_at.',
   );
 });
