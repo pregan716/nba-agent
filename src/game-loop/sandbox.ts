@@ -50,6 +50,7 @@ export function gameSandbox(
     },
   );
   return {
+    prepare: () => box.prepare(config.budget.sandbox),
     async invoke(
       file: string,
       argument: unknown,
