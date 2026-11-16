@@ -13,6 +13,7 @@ import type { WorkspacePort } from "./workspace.js";
 import { SessionError } from "./contract.js";
 const command = promisify(execFile);
 type Limits = Parameters<Environment["execute"]>[1];
+type ContainerLimits = Pick<Limits, "cpu" | "memoryBytes">;
 
 /** One trusted supervisor per session. Agent code never owns Docker or a host path. */
 export class DockerSandbox {
@@ -30,7 +31,7 @@ export class DockerSandbox {
   #result?: { resolve: (value: any) => void; reject: (error: Error) => void };
   #ready?: { resolve: () => void; reject: (error: Error) => void };
   #abort = new AbortController();
-  #limits?: Limits;
+  #limits?: ContainerLimits;
   #port?: WorkspacePort;
   constructor(
     private config: RunConfig,
@@ -50,7 +51,10 @@ export class DockerSandbox {
       throw error;
     }
   }
-  async #start(limits: Limits) {
+  prepare(limits: ContainerLimits) {
+    return (this.#starting ??= this.#start(limits));
+  }
+  async #start(limits: ContainerLimits) {
     if (this.#closed) throw new SessionError("phase_refused", "Sandbox closed");
     await this.exporter(this.#directory, this.#abort.signal);
     this.#abort.signal.throwIfAborted();
@@ -276,8 +280,7 @@ export class DockerSandbox {
     let watchdog: ReturnType<typeof setTimeout> | undefined;
     try {
       signal.throwIfAborted();
-      this.#starting ??= this.#start(limits);
-      await this.#starting;
+      await this.prepare(limits);
       if (this.#closed)
         throw new SessionError("phase_refused", "Sandbox closed");
       if (
