@@ -31,7 +31,7 @@ The issue asks for a five-game test run first, then two iterations each ending i
 | First test on five team-games | First test on two team-games                                                                          | The architect, which chooses the games; the operator did not require five |
 | Two full evaluations          | One. Iteration 2, unrestricted, ended in a second test run, and the approval covered three iterations | Not decided: outstanding                                                  |
 
-The second full evaluation is outstanding, not waived. The user has not accepted one full evaluation as the revised scope. Running it on the pilot's configuration as it stands would repeat a design that could not read its data, so it is better spent as a further pilot iteration with the fixes in place; that needs a fresh approval of the spend (see [Open for the user](#open-for-the-user)).
+The second full evaluation is outstanding, not waived. The user has not accepted one full evaluation as the revised scope. Running it on the pilot's configuration as it stands would repeat a design that could not read its data, so it is better spent as a further pilot iteration with the fixes in place; the user has since approved that (see [Decisions after the pilot](#decisions-after-the-pilot)).
 
 The watcher as it ran also fell short of the issue's "any infrastructure failure": it would have missed an evaluation that failed between two polls, and the launcher did not stop the run if the watcher itself failed. Neither happened in the pilot. Both were fixed in review of this PR, with the launcher's exit status.
 
@@ -39,7 +39,7 @@ The watcher as it ran also fell short of the issue's "any infrastructure failure
 
 No iteration came near the cap: the largest used $8.17. Under the rule then in force, a test run ended the iteration, so iterations 1 and 2 stopped after $1.71 and $4.67. That rule has since changed (SPO-919), and iterations in the development run will last longer.
 
-The architect runs without prompt caching, so every request pays for the whole conversation again. In iteration 3, 34 requests read 1.5 million input tokens and wrote 26,000 output tokens; input was about $7.50 of the $8.17. At that rate $30 is roughly 100 to 120 requests. Whether to turn caching on is open.
+The architect runs without prompt caching, so every request pays for the whole conversation again. In iteration 3, 34 requests read 1.5 million input tokens and wrote 26,000 output tokens; input was about $7.50 of the $8.17. At that rate $30 is roughly 100 to 120 requests. Caching has since been turned on (see [Decisions after the pilot](#decisions-after-the-pilot)).
 
 ## What the architect built
 
@@ -94,11 +94,13 @@ Two things that were choices, not defects:
 - The watcher never had to stop a run, so its stop path was exercised only by tests.
 - The fixes above were made after the pilot. No architect iteration has run with them.
 
-## Open for the user
+## Decisions after the pilot
 
-- **Starting point of the development run.** The pilot's archive, notes and draft are in the pilot's pool, not the development pool. The development run can start empty, or from the pilot's draft and notes. Starting empty keeps the run clean of a design built on a broken view.
-- **Prompt caching for the architect.** See [The $30 cap](#the-30-cap).
-- **The outstanding second full evaluation.** Either fund one more pilot iteration with the fixes, ending in a full evaluation (up to about $30 for the architect plus up to about $85 if the configuration uses agents), or accept one full evaluation as the pilot's scope. SPO-907 stays open until one of these is chosen.
+Decided by the user on Nov 16, 2026:
+
+- **The development run starts empty.** Nothing from the pilot's pool carries over: no draft, notes, hypotheses or archive.
+- **Prompt caching for the architect is on**, with five-minute retention. The caps count what is actually charged.
+- **The second full evaluation is funded**: one more pilot iteration with the fixes in place, ending in a full evaluation. Its result will be added here.
 
 ## Evidence files
 

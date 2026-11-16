@@ -5,6 +5,7 @@ import { mkdirSync } from "node:fs";
 
 const units = 1e9;
 export const architectLimits = { iterationUsd: 30, totalUsd: 350 };
+export const architectWarnUsd = 3;
 // One writer for the architect workspace. A separate OS-released lock leaves
 // committed notes and outstanding provider reservations durable after a crash.
 export class Iteration {
@@ -12,6 +13,9 @@ export class Iteration {
   readonly db!: DatabaseSync;
   private lock: DatabaseSync;
   status = "running";
+  /** Balance at which the low-budget warning starts. The session raises it
+   * when one request's hold grows large, so the warning still comes first. */
+  warnUsd = architectWarnUsd;
   constructor(root: string) {
     mkdirSync(root, { recursive: true, mode: 0o700 });
     this.lock = new DatabaseSync(join(root, "architect.lock.sqlite"));
@@ -58,7 +62,7 @@ export class Iteration {
     return {
       sessionUsd,
       totalUsd,
-      ...(sessionUsd <= 3
+      ...(sessionUsd <= this.warnUsd
         ? { warning: "Budget low. Save work and submit or nominate now." }
         : {}),
     };

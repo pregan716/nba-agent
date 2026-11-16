@@ -17,10 +17,13 @@ import {
   type EvaluationHost,
 } from "../evaluation/service/index.js";
 import { architectTools, type SubmissionKind } from "./tools.js";
-import { Iteration } from "./iteration.js";
+import { Iteration, architectWarnUsd } from "./iteration.js";
 import { ARCHITECT_PROMPT } from "./prompt.js";
 
 const model = ANTHROPIC_MODELS["claude-opus-4-6"];
+// Tokens the provider adds to a request that are not in its bytes (the tool-use
+// system prompt is a few hundred).
+const providerOverheadTokens = 1000;
 interface ArchitectOptions {
   apiKey?: string;
   baseURL?: string;
@@ -62,7 +65,9 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
         {
           ...streamOptions,
           apiKey: key,
-          cacheRetention: "none",
+          // The conversation is re-read on every request, so its prefix is
+          // cached (five-minute retention; user decision after the pilot).
+          cacheRetention: "short",
           maxRetries: 0,
           maxTokens: 32000,
           async onPayload(raw) {
@@ -73,7 +78,21 @@ function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
             );
             if (!Number.isSafeInteger(tokens) || tokens < 0)
               throw Error("Invalid architect input token count");
-            const input = tokens * model.cost.input;
+            // The hold must cover the dearest bill this request can produce.
+            // The preflight count is only an estimate, so the input is bounded
+            // by the request's size instead: a token covers at least one byte
+            // of the serialised request, and the allowance covers what the
+            // provider adds for tool use. Every input token is priced as a
+            // cache write, the dearest it can be. Reads, uncached tokens and
+            // the real count settle for less.
+            const bound = Math.max(
+              tokens,
+              Buffer.byteLength(JSON.stringify(req)) + providerOverheadTokens,
+            );
+            const input = bound * model.cost.cacheWrite;
+            // The iteration ends when the balance cannot hold one more request,
+            // so the warning has to start a little above that.
+            i.warnUsd = Math.max(architectWarnUsd, input / 1e6 + 2);
             const max = Math.min(
               req.max_tokens,
               Math.floor(

@@ -757,19 +757,32 @@ print("filtered data verified")`,
         call("budget", {}),
       ],
     },
-    // Near the iteration cap, force a warning on an ordinary tool result and
-    // then use the exact remaining amount in the last fixture response.
-    { inputTokens: 5599900, outputTokens: 10, calls: [call("hypotheses", {})] },
+    // Near the iteration cap, force a warning on an ordinary tool result. The
+    // turn reports its input as cache writes, the price the hold assumes, and
+    // leaves five cents.
+    {
+      inputTokens: 4791940,
+      outputTokens: 10,
+      cacheWrite: true,
+      calls: [call("hypotheses", {})],
+    },
+    // The preflight count says this turn is tiny, and five cents would cover
+    // it. Its bill would not be: the conversation is tens of kilobytes. The
+    // hold is sized from the request, so the turn is never sent and the cap
+    // holds. Sized from the count, it was sent and overran the $30.
+    {
+      preflightTokens: 10,
+      inputTokens: 20000,
+      cacheWrite: true,
+      calls: [call("budget", {})],
+    },
   );
-  const chargedFirstTurn = 10 * 5 + 3 * 25;
-  const remainingMicro = 30e6 - chargedFirstTurn - (5599900 * 5 + 10 * 25);
-  provider.steps.push({
-    inputTokens: (remainingMicro - 25) / 5,
-    outputTokens: 1,
-  });
   const second = await architectIteration(host, provider.options);
   assert.equal(second.status, "budget");
-  assert.equal(second.budget.sessionUsd, 0);
+  assert.equal(provider.steps.length, 1);
+  provider.steps.length = 0;
+  assert.equal(provider.requests.length, before + 2);
+  assert.equal(Math.round(second.budget.sessionUsd * 1e6), 50000);
   assert.ok(
     !JSON.stringify(provider.requests[before].messages).includes(
       "PRIVATE_ITERATION_NOTE",
@@ -786,12 +799,25 @@ print("filtered data verified")`,
     !provider.requests[before].tools.some((tool) => tool.name === "final"),
   );
   assert.match(
-    JSON.stringify(provider.requests.at(-1)!.messages),
+    String(
+      db
+        .prepare(
+          "SELECT data FROM events WHERE iteration=? AND kind='tool_result' ORDER BY seq DESC",
+        )
+        .get(second.iteration)!.data,
+    ),
     /Budget low/,
   );
   assert.ok(
     provider.requests.every((r) => r.stream && r.model === "claude-opus-4-6"),
   );
+  // Every request marks its system prompt and its latest message for caching.
+  for (const r of provider.requests) {
+    const marks = JSON.stringify(r).match(
+      /"cache_control":\{"type":"ephemeral"\}/g,
+    );
+    assert.ok(marks && marks.length >= 2, "request is not cached");
+  }
   assert.equal(db.prepare("SELECT count(*) AS n FROM documents").get()?.n, 3);
   assert.equal(db.prepare("SELECT count(*) AS n FROM hypotheses").get()?.n, 1);
   host.review = {
@@ -878,8 +904,14 @@ print("filtered data verified")`,
   // The HTTP 529, disconnect and streamed overload each retain a hold. The rate limit
   // released its reservation and the token count never charged the ledger.
   assert.equal(ledger.spent, 2 * (10 * 5 + 3 * 25) * 1000);
-  const hold = (10 * 5 + 32000 * 25) * 1000;
-  assert.equal(ledger.held, 3 * hold);
+  // A hold is the full output allowance plus the input, bounded by the size
+  // of the request (tens of kilobytes here) at the cache-write price.
+  const output = 32000 * 25 * 1000;
+  const holds = (n: number, held: unknown) => {
+    const input = Number(held) / n - output;
+    assert.ok(input > 20000 * 6250 && input < 200000 * 6250, String(held));
+  };
+  holds(3, ledger.held);
 
   for (const streamError of [
     "api_error",
@@ -900,8 +932,79 @@ print("filtered data verified")`,
     )
     .get()!;
   assert.deepEqual(
-    { ...failed },
-    { status: "failed", spent: 0, held: 4 * hold },
+    { status: failed.status, spent: failed.spent },
+    { status: "failed", spent: 0 },
   );
+  holds(4, failed.held);
   assert.equal(runCount(), baseline + 1);
+});
+
+test("a cache-write-priced architect request settles the iteration at exactly $30", async (t) => {
+  const { architectIteration } = await import("../src/architect/session.js");
+  const { architectProvider } =
+    await import("./fixtures/architect-provider.js");
+  const { DatabaseSync } = await import("node:sqlite");
+  const provider = await architectProvider();
+  t.after(() => provider.close());
+  const f = fixtureCorpus(),
+    root = mkdtempSync(join(tmpdir(), "architect-exact-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const unused = async (): Promise<never> => {
+    throw Error("Unexpected call");
+  };
+  const host: EvaluationHost = {
+    root,
+    profile: structuredClone(evaluationProfile),
+    config: f.config,
+    review: fixtureReview,
+    runAgent: unused,
+    source: {
+      data: f.source,
+      schedule: [middle],
+      projection: unused,
+      outcomes: unused,
+    },
+    training: {
+      gameLines: unused,
+      games: [],
+      data: {
+        identities: f.source.identities,
+        async columns() {
+          return [];
+        },
+        async *exportHistory() {},
+      },
+      evidence: [],
+      rosters: new Map(),
+      corpus: { injuries: { async *partitions() {} } },
+    },
+  };
+  // The first turn costs 10 input and 3 output tokens. The second is billed
+  // as cache writes and 10 output tokens, which is the whole balance: its
+  // hold, at the cache-write price, leaves room for exactly those 10.
+  const first = 10 * 5 + 3 * 25,
+    cached = (30e6 - first - 10 * 25) / 6.25;
+  assert.ok(Number.isInteger(cached));
+  provider.steps.push(
+    { calls: [{ name: "budget", input: {} }] },
+    {
+      inputTokens: cached,
+      outputTokens: 10,
+      cacheWrite: true,
+      calls: [{ name: "hypotheses", input: {} }],
+    },
+  );
+  const result = await architectIteration(host, provider.options);
+  assert.equal(result.status, "budget");
+  assert.equal(result.budget.sessionUsd, 0);
+  assert.equal(provider.steps.length, 0);
+  assert.equal(provider.requests.at(-1)!.max_tokens, 10);
+  const db = new DatabaseSync(join(root, "architect.sqlite"), {
+    readOnly: true,
+  });
+  t.after(() => db.close());
+  assert.deepEqual(
+    { ...db.prepare("SELECT status,spent,held FROM iterations").get()! },
+    { status: "budget", spent: 30e9, held: 0 },
+  );
 });
