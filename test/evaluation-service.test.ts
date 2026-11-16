@@ -527,6 +527,7 @@ test("fresh Pi architect iterations retain drafts and hypotheses, submit through
   const profile = structuredClone(evaluationProfile);
   const image = process.env.FORECAST_SANDBOX_IMAGE;
   profile.replay.usdPerTeamGame = image ? 1 : 0;
+  profile.windows.middle.count = 1;
   if (image) {
     f.config.harness.sandboxImage = image;
     Object.assign(f.config.budget.sandbox, {
@@ -600,6 +601,7 @@ test("fresh Pi architect iterations retain drafts and hypotheses, submit through
     expectedEffect: "Match reference scores.",
     games: [{ gameId: middle.gameId, teamId: middle.teamId }],
   };
+  const { games: _, ...ending } = { ...proposal, kind: "full" };
   const { files, ...manifest } = pkg;
   provider.steps.push(
     { truncated: true },
@@ -650,10 +652,18 @@ print("filtered data verified")`,
         }),
       ],
     },
+    // A test run leaves the iteration open: its result is read in the same
+    // session, and the full evaluation ends it.
     { calls: [call("submit", proposal)] },
+    { calls: [call("iterations", {})] },
+    { calls: [call("submit", ending)] },
   );
   const first = await architectIteration(host, provider.options);
-  assert.equal(first.status, "test");
+  assert.equal(first.status, "full");
+  assert.match(
+    JSON.stringify(provider.requests.at(-1)!.messages),
+    /kind\\+":\\+"test\\+",\\+"runId.*status\\+":\\+"complete/,
+  );
   assert.match(
     JSON.stringify(provider.requests[1].messages),
     /last response reached the output limit/,
@@ -685,7 +695,22 @@ print("filtered data verified")`,
   );
   assert.deepEqual(
     recorded.map((r) => r.kind),
-    ["proposal", "configuration", "review", "decision"],
+    [
+      "proposal",
+      "configuration",
+      "review",
+      "decision",
+      "proposal",
+      "configuration",
+      "review",
+      "decision",
+    ],
+  );
+  assert.deepEqual(
+    recorded
+      .filter((r) => r.kind === "decision")
+      .map((r) => JSON.parse(String(r.data)).kind),
+    ["test", "full"],
   );
   assert.equal(
     JSON.parse(String(recorded[0].data)).expectedEffect,
@@ -794,13 +819,13 @@ print("filtered data verified")`,
   provider.failures.count.push(529);
   provider.failures.model.push(529, 429);
   provider.steps.push(
-    { calls: [call("submit", proposal)], disconnected: true },
-    { calls: [call("submit", proposal)] },
-    { calls: [call("submit", proposal)], streamError: "overloaded_error" },
-    { calls: [call("submit", proposal)] },
+    { calls: [call("submit", ending)], disconnected: true },
+    { calls: [call("submit", ending)] },
+    { calls: [call("submit", ending)], streamError: "overloaded_error" },
+    { calls: [call("submit", ending)] },
   );
   const recovered = await architectIteration(host, provider.options);
-  assert.equal(recovered.status, "test");
+  assert.equal(recovered.status, "full");
   assert.equal(reviewCalls, 6);
   assert.equal(runCount(), baseline + 1);
   assert.match(
