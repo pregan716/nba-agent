@@ -6,6 +6,7 @@ import type {
   MessageCreateParamsNonStreaming,
   Message,
 } from "@anthropic-ai/sdk/resources/messages";
+import type { MessageCountTokensParams as BetaCountParams } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import { createServer, type Server } from "node:http";
 import { randomBytes } from "node:crypto";
 import {
@@ -36,6 +37,15 @@ export function anthropicProvider(
   return {
     async count(r, signal) {
       const { max_tokens, stream, output_config, ...input } = r;
+      // A request built for the beta endpoint names its betas, and may use
+      // shapes only that endpoint accepts, so it is counted there.
+      if ("betas" in input)
+        return (
+          await client.beta.messages.countTokens(
+            input as unknown as BetaCountParams,
+            { signal },
+          )
+        ).input_tokens;
       return (await client.messages.countTokens(input, { signal }))
         .input_tokens;
     },
