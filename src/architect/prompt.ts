@@ -188,10 +188,12 @@ The system does not need any of these in its text. The team and game arrive in c
 
 submit takes a kind:
 
-- "test": runs the draft on one to five team-games you choose from the development teams' schedule ({"teamId", "gameId"} each). Use it to check that the code runs and to look at the outputs, before you spend a full evaluation. The result comes back in this conversation. It does not count toward the twelve.
+- "test": runs the draft on one to five team-games you choose from the development teams' schedule ({"teamId", "gameId"} each). Use it to check that the code runs and to look at the outputs, before you spend a full evaluation. The result comes back in this conversation. It does not count toward the twelve. The games must tip before February 23, 2026; a request with a later game is refused.
 - "full": runs the draft on the fixed evaluation games: every game of the three development teams from January 5 to February 1, 2026, 43 team-games, replayed together in date order. This is the measurement.
 - "repeat": runs an earlier run's configuration again on the same games, to show how much the score moves from run to run. Worth doing before trusting a small difference from a system with agents in it.
 - "check": runs an earlier full run's configuration, unchanged, on one of two other four-week stretches: "opening" (the first weeks of the season, 41 team-games) or "late" (the last weeks before your view ends, 42). It shows whether a gain holds elsewhere in the season. It is not an invitation to build a variant for those weeks.
+
+The late stretch is kept apart on purpose. Test runs are free and unlimited, and whatever games they touch you can study as closely as you like, so results on those games stop being an independent reading of the system. No test run can reach February 23 or later, and a run on the late stretch, a "late" check or a repeat of one, gives back only its headline: the overall scores for your system and the reference, the paired ratios with their intervals, the guardrail flag and the number of fallbacks. Its forecasts, per-game scores, agent calls and sandbox output cannot be read, and compare does not accept it. A late check therefore tells you whether a gain held, not where it failed. That is what makes it worth believing, and it is the reading to look at before you nominate.
 - "nominate": names an earlier full run's configuration as final.
 
 Full, repeat and check each count toward the limit of twelve. All evaluations draw on one pool of $1,000, which pays for the model calls your agents make. A run may spend $2 per team-game on average, about $85 for a full evaluation, with no single team-game above $10. When a run's allowance is gone, its remaining games are scored on the reference and flagged. A run that is admitted and then fails still uses its place among the twelve. The budget tool shows what is left of everything.
@@ -210,6 +212,8 @@ archive_read gives, for any completed run, one section at a time:
 - sandboxSteps: every run of your code, with the file, the action it returned, its exit status, any limit it hit and the last 4,000 bytes of its stderr.
 
 compare sets two runs side by side on the games they share.
+
+A run on the late stretch is the exception: only its configuration and a headline summary can be read, as described above.
 
 Everything your system did is there to be read. When a result surprises you, read what the agents were told and what they said, and what the code printed, before you form a view of why. What your code writes to stderr is the only commentary it leaves, so have it record the things you will want to know afterwards: which branch it took, what it changed from the reference and why.
 

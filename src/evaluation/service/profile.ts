@@ -53,6 +53,10 @@ export const developmentRequest = z.discriminatedUnion("kind", [
 ]);
 export type Request = z.infer<typeof developmentRequest>;
 export { developmentHoldout as holdout };
+/** The first instant of the late window. Test runs stop before it, and a run
+ * that covers it is read back in summary only (SPO-926). */
+export const lateStart = (profile: typeof evaluationProfile) =>
+  profile.windows.late.from + "T00:00:00Z";
 export function developmentGames(
   schedule: TeamGame[],
   request: Request,
@@ -78,9 +82,7 @@ export function developmentGames(
       throw Error("Unknown or duplicate development team-game");
     if (
       request.kind === "test" &&
-      selected.some(
-        (g) => !before(g.tip, profile.windows.late.from + "T00:00:00Z"),
-      )
+      selected.some((g) => !before(g.tip, lateStart(profile)))
     )
       throw Error(
         `Test runs require games tipping before ${profile.windows.late.from} UTC; the late window is reserved for checks.`,

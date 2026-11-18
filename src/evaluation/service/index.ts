@@ -18,7 +18,9 @@ import {
   evaluationProfile,
   profileSchema,
   finalGames,
+  lateStart,
 } from "./profile.js";
+import { before } from "../../data/time.js";
 import { buildModels, type TrainingData } from "./training.js";
 
 import {
@@ -171,12 +173,46 @@ export function developmentService(host: EvaluationHost) {
     list: () => pool.list(),
     refusals: () => pool.refusals(),
     archive: previous,
+    /** Whether the run covers the late window, which no test run can reach.
+     * Only its headline result goes back to the architect, so that it cannot
+     * be studied game by game and tuned to (user decision, Nov 18, 2026). */
+    reserved: (id: string) =>
+      pool
+        .complete(id)
+        .games.some((g) => !before(g.tip, lateStart(pool.profile))),
     summary(id: string) {
       const { scores } = previous(id);
       return {
         system: summarize(scores, "agent"),
         reference: summarize(scores, "reference"),
         againstReference: pairedComparison(scores, scores, "reference"),
+      };
+    },
+    /** The summary with everything below the whole sample removed. */
+    headline(id: string) {
+      const { scores, forecasts } = previous(id);
+      const { games, teamGames, metrics, guardrailFlag } = pairedComparison(
+        scores,
+        scores,
+        "reference",
+      );
+      return {
+        system: { overall: summarize(scores, "agent").overall },
+        reference: { overall: summarize(scores, "reference").overall },
+        againstReference: {
+          games,
+          teamGames,
+          metrics: Object.fromEntries(
+            Object.entries(metrics).map(
+              ([name, { ratio, delta, ratio90, delta90 }]) => [
+                name,
+                { ratio, delta, ratio90, delta90 },
+              ],
+            ),
+          ),
+          guardrailFlag,
+        },
+        fallbacks: forecasts.filter((f) => f.fallback).length,
       };
     },
     compare: (a: string, b: string) =>
