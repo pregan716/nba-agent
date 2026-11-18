@@ -26,6 +26,8 @@ import { scoreGame } from "../src/projection/scoring.js";
 import type { ReplaySource, TeamGame } from "../src/game-loop/replay.js";
 import type { Package } from "../src/game-loop/package.js";
 import type { Forecast, Range } from "../src/projection/forecast.js";
+import { Iteration } from "../src/architect/iteration.js";
+import { architectTools } from "../src/architect/tools.js";
 
 const pkg: Package = {
   version: "game-loop-v1",
@@ -141,6 +143,190 @@ test("pool serializes reservations across handles, records refusals and releases
   b.reserve("test", null, "hash", pkg, [middle]);
   assert.equal(a.refusals().length, 2);
 });
+test("test cutoff follows the configured late window", () => {
+  const profile = structuredClone(evaluationProfile);
+  profile.windows.late.from = "2026-02-24";
+  const beforeCutoff = {
+    ...middle,
+    gameId: "before",
+    tip: "2026-02-23T23:59:59Z",
+  };
+  const atCutoff = {
+    ...middle,
+    gameId: "at",
+    tip: "2026-02-24T00:00:00Z",
+  };
+  const select = (game: TeamGame) =>
+    developmentGames(
+      [beforeCutoff, atCutoff],
+      {
+        kind: "test",
+        package: pkg,
+        games: [{ gameId: game.gameId, teamId: game.teamId }],
+      },
+      profile,
+    );
+  assert.deepEqual(select(beforeCutoff), [beforeCutoff]);
+  assert.throws(() => select(atCutoff), /before 2026-02-24 UTC/);
+});
+
+test("test runs refuse the late window before review or execution without charging the pool", async (t) => {
+  const f = fixtureCorpus(),
+    root = mkdtempSync(join(tmpdir(), "test-window-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const feb22 = { ...middle, gameId: "feb22", tip: "2026-02-22T23:59:59Z" };
+  const feb23 = { ...middle, gameId: "feb23", tip: "2026-02-23T00:00:00Z" };
+  const march = { ...middle, gameId: "march", tip: "2026-03-22T23:00:00Z" };
+  const schedule = [feb22, feb23, march];
+  const profile = structuredClone(evaluationProfile);
+  profile.replay.usdPerTeamGame = 0;
+  profile.windows.late.count = 2;
+  const calls: string[] = [];
+  const host: EvaluationHost = {
+    root,
+    config: f.config,
+    profile,
+    review: {
+      async scan(raw) {
+        calls.push("scan");
+        return fixtureReview.scan(raw);
+      },
+      async reviewer(pkg) {
+        calls.push("review");
+        return fixtureReview.reviewer(pkg);
+      },
+    },
+    source: {
+      data: f.source,
+      schedule,
+      async projection(g) {
+        calls.push("projection");
+        return { roster, reference: forecast(g, 7) };
+      },
+      async outcomes(g) {
+        calls.push("outcomes");
+        return outcome(g);
+      },
+    },
+    runAgent: async () => {
+      throw Error("No provider call expected");
+    },
+    get training(): never {
+      throw Error("No training declared");
+    },
+  };
+  const service = developmentService(host);
+  t.after(() => service.close());
+  const budget = service.budget();
+  for (const games of [[feb23], [march], [feb22, feb23]]) {
+    await assert.rejects(
+      service.evaluate({
+        kind: "test",
+        package: pkg,
+        games: games.map(({ gameId, teamId }) => ({ gameId, teamId })),
+      }),
+      /before 2026-02-23 UTC; the late window is reserved for checks/,
+    );
+    assert.deepEqual(calls, []);
+    assert.deepEqual(service.budget(), budget);
+    assert.deepEqual(service.list(), []);
+  }
+  const accepted = await service.evaluate({
+    kind: "test",
+    package: pkg,
+    games: [{ gameId: feb22.gameId, teamId: feb22.teamId }],
+  });
+  assert.equal(accepted.archive.forecasts[0].game?.gameId, feb22.gameId);
+  assert.ok(calls.includes("review"));
+  assert.equal(service.list().length, 1);
+  const check = await service.evaluate({
+    kind: "check",
+    window: "late",
+    runId: accepted.id,
+  });
+  assert.equal(check.archive.forecasts.length, 2);
+  const repeat = await service.evaluate({ kind: "repeat", runId: check.id });
+  assert.equal(repeat.archive.forecasts.length, 2);
+
+  // What the architect is given. A run on the late window returns its
+  // headline only; an earlier run is read in full.
+  const i = new Iteration(root);
+  t.after(() => i.close());
+  const tools = architectTools(i, service, async () => null);
+  const use = async (name: string, args: unknown) => {
+    const reply = await tools
+      .find((tool) => tool.name === name)!
+      .execute("id", args);
+    const block = reply.content[0];
+    return JSON.parse(block.type === "text" ? block.text : "{}") as {
+      error?: string;
+      result?: { content: string };
+    };
+  };
+  const read = (runId: string, section: string) =>
+    use("archive_read", { runId, section });
+  for (const { id: runId, archive } of [check, repeat]) {
+    for (const section of ["calls", "sandboxSteps", "forecasts", "scores"])
+      assert.match((await read(runId, section)).error!, /late window/);
+    assert.equal(
+      JSON.parse((await read(runId, "configuration")).result!.content).entry,
+      "main.py",
+    );
+    const summary = JSON.parse((await read(runId, "summary")).result!.content);
+    assert.deepEqual(Object.keys(summary.system), ["overall"]);
+    assert.deepEqual(Object.keys(summary.reference), ["overall"]);
+    assert.deepEqual(Object.keys(summary.againstReference), [
+      "games",
+      "teamGames",
+      "metrics",
+      "guardrailFlag",
+    ]);
+    assert.deepEqual(
+      Object.keys(summary.againstReference.metrics["minutes.pinball"]),
+      ["ratio", "delta", "ratio90", "delta90"],
+    );
+    assert.equal(
+      summary.fallbacks,
+      archive.forecasts.filter((f) => f.fallback).length,
+    );
+    assert.doesNotMatch(JSON.stringify(summary), /feb23|march|playerId/);
+  }
+  assert.match(
+    (await use("compare", { left: check.id, right: repeat.id })).error!,
+    /late window/,
+  );
+  assert.match((await read(accepted.id, "forecasts")).result!.content, /feb22/);
+  assert.ok(
+    "byGame" in
+      JSON.parse((await read(accepted.id, "summary")).result!.content).system,
+  );
+  // A refused test tells the architect why.
+  const { files, ...manifest } = pkg;
+  await use("document_write", {
+    area: "draft",
+    name: "package.json",
+    content: JSON.stringify(manifest),
+  });
+  await use("document_write", {
+    area: "draft",
+    name: "main.py",
+    content: files["main.py"],
+  });
+  await use("hypothesis_write", {
+    action: "add",
+    name: "h",
+    description: "d",
+  });
+  const refused = await use("submit", {
+    kind: "test",
+    hypothesis: "h",
+    expectedEffect: "e",
+    games: [{ gameId: feb23.gameId, teamId: feb23.teamId }],
+  });
+  assert.match(refused.error!, /before 2026-02-23 UTC/);
+  assert.equal(i.status, "running");
+});
+
 test("development requests stay on the pinned games, final mode is separate, repeats and checks reuse the package", async (t) => {
   const f = fixtureCorpus(),
     root = mkdtempSync(join(tmpdir(), "v5-service-"));

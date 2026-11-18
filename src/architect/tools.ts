@@ -35,6 +35,8 @@ const submission = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("repeat"), ...proposal, runId: z.uuid() }),
   z.strictObject({ kind: z.literal("nominate"), ...proposal, runId: z.uuid() }),
 ]);
+const lateWindowOnly =
+  "This run covers the late window, which is kept out of reach of your tests. Only its configuration and its headline summary can be read, and it cannot be compared game by game.";
 function slice(text: string, offset = 0) {
   const content = text.slice(offset, offset + 16000);
   return {
@@ -276,25 +278,36 @@ export function architectTools(
         ]),
         offset: page,
       }),
-      (a) =>
-        slice(
+      (a) => {
+        // A run on the late window gives back its headline only (SPO-926).
+        const reserved = s.reserved(a.runId);
+        if (reserved && !["configuration", "summary"].includes(a.section))
+          throw Error(lateWindowOnly);
+        return slice(
           JSON.stringify(
             a.section === "summary"
-              ? s.summary(a.runId)
+              ? reserved
+                ? { ...s.headline(a.runId), note: lateWindowOnly }
+                : s.summary(a.runId)
               : s.archive(a.runId)[a.section],
           ),
           a.offset,
-        ),
+        );
+      },
     ),
     tool(
       "compare",
       "Compare two completed development evaluations.",
       z.strictObject({ left: z.uuid(), right: z.uuid() }),
-      (a) => s.compare(a.left, a.right),
+      (a) => {
+        if (s.reserved(a.left) || s.reserved(a.right))
+          throw Error(lateWindowOnly);
+        return s.compare(a.left, a.right);
+      },
     ),
     tool(
       "submit",
-      "Request a development evaluation or a nomination. A test run returns in this conversation and the iteration continues; any other kind ends the iteration. Name an open hypothesis and its expected effect.",
+      "Request a development evaluation or a nomination. A test run returns in this conversation and the iteration continues; any other kind ends the iteration. Test games must tip before February 23, 2026. Name an open hypothesis and its expected effect.",
       z.strictObject({
         kind: z.enum(submissionKinds),
         ...proposal,
@@ -341,7 +354,7 @@ export function architectTools(
             e instanceof ReviewRejection || e instanceof ReviewerFailure
               ? e.message
               : e instanceof Error &&
-                  /^(Full evaluation cap exceeded|Evaluation dollar pool exceeded|Development closed after nomination|Unknown or duplicate development team-game|Nominate a full evaluation|Configuration ineligible for nomination)$/.test(
+                  /^(Full evaluation cap exceeded|Evaluation dollar pool exceeded|Development closed after nomination|Unknown or duplicate development team-game|Nominate a full evaluation|Configuration ineligible for nomination|Test runs require games tipping before .*)$/.test(
                     e.message,
                   )
                 ? e.message
