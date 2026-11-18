@@ -660,8 +660,9 @@ print("filtered data verified")`,
     {
       calls: ({ messages }) => [
         call("archive_read", {
+          // The tool result is followed by the request's effort marker.
           runId: /runId\\*":\\*"([0-9a-f-]{36})/.exec(
-            JSON.stringify(messages.at(-1)),
+            JSON.stringify(messages.slice(-2)),
           )![1],
           section: "forecasts",
         }),
@@ -672,7 +673,7 @@ print("filtered data verified")`,
   const first = await architectIteration(host, provider.options);
   assert.equal(first.status, "full");
   // The test run's forecast reached the architect before it submitted full.
-  const readBack = JSON.stringify(provider.requests.at(-1)!.messages.at(-1));
+  const readBack = JSON.stringify(provider.requests.at(-1)!.messages.slice(-2));
   assert.match(readBack, /forecast-v1/);
   assert.match(readBack, /-12345/);
   assert.match(
@@ -761,7 +762,7 @@ print("filtered data verified")`,
     // turn reports its input as cache writes, the price the hold assumes, and
     // leaves five cents.
     {
-      inputTokens: 4791940,
+      inputTokens: 5989940,
       outputTokens: 10,
       cacheWrite: true,
       calls: [call("hypotheses", {})],
@@ -809,7 +810,7 @@ print("filtered data verified")`,
     /Budget low/,
   );
   assert.ok(
-    provider.requests.every((r) => r.stream && r.model === "claude-opus-4-6"),
+    provider.requests.every((r) => r.stream && r.model === "claude-opus-5-5"),
   );
   // Every request marks its system prompt and its latest message for caching.
   for (const r of provider.requests) {
@@ -817,13 +818,20 @@ print("filtered data verified")`,
       /"cache_control":\{"type":"ephemeral"\}/g,
     );
     assert.ok(marks && marks.length >= 2, "request is not cached");
-    // Adaptive thinking at high effort.
+    // Adaptive thinking at high effort. For this model the effort is the
+    // marker that closes the conversation, not the request-level setting.
     const sent = r as unknown as {
       thinking?: { type: string };
-      output_config?: { effort: string };
+      messages: { role: string; output_config?: { effort: string } }[];
     };
     assert.equal(sent.thinking?.type, "adaptive");
-    assert.equal(sent.output_config?.effort, "high");
+    assert.deepEqual(
+      {
+        role: sent.messages.at(-1)!.role,
+        ...sent.messages.at(-1)!.output_config,
+      },
+      { role: "system", effort: "high" },
+    );
   }
   assert.equal(db.prepare("SELECT count(*) AS n FROM documents").get()?.n, 3);
   assert.equal(db.prepare("SELECT count(*) AS n FROM hypotheses").get()?.n, 1);
@@ -910,13 +918,13 @@ print("filtered data verified")`,
     .get(recovered.iteration)!;
   // The HTTP 529, disconnect and streamed overload each retain a hold. The rate limit
   // released its reservation and the token count never charged the ledger.
-  assert.equal(ledger.spent, 2 * (10 * 5 + 3 * 25) * 1000);
+  assert.equal(ledger.spent, 2 * (10 * 4 + 3 * 20) * 1000);
   // A hold is the full output allowance plus the input, bounded by the size
   // of the request (tens of kilobytes here) at the cache-write price.
-  const output = 32000 * 25 * 1000;
+  const output = 32000 * 20 * 1000;
   const holds = (n: number, held: unknown) => {
     const input = Number(held) / n - output;
-    assert.ok(input > 20000 * 6250 && input < 200000 * 6250, String(held));
+    assert.ok(input > 20000 * 5000 && input < 200000 * 5000, String(held));
   };
   holds(3, ledger.held);
 
@@ -989,8 +997,8 @@ test("a cache-write-priced architect request settles the iteration at exactly $3
   // The first turn costs 10 input and 3 output tokens. The second is billed
   // as cache writes and 10 output tokens, which is the whole balance: its
   // hold, at the cache-write price, leaves room for exactly those 10.
-  const first = 10 * 5 + 3 * 25,
-    cached = (30e6 - first - 10 * 25) / 6.25;
+  const first = 10 * 4 + 3 * 20,
+    cached = (30e6 - first - 10 * 20) / 5;
   assert.ok(Number.isInteger(cached));
   provider.steps.push(
     { calls: [{ name: "budget", input: {} }] },
