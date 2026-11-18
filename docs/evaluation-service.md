@@ -13,6 +13,8 @@ The host opens one persistent evaluation pool per development experiment and pas
 
 Each request is a JSON object with a `kind`. For a test, each element of `games` has `teamId` and `gameId`. Times in the fixed windows follow the brief's UTC schedule selection. Each run gets a fresh artifact store. The game loop can use the earlier released reference history.
 
+Reference fits are shared between pools in `.cache/reference-fits` under the data checkout. Entries are keyed by the data versions, pinned projection runtime and source, and the full model input (including team, game and cutoff). Each pool still records its own immutable reference receipt. Concurrent callers serialize cold fits and validate stored receipts before reuse.
+
 The default pool holds $1,000 and admits up to 12 full evaluations. The SQLite ledger reserves the maximum run cost atomically across processes before starting work. Completion releases the unused reservation and retains actual spend plus unresolved provider charges. A refused budget or cap request is recorded. A failed admitted full run still uses its full-run slot. After a host process dies, the next service instance reconciles its reservation from the run record. Unsettled provider requests remain charged at the reserved amount. Full-run limits, UTC windows and replay allowances belong to the host profile and are pinned when a pool opens.
 
 ## Scores and archive
