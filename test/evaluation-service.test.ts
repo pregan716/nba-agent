@@ -141,6 +141,33 @@ test("pool serializes reservations across handles, records refusals and releases
   b.reserve("test", null, "hash", pkg, [middle]);
   assert.equal(a.refusals().length, 2);
 });
+test("test cutoff follows the configured late window", () => {
+  const profile = structuredClone(evaluationProfile);
+  profile.windows.late.from = "2026-02-24";
+  const beforeCutoff = {
+    ...middle,
+    gameId: "before",
+    tip: "2026-02-23T23:59:59Z",
+  };
+  const atCutoff = {
+    ...middle,
+    gameId: "at",
+    tip: "2026-02-24T00:00:00Z",
+  };
+  const select = (game: TeamGame) =>
+    developmentGames(
+      [beforeCutoff, atCutoff],
+      {
+        kind: "test",
+        package: pkg,
+        games: [{ gameId: game.gameId, teamId: game.teamId }],
+      },
+      profile,
+    );
+  assert.deepEqual(select(beforeCutoff), [beforeCutoff]);
+  assert.throws(() => select(atCutoff), /before 2026-02-24 UTC/);
+});
+
 test("test runs refuse the late window before review or execution without charging the pool", async (t) => {
   const f = fixtureCorpus(),
     root = mkdtempSync(join(tmpdir(), "test-window-"));
