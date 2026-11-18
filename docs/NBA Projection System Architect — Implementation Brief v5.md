@@ -57,7 +57,7 @@ The agent's only signal was one game of feedback, and one game is mostly noise. 
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | Goal                 | Test whether an architect agent can build a projection system that adds value to DFS players and bettors                                                              | Agreed (Nov 14, 2026)                           |
 | Architect            | The only permanent and mandatory agent role. It decides how the game loop works.                                                                                      | Agreed (Nov 14, 2026)                           |
-| Architect model      | `claude-opus-4-6` to start. Jev has no role in the architect.                                                                                                         | Agreed (Nov 14, 2026)                           |
+| Architect model      | `claude-opus-5-5`, exempt from the contamination probe (see Contamination). It replaced `claude-opus-4-6` after four iterations. Jev has no role in the architect.    | Agreed (Nov 17, 2026)                           |
 | Game-loop models     | `claude-haiku-4-5-20251001`, `claude-sonnet-4-6`, `claude-opus-4-6` and Jev (`jev-1.14.0`, the version in use), at the architect's choice. Nothing outside this list. | Agreed (Nov 14, 2026)                           |
 | Target metric        | Minutes pinball loss relative to the reference projection on the same games                                                                                           | Agreed (Nov 14, 2026)                           |
 | Teams                | Boston, Denver, Memphis, Oklahoma City and Washington, 2025–26 regular season; 2024–25 games are historical evidence from the start                                   | Agreed (Nov 14, 2026)                           |
@@ -196,6 +196,12 @@ Status: review by a separate model is Agreed (Nov 14, 2026). The procedure is Pr
 
 Status: Proposed. Every model on the allowed list, the architect and the reviewer included, passes the carried contamination probe before use, with items added for the four new teams. A version that shows knowledge of the 2025–26 season is not allowed. `claude-opus-4-6` passed for the Celtics on Nov 12, 2026. `claude-haiku-4-5-20251001` and `claude-sonnet-4-6` have not been probed, and Jev's last probe predates this experiment. A version that fails comes off the list and the user is told.
 
+**Exception for the architect (Agreed Nov 17, 2026).** The architect is `claude-opus-5-5`, whose training data runs past the 2025–26 season. It is not probed and would not pass. The user accepted this after a side-by-side run of four iterations each (SPO-908, SPO-925), in which it studied where the reference loses before building and made larger changes than `claude-opus-4-6` did. That run was exploratory. Its results are not evidence and its configurations are not candidates for nomination.
+
+- The exception covers the architect only. The reviewer and every game-loop model must still pass the probe.
+- The architect writes a system and never a forecast, so what it remembers can reach a forecast only through the configuration it submits. The leakage rule and the review are the guard: the automated scan for names, ids and dates of the season, and the reviewer's reading of every submission, which rejects content tied to particular players, teams or games.
+- The review cannot catch a general fact about the season written as an ordinary setting, such as a league-wide trend expressed as one tuned number. The test teams do not catch it either, because they played in the same season. This is stated under Limits.
+
 ## Budgets
 
 Status: budgets at the level of a full replay run are Agreed in form (Nov 14, 2026). The architect's $30 per iteration is Agreed (Nov 14, 2026); the other numbers are Proposed. Dollar figures use the v4 price schedule.
@@ -237,6 +243,7 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 
 ## Limits on claims
 
+- **The architect has seen the season.** `claude-opus-5-5` was trained on data that includes 2025–26. The review keeps out content tied to particular players, teams and games. It cannot keep out general knowledge of how the season went, and a design choice that rests on such knowledge would also help on Denver and Memphis. A gain on the test teams therefore does not show that the same architect would do as well on a season it has not seen.
 - **One architect, one run.** A result describes one sequence of designs by one model, not architects in general.
 - **Two test teams, same season.** Denver and Memphis are unseen, but they play in the season the architect studied, and 14 of their games against development teams are visible to it.
 - **Design choices are fitted to development results.** The leakage rule cannot separate a general design choice from one that happens to suit three teams in 2025–26. Only the test teams can.
@@ -266,6 +273,12 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 | Agent failure                  | A configuration must still produce a valid forecast when its agents are switched off                                                                                                              |
 | v4 scored run                  | Withdrawn (SPO-885)                                                                                                                                                                               |
 | Market test and big-over picks | Dropped (SPO-912). Game lines are collected for all five teams; player props are not collected for the new teams. The ceiling-game score stays.                                                   |
+
+### Agreed on Nov 17, 2026
+
+| Decision        | Resolution                                                                                                                                                                         |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architect model | `claude-opus-5-5` replaces `claude-opus-4-6`. It is exempt from the contamination probe; the leakage rule and the review are the guard. The reviewer stays `claude-opus-4-6`.      |
 
 ### Open
 

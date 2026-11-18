@@ -21,8 +21,9 @@ import { Iteration, architectWarnUsd } from "./iteration.js";
 import { ARCHITECT_PROMPT } from "./prompt.js";
 
 /** Models the operator may run the architect on. The first is the experiment's
- * architect; the others are for side-by-side runs in a pool of their own. */
-export const architectModels = ["claude-opus-4-6", "claude-opus-5-5"] as const;
+ * architect (user decision, Nov 17, 2026; brief v5 "Contamination"); the
+ * others are for side-by-side runs in a pool of their own. */
+export const architectModels = ["claude-opus-5-5", "claude-opus-4-6"] as const;
 export type ArchitectModel = (typeof architectModels)[number];
 const architectModel = (options: ArchitectOptions) =>
   ANTHROPIC_MODELS[options.model ?? architectModels[0]];
