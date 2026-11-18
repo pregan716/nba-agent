@@ -282,6 +282,12 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Architect model | `claude-opus-5-5` replaces `claude-opus-4-6`. It is exempt from the contamination probe; the leakage rule and the review are the guard. The reviewer stays `claude-opus-4-6`.      |
 
+### Agreed on Nov 17 and 18, 2026
+
+| Decision              | Resolution                                                                                                                                                                              |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reserved late stretch | Test runs accept only games that tip before Feb 23, 2026 (Nov 17). A run on the late stretch returns its headline only and cannot be put into a paired comparison (Nov 18). See Evaluation games. |
+
 ### Open
 
 None.
