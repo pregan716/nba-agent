@@ -76,6 +76,13 @@ export function developmentGames(
     );
     if (selected.length !== wanted.length)
       throw Error("Unknown or duplicate development team-game");
+    if (
+      request.kind === "test" &&
+      selected.some((g) => !before(g.tip, "2026-02-23T00:00:00Z"))
+    )
+      throw Error(
+        "Test runs require games tipping before 2026-02-23 UTC; the late window is reserved for checks.",
+      );
     return selected;
   }
   const w =

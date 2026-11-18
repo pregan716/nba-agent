@@ -141,6 +141,85 @@ test("pool serializes reservations across handles, records refusals and releases
   b.reserve("test", null, "hash", pkg, [middle]);
   assert.equal(a.refusals().length, 2);
 });
+test("test runs refuse the late window before review or execution without charging the pool", async (t) => {
+  const f = fixtureCorpus(),
+    root = mkdtempSync(join(tmpdir(), "test-window-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const feb22 = { ...middle, gameId: "feb22", tip: "2026-02-22T23:59:59Z" };
+  const feb23 = { ...middle, gameId: "feb23", tip: "2026-02-23T00:00:00Z" };
+  const march = { ...middle, gameId: "march", tip: "2026-03-22T23:00:00Z" };
+  const schedule = [feb22, feb23, march];
+  const profile = structuredClone(evaluationProfile);
+  profile.replay.usdPerTeamGame = 0;
+  profile.windows.late.count = 2;
+  const calls: string[] = [];
+  const host: EvaluationHost = {
+    root,
+    config: f.config,
+    profile,
+    review: {
+      async scan(raw) {
+        calls.push("scan");
+        return fixtureReview.scan(raw);
+      },
+      async reviewer(pkg) {
+        calls.push("review");
+        return fixtureReview.reviewer(pkg);
+      },
+    },
+    source: {
+      data: f.source,
+      schedule,
+      async projection(g) {
+        calls.push("projection");
+        return { roster, reference: forecast(g, 7) };
+      },
+      async outcomes(g) {
+        calls.push("outcomes");
+        return outcome(g);
+      },
+    },
+    runAgent: async () => {
+      throw Error("No provider call expected");
+    },
+    get training(): never {
+      throw Error("No training declared");
+    },
+  };
+  const service = developmentService(host);
+  t.after(() => service.close());
+  const budget = service.budget();
+  for (const games of [[feb23], [march], [feb22, feb23]]) {
+    await assert.rejects(
+      service.evaluate({
+        kind: "test",
+        package: pkg,
+        games: games.map(({ gameId, teamId }) => ({ gameId, teamId })),
+      }),
+      /before 2026-02-23 UTC; the late window is reserved for checks/,
+    );
+    assert.deepEqual(calls, []);
+    assert.deepEqual(service.budget(), budget);
+    assert.deepEqual(service.list(), []);
+  }
+  const accepted = await service.evaluate({
+    kind: "test",
+    package: pkg,
+    games: [{ gameId: feb22.gameId, teamId: feb22.teamId }],
+  });
+  assert.equal(accepted.archive.forecasts[0].game?.gameId, feb22.gameId);
+  assert.ok(calls.includes("review"));
+  assert.equal(service.list().length, 1);
+  const check = await service.evaluate({
+    kind: "check",
+    window: "late",
+    runId: accepted.id,
+  });
+  assert.equal(check.archive.forecasts.length, 2);
+  const repeat = await service.evaluate({ kind: "repeat", runId: check.id });
+  assert.equal(repeat.archive.forecasts.length, 2);
+});
+
 test("development requests stay on the pinned games, final mode is separate, repeats and checks reuse the package", async (t) => {
   const f = fixtureCorpus(),
     root = mkdtempSync(join(tmpdir(), "v5-service-"));
