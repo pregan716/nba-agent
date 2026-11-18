@@ -20,7 +20,12 @@ import { architectTools, type SubmissionKind } from "./tools.js";
 import { Iteration, architectWarnUsd } from "./iteration.js";
 import { ARCHITECT_PROMPT } from "./prompt.js";
 
-const model = ANTHROPIC_MODELS["claude-opus-4-6"];
+/** Models the operator may run the architect on. The first is the experiment's
+ * architect; the others are for side-by-side runs in a pool of their own. */
+export const architectModels = ["claude-opus-4-6", "claude-opus-5-5"] as const;
+export type ArchitectModel = (typeof architectModels)[number];
+const architectModel = (options: ArchitectOptions) =>
+  ANTHROPIC_MODELS[options.model ?? architectModels[0]];
 // Tokens the provider adds to a request that are not in its bytes (the tool-use
 // system prompt is a few hundred).
 const providerOverheadTokens = 1000;
@@ -30,6 +35,8 @@ interface ArchitectOptions {
   signal?: AbortSignal;
   /** Operator restriction on what this iteration may submit. */
   only?: readonly SubmissionKind[];
+  /** Defaults to the experiment's architect model. */
+  model?: ArchitectModel;
 }
 // Pi exposes Anthropic SSE error events as their JSON data in errorMessage.
 function streamFailureStatus(message: string | undefined) {
@@ -51,6 +58,7 @@ function streamFailureStatus(message: string | undefined) {
   }
 }
 function metered(i: Iteration, signal: AbortSignal, options: ArchitectOptions) {
+  const model = architectModel(options);
   const key = options.apiKey ?? process.env.ANTHROPIC_API_KEY;
   if (!key) throw Error("Missing architect provider credentials");
   const provider = anthropicProvider(key, options.baseURL ?? model.baseUrl);
@@ -171,6 +179,8 @@ async function converse(
   options: ArchitectOptions,
 ) {
   const stream = metered(i, signal, options);
+  const model = architectModel(options);
+  i.record("model", model.id);
   const user = (content: string) => ({
     role: "user" as const,
     content,

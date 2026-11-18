@@ -1,4 +1,7 @@
-import { architectIteration } from "../src/architect/session.js";
+import {
+  architectIteration,
+  architectModels,
+} from "../src/architect/session.js";
 import { readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { DopplerStore } from "../src/data/store.js";
@@ -36,14 +39,23 @@ if (
   )
 )
   throw Error(
-    "Usage: npm run evaluation -- MODE POOL_DIRECTORY PINNED_SANDBOX PINNED_PROJECTION [REQUEST_FILE | RUN_ID ... | --only=KIND,...]",
+    "Usage: npm run evaluation -- MODE POOL_DIRECTORY PINNED_SANDBOX PINNED_PROJECTION [REQUEST_FILE | RUN_ID ... | --only=KIND,... --model=ID]",
   );
-// `architect ... --only=test` restricts what that iteration may submit.
-const only =
-  mode === "architect" && args[0]?.startsWith("--only=")
-    ? z.array(z.enum(submissionKinds)).min(1).parse(args[0].slice(7).split(","))
+// `architect ... --only=test` restricts what that iteration may submit;
+// `--model=ID` runs the architect on another permitted model.
+const option = (name: string) =>
+  mode === "architect"
+    ? args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3)
     : undefined;
-if (mode === "architect" && args.length && !only)
+const onlyKinds = option("only");
+const only =
+  onlyKinds === undefined
+    ? undefined
+    : z.array(z.enum(submissionKinds)).min(1).parse(onlyKinds.split(","));
+const modelId = option("model");
+const model =
+  modelId === undefined ? undefined : z.enum(architectModels).parse(modelId);
+if (mode === "architect" && args.some((a) => !/^--(only|model)=/.test(a)))
   throw Error("Unknown architect option");
 const request =
   mode === "evaluate"
@@ -96,7 +108,9 @@ try {
     }),
   };
   if (mode === "architect")
-    console.log(JSON.stringify(await architectIteration(host, { only })));
+    console.log(
+      JSON.stringify(await architectIteration(host, { only, model })),
+    );
   else if (mode === "final")
     console.log(JSON.stringify(await finalEvaluation(host, args[0])));
   else {
