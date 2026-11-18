@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, readFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -258,6 +260,114 @@ test("pregame tables return immutable earlier forecasts paired only with release
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("reference fits are shared across pools, isolated by dependencies and safe across processes", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "shared-reference-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const input = { ...fixture(), history: [] };
+  const cache = { root: join(root, "cache"), dataVersion: "v1" };
+  const identity = { version: "fixture", image: "image-a", source: "source-a" };
+  const worker = String.raw`
+    import { appendFileSync } from "node:fs";
+    import { recordReference } from ${JSON.stringify(new URL("../src/projection/reference.ts", import.meta.url).href)};
+    const [pool, input, cache, identity, log] = process.argv.slice(1).map(JSON.parse);
+    const model = {
+      identity: async () => identity,
+      fit: (data) => {
+        appendFileSync(log, "fit\n");
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150);
+        const players = data.roster.map(({playerId}) => ({
+          playerId, p_play: 0.8, p_start: 0.2,
+          ...Object.fromEntries(["minutes", "points", "rebounds", "assists", "fantasy_points"].map(q => [q, [0,1,2,3,4,5,6]]))
+        }));
+        return {modelHash: "fit", forecast: {version: "forecast-v1", gameId: data.gameId, players}};
+      }
+    };
+    console.log(JSON.stringify(await recordReference(pool, model, input, cache)));
+  `;
+  const run = async (
+    pool: string,
+    data = input,
+    version: typeof cache | null = cache,
+    model = identity,
+  ) => {
+    const result = await promisify(execFile)(process.execPath, [
+      "--import",
+      "tsx",
+      "--input-type=module",
+      "-e",
+      worker,
+      ...[join(root, pool), data, version, model, join(root, "fits")].map((v) =>
+        JSON.stringify(v),
+      ),
+    ]);
+    return result.stdout;
+  };
+  const [cold, warm] = await Promise.all([run("pool-a"), run("pool-b")]);
+  assert.equal(cold, warm);
+  assert.equal(await readFile(join(root, "fits"), "utf8"), "fit\n");
+  assert.equal(await run("pool-c"), cold);
+  assert.equal(await run("uncached", input, null), cold);
+  await run("new-image", input, cache, { ...identity, image: "image-b" });
+  await run("new-source", input, cache, { ...identity, source: "source-b" });
+  await run("new-data", input, { ...cache, dataVersion: "v2" });
+  await run("new-team", { ...input, teamId: "1610612764" });
+  await run("new-game", { ...input, gameId: "another" });
+  await run("new-cutoff", { ...input, tip: "2025-10-24T00:00:00Z" });
+  await run("new-input", { ...input, roster: [] });
+  assert.equal(
+    (await readFile(join(root, "fits"), "utf8")).trim().split("\n").length,
+    9,
+  );
+});
+
+test(
+  "shared reference store skips a second pinned team fit and preserves its forecast",
+  { skip: !process.env.PROJECTION_IMAGE },
+  async (t) => {
+    const root = await mkdtemp(join(tmpdir(), "reference-timing-"));
+    t.after(() => rm(root, { recursive: true, force: true }));
+    const data = fixture();
+    data.teamId = "1610612760";
+    for (const game of data.history)
+      for (const player of game.players)
+        if (player.teamId === BOS) player.teamId = data.teamId;
+    const pinned = projectionModel(process.env.PROJECTION_IMAGE!);
+    let fits = 0;
+    const model = {
+      identity: pinned.identity,
+      fit(input: ModelInput) {
+        fits++;
+        return pinned.fit(input);
+      },
+    };
+    const cache = { root: join(root, "shared"), dataVersion: "fixture-v1" };
+    const start = performance.now();
+    const cold = await recordReference(
+      join(root, "pool-a"),
+      model,
+      data,
+      cache,
+    );
+    const fitted = performance.now();
+    const warm = await recordReference(
+      join(root, "pool-b"),
+      model,
+      data,
+      cache,
+    );
+    const finished = performance.now();
+    assert.equal(JSON.stringify(warm), JSON.stringify(cold));
+    assert.equal(fits, 1);
+    t.diagnostic(
+      JSON.stringify({
+        coldMs: fitted - start,
+        warmMs: finished - fitted,
+        fits,
+      }),
+    );
+  },
+);
 
 test("injury partitions admit the cutoff day, skip later files and reject undated keys", async () => {
   const { InjuryAdapter } = await import("../src/data/adapters.js");

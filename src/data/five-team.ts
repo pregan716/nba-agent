@@ -241,6 +241,7 @@ export async function fiveTeamReplay(
   image: string,
   receiptDirectory: string,
   beforeTip?: string,
+  referenceCache = resolve(data.root, ".cache/reference-fits"),
 ): Promise<ReplaySource> {
   const source = await projectionSource(data.corpus, data.root);
   const model = projectionModel(image);
@@ -273,6 +274,7 @@ export async function fiveTeamReplay(
         receiptDirectory,
         model,
         input,
+        { root: referenceCache, dataVersion: data.data.versions },
       );
       return {
         reference: forecast,

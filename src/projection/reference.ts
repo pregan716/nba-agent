@@ -111,6 +111,7 @@ export async function recordReference(
   root: string,
   model: Model,
   input: ModelInput,
+  cache?: { root: string; dataVersion: unknown },
 ): Promise<ReferenceRecord> {
   if (!/^[\w-]+$/.test(input.gameId)) throw Error("Invalid game ID");
   const harnessHash = digest(await model.identity()),
@@ -121,6 +122,43 @@ export async function recordReference(
     ...(input.teamId && input.teamId !== BOS ? [teamCode(input.teamId)] : []),
     input.gameId + ".json",
   );
+  const fit = (): ReferenceRecord => {
+    const fitted = model.fit(input);
+    return {
+      ...fitted,
+      exclusions: input.exclusions ?? [],
+      gameId: input.gameId,
+      cutoff: input.tip,
+      inputHash,
+      harnessHash,
+      modelHash: digest([harnessHash, fitted.modelHash]),
+    };
+  };
+  const cachedFit = () =>
+    cache
+      ? recordAt(
+          resolve(
+            cache.root,
+            digest(cache.dataVersion),
+            harnessHash,
+            inputHash + ".json",
+          ),
+          input,
+          harnessHash,
+          inputHash,
+          fit,
+        )
+      : fit();
+  return recordAt(path, input, harnessHash, inputHash, cachedFit);
+}
+
+function recordAt(
+  path: string,
+  input: ModelInput,
+  harnessHash: string,
+  inputHash: string,
+  fit: () => ReferenceRecord,
+): ReferenceRecord {
   const load = () => {
     const { record, checksum } = JSON.parse(readFileSync(path, "utf8")) as {
       record: ReferenceRecord;
@@ -153,16 +191,7 @@ export async function recordReference(
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }
-    const fitted = model.fit(input);
-    const record = {
-      ...fitted,
-      exclusions: input.exclusions ?? [],
-      gameId: input.gameId,
-      cutoff: input.tip,
-      inputHash,
-      harnessHash,
-      modelHash: digest([harnessHash, fitted.modelHash]),
-    };
+    const record = fit();
     const tmp = mkdtempSync(join(dirname(path), ".fit-"));
     try {
       const file = join(tmp, "receipt");
