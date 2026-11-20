@@ -242,3 +242,138 @@ test("an operator restriction refuses other submission kinds and leaves the iter
   );
   assert.equal(i.status, "running");
 });
+
+function finalRun(p: ReturnType<typeof pool>, mode: string) {
+  const directory = join("final", "nominee", mode);
+  mkdirSync(join(p.root, directory), { recursive: true });
+  const file = join(directory, "record.sqlite");
+  p.sql(
+    file,
+    "CREATE TABLE events(seq INTEGER PRIMARY KEY,kind TEXT,scope TEXT,data TEXT)",
+  );
+  const event = (kind: string, data: unknown, scope = "g") => {
+    const db = new DatabaseSync(join(p.root, file));
+    try {
+      db.prepare("INSERT INTO events(kind,scope,data) VALUES(?,?,?)").run(
+        kind,
+        scope,
+        JSON.stringify(data),
+      );
+    } finally {
+      db.close();
+    }
+  };
+  event("manifest", { games: [1, 2, 3] });
+  return event;
+}
+
+test("watcher reports an active final mode and stops at its first missing forecast without exposing outcomes", (t) => {
+  const p = pool(t);
+  const event = finalRun(p, "nominated");
+  event("team_game", { frozen: { privateForecast: 98765 } }, "first");
+  event("game_score", { privateScore: 12345 });
+  const state = inspectPool(p.root, limits);
+  assert.equal(state.stop, null);
+  assert.deepEqual(state.active, [
+    {
+      id: "final/nominee/nominated",
+      kind: "nominated",
+      teamGames: 3,
+      done: 1,
+      missing: 0,
+      agentErrors: 0,
+      usd: 0,
+    },
+  ]);
+  assert.deepEqual(state.runs, []);
+  assert.doesNotMatch(
+    JSON.stringify(state),
+    /privateForecast|privateScore|98765|12345/,
+  );
+  event("team_game", { frozen: null, reason: "wall_clock" }, "MEM:last");
+  assert.match(
+    inspectPool(p.root, limits).stop!,
+    /MEM:last.*nominated.*wall_clock/,
+  );
+});
+
+test("final snapshots ignore completed modes while catching a newly completed mode", (t) => {
+  const p = pool(t);
+  const old = finalRun(p, "nominated");
+  old("team_game", { frozen: null }, "old");
+  old("replay_end", {});
+  const next = finalRun(p, "clear-artifacts");
+  const known = new Set(inspectPool(p.root, limits).runs);
+  assert.deepEqual([...known], ["final/nominee/nominated"]);
+  assert.equal(inspectPool(p.root, limits, known).stop, null);
+  next("team_game", { frozen: null }, "new");
+  next("replay_end", {});
+  const state = inspectPool(p.root, limits, known);
+  assert.match(state.stop!, /new.*clear-artifacts/);
+  assert.deepEqual(state.active, []);
+});
+
+test("watcher counts settled and held final spend once and enforces per-mode agent failures", (t) => {
+  const p = pool(t);
+  p.run("development", "full", "complete", 2);
+  const first = finalRun(p, "nominated");
+  first("agent_reservation", { usd: 1 }); // seq 2 (after manifest)
+  first("agent_settlement", { reservation: 2, actual: 0.25 });
+  first("agent_error", {});
+  first("agent_error", {});
+  first("replay_end", {});
+  const known = new Set(inspectPool(p.root, limits).runs);
+  const second = finalRun(p, "agents-off");
+  second("agent_reservation", { usd: 0.5 });
+  second("agent_error", {});
+  second("agent_error", {});
+  const state = inspectPool(p.root, limits, known);
+  assert.equal(state.stop, null);
+  assert.equal(state.evaluationUsd, 2.75);
+  assert.equal(state.totalUsd, 2.75);
+  assert.match(
+    inspectPool(p.root, { ...limits, maxUsd: 2.5 }, known).stop!,
+    /Spend/,
+  );
+  second("agent_error", {});
+  assert.match(
+    inspectPool(p.root, limits, known).stop!,
+    /3 failed agent calls in agents-off/,
+  );
+});
+
+test("watcher script stops a final run and exits cleanly after a healthy final process ends", async (t) => {
+  const p = pool(t);
+  const known = join(p.root, "known.json");
+  writeFileSync(known, "[]");
+  const event = finalRun(p, "nominated");
+  event("team_game", { frozen: { privateForecast: 98765 } });
+  event("game_score", { privateScore: 12345 });
+  event("replay_end", {});
+  const ended = spawnSync(process.execPath, ["-e", ""]);
+  const healthy = watcher(
+    p.root,
+    "--max-usd=5",
+    "--known=" + known,
+    "--pid=" + ended.pid,
+  );
+  assert.equal(healthy.status, 0);
+  assert.match(healthy.stdout, /"ended":true/);
+  assert.doesNotMatch(
+    healthy.stdout,
+    /privateForecast|privateScore|98765|12345/,
+  );
+  const bad = finalRun(p, "clear-artifacts");
+  bad("team_game", { frozen: null, reason: "wall_clock" }, "DEN:last");
+  bad("replay_end", {});
+  const run = victim(t);
+  const failed = watcher(
+    p.root,
+    "--max-usd=5",
+    "--known=" + known,
+    "--pid=" + run.pid,
+  );
+  assert.equal(failed.status, 3);
+  assert.match(failed.stdout, /DEN:last.*clear-artifacts/);
+  await run.gone;
+});
