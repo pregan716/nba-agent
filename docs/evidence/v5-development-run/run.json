@@ -1,0 +1,779 @@
+{
+  "pool": ".cache/spo908-opus55",
+  "nominee": "fbfb2fbe-ba5e-44f7-8cf9-a241bd6a31fb",
+  "iterations": [
+    {
+      "id": "25136f74-d26d-4a5c-9cbc-8cc64e056b0a",
+      "started": "2026-11-18 03:04:05",
+      "status": "full",
+      "architectUsd": 2.7400826,
+      "requests": 47,
+      "submissions": [
+        {
+          "kind": "test",
+          "runId": "0a7fc835-0ef3-4786-9d04-ba2af973d952"
+        },
+        {
+          "kind": "test",
+          "runId": "411a9ebe-4de0-4f91-8080-b24fb1c3897a"
+        },
+        {
+          "kind": "test",
+          "runId": "1a19e8a7-6167-4075-9c5a-84451b9754fd"
+        },
+        {
+          "kind": "test",
+          "runId": "feae06a6-9a0a-4f50-8532-2b9b459bbf86"
+        },
+        {
+          "kind": "test",
+          "runId": "0a2322c3-77d9-44f1-bb63-0ce4f6bc15c6"
+        },
+        {
+          "kind": "test",
+          "runId": "3c409531-f495-4037-983f-8cee1ab8086a"
+        },
+        {
+          "kind": "test",
+          "runId": "175351c7-1f8d-4802-aa72-3ed6cd61747e"
+        },
+        {
+          "kind": "test",
+          "runId": "2c6fedc2-cd3d-4962-97d2-b1084eeef9dd"
+        },
+        {
+          "kind": "full",
+          "runId": "9d3e391b-feab-4348-bf76-ea0690c14148"
+        }
+      ]
+    },
+    {
+      "id": "f4fb042c-5885-4484-8cc9-d73829b027a3",
+      "started": "2026-11-18 04:42:30",
+      "status": "full",
+      "architectUsd": 3.630058,
+      "requests": 60,
+      "submissions": [
+        {
+          "kind": "test",
+          "runId": "b229fb07-13e2-401f-897e-2ede320e942c"
+        },
+        {
+          "kind": "test",
+          "runId": "574fe0c8-5db6-430e-8ba0-c75a115ea1e5"
+        },
+        {
+          "kind": "test",
+          "runId": "5911804f-81eb-4ba8-a4f2-94debf015fe4"
+        },
+        {
+          "kind": "test",
+          "runId": "e23e8546-bbed-4169-a8ab-55d3e87e150c"
+        },
+        {
+          "kind": "test",
+          "runId": "345699cf-5ddb-4297-abf8-c1b29e58bf0a"
+        },
+        {
+          "kind": "test",
+          "runId": "6f2acd4d-f6b2-465f-bf40-cf4ec1235bea"
+        },
+        {
+          "kind": "full",
+          "runId": "fbfb2fbe-ba5e-44f7-8cf9-a241bd6a31fb"
+        }
+      ]
+    },
+    {
+      "id": "bd1a5439-5da1-4593-a97e-fa15c7f20fdc",
+      "started": "2026-11-18 06:09:32",
+      "status": "check",
+      "architectUsd": 2.3042074,
+      "requests": 41,
+      "submissions": [
+        {
+          "kind": "test",
+          "runId": "90c51b8a-8706-40f6-ae9a-3e6dcee39cc8"
+        },
+        {
+          "kind": "test",
+          "runId": "2827cd55-b5ea-4787-be78-afdb9a3d0ac6"
+        },
+        {
+          "kind": "check",
+          "runId": "21f83a3f-996e-4932-8f7c-87dec323644a"
+        }
+      ]
+    },
+    {
+      "id": "c7d6ac4f-c0db-434f-bd34-8f9abb3c7591",
+      "started": "2026-11-18 07:03:41",
+      "status": "full",
+      "architectUsd": 5.209632,
+      "requests": 58,
+      "submissions": [
+        {
+          "kind": "test",
+          "runId": "8ee7f35f-81ab-4d52-9498-156d72f6bb55"
+        },
+        {
+          "kind": "test",
+          "runId": "0503bf4f-bc82-4f0c-8d9a-cac9ea2b0691"
+        },
+        {
+          "kind": "test",
+          "runId": "d0214bf5-a070-4719-be17-1c6b31456756"
+        },
+        {
+          "kind": "test",
+          "runId": "cf3b76f8-1ef6-45fa-8323-6cf68f8d678d"
+        },
+        {
+          "kind": "test",
+          "runId": "7e5279a3-fee3-44ce-b19a-3aa1a50fca31"
+        },
+        {
+          "kind": "test",
+          "runId": "a5b5ed53-0d8e-45df-bb1c-441ae50e77d7"
+        },
+        {
+          "kind": "test",
+          "runId": "8f8ff72d-05f7-4ebc-ba12-64b7e549b9b1"
+        },
+        {
+          "kind": "full",
+          "runId": "4abbd0ba-e5ae-4d8f-8147-327feea9fbeb"
+        }
+      ]
+    },
+    {
+      "id": "b335712c-ffcc-40a0-aed3-516a210299f4",
+      "started": "2026-11-20 00:28:44",
+      "status": "nominate",
+      "architectUsd": 0.3113186,
+      "requests": 7,
+      "submissions": [
+        {
+          "kind": "nominate",
+          "runId": "fbfb2fbe-ba5e-44f7-8cf9-a241bd6a31fb"
+        }
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "name": "lineup-starters",
+      "closed": 0,
+      "description": "Announced starting lineups + roster inactive flag + role-shifted minutes + redistribution + mild online quantile calibration (code only). In-sandbox backtest on ~150 earlier team-games: ratio ~0.94 avg (0.963/0.949/0.914). Expect full eval ratio 0.93-0.97."
+    },
+    {
+      "name": "gbm-minutes",
+      "closed": 0,
+      "description": "Quantile GBM (league-wide, fitted in-loop on previous season) blended with the lineup-adjusted reference; blend weight chosen online per team from its own earlier games among {0,.25,.5} (default .25 until 10 games). Backtest honest nested ratios .959/.927/.910 vs base .963/.949/.914 (738/764/760). Early season (first ~12 games, EARLYBT): cur .852/.856/.834 vs ref; GBM without ramp better than ramp5 (.870/.851/.862) -> ramp off. Previous-season feature imputation for players with no current-season games slightly hurt (.853/.867/.843) -> off. Expect full ratio ~0.962-0.968 vs prior full 0.974."
+    },
+    {
+      "name": "pred-lineup",
+      "closed": 1,
+      "description": "Rejected (test 345699cf). With announced lineups hidden in backtest: nolu .981/.979/.942 vs nolu_pred 1.102/1.053/.967 (738/764/760); without role shift still worse (1.048/1.006/.946). Predicting last game's starters with p_start .85 hurts badly. Code kept behind use_pred_lineup=False."
+    },
+    {
+      "name": "absence-return",
+      "closed": 0,
+      "description": "Players returning after missing team games play fewer minutes than their recent played-minutes average. Fix: scale base minutes range by ratio table (role x gap bucket) fitted in-loop on previous season, before GBM blend (abs_w=1). Test 90c51b8a/2827cd55 backtest (738/764/760): with abs .9579/.9243/.9054 vs without .9576/.9278/.9073 -> ~0.2% gain, small but consistent on 2 of 3 teams. Adopted in draft (abs_w=1.0); not yet in a full run."
+    },
+    {
+      "name": "spread-bench",
+      "closed": 1,
+      "description": "Rejected (test 2827cd55). Slope fitted on 2024-25 with point-diff proxy is small (b=0.034/pt of |margin|). Backtest (proxy |margin| for history games): spr10 worse than g25 on all 3 teams (+0.17%/+0.25%/+0.21%), uncertain-bench Brier unchanged. Live |spread| untested (no historical spreads in sandbox). Code kept, spr_w=0."
+    },
+    {
+      "name": "injury-listed",
+      "closed": 1,
+      "description": "Neutral (test 8ee7f35f). League-wide in-loop table confirms effect (starters listed Available/Probable/Questionable, no absence: ratio 0.945, n=373; bench ~1.0), but backtest lst on vs off: 738 +0.1% worse, 764/760 -0.05% better -> off (lst_w=0). Code kept (gbm.injury_latest/listed_table, model.listed_adjust). Sandbox injury tables hold current season only (no 2024-25)."
+    },
+    {
+      "name": "team-total",
+      "closed": 0,
+      "description": "Full run 4abbd0ba (fbfb2fbe + abs_w=1 + norm_w=1): ratio vs ref 0.972 [0.949,0.996]; paired vs fbfb2fbe 0.99993 [0.994,1.006] -> no measurable gain in the full eval. Backtest gain (~0.2-0.5%) did not appear. Not adopted for nomination."
+    }
+  ],
+  "runs": [
+    {
+      "id": "0a7fc835-0ef3-4786-9d04-ba2af973d952",
+      "kind": "test",
+      "parent": null,
+      "hash": "4bba2b52d57dcbf7427f5544e4af121bf5e3969332507a879f8bd35beee6dc08",
+      "status": "complete"
+    },
+    {
+      "id": "411a9ebe-4de0-4f91-8080-b24fb1c3897a",
+      "kind": "test",
+      "parent": null,
+      "hash": "7ec9db78a3a64859aeec1e1996fa83f03da8a12f670dd2d4b1890ceb29eeaaaa",
+      "status": "complete"
+    },
+    {
+      "id": "1a19e8a7-6167-4075-9c5a-84451b9754fd",
+      "kind": "test",
+      "parent": null,
+      "hash": "a22b69ddd1a37495b47576c325e6c6cfe67fcac8d20767703c0ffc96a9fbca5b",
+      "status": "complete"
+    },
+    {
+      "id": "feae06a6-9a0a-4f50-8532-2b9b459bbf86",
+      "kind": "test",
+      "parent": null,
+      "hash": "91c3dcd4331557d3e111f0bef5856c5f7126d6f1052cab113ee27de5f246e1ab",
+      "status": "complete"
+    },
+    {
+      "id": "0a2322c3-77d9-44f1-bb63-0ce4f6bc15c6",
+      "kind": "test",
+      "parent": null,
+      "hash": "39bcb25ffdcb9e2d68bf6242aa54ebace07aa0db9f7954c587b2d40bac3f315a",
+      "status": "complete"
+    },
+    {
+      "id": "3c409531-f495-4037-983f-8cee1ab8086a",
+      "kind": "test",
+      "parent": null,
+      "hash": "bedfe86e3f35f5f275813394b439dfd1e2a704b80d26275b9a247a4df9ac0df0",
+      "status": "complete"
+    },
+    {
+      "id": "175351c7-1f8d-4802-aa72-3ed6cd61747e",
+      "kind": "test",
+      "parent": null,
+      "hash": "fe38562e17f0ccfc86ecf4e66071461803625ecbcbda3db501b0abda7743fc9b",
+      "status": "complete"
+    },
+    {
+      "id": "2c6fedc2-cd3d-4962-97d2-b1084eeef9dd",
+      "kind": "test",
+      "parent": null,
+      "hash": "2c5c0f084a60ae5797d83d41e29873155f0d6751e8cb4bd90dc5308b3f7f69ca",
+      "status": "complete"
+    },
+    {
+      "id": "9d3e391b-feab-4348-bf76-ea0690c14148",
+      "kind": "full",
+      "parent": null,
+      "hash": "89f83eafc689ee444df84e117ee1c57fe6b4eb6d8258f78fb465ece5c2b3424d",
+      "status": "complete",
+      "games": 43,
+      "teamGames": 43,
+      "excluded": 0,
+      "fallbacks": 0,
+      "system": {
+        "minutes.pinball": 0.9339578892953366,
+        "fantasy_points.pinball": 2.0864181552558527,
+        "playBrier": 0.06762300839613201,
+        "minutes.coverage80": 0.8856969144246847,
+        "ceiling.hitRate": 0.13953488372093023
+      },
+      "reference": {
+        "minutes.pinball": 0.9590327611933177,
+        "fantasy_points.pinball": 2.097759890849381,
+        "playBrier": 0.06893218956695257,
+        "minutes.coverage80": 0.9064447484420125,
+        "ceiling.hitRate": 0.10934185638841135
+      },
+      "ratios": {
+        "minutes.pinball": {
+          "ratio": 0.9738539986196296,
+          "ratio90": [0.9516440712942684, 0.9959532469679144]
+        },
+        "fantasy_points.pinball": {
+          "ratio": 0.9945934062125023,
+          "ratio90": [0.9864503976397443, 1.00267045577851]
+        },
+        "playBrier": {
+          "ratio": 0.9810076949674001,
+          "ratio90": [0.9682730495557449, 0.9912144474866802]
+        }
+      },
+      "guardrailFlag": false
+    },
+    {
+      "id": "b229fb07-13e2-401f-897e-2ede320e942c",
+      "kind": "test",
+      "parent": null,
+      "hash": "1d6f61d8caff7ee8278440f3afb48ba142761a4ddb00c95e1cb077651386828c",
+      "status": "complete"
+    },
+    {
+      "id": "574fe0c8-5db6-430e-8ba0-c75a115ea1e5",
+      "kind": "test",
+      "parent": null,
+      "hash": "d79622e24f0cc32d29545dc843db11a47ee5f187e45aa59151e1bdc3954b971b",
+      "status": "complete"
+    },
+    {
+      "id": "5911804f-81eb-4ba8-a4f2-94debf015fe4",
+      "kind": "test",
+      "parent": null,
+      "hash": "1508c5f45fa2edfa00d8bea6152f6a60ef596f738d5659cf8e95b9109aae54e8",
+      "status": "complete"
+    },
+    {
+      "id": "e23e8546-bbed-4169-a8ab-55d3e87e150c",
+      "kind": "test",
+      "parent": null,
+      "hash": "e13959c582d99fd99bfe1979462842e00bb8db45f7b61a7355a30b204bfdd58c",
+      "status": "complete"
+    },
+    {
+      "id": "345699cf-5ddb-4297-abf8-c1b29e58bf0a",
+      "kind": "test",
+      "parent": null,
+      "hash": "298a3404f3a6b0427e60ff4c7bb969e6521108a66f437bab747fe2d7a64a1ab8",
+      "status": "complete"
+    },
+    {
+      "id": "6f2acd4d-f6b2-465f-bf40-cf4ec1235bea",
+      "kind": "test",
+      "parent": null,
+      "hash": "ba3ef61a9140c51d9b46e142d9503892bcd840ea4b48dd86fdbcb6e9f91b3e13",
+      "status": "complete"
+    },
+    {
+      "id": "fbfb2fbe-ba5e-44f7-8cf9-a241bd6a31fb",
+      "kind": "full",
+      "parent": null,
+      "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+      "status": "complete",
+      "games": 43,
+      "teamGames": 43,
+      "excluded": 0,
+      "fallbacks": 0,
+      "system": {
+        "minutes.pinball": 0.9323760576911765,
+        "fantasy_points.pinball": 2.0797574409694146,
+        "playBrier": 0.06762300839613201,
+        "minutes.coverage80": 0.8961088311293509,
+        "ceiling.hitRate": 0.16279069767441862
+      },
+      "reference": {
+        "minutes.pinball": 0.9590327611933177,
+        "fantasy_points.pinball": 2.097759890849381,
+        "playBrier": 0.06893218956695257,
+        "minutes.coverage80": 0.9064447484420125,
+        "ceiling.hitRate": 0.10934185638841135
+      },
+      "ratios": {
+        "minutes.pinball": {
+          "ratio": 0.9722045955250034,
+          "ratio90": [0.9488627745595458, 0.9956535822318076]
+        },
+        "fantasy_points.pinball": {
+          "ratio": 0.9914182505068886,
+          "ratio90": [0.9821741208402222, 1.0010743022915196]
+        },
+        "playBrier": {
+          "ratio": 0.9810076949674001,
+          "ratio90": [0.9682730495557449, 0.9912144474866802]
+        }
+      },
+      "guardrailFlag": false
+    },
+    {
+      "id": "90c51b8a-8706-40f6-ae9a-3e6dcee39cc8",
+      "kind": "test",
+      "parent": null,
+      "hash": "aa91fe6226df52d003e0de5db41c42af9920af7cca0f74b8360090c3cb6dfa59",
+      "status": "complete"
+    },
+    {
+      "id": "2827cd55-b5ea-4787-be78-afdb9a3d0ac6",
+      "kind": "test",
+      "parent": null,
+      "hash": "c448969f47b521b32e85155c5c3ea47eca0920cc720ebaa75b4ebebda0d01742",
+      "status": "complete"
+    },
+    {
+      "id": "21f83a3f-996e-4932-8f7c-87dec323644a",
+      "kind": "check",
+      "parent": "fbfb2fbe-ba5e-44f7-8cf9-a241bd6a31fb",
+      "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+      "status": "complete",
+      "games": 38,
+      "teamGames": 41,
+      "excluded": 1,
+      "fallbacks": 0,
+      "system": {
+        "minutes.pinball": 1.134722515847145,
+        "fantasy_points.pinball": 2.158056813477983,
+        "playBrier": 0.09229266882875739,
+        "minutes.coverage80": 0.8972222222222219,
+        "ceiling.hitRate": 0.2
+      },
+      "reference": {
+        "minutes.pinball": 1.2814514258005152,
+        "fantasy_points.pinball": 2.24963648536366,
+        "playBrier": 0.09818285078584547,
+        "minutes.coverage80": 0.8959150326797383,
+        "ceiling.hitRate": 0.09803204311896033
+      },
+      "ratios": {
+        "minutes.pinball": {
+          "ratio": 0.8854978760808591,
+          "ratio90": [0.8541197818936688, 0.9162546887702426]
+        },
+        "fantasy_points.pinball": {
+          "ratio": 0.9592913466324434,
+          "ratio90": [0.9448752267047889, 0.9738551098185343]
+        },
+        "playBrier": {
+          "ratio": 0.940008036943889,
+          "ratio90": [0.9120522751424349, 0.9649868079065519]
+        }
+      },
+      "guardrailFlag": false
+    },
+    {
+      "id": "8ee7f35f-81ab-4d52-9498-156d72f6bb55",
+      "kind": "test",
+      "parent": null,
+      "hash": "f684270c22a124071d60e3f2e8e2d554be857c5c3f42dc089113b602adcf5a60",
+      "status": "complete"
+    },
+    {
+      "id": "0503bf4f-bc82-4f0c-8d9a-cac9ea2b0691",
+      "kind": "test",
+      "parent": null,
+      "hash": "c3be287d58e342fc4e11c65e0b042ddd5ed65d0abe804c37beec3525574ddb02",
+      "status": "complete"
+    },
+    {
+      "id": "d0214bf5-a070-4719-be17-1c6b31456756",
+      "kind": "test",
+      "parent": null,
+      "hash": "4bfeb116099e9f11cef4b427c5cc1188e8cbde742ff7ed5553a78867f29f072f",
+      "status": "complete"
+    },
+    {
+      "id": "cf3b76f8-1ef6-45fa-8323-6cf68f8d678d",
+      "kind": "test",
+      "parent": null,
+      "hash": "a7956fbf529d3dd5836af76192b2a48c06b6b45eada43407bdea1ab79c76c4ea",
+      "status": "complete"
+    },
+    {
+      "id": "7e5279a3-fee3-44ce-b19a-3aa1a50fca31",
+      "kind": "test",
+      "parent": null,
+      "hash": "92f99cc03f28695d8efa8d5aa832dfe7d92157a6330dd305514786a6acea8de7",
+      "status": "complete"
+    },
+    {
+      "id": "a5b5ed53-0d8e-45df-bb1c-441ae50e77d7",
+      "kind": "test",
+      "parent": null,
+      "hash": "8a93963d50dfdb772504a3cb71db36a422aa7044f32b43947d31edd119e2b758",
+      "status": "complete"
+    },
+    {
+      "id": "8f8ff72d-05f7-4ebc-ba12-64b7e549b9b1",
+      "kind": "test",
+      "parent": null,
+      "hash": "9df71064ccc7e5950dc8cd2b2963f1a6f586c6f4c9adc71bfbbd0d8554bdc982",
+      "status": "complete"
+    },
+    {
+      "id": "4abbd0ba-e5ae-4d8f-8147-327feea9fbeb",
+      "kind": "full",
+      "parent": null,
+      "hash": "b24f1deea973f5b9cf7b105a844b471b6f876596af0ec79b78746d11fdf2a4fe",
+      "status": "complete",
+      "games": 43,
+      "teamGames": 43,
+      "excluded": 0,
+      "fallbacks": 0,
+      "system": {
+        "minutes.pinball": 0.932309408734135,
+        "fantasy_points.pinball": 2.0796974726511843,
+        "playBrier": 0.06762300839613201,
+        "minutes.coverage80": 0.8922328621371028,
+        "ceiling.hitRate": 0.17054263565891473
+      },
+      "reference": {
+        "minutes.pinball": 0.9590327611933177,
+        "fantasy_points.pinball": 2.097759890849381,
+        "playBrier": 0.06893218956695257,
+        "minutes.coverage80": 0.9064447484420125,
+        "ceiling.hitRate": 0.10934185638841135
+      },
+      "ratios": {
+        "minutes.pinball": {
+          "ratio": 0.9721350995080389,
+          "ratio90": [0.9486265138820067, 0.9960261594694666]
+        },
+        "fantasy_points.pinball": {
+          "ratio": 0.9913896636707631,
+          "ratio90": [0.982537768545519, 1.0003791656439063]
+        },
+        "playBrier": {
+          "ratio": 0.9810076949674001,
+          "ratio90": [0.9682730495557449, 0.9912144474866802]
+        }
+      },
+      "guardrailFlag": false
+    }
+  ],
+  "reviews": [
+    {
+      "id": "45ea8bb1-7c74-4328-b749-d0e0bce1bd51",
+      "created": "2026-11-18 03:10:39",
+      "hash": "4bba2b52d57dcbf7427f5544e4af121bf5e3969332507a879f8bd35beee6dc08",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.01535
+    },
+    {
+      "id": "f4356297-5668-4607-9678-f869193e5c10",
+      "created": "2026-11-18 03:19:23",
+      "hash": "7ec9db78a3a64859aeec1e1996fa83f03da8a12f670dd2d4b1890ceb29eeaaaa",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.0516
+    },
+    {
+      "id": "bc0e2480-976f-47d9-a39c-c8a96e88ffee",
+      "created": "2026-11-18 03:38:52",
+      "hash": "a22b69ddd1a37495b47576c325e6c6cfe67fcac8d20767703c0ffc96a9fbca5b",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.05619
+    },
+    {
+      "id": "28cf1866-cb1c-4ccf-ac98-826e9830bd02",
+      "created": "2026-11-18 03:43:13",
+      "hash": "91c3dcd4331557d3e111f0bef5856c5f7126d6f1052cab113ee27de5f246e1ab",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.059365
+    },
+    {
+      "id": "7845c7d5-775e-4c7d-9dc2-f58ae053748b",
+      "created": "2026-11-18 03:47:28",
+      "hash": "39bcb25ffdcb9e2d68bf6242aa54ebace07aa0db9f7954c587b2d40bac3f315a",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.06295
+    },
+    {
+      "id": "729ad816-cb88-42f1-ab50-4b9c44cca325",
+      "created": "2026-11-18 03:50:20",
+      "hash": "bedfe86e3f35f5f275813394b439dfd1e2a704b80d26275b9a247a4df9ac0df0",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.06973
+    },
+    {
+      "id": "de55142d-953b-4792-a57a-a327742fc07b",
+      "created": "2026-11-18 03:54:27",
+      "hash": "fe38562e17f0ccfc86ecf4e66071461803625ecbcbda3db501b0abda7743fc9b",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.0667
+    },
+    {
+      "id": "5a5473e8-5f27-4e04-9860-0a80987d48a4",
+      "created": "2026-11-18 03:58:29",
+      "hash": "2c5c0f084a60ae5797d83d41e29873155f0d6751e8cb4bd90dc5308b3f7f69ca",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.070545
+    },
+    {
+      "id": "bb180af9-06be-41eb-b7ef-3f738c7c960d",
+      "created": "2026-11-18 04:01:06",
+      "hash": "89f83eafc689ee444df84e117ee1c57fe6b4eb6d8258f78fb465ece5c2b3424d",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.068455
+    },
+    {
+      "id": "06ca1d85-675a-4a47-bc9e-248434ca3124",
+      "created": "2026-11-18 04:52:52",
+      "hash": "1d6f61d8caff7ee8278440f3afb48ba142761a4ddb00c95e1cb077651386828c",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.092495
+    },
+    {
+      "id": "c7349107-0f7b-48e8-8a61-70160d860623",
+      "created": "2026-11-18 04:58:53",
+      "hash": "d79622e24f0cc32d29545dc843db11a47ee5f187e45aa59151e1bdc3954b971b",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.098395
+    },
+    {
+      "id": "bd93caf7-e8f9-4eb6-8c22-e5037b91ee17",
+      "created": "2026-11-18 05:04:11",
+      "hash": "1508c5f45fa2edfa00d8bea6152f6a60ef596f738d5659cf8e95b9109aae54e8",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.0952
+    },
+    {
+      "id": "93326cfc-407f-450d-a34b-a38ca44714cb",
+      "created": "2026-11-18 05:09:49",
+      "hash": "e13959c582d99fd99bfe1979462842e00bb8db45f7b61a7355a30b204bfdd58c",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.099965
+    },
+    {
+      "id": "4a73749c-1792-4fa7-b3ea-0b40ad0a24e5",
+      "created": "2026-11-18 05:13:38",
+      "hash": "298a3404f3a6b0427e60ff4c7bb969e6521108a66f437bab747fe2d7a64a1ab8",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.105665
+    },
+    {
+      "id": "0d73f6ac-155d-46e6-b9df-4ebc764b262b",
+      "created": "2026-11-18 05:18:43",
+      "hash": "ba3ef61a9140c51d9b46e142d9503892bcd840ea4b48dd86fdbcb6e9f91b3e13",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.108645
+    },
+    {
+      "id": "fc6a8072-b820-446e-96ef-5cbb8f2a8279",
+      "created": "2026-11-18 05:21:55",
+      "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.104395
+    },
+    {
+      "id": "eec09387-ea07-4a1a-959e-b4d3e1a5d4da",
+      "created": "2026-11-18 06:18:30",
+      "hash": "aa91fe6226df52d003e0de5db41c42af9920af7cca0f74b8360090c3cb6dfa59",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.11317
+    },
+    {
+      "id": "049b63a1-b26f-4507-a83f-3ed066716e38",
+      "created": "2026-11-18 06:26:04",
+      "hash": "c448969f47b521b32e85155c5c3ea47eca0920cc720ebaa75b4ebebda0d01742",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.1279
+    },
+    {
+      "id": "94459e2c-d84c-4ed1-b725-f7f4d2d49fc9",
+      "created": "2026-11-18 06:31:00",
+      "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.105945
+    },
+    {
+      "id": "f9ca06eb-0215-436d-b14c-644905627e48",
+      "created": "2026-11-18 07:13:12",
+      "hash": "f684270c22a124071d60e3f2e8e2d554be857c5c3f42dc089113b602adcf5a60",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.143305
+    },
+    {
+      "id": "25cbaca1-d18d-42f3-8cbb-31e950d9fe22",
+      "created": "2026-11-18 07:20:03",
+      "hash": "c3be287d58e342fc4e11c65e0b042ddd5ed65d0abe804c37beec3525574ddb02",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.14094
+    },
+    {
+      "id": "9b082889-89f6-473e-a265-31ae0e7b347a",
+      "created": "2026-11-18 07:22:49",
+      "hash": "4bfeb116099e9f11cef4b427c5cc1188e8cbde742ff7ed5553a78867f29f072f",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.143315
+    },
+    {
+      "id": "36f8f484-bcad-452a-86dc-b940d14150ce",
+      "created": "2026-11-18 07:27:36",
+      "hash": "a7956fbf529d3dd5836af76192b2a48c06b6b45eada43407bdea1ab79c76c4ea",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.14814
+    },
+    {
+      "id": "da69613b-1d39-4a74-bb41-3f2e1ab74e42",
+      "created": "2026-11-18 07:32:29",
+      "hash": "92f99cc03f28695d8efa8d5aa832dfe7d92157a6330dd305514786a6acea8de7",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.14765
+    },
+    {
+      "id": "866b6fba-dde1-4a89-bf43-0b21e6467cc9",
+      "created": "2026-11-18 07:38:32",
+      "hash": "8a93963d50dfdb772504a3cb71db36a422aa7044f32b43947d31edd119e2b758",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.14785
+    },
+    {
+      "id": "5ee35e2e-4eb3-4576-9740-0696e3748273",
+      "created": "2026-11-18 07:41:17",
+      "hash": "9df71064ccc7e5950dc8cd2b2963f1a6f586c6f4c9adc71bfbbd0d8554bdc982",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.1445
+    },
+    {
+      "id": "6d11a070-4646-41c1-aea3-e304596c2c06",
+      "created": "2026-11-18 07:46:17",
+      "hash": "b24f1deea973f5b9cf7b105a844b471b6f876596af0ec79b78746d11fdf2a4fe",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.147695
+    },
+    {
+      "id": "53ef8b95-2c26-4a18-b3c1-200321f11b95",
+      "created": "2026-11-20 00:29:11",
+      "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+      "verdict": "accept",
+      "reviewerVerdict": "accept",
+      "reviewerUsd": 0.10552
+    }
+  ],
+  "comparisons": {
+    "iteration4_vs_iteration2_midseason": {
+      "minutes.pinball": {
+        "ratio": 0.999928517086543,
+        "ratio90": [0.9940909936186474, 1.0062161966680179]
+      },
+      "fantasy_points.pinball": {
+        "ratio": 0.9999711657152661,
+        "ratio90": [0.9969374753624551, 1.0029912781743586]
+      },
+      "playBrier": {
+        "ratio": 1,
+        "ratio90": [1, 1]
+      }
+    },
+    "iteration2_vs_iteration1_midseason": {
+      "minutes.pinball": {
+        "ratio": 0.9983063137832117,
+        "ratio90": [0.9861816201747198, 1.0111142891462546]
+      },
+      "fantasy_points.pinball": {
+        "ratio": 0.9968075841989492,
+        "ratio90": [0.9898150902917608, 1.0033944511819755]
+      },
+      "playBrier": {
+        "ratio": 1,
+        "ratio90": [1, 1]
+      }
+    }
+  }
+}
