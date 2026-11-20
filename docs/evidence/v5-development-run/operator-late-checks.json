@@ -1,0 +1,93 @@
+{
+  "pool": ".cache/spo908-latecheck (copy of the pool after iteration 4; not visible to the architect)",
+  "iteration1": {
+    "run": "5fe52e44-2132-4c40-b55b-003039ef7e86",
+    "parent": "9d3e391b-feab-4348-bf76-ea0690c14148",
+    "hash": "89f83eafc689ee444df84e117ee1c57fe6b4eb6d8258f78fb465ece5c2b3424d",
+    "games": 39,
+    "teamGames": 42,
+    "excluded": 0,
+    "fallbacks": 0,
+    "system": {
+      "minutes.pinball": 1.0247403655850906,
+      "fantasy_points.pinball": 2.2509820300331924,
+      "playBrier": 0.06614646258998065,
+      "minutes.coverage80": 0.8901882975412386,
+      "ceiling.hitRate": 0.1746031746031746
+    },
+    "reference": {
+      "minutes.pinball": 1.1409054097803473,
+      "fantasy_points.pinball": 2.324155020600769,
+      "playBrier": 0.07324908097748886,
+      "minutes.coverage80": 0.8926898537192655,
+      "ceiling.hitRate": 0.0926732191976234
+    },
+    "ratios": {
+      "minutes.pinball": {
+        "ratio": 0.8981817044608272,
+        "ratio90": [0.8660681251281751, 0.9304119252031525]
+      },
+      "fantasy_points.pinball": {
+        "ratio": 0.9685163038097767,
+        "ratio90": [0.9525236769011791, 0.9847804932707614]
+      },
+      "playBrier": {
+        "ratio": 0.9030347098867905,
+        "ratio90": [0.8647348666503459, 0.9351514810732753]
+      }
+    },
+    "guardrailFlag": false
+  },
+  "iteration4": {
+    "run": "dfed2934-03ff-4069-9cc7-888ee52d8ab3",
+    "parent": "4abbd0ba-e5ae-4d8f-8147-327feea9fbeb",
+    "hash": "b24f1deea973f5b9cf7b105a844b471b6f876596af0ec79b78746d11fdf2a4fe",
+    "games": 39,
+    "teamGames": 42,
+    "excluded": 0,
+    "fallbacks": 0,
+    "system": {
+      "minutes.pinball": 1.0205316600731216,
+      "fantasy_points.pinball": 2.235061441240861,
+      "playBrier": 0.06614646258998065,
+      "minutes.coverage80": 0.8897584033613443,
+      "ceiling.hitRate": 0.1746031746031746
+    },
+    "reference": {
+      "minutes.pinball": 1.1409054097803473,
+      "fantasy_points.pinball": 2.324155020600769,
+      "playBrier": 0.07324908097748886,
+      "minutes.coverage80": 0.8926898537192655,
+      "ceiling.hitRate": 0.0926732191976234
+    },
+    "ratios": {
+      "minutes.pinball": {
+        "ratio": 0.8944927873289683,
+        "ratio90": [0.8607230805245746, 0.9270184562655043]
+      },
+      "fantasy_points.pinball": {
+        "ratio": 0.9616662492087648,
+        "ratio90": [0.9474815840538126, 0.9759135096936197]
+      },
+      "playBrier": {
+        "ratio": 0.9030347098867905,
+        "ratio90": [0.8647348666503459, 0.9351514810732753]
+      }
+    },
+    "guardrailFlag": false
+  },
+  "iteration4_vs_iteration1": {
+    "minutes.pinball": {
+      "ratio": 0.9958929055072733,
+      "ratio90": [0.9815800805201771, 1.0108517415049554]
+    },
+    "fantasy_points.pinball": {
+      "ratio": 0.9929272697072147,
+      "ratio90": [0.9839390391589083, 1.0024624716540234]
+    },
+    "playBrier": {
+      "ratio": 1,
+      "ratio90": [1, 1]
+    }
+  }
+}

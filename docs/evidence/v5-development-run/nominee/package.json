@@ -1,0 +1,13 @@
+{
+  "version": "game-loop-v1",
+  "hypothesis": "Code-only adjustment of the reference: roster-inactive players get p_play 0; announced starting lineups set starters' p_play/p_start near 1 and non-starters' p_start near 0; minutes shift for role changes using recent role-split minutes, blend toward role-specific recent median, freed expected minutes redistributed. New: a league-wide quantile gradient-boosting minutes model fitted inside the loop on the previous season's box scores (role, recent form, games since last played, minutes missing from inactive teammates, rest) is blended into the conditional minutes quantiles, with the blend weight chosen online per team from its own earlier games. Then per-level quantile offsets learned online from the team's reference history; production ranges scaled with minutes. In-sandbox backtests logged for diagnostics.",
+  "entry": "main.py",
+  "files": [
+    "gbm.py",
+    "main.py",
+    "model.py"
+  ],
+  "training": [],
+  "artifacts": {},
+  "agents": {}
+}
