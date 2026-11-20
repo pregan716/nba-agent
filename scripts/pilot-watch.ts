@@ -1,4 +1,5 @@
-// Watcher for an architect iteration (SPO-907). Polls the pool directory and
+// Watcher for architect iterations and final evaluations (SPO-907, SPO-930).
+// Polls the pool directory and
 // stops the run's process group on the first missing forecast in a full-size
 // evaluation, on repeated agent failures, on an evaluation that failed after
 // the snapshot, or on spend. Reads only; needs no credentials.
