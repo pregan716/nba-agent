@@ -411,3 +411,32 @@ test("failed seeding leaves no partial destination and can be retried", async (t
   await seedRoundTwo(current, old.root);
   assert.equal(existsSync(current.root), true);
 });
+
+test("seed accepts a record whose games are in replay order while the pool lists them in schedule order", async (t) => {
+  const { old, current } = fixture(t);
+  const pool = new EvaluationPool(old.root, old.profile!, digest(old.config));
+  const listed = [...games].reverse();
+  const baseline = pool.reserve(
+    "full",
+    null,
+    readPackage(pkg).hash,
+    pkg,
+    listed,
+  );
+  record(
+    old,
+    join(old.root, "development", baseline),
+    games,
+    pkg,
+    true,
+    [],
+    false,
+  );
+  pool.settle(baseline, 0, "complete");
+  pool.close();
+  const service = developmentService(old);
+  await service.nominate(baseline);
+  service.close();
+  const info = await seedRoundTwo(current, old.root);
+  assert.equal(info.baselineRunId, baseline);
+});
