@@ -159,7 +159,7 @@ Status: Proposed. The architect nominates one configuration. After that there is
 
 ## Second development round
 
-Status: the round and the items marked Agreed were agreed on Nov 20, 2026. The rest is Proposed, and two items are Open (see Decisions).
+Status: the round and the items marked Agreed were agreed on Nov 20, 2026. Test teams and budgets were agreed on Nov 21, 2026. The rest is Proposed.
 
 Round one nominated a system with no agents, so the final evaluation could not say whether agents add anything. The architect submitted no configuration with an agent in 28 submissions. Round two asks one question: can the architect, pushed to try agents and larger changes, build a system that beats the round-one nominee?
 
@@ -173,7 +173,7 @@ Round one nominated a system with no agents, so the final evaluation could not s
 - **What counts as an agent system's evaluation (Proposed).** A completed full evaluation on the 43 mid-season team-games whose run record shows, for at least half of those team-games, an agent call that ended with a successful reply (an `agent_end` event with `reply.ok` true). Declaring an agent is not enough: a declared agent that the code never calls leaves no such event. A refused or failed call does not count, so a run whose calls were all refused or all failed does not qualify. Checks, repeats and test runs do not count. The service refuses a nomination until one qualifying run exists in the round-two pool. The record cannot show whether the code used the reply; the run with agent calls refused in the final evaluation measures that.
 - **Everything else carries over** from round one: the target and guardrails, the evaluation games, the reserved late stretch, the leakage rule and the review.
 - **Human sample (Proposed).** Round one's selection rule named its own iterations and does not apply. Before the round-two final evaluation a person reads up to five accepted configurations, in this order until five are reached: the nominee; the qualifying agent system with the lowest minutes ratio, if it is not the nominee; the other fully evaluated configurations from lowest minutes ratio upward. If the round produced fewer than five, all of them are read. For a configuration with agents the reading covers every prompt, skill and tool description as well as the code.
-- **Final evaluation.** The same three runs. If the nominee uses agents, the run with agent calls refused answers the agent question directly. Added: the paired comparison of the round-two nominee against the round-one nominee on the same team-games. Which teams it runs on is Open.
+- **Final evaluation.** The same three runs. If the nominee uses agents, the run with agent calls refused answers the agent question directly. Added: the paired comparison of the round-two nominee against the round-one nominee on the same team-games. It runs on Denver and Memphis again, the same 164 team-games (Agreed Nov 21, 2026), so that comparison is paired with round one's final record. It is a second look at those games (see Limits).
 
 ## Leakage
 
@@ -272,7 +272,7 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 - **The target and the teams were chosen after seeing results.** Minutes was chosen after the pilot. The teams were chosen by a person and an assistant from box-score summaries that included Denver and Memphis; the architect sees none of that.
 - **Evidence coverage for the new teams is uneven.** Beat reporting and coach transcripts are thinner for some of them than for Boston.
 - **No market comparison.** Player prop lines were not collected for the new teams, so v5 says nothing about whether the forecasts would have value against the betting market.
-- **Round two is not a first look.** It was decided on after round one's final evaluation, which the user and the assistant have read. If round two is tested on Denver and Memphis, the architect still has not seen them, but the people who designed the round have, and two systems will have been tested on the same games. Round two also starts from a design already known to work on those teams.
+- **Round two is not a first look.** It was decided on after round one's final evaluation, which the user and the assistant have read. Round two is tested on Denver and Memphis again: the architect still has not seen them, but the people who designed the round have, and two systems will have been tested on the same games. Round two also starts from a design already known to work on those teams.
 - **Round two pushes the architect.** It is told to try agents and larger changes and must evaluate at least one agent system. Its result says what an architect can do when pushed that way, not what it chooses unprompted. Round one is the reading of that.
 - The v4 limits on DFS salaries, the single forecast time and the holdout record carry over.
 - Development games are never evidence.
@@ -327,12 +327,16 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 | Prompt              | Asks for structurally different approaches, not refinements, and says the budget is meant to be spent.                                                                                                                                                       |
 | Agents in round two | At least one agent system must receive a full evaluation; what qualifies is Proposed under Second development round. The architect may still nominate a system without agents. Round one's "permitted, not required" is unchanged for what may be nominated. |
 
+### Agreed on Nov 21, 2026
+
+| Decision             | Resolution                                                                                                                                                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Round-two test teams | Denver and Memphis again. No new teams are collected.                                                                                                                                                                                                                 |
+| Round-two budgets    | The round-one limits in a new pool: $1,000 and at most twelve full evaluations; $30 per iteration and $350 in total for the architect; $2 per team-game per final run. With agents a full evaluation costs up to about $85 and the final evaluation up to about $660. |
+
 ### Open
 
-| Item                 | Options                                                                                                                                                                                                                                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Round-two test teams | (a) Denver and Memphis again: no new data, and the comparison with the round-one nominee is paired on the same 164 team-games, but it is a second look (see Limits). (b) New teams: a clean test, but their evidence must be collected first and the round-one nominee run on them too. (c) Both.       |
-| Round-two budgets    | Proposed if nothing else is chosen: the round-one limits in a new pool ($1,000 and twelve full evaluations; $30 per iteration and $350 for the architect), and $2 per team-game per final run. With agents the evaluations are no longer free: about $85 each, and about $660 for the final evaluation. |
+None.
 
 ### Proposed
 
@@ -371,6 +375,6 @@ Each is one or more Linear issues in `nba-agent-v2`, filed after this brief is a
 | A10 Round-two run     | The architect's iterations, ending in a nominated configuration                                                                                               | As A7                                                                                                                                                                                                                                                                                                                              |
 | A11 Round-two final   | The test-team runs, the ablations, the comparison with the round-one nominee and the write-up                                                                 | As A8, reported apart from round one                                                                                                                                                                                                                                                                                               |
 
-Build order: A1 and A2 first, in parallel. A3 against A2's interfaces. A4 and A5 after A2. A6 after A1 to A5. A7 after A6. A8 after A7. A9 after A8 and after the Open items for round two are settled. A10 after A9. A11 after A10.
+Build order: A1 and A2 first, in parallel. A3 against A2's interfaces. A4 and A5 after A2. A6 after A1 to A5. A7 after A6. A8 after A7. A9 after A8. A10 after A9. A11 after A10.
 
 The v4 scored run (SPO-885) is withdrawn (Agreed Nov 14, 2026). The pilot extension is written up under SPO-883. Heavy runs belong on the cloud host (SPO-877), not the Mac mini.
