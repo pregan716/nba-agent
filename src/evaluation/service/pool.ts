@@ -24,7 +24,9 @@ export class EvaluationPool {
     CREATE TABLE IF NOT EXISTS settings(id INTEGER PRIMARY KEY CHECK(id=1),value TEXT NOT NULL,nominee TEXT);
     CREATE TABLE IF NOT EXISTS runs(id TEXT PRIMARY KEY,kind TEXT NOT NULL,parent TEXT,hash TEXT NOT NULL,pkg TEXT NOT NULL,games TEXT NOT NULL,full INTEGER NOT NULL,charge INTEGER NOT NULL,status TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS refusals(id INTEGER PRIMARY KEY,kind TEXT,hash TEXT,reason TEXT NOT NULL,at TEXT NOT NULL);
-    CREATE TABLE IF NOT EXISTS models(hash TEXT PRIMARY KEY,weights TEXT NOT NULL);`);
+    CREATE TABLE IF NOT EXISTS models(hash TEXT PRIMARY KEY,weights TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS inherited_runs(id TEXT PRIMARY KEY,charge INTEGER NOT NULL,full INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS round_info(id INTEGER PRIMARY KEY CHECK(id=1),value TEXT NOT NULL);`);
       const value = canonicalJson({ profile, environment });
       this.db
         .prepare("INSERT OR IGNORE INTO settings VALUES(1,?,NULL)")
@@ -78,6 +80,22 @@ export class EvaluationPool {
         this.unlock(key);
       }
     }
+  }
+  round() {
+    const row = this.db
+      .prepare("SELECT value FROM round_info WHERE id=1")
+      .get();
+    return row
+      ? (JSON.parse(String(row.value)) as {
+          round: 2;
+          baselineRunId: string;
+          baselineHash: string;
+          sourceEnvironment: string;
+        })
+      : null;
+  }
+  inherited(id: string) {
+    return !!this.db.prepare("SELECT 1 FROM inherited_runs WHERE id=?").get(id);
   }
   list() {
     return this.db
