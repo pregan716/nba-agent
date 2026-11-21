@@ -46,6 +46,12 @@ async function snapshotRun(source: string, destination: string) {
   }
 }
 
+/** The pool lists a run's games in schedule order and the record in replay
+ * order (by tip), so they are compared as sets. */
+const sameGames = (a: unknown[], b: unknown[]) =>
+  digest(a.map((g) => digest(g)).sort()) ===
+  digest(b.map((g) => digest(g)).sort());
+
 /** Operator-only import. Historical records keep their original harness pins;
  * only the new pool's live evaluations are bound to the current environment. */
 export async function seedRoundTwo(
@@ -102,7 +108,7 @@ export async function seedRoundTwo(
           readPackage(archive.configuration).hash !== row.hash ||
           digest(archive.configuration) !==
             digest(JSON.parse(String(row.pkg))) ||
-          digest(manifest.games) !== digest(games) ||
+          sameGames(manifest.games, games) === false ||
           digest(manifest.config) !== sourceSettings.environment
         )
           throw Error("Source development record mismatch");
