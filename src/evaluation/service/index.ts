@@ -203,7 +203,10 @@ export function developmentService(host: EvaluationHost) {
         throw e;
       }
     },
-    round: () => pool.round()?.round ?? 1,
+    round: () => ({
+      round: pool.round()?.round ?? 1,
+      baselineRunId: pool.round()?.baselineRunId ?? null,
+    }),
     budget: () => ({
       ...pool.remaining(),
       ...(pool.round() ? { round: 2, agentGate: agentGate(pool) } : {}),

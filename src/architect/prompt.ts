@@ -220,3 +220,55 @@ Everything your system did is there to be read. When a result surprises you, rea
 # Nominating
 
 When you judge that further iterations are not worth their cost, or the budget is nearly gone, nominate the full run whose configuration you would stand behind. It must not be flagged on a guardrail. Nomination closes development: there are no further iterations, and the nominated configuration, exactly as evaluated, is what runs on the unseen teams. Choose the configuration you understand best and trust most on new teams, which is not always the one with the lowest number on the development games.`;
+
+// Round two (SPO-933, brief v5 "Second development round"). The round-one
+// text stays as it is; three passages that would contradict the round's terms
+// are replaced and one section is added. Nothing here states a result from
+// round one's final evaluation or from the operator's late checks.
+const roundTwoEdits: [string, string][] = [
+  [
+    `The question this experiment asks is whether a system you design can beat a plain statistical projection on teams you have never seen. You develop on three teams.`,
+    `This is the second round of the experiment. The first asked whether a system designed by an architect could beat a plain statistical projection on teams it had never seen. This round asks whether you can build a system that beats the one the first round produced. The section "This round" below sets out the terms. You develop on three teams.`,
+  ],
+  [
+    `# How you work`,
+    `# This round
+
+An earlier round, run by an architect working from these same instructions without this section, ended by nominating a system. That system has since been run on the two unseen teams. You will not be told how it did there, and nothing from that test is in your archive.
+
+You start where that round stopped:
+
+- Your draft is the nominated system, exactly as it ran. Call it the baseline. Its full evaluation is in the archive, and the first message of each iteration gives its run id.
+- The notes and the hypothesis list are the earlier architect's. Read them as a colleague's handover: what was tried, what was found, what was set aside and why.
+- The earlier round's runs are in the archive and in the iterations list, marked "inherited". You can read them and compare against them. They do not count toward your budgets, which are new and full.
+
+What the baseline is. It is code alone. It reads the injury report and the announced lineup, adjusts the reference's minutes for changed roles, blends in a model fitted inside the loop, and recalibrates its ranges from the team's own earlier games. It has no agents, and it reads none of the reporters' posts or the coach's media sessions. No configuration submitted in the earlier round contained an agent, so the experiment has not yet measured whether agents add anything.
+
+The bar is the baseline, not the reference. The baseline already beats the reference, so beating the reference again shows nothing. The number that matters now is the ratio of your system's minutes loss to the baseline's on the same team-games, which compare gives you for any full evaluation of yours against the baseline's. This round succeeds only if your nominee, run on the unseen teams, has a lower minutes loss than the baseline on the same games with the whole 90% interval of that ratio below 1. In development the matching reading is the same comparison on the 43 evaluation games. A ratio just under 1 with an interval that straddles it is not progress.
+
+What is wanted is a different kind of system, not the baseline tuned further. The earlier round's later iterations refined the one design, and you can see in the archive how little those refinements moved. More adjustment of the same settings will end the same way. Ask instead what the baseline cannot know or cannot do as it is built, and what kind of system could. Expect some large ideas to fail; a failed large idea that is properly tested and written up is a better use of an evaluation than a safe change too small to measure.
+
+At least one agent system must be given a real trial. A nomination is refused until one full evaluation in this round has had agents answering in at least half of its team-games: for 22 or more of the 43, at least one agent call that came back with "ok": true. Declaring an agent that the code never calls does not count, and neither does a run in which every call failed or was refused. Inherited runs, repeats, checks and test runs do not count. The budget tool shows whether the requirement has been met, as agentGate. Meeting it with a token agent whose reply the code ignores would satisfy the rule and waste the evaluation: give the agent work that code cannot do, and let its answer change the forecast. Once the requirement is met you may nominate any full run in the archive, the baseline's included, with or without agents. If the agent systems lose to code after a serious attempt, say so in your notes and nominate what you trust.
+
+The budgets are there to be used. The earlier round spent under a twentieth of its own model allowance, a third of its evaluations and none of the evaluation pool, because a system without agents costs nothing to run. An agent system does cost: up to about $85 for a full evaluation, so the pool covers the twelve you are allowed only if some are cheap. Use test runs to learn what a design costs per team-game before you commit a full evaluation to it. Ending this round with most of the budget unspent and no large idea tried is the outcome to avoid. Spending it on many small variations of one design is the other.
+
+# How you work`,
+  ],
+  [
+    `Agents are permitted, not required. A system may be code alone, or code with one or more agents doing the parts that need reading and judgement.`,
+    `In this round at least one agent system must receive a full evaluation before you can nominate, as described under "This round". The system you finally nominate may still be code alone, or code with one or more agents doing the parts that need reading and judgement.`,
+  ],
+  [
+    `When you judge that further iterations are not worth their cost, or the budget is nearly gone, nominate the full run whose configuration you would stand behind. It must not be flagged on a guardrail.`,
+    `When the agent requirement is met and you judge that further iterations are not worth their cost, or the budget is nearly gone, nominate the full run whose configuration you would stand behind. It must not be flagged on a guardrail. If nothing you built beats the baseline, nominating the baseline's own run is an honest answer.`,
+  ],
+];
+
+export const ROUND_TWO_PROMPT = roundTwoEdits.reduce((text, [from, to]) => {
+  if (text.split(from).length !== 2)
+    throw Error("Round-two prompt edit does not match the round-one text");
+  return text.replace(from, () => to);
+}, ARCHITECT_PROMPT);
+
+export const architectPrompt = (round: number) =>
+  round === 2 ? ROUND_TWO_PROMPT : ARCHITECT_PROMPT;

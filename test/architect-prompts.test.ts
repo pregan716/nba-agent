@@ -2,7 +2,11 @@
 // (SPO-906). A change to any of these is a change to the experiment.
 import assert from "node:assert/strict";
 import test from "node:test";
-import { ARCHITECT_PROMPT } from "../src/architect/prompt.js";
+import {
+  ARCHITECT_PROMPT,
+  ROUND_TWO_PROMPT,
+  architectPrompt,
+} from "../src/architect/prompt.js";
 import { architectLimits } from "../src/architect/iteration.js";
 import { REVIEW_PROMPT } from "../src/evaluation/review/reviewer.js";
 import { evaluationProfile } from "../src/evaluation/service/profile.js";
@@ -70,7 +74,7 @@ test("the architect prompt matches the harness it describes", () => {
 });
 
 test("neither prompt names a result, a prop line or a market score", () => {
-  for (const prompt of [ARCHITECT_PROMPT, REVIEW_PROMPT]) {
+  for (const prompt of [ARCHITECT_PROMPT, ROUND_TWO_PROMPT, REVIEW_PROMPT]) {
     assert.doesNotMatch(prompt, /\bprops?\b|prop line|big.over|market/i);
     assert.doesNotMatch(
       prompt,
@@ -169,5 +173,31 @@ test("the architect prompt lists the shared tables' columns and the reference hi
   has(
     ARCHITECT_PROMPT,
     'Only if its observed_state is "players_listed", read the injury_players rows for that game and team with the same available_at.',
+  );
+});
+
+test("round two keeps the round-one prompt for round-one pools and states its own terms", () => {
+  assert.equal(architectPrompt(1), ARCHITECT_PROMPT);
+  assert.equal(architectPrompt(2), ROUND_TWO_PROMPT);
+  for (const part of [
+    "# This round",
+    "The bar is the baseline, not the reference.",
+    "whole 90% interval of that ratio below 1",
+    "a different kind of system, not the baseline tuned further",
+    "The budgets are there to be used.",
+    "agentGate",
+    "You will not be told how it did there",
+  ])
+    has(ROUND_TWO_PROMPT, part);
+  // The gate as the service applies it: half of the evaluation games, rounded up.
+  const count = evaluationProfile.windows.middle.count;
+  has(ROUND_TWO_PROMPT, `for ${Math.ceil(count / 2)} or more of the ${count}`);
+  // The passages the round replaces are gone; the rest of the text is unchanged.
+  assert.ok(!ROUND_TWO_PROMPT.includes("Agents are permitted, not required."));
+  has(ROUND_TWO_PROMPT, "# The reference projection");
+  // No score from any run: the only ratios are the worked example's.
+  assert.deepEqual(
+    ROUND_TWO_PROMPT.match(/\b0\.\d{2,}\b/g),
+    ARCHITECT_PROMPT.match(/\b0\.\d{2,}\b/g),
   );
 });
