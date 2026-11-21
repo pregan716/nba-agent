@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { existsSync, mkdirSync } from "node:fs";
 import { RecordStore } from "../../runner/record.js";
 import { digest, type RunConfig } from "../../runner/config.js";
@@ -12,6 +13,7 @@ import type { AgentRunner } from "../../game-loop/agents.js";
 import { archiveRun } from "./archive.js";
 import { pairedComparison, summarize } from "./scores.js";
 import { EvaluationPool } from "./pool.js";
+import { roundOneFinal } from "./seed.js";
 import {
   developmentRequest,
   developmentGames,
@@ -38,6 +40,8 @@ export interface EvaluationHost {
   runAgent: AgentRunner;
   training: TrainingData;
   profile?: typeof evaluationProfile;
+  /** Operator-only path, used exclusively by finalEvaluation. */
+  roundOneFinal?: string;
 }
 function openPool(h: EvaluationHost) {
   const profile = profileSchema.parse(h.profile ?? evaluationProfile);
@@ -113,6 +117,39 @@ function results(root: string) {
     ),
   };
 }
+function agentGate(pool: EvaluationPool) {
+  for (const row of pool.db
+    .prepare(
+      "SELECT id,games FROM runs WHERE kind='full' AND status='complete' AND id NOT IN (SELECT id FROM inherited_runs)",
+    )
+    .all()) {
+    const games: TeamGame[] = JSON.parse(String(row.games));
+    if (games.length !== pool.profile.windows.middle.count) continue;
+    const db = new DatabaseSync(
+      join(pool.root, "development", String(row.id), "record.sqlite"),
+      { readOnly: true },
+    );
+    try {
+      if (!db.prepare("SELECT 1 FROM events WHERE kind='replay_end'").get())
+        continue;
+      const expected = new Set(
+        games.map((g) => JSON.stringify([g.teamId, g.gameId])),
+      );
+      const successful = db
+        .prepare(
+          "SELECT DISTINCT scope FROM events WHERE kind='agent_end' AND json_extract(data,'$.reply.ok')=1",
+        )
+        .all()
+        .filter((e) => expected.has(String(e.scope)));
+      if (successful.length >= Math.ceil(games.length / 2))
+        return { met: true, qualifyingRunId: String(row.id) };
+    } finally {
+      db.close();
+    }
+  }
+  return { met: false, qualifyingRunId: null };
+}
+
 /** Only these methods are installed in an architect session. Paths, environment,
  * budget, training data, and final-evaluation controls belong to the host. */
 export function developmentService(host: EvaluationHost) {
@@ -166,11 +203,20 @@ export function developmentService(host: EvaluationHost) {
         throw e;
       }
     },
-    budget: () => pool.remaining(),
+    round: () => pool.round()?.round ?? 1,
+    budget: () => ({
+      ...pool.remaining(),
+      ...(pool.round() ? { round: 2, agentGate: agentGate(pool) } : {}),
+    }),
     async nominate(id: string, recorded?: (receipt: ReviewReceipt) => void) {
       await approveNomination(host, pool, id, recorded);
     },
-    list: () => pool.list(),
+    list: () =>
+      pool
+        .list()
+        .map((run) =>
+          pool.inherited(String(run.id)) ? { ...run, inherited: true } : run,
+        ),
     refusals: () => pool.refusals(),
     archive: previous,
     /** Whether the run covers the late window, which no test run can reach.
@@ -227,6 +273,10 @@ async function approveNomination(
   id: string,
   recorded?: (receipt: ReviewReceipt) => void,
 ) {
+  if (pool.round() && !agentGate(pool).met)
+    throw Error(
+      "Round-two nomination requires a completed full evaluation with successful agent replies in at least half of its team-games",
+    );
   const parent = pool.complete(id);
   if (parent.kind !== "full") throw Error("Nominate a full evaluation");
   const dev = archiveRun(join(host.root, "development", id));
@@ -249,6 +299,32 @@ export async function finalEvaluation(host: EvaluationHost, id: string) {
   const pool = openPool(host);
   try {
     const games = finalGames(host.source.schedule);
+    const round = pool.round();
+    if (round && !host.roundOneFinal)
+      throw Error(
+        "Pass the round-one nominated final record for the round-two comparison",
+      );
+    const baseline = round
+      ? await roundOneFinal(
+          host.roundOneFinal!,
+          round.baselineHash,
+          round.sourceEnvironment,
+        )
+      : null;
+    const expectedGames = new Set(
+      games.map((g) => JSON.stringify([g.teamId, g.gameId, g.tip])),
+    );
+    if (
+      baseline &&
+      (baseline.scores.length !== games.length ||
+        baseline.scores.some(
+          (g) =>
+            !expectedGames.has(JSON.stringify([g.teamId, g.gameId, g.tip])),
+        ))
+    )
+      throw Error(
+        "Round-one final team-games differ from the round-two final schedule",
+      );
     const pkg = await approveNomination(host, pool, id);
     const dir = join(host.root, "final", id);
     mkdirSync(dir, { recursive: true });
@@ -265,6 +341,14 @@ export async function finalEvaluation(host: EvaluationHost, id: string) {
     }
     return {
       runs,
+      ...(baseline
+        ? {
+            againstRoundOne: pairedComparison(
+              runs.nominated.archive.scores,
+              baseline.scores,
+            ),
+          }
+        : {}),
       comparisons: Object.fromEntries(
         Object.keys(runs)
           .filter((k) => k !== "nominated")

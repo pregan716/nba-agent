@@ -14,6 +14,7 @@ import {
   developmentService,
   finalEvaluation,
 } from "../src/evaluation/service/index.js";
+import { seedRoundTwo } from "../src/evaluation/service/seed.js";
 import { developmentRequest } from "../src/evaluation/service/profile.js";
 import { submissionKinds } from "../src/architect/tools.js";
 import { z } from "zod";
@@ -32,6 +33,7 @@ if (
     "compare",
     "refusals",
     "final",
+    "seed-round-two",
   ].includes(mode) ||
   !dir ||
   ![sandboxImage, projectionImage].every(
@@ -39,7 +41,7 @@ if (
   )
 )
   throw Error(
-    "Usage: npm run evaluation -- MODE POOL_DIRECTORY PINNED_SANDBOX PINNED_PROJECTION [REQUEST_FILE | RUN_ID ... | --only=KIND,... --model=ID]",
+    "Usage: npm run evaluation -- MODE POOL_DIRECTORY PINNED_SANDBOX PINNED_PROJECTION [REQUEST_FILE | RUN_ID ... | --only=KIND,... --model=ID] (seed-round-two requires SOURCE_POOL; final accepts RUN_ID [ROUND_ONE_FINAL])",
   );
 // `architect ... --only=test` restricts what that iteration may submit;
 // `--model=ID` runs the architect on another permitted model.
@@ -102,12 +104,16 @@ try {
     config,
     source,
     training: data,
+    roundOneFinal: mode === "final" ? args[1] : undefined,
     runAgent: specialists({
       anthropic: process.env.ANTHROPIC_API_KEY,
       typesafe: process.env.TYPESAFE_API_KEY,
     }),
   };
-  if (mode === "architect")
+  if (mode === "seed-round-two") {
+    if (args.length !== 1) throw Error("Pass the round-one pool directory");
+    console.log(JSON.stringify(await seedRoundTwo(host, args[0])));
+  } else if (mode === "architect")
     console.log(
       JSON.stringify(await architectIteration(host, { only, model })),
     );

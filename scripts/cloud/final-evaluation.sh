@@ -2,7 +2,7 @@
 # Final evaluation under the watcher (SPO-930). Run as ubuntu inside
 # tmux, from the checkout, after bootstrap.sh. Makes paid model calls.
 #
-#   scripts/cloud/final-evaluation.sh POOL_DIR MAX_USD RUN_ID
+#   scripts/cloud/final-evaluation.sh POOL_DIR MAX_USD RUN_ID [ROUND_ONE_FINAL]
 #
 # MAX_USD is the ceiling on all model spend recorded in the pool so far, this
 # final evaluation included. The Doppler service token is read from
@@ -14,7 +14,7 @@ set -euo pipefail
 pool=${1:?Pass the pool directory}
 max=${2:?Pass the spend ceiling in dollars}
 nominee=${3:?Pass the nominated run ID}
-[[ $# == 3 ]]
+[[ $# == 3 || $# == 4 ]]
 cd "$(git rev-parse --show-toplevel)"
 [[ -f /etc/nba-agent-ec2 && -s ~/.pilot-doppler-token ]]
 sandbox="local@$(docker image inspect nba-agent-sandbox:local --format '{{.Id}}')"
@@ -27,7 +27,7 @@ git rev-parse HEAD >"$log.revision"
 npx tsx scripts/pilot-watch.ts "$pool" --max-usd="$max" --snapshot >"$log.known"
 # setsid makes the run its own process group, so the watcher can stop all of it.
 DOPPLER_TOKEN=$(<~/.pilot-doppler-token) setsid doppler run --project nba-agent --config prd -- \
-  npx tsx scripts/evaluation-service.ts final "$pool" "$sandbox" "$projection" "$nominee" \
+  npx tsx scripts/evaluation-service.ts final "$pool" "$sandbox" "$projection" "$nominee" "${@:4}" \
   >"$log.out" 2>"$log.err" &
 run=$!
 watch=0
