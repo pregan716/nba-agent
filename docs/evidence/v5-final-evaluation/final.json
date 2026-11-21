@@ -1,0 +1,658 @@
+{
+  "nominated": {
+    "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+    "agentsInConfiguration": 0,
+    "artifactsInConfiguration": 0,
+    "excluded": 0,
+    "harnessFallbacks": 0,
+    "stepsLoggingErrorOrFallback": 0,
+    "teamGamesWithReferenceMinutes": 0,
+    "sandboxSteps": 164,
+    "agentCalls": 0,
+    "usd": 0,
+    "overall": {
+      "games": 160,
+      "teamGames": 164,
+      "guardrailFlag": false,
+      "metrics": {
+        "minutes.pinball": {
+          "system": 0.8875152291753611,
+          "reference": 0.9987523905718982,
+          "ratio": 0.888623884711964,
+          "ratio90": [0.8680387510203186, 0.9096086316584012],
+          "teamGamesImproved": 133
+        },
+        "fantasy_points.pinball": {
+          "system": 2.165040032889405,
+          "reference": 2.2007686770248975,
+          "ratio": 0.9837653795655651,
+          "ratio90": [0.9731912261923331, 0.9941341545692622],
+          "teamGamesImproved": 104
+        },
+        "playBrier": {
+          "system": 0.07141342570663071,
+          "reference": 0.07926039061396507,
+          "ratio": 0.9009976503200351,
+          "ratio90": [0.8751528625051436, 0.9244217899275736],
+          "teamGamesImproved": 164
+        }
+      }
+    },
+    "byTeam": {
+      "DEN": {
+        "games": 82,
+        "teamGames": 82,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 1.0441857375298325,
+            "reference": 1.1405527543864897,
+            "ratio": 0.9155084966600308,
+            "ratio90": [0.8876415261647426, 0.9431819350905676],
+            "teamGamesImproved": 62
+          },
+          "fantasy_points.pinball": {
+            "system": 2.2267372568910133,
+            "reference": 2.252576288624047,
+            "ratio": 0.9885291202506544,
+            "ratio90": [0.9742901259334732, 1.0024077968012863],
+            "teamGamesImproved": 48
+          },
+          "playBrier": {
+            "system": 0.10077968708572377,
+            "reference": 0.10514110692618689,
+            "ratio": 0.9585184142723077,
+            "ratio90": [0.9357336652087489, 0.9775286026584803],
+            "teamGamesImproved": 82
+          }
+        }
+      },
+      "MEM": {
+        "games": 82,
+        "teamGames": 82,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 0.7308447208208898,
+            "reference": 0.8569520267573054,
+            "ratio": 0.8528420471638257,
+            "ratio90": [0.8215371803367759, 0.8856150330995859],
+            "teamGamesImproved": 71
+          },
+          "fantasy_points.pinball": {
+            "system": 2.1033428088878012,
+            "reference": 2.148961065425748,
+            "ratio": 0.978771948328013,
+            "ratio90": [0.9633724329946428, 0.9947791351433135],
+            "teamGamesImproved": 56
+          },
+          "playBrier": {
+            "system": 0.04204716432753759,
+            "reference": 0.053379674301743396,
+            "ratio": 0.7876999040843594,
+            "ratio90": [0.7250238354276929, 0.8427476721418018],
+            "teamGamesImproved": 82
+          }
+        }
+      }
+    },
+    "byPeriod": {
+      "Jan-Mar 22": {
+        "games": 75,
+        "teamGames": 77,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 0.8516206934237611,
+            "reference": 0.9992872293100609,
+            "ratio": 0.8522281366607143,
+            "ratio90": [0.8242878663348229, 0.8800343638915736],
+            "teamGamesImproved": 67
+          },
+          "fantasy_points.pinball": {
+            "system": 2.094807404756653,
+            "reference": 2.1367612235152977,
+            "ratio": 0.9803656963178956,
+            "ratio90": [0.9654719452747647, 0.994853523939867],
+            "teamGamesImproved": 52
+          },
+          "playBrier": {
+            "system": 0.06444658734044284,
+            "reference": 0.07463164067997746,
+            "ratio": 0.8635290173613037,
+            "ratio90": [0.8169369908644142, 0.9041587912947272],
+            "teamGamesImproved": 77
+          }
+        }
+      },
+      "Mar 23 on": {
+        "games": 21,
+        "teamGames": 22,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 1.0468456246309013,
+            "reference": 1.2010033102419961,
+            "ratio": 0.8716425805853667,
+            "ratio90": [0.8133175643430747, 0.9525760452962333],
+            "teamGamesImproved": 14
+          },
+          "fantasy_points.pinball": {
+            "system": 2.447128333739885,
+            "reference": 2.508675305235679,
+            "ratio": 0.9754663461758708,
+            "ratio90": [0.932661699933091, 1.0210628853974508],
+            "teamGamesImproved": 13
+          },
+          "playBrier": {
+            "system": 0.07924101414093543,
+            "reference": 0.09550818617317415,
+            "ratio": 0.8296777199522635,
+            "ratio90": [0.7075546199680068, 0.9016838547261266],
+            "teamGamesImproved": 22
+          }
+        }
+      },
+      "Oct-Dec": {
+        "games": 64,
+        "teamGames": 65,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 0.8761092376807669,
+            "reference": 0.9296646549475789,
+            "ratio": 0.9423927574509843,
+            "ratio90": [0.9152257286602584, 0.966431970349838],
+            "teamGamesImproved": 52
+          },
+          "fantasy_points.pinball": {
+            "system": 2.1527626443895853,
+            "reference": 2.172378340095698,
+            "ratio": 0.9909704054104829,
+            "ratio90": [0.9799292578163659, 1.0021679247079534],
+            "teamGamesImproved": 39
+          },
+          "playBrier": {
+            "system": 0.07701711199342699,
+            "reference": 0.07924442511572591,
+            "ratio": 0.9718931253643872,
+            "ratio90": [0.9516806291860314, 0.9874006945621181],
+            "teamGamesImproved": 65
+          }
+        }
+      }
+    },
+    "beforeHoldout": {
+      "games": 139,
+      "teamGames": 142,
+      "guardrailFlag": false,
+      "metrics": {
+        "minutes.pinball": {
+          "system": 0.8628302383301366,
+          "reference": 0.9674177410455446,
+          "ratio": 0.891890030254795,
+          "ratio90": [0.8710501349927215, 0.9116066785959756],
+          "teamGamesImproved": 119
+        },
+        "fantasy_points.pinball": {
+          "system": 2.1213362116308807,
+          "reference": 2.1530648332175932,
+          "ratio": 0.9852635085125161,
+          "ratio90": [0.9759264237817693, 0.9945563776870557],
+          "teamGamesImproved": 91
+        },
+        "playBrier": {
+          "system": 0.0702007007379356,
+          "reference": 0.07674312651324255,
+          "ratio": 0.9147490326162564,
+          "ratio90": [0.8875703300660169, 0.9380532854305792],
+          "teamGamesImproved": 142
+        }
+      }
+    },
+    "minutesRatioByTier": {
+      "deep bench": 0.9221652699448543,
+      "fringe": 0.8444738031825738,
+      "rotation": 0.8614282650925439,
+      "core": 0.9100238426370023
+    },
+    "medianMinutesMissForPlayersWhoPlayed": {
+      "starters": {
+        "n": 820,
+        "system": 4.165988952203122,
+        "reference": 4.521306567930787
+      },
+      "bench": {
+        "n": 877,
+        "system": 4.332062864086321,
+        "reference": 4.801213926062996
+      }
+    },
+    "other": {
+      "minutes.coverage50": {
+        "system": 0.7265376555083853,
+        "reference": 0.7363870920834975
+      },
+      "minutes.coverage80": {
+        "system": 0.9118954853793536,
+        "reference": 0.9209806755977369
+      },
+      "points.pinball": {
+        "system": 1.3532367388594049,
+        "reference": 1.3640611865691727
+      },
+      "points.coverage50": {
+        "system": 0.4851605542154319,
+        "reference": 0.5026737997774583
+      },
+      "points.coverage80": {
+        "system": 0.8044133034986694,
+        "reference": 0.8059286073005583
+      },
+      "rebounds.pinball": {
+        "system": 0.5398301160646003,
+        "reference": 0.5453004498171905
+      },
+      "rebounds.coverage50": {
+        "system": 0.5063853152267788,
+        "reference": 0.5069720591062057
+      },
+      "rebounds.coverage80": {
+        "system": 0.7978563103563097,
+        "reference": 0.8031501696135839
+      },
+      "assists.pinball": {
+        "system": 0.418456186545657,
+        "reference": 0.4244635915939511
+      },
+      "assists.coverage50": {
+        "system": 0.48890161329185705,
+        "reference": 0.48809505196700304
+      },
+      "assists.coverage80": {
+        "system": 0.7851715357812916,
+        "reference": 0.7843692215643434
+      },
+      "fantasy_points.coverage50": {
+        "system": 0.5260761596127448,
+        "reference": 0.5182385872934655
+      },
+      "fantasy_points.coverage80": {
+        "system": 0.8063594603228749,
+        "reference": 0.8001659925440413
+      },
+      "startBrier": {
+        "system": 0.0007440459220660174,
+        "reference": 0.055477310790019115
+      },
+      "misplacedMinutes": {
+        "system": 26.30559425581531,
+        "reference": 29.213350896005807
+      },
+      "minutes.conditional.coverage50": {
+        "system": 0.5391083509985948,
+        "reference": 0.5188185628734406
+      },
+      "minutes.conditional.coverage80": {
+        "system": 0.8205615691896176,
+        "reference": 0.7999395760066487
+      },
+      "ceiling.brier": {
+        "system": 0.09008375684761394,
+        "reference": 0.09225877864491755
+      },
+      "ceiling.hitRate": {
+        "system": 0.15853658536585366,
+        "reference": 0.11013983857847008
+      },
+      "ceiling.hitRateWithoutVoids": {
+        "system": 0.16049382716049382,
+        "reference": null
+      },
+      "ceiling.voidRate": {
+        "system": 0.012195121951219513,
+        "reference": null
+      },
+      "ceiling.referenceWeighted": {
+        "system": 0.11013983857847008,
+        "reference": 0.11013983857847008
+      }
+    }
+  },
+  "clearArtifacts": {
+    "hash": "72c7e39f9094b874ec686477b0dc686bd5238a89771692ce29dd73816a0b13c6",
+    "agentsInConfiguration": 0,
+    "artifactsInConfiguration": 0,
+    "excluded": 0,
+    "harnessFallbacks": 0,
+    "stepsLoggingErrorOrFallback": 0,
+    "teamGamesWithReferenceMinutes": 0,
+    "sandboxSteps": 164,
+    "agentCalls": 0,
+    "usd": 0,
+    "overall": {
+      "games": 160,
+      "teamGames": 164,
+      "guardrailFlag": false,
+      "metrics": {
+        "minutes.pinball": {
+          "system": 0.8875152291753611,
+          "reference": 0.9987523905718982,
+          "ratio": 0.888623884711964,
+          "ratio90": [0.8680387510203186, 0.9096086316584012],
+          "teamGamesImproved": 133
+        },
+        "fantasy_points.pinball": {
+          "system": 2.165040032889405,
+          "reference": 2.2007686770248975,
+          "ratio": 0.9837653795655651,
+          "ratio90": [0.9731912261923331, 0.9941341545692622],
+          "teamGamesImproved": 104
+        },
+        "playBrier": {
+          "system": 0.07141342570663071,
+          "reference": 0.07926039061396507,
+          "ratio": 0.9009976503200351,
+          "ratio90": [0.8751528625051436, 0.9244217899275736],
+          "teamGamesImproved": 164
+        }
+      }
+    },
+    "byTeam": {
+      "DEN": {
+        "games": 82,
+        "teamGames": 82,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 1.0441857375298325,
+            "reference": 1.1405527543864897,
+            "ratio": 0.9155084966600308,
+            "ratio90": [0.8876415261647426, 0.9431819350905676],
+            "teamGamesImproved": 62
+          },
+          "fantasy_points.pinball": {
+            "system": 2.2267372568910133,
+            "reference": 2.252576288624047,
+            "ratio": 0.9885291202506544,
+            "ratio90": [0.9742901259334732, 1.0024077968012863],
+            "teamGamesImproved": 48
+          },
+          "playBrier": {
+            "system": 0.10077968708572377,
+            "reference": 0.10514110692618689,
+            "ratio": 0.9585184142723077,
+            "ratio90": [0.9357336652087489, 0.9775286026584803],
+            "teamGamesImproved": 82
+          }
+        }
+      },
+      "MEM": {
+        "games": 82,
+        "teamGames": 82,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 0.7308447208208898,
+            "reference": 0.8569520267573054,
+            "ratio": 0.8528420471638257,
+            "ratio90": [0.8215371803367759, 0.8856150330995859],
+            "teamGamesImproved": 71
+          },
+          "fantasy_points.pinball": {
+            "system": 2.1033428088878012,
+            "reference": 2.148961065425748,
+            "ratio": 0.978771948328013,
+            "ratio90": [0.9633724329946428, 0.9947791351433135],
+            "teamGamesImproved": 56
+          },
+          "playBrier": {
+            "system": 0.04204716432753759,
+            "reference": 0.053379674301743396,
+            "ratio": 0.7876999040843594,
+            "ratio90": [0.7250238354276929, 0.8427476721418018],
+            "teamGamesImproved": 82
+          }
+        }
+      }
+    },
+    "byPeriod": {
+      "Jan-Mar 22": {
+        "games": 75,
+        "teamGames": 77,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 0.8516206934237611,
+            "reference": 0.9992872293100609,
+            "ratio": 0.8522281366607143,
+            "ratio90": [0.8242878663348229, 0.8800343638915736],
+            "teamGamesImproved": 67
+          },
+          "fantasy_points.pinball": {
+            "system": 2.094807404756653,
+            "reference": 2.1367612235152977,
+            "ratio": 0.9803656963178956,
+            "ratio90": [0.9654719452747647, 0.994853523939867],
+            "teamGamesImproved": 52
+          },
+          "playBrier": {
+            "system": 0.06444658734044284,
+            "reference": 0.07463164067997746,
+            "ratio": 0.8635290173613037,
+            "ratio90": [0.8169369908644142, 0.9041587912947272],
+            "teamGamesImproved": 77
+          }
+        }
+      },
+      "Mar 23 on": {
+        "games": 21,
+        "teamGames": 22,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 1.0468456246309013,
+            "reference": 1.2010033102419961,
+            "ratio": 0.8716425805853667,
+            "ratio90": [0.8133175643430747, 0.9525760452962333],
+            "teamGamesImproved": 14
+          },
+          "fantasy_points.pinball": {
+            "system": 2.447128333739885,
+            "reference": 2.508675305235679,
+            "ratio": 0.9754663461758708,
+            "ratio90": [0.932661699933091, 1.0210628853974508],
+            "teamGamesImproved": 13
+          },
+          "playBrier": {
+            "system": 0.07924101414093543,
+            "reference": 0.09550818617317415,
+            "ratio": 0.8296777199522635,
+            "ratio90": [0.7075546199680068, 0.9016838547261266],
+            "teamGamesImproved": 22
+          }
+        }
+      },
+      "Oct-Dec": {
+        "games": 64,
+        "teamGames": 65,
+        "guardrailFlag": false,
+        "metrics": {
+          "minutes.pinball": {
+            "system": 0.8761092376807669,
+            "reference": 0.9296646549475789,
+            "ratio": 0.9423927574509843,
+            "ratio90": [0.9152257286602584, 0.966431970349838],
+            "teamGamesImproved": 52
+          },
+          "fantasy_points.pinball": {
+            "system": 2.1527626443895853,
+            "reference": 2.172378340095698,
+            "ratio": 0.9909704054104829,
+            "ratio90": [0.9799292578163659, 1.0021679247079534],
+            "teamGamesImproved": 39
+          },
+          "playBrier": {
+            "system": 0.07701711199342699,
+            "reference": 0.07924442511572591,
+            "ratio": 0.9718931253643872,
+            "ratio90": [0.9516806291860314, 0.9874006945621181],
+            "teamGamesImproved": 65
+          }
+        }
+      }
+    },
+    "beforeHoldout": {
+      "games": 139,
+      "teamGames": 142,
+      "guardrailFlag": false,
+      "metrics": {
+        "minutes.pinball": {
+          "system": 0.8628302383301366,
+          "reference": 0.9674177410455446,
+          "ratio": 0.891890030254795,
+          "ratio90": [0.8710501349927215, 0.9116066785959756],
+          "teamGamesImproved": 119
+        },
+        "fantasy_points.pinball": {
+          "system": 2.1213362116308807,
+          "reference": 2.1530648332175932,
+          "ratio": 0.9852635085125161,
+          "ratio90": [0.9759264237817693, 0.9945563776870557],
+          "teamGamesImproved": 91
+        },
+        "playBrier": {
+          "system": 0.0702007007379356,
+          "reference": 0.07674312651324255,
+          "ratio": 0.9147490326162564,
+          "ratio90": [0.8875703300660169, 0.9380532854305792],
+          "teamGamesImproved": 142
+        }
+      }
+    },
+    "minutesRatioByTier": {
+      "deep bench": 0.9221652699448543,
+      "fringe": 0.8444738031825738,
+      "rotation": 0.8614282650925439,
+      "core": 0.9100238426370023
+    },
+    "medianMinutesMissForPlayersWhoPlayed": {
+      "starters": {
+        "n": 820,
+        "system": 4.165988952203122,
+        "reference": 4.521306567930787
+      },
+      "bench": {
+        "n": 877,
+        "system": 4.332062864086321,
+        "reference": 4.801213926062996
+      }
+    },
+    "other": {
+      "minutes.coverage50": {
+        "system": 0.7265376555083853,
+        "reference": 0.7363870920834975
+      },
+      "minutes.coverage80": {
+        "system": 0.9118954853793536,
+        "reference": 0.9209806755977369
+      },
+      "points.pinball": {
+        "system": 1.3532367388594049,
+        "reference": 1.3640611865691727
+      },
+      "points.coverage50": {
+        "system": 0.4851605542154319,
+        "reference": 0.5026737997774583
+      },
+      "points.coverage80": {
+        "system": 0.8044133034986694,
+        "reference": 0.8059286073005583
+      },
+      "rebounds.pinball": {
+        "system": 0.5398301160646003,
+        "reference": 0.5453004498171905
+      },
+      "rebounds.coverage50": {
+        "system": 0.5063853152267788,
+        "reference": 0.5069720591062057
+      },
+      "rebounds.coverage80": {
+        "system": 0.7978563103563097,
+        "reference": 0.8031501696135839
+      },
+      "assists.pinball": {
+        "system": 0.418456186545657,
+        "reference": 0.4244635915939511
+      },
+      "assists.coverage50": {
+        "system": 0.48890161329185705,
+        "reference": 0.48809505196700304
+      },
+      "assists.coverage80": {
+        "system": 0.7851715357812916,
+        "reference": 0.7843692215643434
+      },
+      "fantasy_points.coverage50": {
+        "system": 0.5260761596127448,
+        "reference": 0.5182385872934655
+      },
+      "fantasy_points.coverage80": {
+        "system": 0.8063594603228749,
+        "reference": 0.8001659925440413
+      },
+      "startBrier": {
+        "system": 0.0007440459220660174,
+        "reference": 0.055477310790019115
+      },
+      "misplacedMinutes": {
+        "system": 26.30559425581531,
+        "reference": 29.213350896005807
+      },
+      "minutes.conditional.coverage50": {
+        "system": 0.5391083509985948,
+        "reference": 0.5188185628734406
+      },
+      "minutes.conditional.coverage80": {
+        "system": 0.8205615691896176,
+        "reference": 0.7999395760066487
+      },
+      "ceiling.brier": {
+        "system": 0.09008375684761394,
+        "reference": 0.09225877864491755
+      },
+      "ceiling.hitRate": {
+        "system": 0.15853658536585366,
+        "reference": 0.11013983857847008
+      },
+      "ceiling.hitRateWithoutVoids": {
+        "system": 0.16049382716049382,
+        "reference": null
+      },
+      "ceiling.voidRate": {
+        "system": 0.012195121951219513,
+        "reference": null
+      },
+      "ceiling.referenceWeighted": {
+        "system": 0.11013983857847008,
+        "reference": 0.11013983857847008
+      }
+    }
+  },
+  "nominatedAgainstClearArtifacts": {
+    "minutes.pinball": {
+      "ratio": 1,
+      "ratio90": [1, 1]
+    },
+    "fantasy_points.pinball": {
+      "ratio": 1,
+      "ratio90": [1, 1]
+    },
+    "playBrier": {
+      "ratio": 1,
+      "ratio90": [1, 1]
+    }
+  },
+  "forecastsIdentical": true,
+  "agentsOff": "not run: the nominee has no agents"
+}
