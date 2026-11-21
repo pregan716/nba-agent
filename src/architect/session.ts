@@ -18,7 +18,7 @@ import {
 } from "../evaluation/service/index.js";
 import { architectTools, type SubmissionKind } from "./tools.js";
 import { Iteration, architectWarnUsd } from "./iteration.js";
-import { ARCHITECT_PROMPT } from "./prompt.js";
+import { architectPrompt } from "./prompt.js";
 
 /** Models the operator may run the architect on. The first is the experiment's
  * architect (user decision, Nov 17, 2026; brief v5 "Contamination"); the
@@ -178,6 +178,7 @@ async function converse(
   tools: ReturnType<typeof architectTools>,
   signal: AbortSignal,
   options: ArchitectOptions,
+  round: { round: number; baselineRunId: string | null },
 ) {
   const stream = metered(i, signal, options);
   const model = architectModel(options);
@@ -189,7 +190,7 @@ async function converse(
   });
   const system = {
     role: "system" as const,
-    content: ARCHITECT_PROMPT,
+    content: architectPrompt(round.round),
     timestamp: Date.now(),
   };
   i.record("system", system);
@@ -198,6 +199,11 @@ async function converse(
     [
       user(
         "This is the start of a new iteration. Read your notes, the hypothesis list and the results of earlier runs before deciding what to do. " +
+          (round.baselineRunId
+            ? "The baseline's full evaluation is run " +
+              round.baselineRunId +
+              ". "
+            : "") +
           (options.only
             ? "In this iteration submit accepts only these kinds: " +
               options.only.join(", ") +
@@ -308,7 +314,7 @@ export async function architectIteration(
         );
         if (i.budget().sessionUsd <= 0) i.status = "budget";
         else {
-          await converse(i, tools, signal, options);
+          await converse(i, tools, signal, options, service.round());
         }
         return { iteration: i.id, status: i.status, budget: i.budget() };
       } finally {

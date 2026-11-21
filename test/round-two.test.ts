@@ -257,7 +257,8 @@ test("seed imports historical development records across revisions with fresh bu
   );
   const s = developmentService(current);
   t.after(() => s.close());
-  assert.equal(s.round(), 2);
+  assert.equal(s.round().round, 2);
+  assert.equal(s.round().baselineRunId, baseline);
   assert.equal(s.budget().nominee, null);
   assert.equal(s.budget().fullEvaluations, current.profile!.fullLimit);
   assert.equal(s.budget().evaluationUsd, current.profile!.poolUsd);
@@ -304,7 +305,7 @@ test("round-two gate excludes inherited, uncalled, failed, partial, check, repea
   const { old, current } = fixture(t);
   const baseline = completed(old);
   const oldService = developmentService(old);
-  assert.equal(oldService.round(), 1);
+  assert.deepEqual(oldService.round(), { round: 1, baselineRunId: null });
   await oldService.nominate(baseline);
   oldService.close();
   await seedRoundTwo(current, old.root);
