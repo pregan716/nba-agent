@@ -183,6 +183,9 @@ test("round two keeps the round-one prompt for round-one pools and states its ow
     "# This round",
     "The bar is the baseline, not the reference.",
     "whole 90% interval of that ratio below 1",
+    "The target is a ratio of 0.75",
+    "It is a goal and not a rule.",
+    "you have either reached the target or nearly used the budgets",
     "a different kind of system, not the baseline tuned further",
     "The budgets are there to be used.",
     "agentGate",
@@ -195,9 +198,10 @@ test("round two keeps the round-one prompt for round-one pools and states its ow
   // The passages the round replaces are gone; the rest of the text is unchanged.
   assert.ok(!ROUND_TWO_PROMPT.includes("Agents are permitted, not required."));
   has(ROUND_TWO_PROMPT, "# The reference projection");
-  // No score from any run: the only ratios are the worked example's.
-  assert.deepEqual(
-    ROUND_TWO_PROMPT.match(/\b0\.\d{2,}\b/g),
-    ARCHITECT_PROMPT.match(/\b0\.\d{2,}\b/g),
-  );
+  // No score from any run: the only ratios are the worked example's and the
+  // target agreed on Nov 22, 2026 (SPO-935).
+  const ratios = (text: string) =>
+    text.match(/\b0\.\d{2,}\b/g)?.filter((r) => r !== "0.75");
+  assert.ok(!ARCHITECT_PROMPT.includes("0.75"));
+  assert.deepEqual(ratios(ROUND_TWO_PROMPT), ratios(ARCHITECT_PROMPT));
 });
