@@ -52,7 +52,7 @@ export function piLoop(forecast: boolean, overrides?: Partial<LoopParameters>) {
 }
 
 export const PI_CONTRACT = {
-  packageVersion: "1.5.0",
+  packageVersion: "1.6.1",
   provider: {
     id: "nba-metered",
     api: "anthropic-messages",
