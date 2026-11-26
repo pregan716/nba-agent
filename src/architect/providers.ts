@@ -59,6 +59,8 @@ export interface ArchitectProvider {
   session: boolean;
   /** Other names the provider gives this model in its replies. */
   answersAs?: readonly string[];
+  /** The model a raw stream event says is answering, if the event says. */
+  answering(event: Payload): unknown;
 }
 
 const provider = <A extends Api>(
@@ -86,6 +88,8 @@ const anthropic = (id: "claude-opus-5-5" | "claude-opus-4-6") =>
         client.count(r as MessageCreateParamsNonStreaming, signal);
     },
     session: false,
+    answering: (e) =>
+      e.type === "message_start" ? e.message?.model : undefined,
   });
 
 const providers: Record<ArchitectModel, ArchitectProvider> = {
@@ -97,12 +101,14 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
     // The Responses API rejects a smaller limit.
     minOutput: 16,
     session: true,
+    answering: (e) => e.response?.model,
   }),
   "gemini-4-neon": provider(GOOGLE_MODELS["gemini-4-neon"], googleStream, {
     keyEnv: "GEMINI_API_KEY",
     limit: (r) => [(r.config ??= {}), "maxOutputTokens"],
     minOutput: 1,
     session: true,
+    answering: (e) => e.modelVersion,
   }),
   "moonshotai/Kimi-K3.1-Pro": provider(
     BASETEN_MODELS["moonshotai/Kimi-K3.1-Pro"],
@@ -118,6 +124,7 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
       // Baseten's replies carry this name (live check, Nov 25, 2026). Its
       // model list has no model of that name, only this one and Kimi-K3.
       answersAs: ["moonshotai/Kimi-K3.1"],
+      answering: (e) => e.model,
     },
   ),
 };

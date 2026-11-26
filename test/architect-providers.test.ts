@@ -275,25 +275,80 @@ for (const c of cases)
     assert.ok(0.3e9 - row.spent < c.hold.output * 1000, String(row.spent));
   });
 
-test("a reply from a different model than the one asked for stops the session", async (t) => {
-  const provider = await otherProvider();
-  t.after(() => provider.close());
-  const root = mkdtempSync(join(tmpdir(), "architect-provider-"));
-  t.after(() => rmSync(root, { recursive: true, force: true }));
-  // Baseten's own name for the model is accepted; another model's is not.
-  provider.steps.push(
-    { calls: [call("budget")], model: "moonshotai/Kimi-K3.1" },
-    { calls: [call("budget")], model: "moonshotai/Kimi-K3" },
-  );
-  await assert.rejects(
-    architectIteration(host(root), {
-      ...provider.options,
-      model: "moonshotai/Kimi-K3.1-Pro",
-    }),
-    /Unexpected architect model/,
-  );
-  assert.equal(provider.requests.length, 2);
-});
+// Names each provider may give the model that was asked for, and one it may not.
+const names: Record<string, { same: string[]; other: string }> = {
+  "gpt-6.2-sol": { same: ["gpt-6.2-sol-2026-11-03"], other: "gpt-6.1-sol" },
+  "gemini-4-neon": {
+    same: ["models/gemini-4-neon", "gemini-4-neon-001"],
+    other: "gemini-4-argon",
+  },
+  // Baseten's own name for the model (live check, Nov 25, 2026).
+  "moonshotai/Kimi-K3.1-Pro": {
+    same: ["moonshotai/Kimi-K3.1"],
+    other: "moonshotai/Kimi-K3",
+  },
+};
+for (const c of cases)
+  test(`${c.model}: a reply must name the model that was asked for before its tool runs`, async (t) => {
+    const provider = await otherProvider();
+    t.after(() => provider.close());
+    const root = mkdtempSync(join(tmpdir(), "architect-provider-"));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    const options = { ...provider.options, model: c.model };
+    const { same, other } = names[c.model];
+    const events = (kind: string) => {
+      const db = new DatabaseSync(join(root, "architect.sqlite"), {
+        readOnly: true,
+      });
+      try {
+        return db
+          .prepare("SELECT data FROM events WHERE kind=? ORDER BY seq")
+          .all(kind)
+          .map((row) => JSON.parse(String(row.data)));
+      } finally {
+        db.close();
+      }
+    };
+    // The provider's other names for the model are accepted and recorded.
+    for (const model of same)
+      provider.steps.push({ calls: [call("budget")], model });
+    provider.steps.push({ calls: [call("hypotheses")], model: other });
+    await assert.rejects(
+      architectIteration(host(root), options),
+      new RegExp("Unexpected architect model: " + other.replace(/[.]/g, "\\.")),
+    );
+    assert.equal(provider.requests.length, same.length + 1);
+    assert.deepEqual(events("reply_model"), [...same, other]);
+    // The accepted replies ran their tool. The refused reply's tool did not
+    // run, and the reply is not in the transcript, but it was paid for.
+    assert.deepEqual(
+      events("tool_result").map((e) => e.name),
+      same.map(() => "budget"),
+    );
+    assert.deepEqual(
+      events("message")
+        .filter((m) => m.role === "assistant")
+        .flatMap((m) => m.content)
+        .flatMap((c) => (c.type === "toolCall" ? [c.name] : [])),
+      same.map(() => "budget"),
+    );
+    const u = turnUsage;
+    assert.equal(
+      ledger(root).spent,
+      (same.length + 1) *
+        ((u.input - u.cached) * c.price.input +
+          u.cached * c.price.cached +
+          u.output * c.price.output) *
+        1000,
+    );
+
+    // A reply that names no model is refused as well.
+    provider.steps.push({ calls: [call("budget")], model: "" });
+    await assert.rejects(
+      architectIteration(host(root), options),
+      /Unexpected architect model: none named/,
+    );
+  });
 
 test("a missing credential stops the session before any request", async (t) => {
   const root = mkdtempSync(join(tmpdir(), "architect-provider-"));

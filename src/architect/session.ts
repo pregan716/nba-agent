@@ -69,8 +69,13 @@ export function metered(
   if (!key) throw Error("Missing architect provider credentials");
   const count = provider.count?.(key, baseUrl);
   const rates = dearestRates(model);
-  const stream: StreamFn = async (_, context, streamOptions) =>
-    retryArchitectProvider(async () => {
+  const recorded = new Set<string>();
+  const stream: StreamFn = async (_, context, streamOptions) => {
+    // The models the provider's own stream events name for the last attempt.
+    // The adapters do not all pass this on, so it is read from the events.
+    let answering = new Set<string>();
+    const events = await retryArchitectProvider(async () => {
+      answering = new Set();
       let settle: ((usd: number) => void) | undefined;
       let heldUsd = 0;
       let transportError: unknown;
@@ -86,6 +91,10 @@ export function metered(
         reasoning: "high",
         maxRetries: 0,
         maxTokens,
+        onProviderStreamEvent(event) {
+          const name = provider.answering(event as Record<string, any>);
+          if (typeof name === "string" && name) answering.add(name);
+        },
         async onPayload(raw) {
           const req = raw as Record<string, any>;
           const tokens = count
@@ -190,6 +199,27 @@ export function metered(
       );
       return events;
     }, signal);
+    const reply = await events.result();
+    if (reply.stopReason === "error" || reply.stopReason === "aborted")
+      return events;
+    // A completed reply has been paid for. Before it enters the transcript or
+    // any of its tool calls runs, it must name the model that was asked for,
+    // and no other. A reply that names no model is not accepted either.
+    for (const name of answering)
+      if (!recorded.has(name)) {
+        recorded.add(name);
+        i.record("reply_model", name);
+      }
+    if (
+      !answering.size ||
+      [...answering].some((name) => !answeredBy(provider, name))
+    )
+      throw Error(
+        "Unexpected architect model: " +
+          ([...answering].join(", ") || "none named"),
+      );
+    return events;
+  };
   return stream;
 }
 async function converse(
@@ -286,13 +316,6 @@ async function converse(
           text: JSON.stringify({ budget: i.budget() }),
         });
       i.record("message", m);
-      if (
-        m.role === "assistant" &&
-        !["error", "aborted"].includes(m.stopReason)
-      ) {
-        if (m.responseModel && !answeredBy(provider, m.responseModel))
-          throw Error("Unexpected architect model");
-      }
     },
     signal,
     stream,

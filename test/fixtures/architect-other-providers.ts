@@ -11,7 +11,7 @@ interface Step {
   disconnected?: boolean;
   /** The stream completes without a usage report. */
   noUsage?: boolean;
-  /** The model name the reply carries, where the format has one. */
+  /** The model name the reply carries. An empty string leaves it out. */
   model?: string;
 }
 /** What every turn is billed, in tokens. `cached` is part of `input` and
@@ -70,7 +70,11 @@ export async function otherProvider() {
       const model = step.model ?? body.model;
       const emit = (type: string, rest: Record<string, unknown>) =>
         data({ type, ...rest }, type);
-      const base = { id: "resp" + n, object: "response", model };
+      const base = {
+        id: "resp" + n,
+        object: "response",
+        ...(model ? { model } : {}),
+      };
       emit("response.created", {
         response: { ...base, status: "in_progress", output: [] },
       });
@@ -124,7 +128,7 @@ export async function otherProvider() {
           id: "cmpl" + n,
           object: "chat.completion.chunk",
           created: 0,
-          model: step.model ?? body.model,
+          ...(step.model === "" ? {} : { model: step.model ?? body.model }),
           ...rest,
         });
       chunk({
@@ -186,7 +190,9 @@ export async function otherProvider() {
                 totalTokenCount: u.input + u.output,
               },
             }),
-        modelVersion: step.model ?? "gemini-4-neon",
+        ...(step.model === ""
+          ? {}
+          : { modelVersion: step.model ?? "gemini-4-neon" }),
       });
     }
     res.end();

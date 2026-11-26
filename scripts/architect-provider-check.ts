@@ -15,7 +15,6 @@ import { runAgentLoop } from "@earendil-works/pi-agent-core";
 import { Iteration } from "../src/architect/iteration.js";
 import { architectPrompt } from "../src/architect/prompt.js";
 import {
-  answeredBy,
   architectModels,
   architectProvider,
 } from "../src/architect/providers.js";
@@ -23,8 +22,7 @@ import { metered } from "../src/architect/session.js";
 import { architectTools } from "../src/architect/tools.js";
 
 const id = z.enum(architectModels).parse(process.argv[2]);
-const provider = architectProvider(id);
-const { model } = provider;
+const { model } = architectProvider(id);
 const root = mkdtempSync(join(tmpdir(), "architect-check-"));
 const i = new Iteration(root);
 const signal = AbortSignal.timeout(10 * 60 * 1000);
@@ -81,14 +79,10 @@ try {
         c.type === "toolCall" ? [c.name] : [],
       );
       if (m.stopReason === "error" || m.stopReason === "aborted") failed = true;
-      // The session stops on a reply from another model.
-      if (m.responseModel && !answeredBy(provider, m.responseModel))
-        failed = true;
       console.log(
         JSON.stringify({
           stopReason: m.stopReason,
           error: m.errorMessage,
-          responseModel: m.responseModel,
           calls,
           text: m.content
             .flatMap((c) => (c.type === "text" ? [c.text] : []))
@@ -118,6 +112,12 @@ try {
     JSON.stringify({
       model: model.id,
       requests: turns + 1,
+      // What the provider's stream events called the model. The stream stops
+      // the check on any name that is not this model's.
+      replyModels: i.db
+        .prepare("SELECT data FROM events WHERE kind='reply_model'")
+        .all()
+        .map((row) => JSON.parse(String(row.data))),
       spentUsd: total.spent / 1e9,
       heldUsd: total.held / 1e9,
     }),
