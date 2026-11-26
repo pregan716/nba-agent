@@ -159,7 +159,7 @@ Status: Proposed. The architect nominates one configuration. After that there is
 
 ## Second development round
 
-Status: the round and the items marked Agreed were agreed on Nov 20, 2026. Test teams and budgets were agreed on Nov 21, 2026. The target and the restart were agreed on Nov 22, 2026. The rest is Proposed.
+Status: the round and the items marked Agreed were agreed on Nov 20, 2026. Test teams and budgets were agreed on Nov 21, 2026. The target and the restart were agreed on Nov 22, 2026. The end of development was agreed on Nov 25, 2026. The rest is Proposed.
 
 Round one nominated a system with no agents, so the final evaluation could not say whether agents add anything. The architect submitted no configuration with an agent in 28 submissions. Round two asks one question: can the architect, pushed to try agents and larger changes, build a system that beats the round-one nominee?
 
@@ -278,6 +278,8 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 - **Round two is not a first look.** It was decided on after round one's final evaluation, which the user and the assistant have read. Round two is tested on Denver and Memphis again: the architect still has not seen them, but the people who designed the round have, and two systems will have been tested on the same games. Round two also starts from a design already known to work on those teams.
 - **Round two pushes the architect.** It is told to try agents and larger changes, is given a target of 0.75 against the round-one nominee, and must evaluate at least one agent system. Its result says what an architect can do when pushed that way, not what it chooses unprompted. Round one is the reading of that.
 - **Round two was restarted after looking at development results.** Its first three iterations ran without a target. The user and the assistant read their results, judged the changes too small, added the target to the prompt and restarted the round from the round-one pool. The prompt the nominee was designed under was therefore chosen after seeing how the architect behaved under the earlier one, on the same development games.
+- **Round-two development was stopped by the user.** The prompt told the architect to continue until it reached the target or had nearly used the budgets. It had done neither. The user ended development after nine iterations because every one was a version of the same reading agent and the gains were small: by the comparison tool, 0.9858 (0.9639–1.0076) against the round-one nominee on the 43 mid-season team-games for the best system. The decision to stop and test was made knowing those results.
+- **The round-two architect looked at the late stretch.** It ran two late checks before nominating, one of its own system and one of the round-one nominee, and saw both headlines. Its choice of nominee is therefore partly made on the late stretch.
 - The v4 limits on DFS salaries, the single forecast time and the holdout record carry over.
 - Development games are never evidence.
 
@@ -344,6 +346,12 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Round-two target  | The architect is told to aim for a minutes ratio of 0.75 against the round-one nominee. It is a goal, not a pass mark; the nomination gate and the bar of Nov 20 are unchanged (SPO-934).                      |
 | Round-two restart | Round two restarts in a new pool seeded from the round-one pool, with full budgets and the prompt that states the target. The first three iterations, run without a target, are kept as a record and reported. |
+
+### Agreed on Nov 25, 2026
+
+| Decision                     | Resolution                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| End of round-two development | Development ends after nine iterations in the restarted pool (SPO-937), with five full evaluations and four checks run and $174.10 of the $1,000 pool spent. The next iteration may only nominate, and the architect chooses among its full evaluations and the round-one nominee's. The user decided this, not the architect, after reading the development results. See Limits on claims. |
 
 ### Open
 
