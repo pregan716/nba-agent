@@ -178,6 +178,18 @@ Round one nominated a system with no agents, so the final evaluation could not s
 - **Human sample (Proposed).** Round one's selection rule named its own iterations and does not apply. Before the round-two final evaluation a person reads up to five accepted configurations, in this order until five are reached: the nominee; the qualifying agent system with the lowest minutes ratio, if it is not the nominee; the other fully evaluated configurations from lowest minutes ratio upward. If the round produced fewer than five, all of them are read. For a configuration with agents the reading covers every prompt, skill and tool description as well as the code.
 - **Final evaluation.** The same three runs. If the nominee uses agents, the run with agent calls refused answers the agent question directly. Added: the paired comparison of the round-two nominee against the round-one nominee on the same team-games. It runs on Denver and Memphis again, the same 164 team-games (Agreed Nov 21, 2026), so that comparison is paired with round one's final record. It is a second look at those games (see Limits).
 
+## Architects on other models
+
+Status: the decision is Agreed (Nov 25, 2026). Its terms are Open, listed under Decisions, except where marked Proposed.
+
+Rounds one and two used one architect model, `claude-opus-5-5`, and a result describes that model only (see Limits). The user decided that the architect may also be run on models from other providers: OpenAI, Google Gemini and an open-source model.
+
+- **What the decision covers.** The architect only. The game-loop model list and the reviewer are unchanged.
+- **Rounds one and two are unchanged.** Their architect stays `claude-opus-5-5`, and their pools, nominees and results stand as they are.
+- **A pool of its own (Proposed).** Each run on another model has its own pool and is reported apart from every other run. The model is part of the iteration record.
+- **The same harness (Proposed).** Another model receives the same prompt, tools, data view and budgets in dollars as the round it runs under. Only the provider connection differs.
+- **No run before the Open items are resolved.** The harness may be built first (SPO-939). No iteration runs on another model until the user has named the model version, decided its contamination treatment and set the terms of the run.
+
 ## Leakage
 
 The architect studies the results of the development games. The rules below keep those results, and anything else from the replayed season, out of the system it builds.
@@ -355,7 +367,13 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 
 ### Open
 
-None.
+All three follow from the decision of Nov 25, 2026 to run the architect on other models (see Architects on other models).
+
+| Item           | What must be decided                                                                                                                                                                                                                                                        |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Model versions | The exact model version for OpenAI, for Google Gemini and for the open-source model, and the host that serves the open-source model.                                                                                                                                        |
+| Contamination  | Whether each new architect model is probed, or exempted as `claude-opus-5-5` was. The exception of Nov 17 names that model only. A model trained past the 2025–26 season would not pass the probe.                                                                          |
+| Terms of a run | Which round's terms a run on another model follows (from nothing, as in round one, or from the round-one nominee, as in round two); its budgets; and whether it ends in a final evaluation on Denver and Memphis, which would be a further look at the same 164 team-games. |
 
 ### Proposed
 
