@@ -57,6 +57,8 @@ export interface ArchitectProvider {
   ): (request: Payload, signal: AbortSignal) => Promise<number>;
   /** Whether the session id is sent, for the provider's prompt cache. */
   session: boolean;
+  /** Other names the provider gives this model in its replies. */
+  answersAs?: readonly string[];
 }
 
 const provider = <A extends Api>(
@@ -113,6 +115,9 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
       ],
       minOutput: 1,
       session: true,
+      // Baseten's replies carry this name (live check, Nov 25, 2026). Its
+      // model list has no model of that name, only this one and Kimi-K3.
+      answersAs: ["moonshotai/Kimi-K3.1"],
     },
   ),
 };
@@ -133,8 +138,15 @@ export function dearestRates(model: Model<Api>) {
   };
 }
 
-/** Whether the model a reply names is the one that was asked for. Providers
- * may add a prefix or a dated suffix, and differ in case. */
+/** Whether the model a reply names is the one that was asked for. Anthropic
+ * names a model only when a different one answered. The others may add a
+ * prefix or a dated suffix, differ in case, or use a known other name. */
+export function answeredBy(provider: ArchitectProvider, answered: string) {
+  const { id, api } = provider.model;
+  if (answered === id || provider.answersAs?.includes(answered)) return true;
+  return api !== "anthropic-messages" && sameModel(id, answered);
+}
+
 export function sameModel(asked: string, answered: string) {
   const a = asked.toLowerCase(),
     b = answered.toLowerCase().replace(/^models\//, "");

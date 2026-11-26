@@ -15,6 +15,7 @@ import { runAgentLoop } from "@earendil-works/pi-agent-core";
 import { Iteration } from "../src/architect/iteration.js";
 import { architectPrompt } from "../src/architect/prompt.js";
 import {
+  answeredBy,
   architectModels,
   architectProvider,
 } from "../src/architect/providers.js";
@@ -22,7 +23,8 @@ import { metered } from "../src/architect/session.js";
 import { architectTools } from "../src/architect/tools.js";
 
 const id = z.enum(architectModels).parse(process.argv[2]);
-const { model } = architectProvider(id);
+const provider = architectProvider(id);
+const { model } = provider;
 const root = mkdtempSync(join(tmpdir(), "architect-check-"));
 const i = new Iteration(root);
 const signal = AbortSignal.timeout(10 * 60 * 1000);
@@ -79,6 +81,9 @@ try {
         c.type === "toolCall" ? [c.name] : [],
       );
       if (m.stopReason === "error" || m.stopReason === "aborted") failed = true;
+      // The session stops on a reply from another model.
+      if (m.responseModel && !answeredBy(provider, m.responseModel))
+        failed = true;
       console.log(
         JSON.stringify({
           stopReason: m.stopReason,

@@ -280,7 +280,11 @@ test("a reply from a different model than the one asked for stops the session", 
   t.after(() => provider.close());
   const root = mkdtempSync(join(tmpdir(), "architect-provider-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  provider.steps.push({ calls: [call("budget")], model: "some/other-model" });
+  // Baseten's own name for the model is accepted; another model's is not.
+  provider.steps.push(
+    { calls: [call("budget")], model: "moonshotai/Kimi-K3.1" },
+    { calls: [call("budget")], model: "moonshotai/Kimi-K3" },
+  );
   await assert.rejects(
     architectIteration(host(root), {
       ...provider.options,
@@ -288,6 +292,7 @@ test("a reply from a different model than the one asked for stops the session", 
     }),
     /Unexpected architect model/,
   );
+  assert.equal(provider.requests.length, 2);
 });
 
 test("a missing credential stops the session before any request", async (t) => {

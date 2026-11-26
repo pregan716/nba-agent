@@ -17,8 +17,8 @@ import { Iteration, architectWarnUsd } from "./iteration.js";
 import { architectPrompt } from "./prompt.js";
 import {
   architectProvider,
+  answeredBy,
   dearestRates,
-  sameModel,
   type ArchitectModel,
 } from "./providers.js";
 
@@ -200,7 +200,8 @@ async function converse(
   round: { round: number; baselineRunId: string | null },
 ) {
   const stream = metered(i, signal, options);
-  const { model } = architectProvider(options.model);
+  const provider = architectProvider(options.model);
+  const { model } = provider;
   // A pool has one architect model, so its iterations describe one architect.
   for (const row of i.db
     .prepare("SELECT DISTINCT data FROM events WHERE kind='model'")
@@ -289,13 +290,7 @@ async function converse(
         m.role === "assistant" &&
         !["error", "aborted"].includes(m.stopReason)
       ) {
-        if (
-          m.responseModel &&
-          m.responseModel !== model.id &&
-          // Anthropic names a different model only when another one answered.
-          (model.api === "anthropic-messages" ||
-            !sameModel(model.id, m.responseModel))
-        )
+        if (m.responseModel && !answeredBy(provider, m.responseModel))
           throw Error("Unexpected architect model");
       }
     },
