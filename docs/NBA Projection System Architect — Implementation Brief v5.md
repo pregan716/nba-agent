@@ -180,15 +180,26 @@ Round one nominated a system with no agents, so the final evaluation could not s
 
 ## Architects on other models
 
-Status: the decision is Agreed (Nov 25, 2026). Its terms are Open, listed under Decisions, except where marked Proposed.
+Status: Agreed (Nov 25, 2026), except where marked Proposed.
 
-Rounds one and two used one architect model, `claude-opus-5-5`, and a result describes that model only (see Limits). The user decided that the architect may also be run on models from other providers: OpenAI, Google Gemini and an open-source model.
+Rounds one and two used one architect model, `claude-opus-5-5`, and a result describes that model only (see Limits). The user decided that the architect is also run on models from other providers.
+
+| Provider     | Architect model                               |
+| ------------ | --------------------------------------------- |
+| OpenAI       | `gpt-6.2-sol`                                 |
+| Google       | `gemini-4-neon`                               |
+| Open weights | `moonshotai/Kimi-K3.1-Pro`, served by Baseten |
 
 - **What the decision covers.** The architect only. The game-loop model list and the reviewer are unchanged.
 - **Rounds one and two are unchanged.** Their architect stays `claude-opus-5-5`, and their pools, nominees and results stand as they are.
-- **A pool of its own (Proposed).** Each run on another model has its own pool and is reported apart from every other run. The model is part of the iteration record.
-- **The same harness (Proposed).** Another model receives the same prompt, tools, data view and budgets in dollars as the round it runs under. Only the provider connection differs.
-- **No run before the Open items are resolved.** The harness may be built first (SPO-939). No iteration runs on another model until the user has named the model version, decided its contamination treatment and set the terms of the run.
+- **Starts from nothing.** Each new architect runs under round one's terms: the round-one prompt, an empty draft, no notes, no hypothesis list and no archive from any other architect. It is told nothing of rounds one or two.
+- **The same budgets.** Those used for `claude-opus-5-5`: a $1,000 pool and at most twelve full evaluations; $30 per iteration and $350 in total for the architect; $2 per team-game per final run. They apply to each model separately.
+- **Ends in a final evaluation** on Denver and Memphis, the same 164 team-games and the same three runs as round one. It is a further look at those games (see Limits).
+- **Contamination.** Each of the three is exempt from the probe, as `claude-opus-5-5` is (see Contamination).
+- **A pool of its own (Proposed).** Each model has its own pool and is reported apart from every other run. The model is part of the iteration record, and the harness refuses an iteration on a different model from the pool's first.
+- **The same harness (Proposed).** Every model receives the same prompt, tools, data view and reviewer as round one. Only the provider connection differs (SPO-939).
+- **Human sample (Proposed).** Round one's selection rule named its own iterations. Each of these runs uses round two's rule, which names none: before the final evaluation a person reads up to five accepted configurations, the nominee first and then the other fully evaluated configurations from the lowest minutes ratio upward.
+- **Length of each run (Proposed).** The user decides how many iterations each architect runs and when its development ends, as each run goes, as for `claude-opus-5-5`. The limits on claims say what that allows.
 
 ## Leakage
 
@@ -233,6 +244,7 @@ Status: Proposed. Every model on the allowed list, the architect and the reviewe
 **Exception for the architect (Agreed Nov 17, 2026).** The architect is `claude-opus-5-5`, whose training data runs past the 2025–26 season. It is not probed and would not pass. The user accepted this after a side-by-side run of four iterations each (SPO-908, SPO-925), in which it studied where the reference loses before building and made larger changes than `claude-opus-4-6` did. That run was exploratory. Its results are not evidence and its configurations are not candidates for nomination.
 
 - The exception covers the architect only. The reviewer and every game-loop model must still pass the probe.
+- **Extended to the other architects (Agreed Nov 25, 2026).** `gpt-6.2-sol`, `gemini-4-neon` and `moonshotai/Kimi-K3.1-Pro` are exempt in the same way, as architects only. None has been probed, so it is not known whether any of them has seen the 2025–26 season. Each is treated as if it had.
 - The architect writes a system and never a forecast, so what it remembers can reach a forecast only through the configuration it submits. The leakage rule and the review are the guard: the automated scan for names, ids and dates of the season, and the reviewer's reading of every submission, which rejects content tied to particular players, teams or games.
 - The review cannot catch a general fact about the season written as an ordinary setting, such as a league-wide trend expressed as one tuned number. The test teams do not catch it either, because they played in the same season. This is stated under Limits.
 
@@ -279,6 +291,9 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 
 - **The architect has seen the season.** `claude-opus-5-5` was trained on data that includes 2025–26. The review keeps out content tied to particular players, teams and games. It cannot keep out general knowledge of how the season went, and a design choice that rests on such knowledge would also help on Denver and Memphis. A gain on the test teams therefore does not show that the same architect would do as well on a season it has not seen.
 - **One architect, one run.** A result describes one sequence of designs by one model, not architects in general.
+- **Architects are not compared on equal terms.** Each model's run is one sequence of designs, with a number of iterations the user chooses as it goes. A difference between two architects' results may come from the model, from chance in one run, or from when each was stopped. The runs can show what each architect built. They cannot rank the models.
+- **Any architect may have seen the season.** The three other architect models are exempt from the probe without having been probed. The limit stated above for `claude-opus-5-5` applies to each.
+- **Denver and Memphis are tested again for each architect.** Every final evaluation uses the same 164 team-games. The architects never see those results, but the people running the experiment do, and a decision made after one final evaluation (to run another architect, or to stop one) is made knowing how those games went.
 - **Two test teams, same season.** Denver and Memphis are unseen, but they play in the season the architect studied, and 14 of their games against development teams are visible to it.
 - **The late check is only partly independent.** Each late check returns a score, so a design chosen after several of them is partly chosen on the late stretch. The write-up reports how many late checks came before the nomination. The architect's data view also holds the outcomes of the late games, though not the reference's forecasts for them.
 - **Development was stopped after looking at the late stretch.** The architect spent no late check. The operator ran two, on the configurations of iterations 1 and 4, in a copy of the pool, and the user ended development after seeing them. The architect did not see them and no configuration was changed afterwards, but the decision to stop and test this design was made knowing it held on the late stretch.
@@ -365,34 +380,38 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | End of round-two development | Development ends after nine iterations in the restarted pool (SPO-937), with five full evaluations and four checks run and $174.10 of the $1,000 pool spent. The next iteration may only nominate, and the architect chooses among its full evaluations and the round-one nominee's. The user decided this, not the architect, after reading the development results. See Limits on claims. |
 
+### Agreed on Nov 25, 2026, on architects from other providers
+
+| Decision       | Resolution                                                                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Other models   | The architect is also run on models from OpenAI, Google and an open-weights model (SPO-938).                                                        |
+| Model versions | `gpt-6.2-sol`, `gemini-4-neon`, and `moonshotai/Kimi-K3.1-Pro` served by Baseten.                                                                   |
+| Contamination  | Each is exempt from the probe, as `claude-opus-5-5` is. The exemption covers the architect role only.                                               |
+| Terms of a run | Each new architect starts from nothing, has the budgets used for `claude-opus-5-5`, and ends in a final evaluation on Denver and Memphis (SPO-940). |
+
 ### Open
 
-All three follow from the decision of Nov 25, 2026 to run the architect on other models (see Architects on other models).
-
-| Item           | What must be decided                                                                                                                                                                                                                                                        |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Model versions | The exact model version for OpenAI, for Google Gemini and for the open-source model, and the host that serves the open-source model.                                                                                                                                        |
-| Contamination  | Whether each new architect model is probed, or exempted as `claude-opus-5-5` was. The exception of Nov 17 names that model only. A model trained past the 2025–26 season would not pass the probe.                                                                          |
-| Terms of a run | Which round's terms a run on another model follows (from nothing, as in round one, or from the round-one nominee, as in round two); its budgets; and whether it ends in a final evaluation on Denver and Memphis, which would be a further look at the same 164 team-games. |
+None.
 
 ### Proposed
 
-| Item                                                                                                                                                                    | Where                    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Boston, Oklahoma City and Washington for development; Denver and Memphis as the unseen test                                                                             | Scope, Teams             |
-| Each submission states its hypothesis and expected effect before results                                                                                                | What it must do          |
-| One architect session per iteration; the configuration package                                                                                                          | How the architect works  |
-| One clock across teams; empty artifacts at the start of every run; sandboxed execution                                                                                  | The game loop            |
-| Guardrails on fantasy-point pinball and play Brier                                                                                                                      | Target                   |
-| One fixed set of evaluation games in mid-season, with two other stretches available as checks                                                                           | Evaluation games         |
-| Final evaluation on the test teams' whole seasons, with two ablations                                                                                                   | Final evaluation         |
-| The Celtics holdout as an optional secondary check                                                                                                                      | Final evaluation         |
-| The widened leakage rule                                                                                                                                                | Leakage                  |
-| The limits on the architect's view                                                                                                                                      | The architect's view     |
-| Review procedure: automated scan, reviewer model, human sample                                                                                                          | Review                   |
-| The contamination probe for every allowed model                                                                                                                         | Contamination            |
-| Every budget number except the architect's $30 per iteration                                                                                                            | Budgets                  |
-| Round two: what carries over besides the nominee; what the architect is not told; what counts as an agent system's evaluation and the nomination gate; the human sample | Second development round |
+| Item                                                                                                                                                                    | Where                      |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| Boston, Oklahoma City and Washington for development; Denver and Memphis as the unseen test                                                                             | Scope, Teams               |
+| Each submission states its hypothesis and expected effect before results                                                                                                | What it must do            |
+| One architect session per iteration; the configuration package                                                                                                          | How the architect works    |
+| One clock across teams; empty artifacts at the start of every run; sandboxed execution                                                                                  | The game loop              |
+| Guardrails on fantasy-point pinball and play Brier                                                                                                                      | Target                     |
+| One fixed set of evaluation games in mid-season, with two other stretches available as checks                                                                           | Evaluation games           |
+| Final evaluation on the test teams' whole seasons, with two ablations                                                                                                   | Final evaluation           |
+| The Celtics holdout as an optional secondary check                                                                                                                      | Final evaluation           |
+| The widened leakage rule                                                                                                                                                | Leakage                    |
+| The limits on the architect's view                                                                                                                                      | The architect's view       |
+| Review procedure: automated scan, reviewer model, human sample                                                                                                          | Review                     |
+| The contamination probe for every allowed model                                                                                                                         | Contamination              |
+| Every budget number except the architect's $30 per iteration                                                                                                            | Budgets                    |
+| Round two: what carries over besides the nominee; what the architect is not told; what counts as an agent system's evaluation and the nomination gate; the human sample | Second development round   |
+| Architects on other models: a pool for each; the same harness; the human sample; the length of each run                                                                 | Architects on other models |
 
 ## Implementation projects
 
