@@ -78,13 +78,8 @@ const cases: {
     hold: { input: 2, output: 10 },
     limit: (b) => b.max_completion_tokens,
     effort: (b) => b.reasoning_effort,
-    // The library sends this model its tools in a system message.
     tools: (b) =>
-      b.messages
-        .flatMap(
-          (m: { tools?: { function: { name: string } }[] }) => m.tools ?? [],
-        )
-        .map((t: { function: { name: string } }) => t.function.name),
+      b.tools.map((t: { function: { name: string } }) => t.function.name),
   },
 ];
 
