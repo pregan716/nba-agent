@@ -248,7 +248,7 @@ async function converse(
   });
   const system = {
     role: "system" as const,
-    content: architectPrompt(round.round),
+    content: architectPrompt(round.round, provider.target),
     timestamp: Date.now(),
   };
   i.record("system", system);

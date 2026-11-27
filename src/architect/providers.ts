@@ -59,6 +59,9 @@ export interface ArchitectProvider {
   ): (request: Payload, signal: AbortSignal) => Promise<number>;
   /** Whether the session id is sent, for the provider's prompt cache. */
   session: boolean;
+  /** Whether the architect is told to aim for the 0.75 minutes target against
+   * the reference (user decision, Nov 27, 2026; SPO-943). */
+  target?: boolean;
   /** Other names the provider gives this model in its replies. */
   answersAs?: readonly string[];
   /** The model a raw stream event says is answering, if the event says. */
@@ -103,6 +106,7 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
     // The Responses API rejects a smaller limit.
     minOutput: 16,
     session: true,
+    target: true,
     answering: (e) => e.response?.model,
   }),
   "gemini-4-neon": provider(GOOGLE_MODELS["gemini-4-neon"], googleStream, {
@@ -110,6 +114,7 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
     limit: (r) => [(r.config ??= {}), "maxOutputTokens"],
     minOutput: 1,
     session: true,
+    target: true,
     answering: (e) => e.modelVersion,
   }),
   // Kimi K3.1 Pro, served by Fireworks (user decision, Nov 27, 2026). It was
@@ -135,6 +140,7 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
       ],
       minOutput: 1,
       session: true,
+      target: true,
       answering: (e) => e.model,
     },
   ),

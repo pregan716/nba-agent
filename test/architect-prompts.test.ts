@@ -5,9 +5,14 @@ import test from "node:test";
 import {
   ARCHITECT_PROMPT,
   ROUND_TWO_PROMPT,
+  TARGET_PROMPT,
   architectPrompt,
 } from "../src/architect/prompt.js";
 import { architectLimits } from "../src/architect/iteration.js";
+import {
+  architectModels,
+  architectProvider,
+} from "../src/architect/providers.js";
 import { REVIEW_PROMPT } from "../src/evaluation/review/reviewer.js";
 import { evaluationProfile } from "../src/evaluation/service/profile.js";
 import { models } from "../src/game-loop/package.js";
@@ -74,7 +79,12 @@ test("the architect prompt matches the harness it describes", () => {
 });
 
 test("neither prompt names a result, a prop line or a market score", () => {
-  for (const prompt of [ARCHITECT_PROMPT, ROUND_TWO_PROMPT, REVIEW_PROMPT]) {
+  for (const prompt of [
+    ARCHITECT_PROMPT,
+    ROUND_TWO_PROMPT,
+    TARGET_PROMPT,
+    REVIEW_PROMPT,
+  ]) {
     assert.doesNotMatch(prompt, /\bprops?\b|prop line|big.over|market/i);
     assert.doesNotMatch(
       prompt,
@@ -204,4 +214,47 @@ test("round two keeps the round-one prompt for round-one pools and states its ow
     text.match(/\b0\.\d{2,}\b/g)?.filter((r) => r !== "0.75");
   assert.ok(!ARCHITECT_PROMPT.includes("0.75"));
   assert.deepEqual(ratios(ROUND_TWO_PROMPT), ratios(ARCHITECT_PROMPT));
+});
+
+test("the other providers' architects get the round-one prompt with a target against the reference", () => {
+  // Who is given the target: the three other-provider architects and no other.
+  assert.deepEqual(
+    architectModels.filter((m) => architectProvider(m).target),
+    ["gpt-6.2-sol", "gemini-4-neon", "accounts/fireworks/models/kimi-k3p1-pro"],
+  );
+  assert.equal(architectPrompt(1, true), TARGET_PROMPT);
+  assert.equal(architectPrompt(1, false), ARCHITECT_PROMPT);
+  // A round-two pool keeps round two's prompt whatever the model.
+  assert.equal(architectPrompt(2, true), ROUND_TWO_PROMPT);
+  const count = evaluationProfile.windows.middle.count;
+  for (const part of [
+    "The target is a ratio of 0.75",
+    `three quarters of the reference's on the ${count} evaluation games`,
+    "It is a goal and not a rule.",
+    "The target may be out of reach.",
+    `Do not chase the number by fitting the ${count} games.`,
+    "you have either reached the target or nearly used the budgets",
+    "the run that beats the reference most convincingly",
+    // Round one's terms otherwise: agents stay optional.
+    "Agents are permitted, not required.",
+  ])
+    has(TARGET_PROMPT, part);
+  // Nothing of rounds one or two, and none of round two's other terms.
+  for (const part of [
+    "baseline",
+    "round",
+    "agentGate",
+    "The budgets are there to be used.",
+    "further iterations are not worth their cost",
+  ])
+    assert.ok(!TARGET_PROMPT.includes(part), "present: " + part);
+  // The target is the only ratio added to the round-one text.
+  const ratios = (text: string) =>
+    text.match(/\b0\.\d{2,}\b/g)?.filter((r) => r !== "0.75");
+  assert.deepEqual(ratios(TARGET_PROMPT), ratios(ARCHITECT_PROMPT));
+  // Only the two passages differ.
+  assert.equal(
+    TARGET_PROMPT.split("\n").length,
+    ARCHITECT_PROMPT.split("\n").length + 2,
+  );
 });

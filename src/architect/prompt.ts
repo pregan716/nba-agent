@@ -266,11 +266,38 @@ The budgets are there to be used. The earlier round spent under a twentieth of i
   ],
 ];
 
-export const ROUND_TWO_PROMPT = roundTwoEdits.reduce((text, [from, to]) => {
-  if (text.split(from).length !== 2)
-    throw Error("Round-two prompt edit does not match the round-one text");
-  return text.replace(from, () => to);
-}, ARCHITECT_PROMPT);
+// The architects on other providers' models (SPO-943, brief v5 "Architects on
+// other models"). The round-one text with a target against the reference
+// (user decision, Nov 27, 2026). Round two's other terms are not added: no
+// baseline, no required agent trial. Nothing here says that any other
+// architect has run.
+const progress = `Progress means a lower ratio on the evaluation games with that interval in view: a ratio of 0.97 whose interval runs from 0.92 to 1.03 has not shown anything yet.`;
+const targetEdits: [string, string][] = [
+  [
+    progress,
+    progress +
+      `
 
-export const architectPrompt = (round: number) =>
-  round === 2 ? ROUND_TWO_PROMPT : ARCHITECT_PROMPT;
+The target is a ratio of 0.75: your system's minutes loss at three quarters of the reference's on the 43 evaluation games, as a full evaluation reports it. It is a goal and not a rule. The service does not check it. It is set far from the reference on purpose. A system one or two percent better than the reference is what tuning produces, and it is not what this experiment is for. The target may be out of reach. Aim for it anyway, and let it decide what is worth an evaluation: before you commit a full evaluation to an idea, ask how far the ratio could move if the idea worked. If the honest answer is a percent or two, look for a larger idea. Having a system that beats the reference is not a reason to stop. While budget remains and the target is not met, keep trying different kinds of systems. Do not chase the number by fitting the 43 games. A setting chosen because it scored well on them will not hold on the unseen teams, and that is where the experiment is judged.`,
+  ],
+  [
+    `When you judge that further iterations are not worth their cost, or the budget is nearly gone, nominate the full run whose configuration you would stand behind. It must not be flagged on a guardrail.`,
+    `When you have either reached the target or nearly used the budgets, nominate the full run whose configuration you would stand behind. Short of the target, that is the run that beats the reference most convincingly. It must not be flagged on a guardrail.`,
+  ],
+];
+
+const edited = (edits: [string, string][], name: string) =>
+  edits.reduce((text, [from, to]) => {
+    if (text.split(from).length !== 2)
+      throw Error(name + " prompt edit does not match the round-one text");
+    return text.replace(from, () => to);
+  }, ARCHITECT_PROMPT);
+
+export const ROUND_TWO_PROMPT = edited(roundTwoEdits, "Round-two");
+export const TARGET_PROMPT = edited(targetEdits, "Target");
+
+/** A round-two pool has round two's prompt whatever the model. Otherwise the
+ * architects that are given the target have the target prompt, and the
+ * architect of round one has the round-one text. */
+export const architectPrompt = (round: number, target = false) =>
+  round === 2 ? ROUND_TWO_PROMPT : target ? TARGET_PROMPT : ARCHITECT_PROMPT;
