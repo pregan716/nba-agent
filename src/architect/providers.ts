@@ -115,16 +115,29 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
   // Kimi K3.1 Pro, served by Fireworks (user decision, Nov 27, 2026). It was
   // first served by Baseten, whose limit of 100,000 tokens a minute is below
   // the size of one request late in an iteration.
-  [kimi]: provider(FIREWORKS_MODELS[kimi], completionsStream, {
-    keyEnv: "FIREWORKS_API_KEY",
-    limit: (r) => [
-      r,
-      "max_completion_tokens" in r ? "max_completion_tokens" : "max_tokens",
-    ],
-    minOutput: 1,
-    session: true,
-    answering: (e) => e.model,
-  }),
+  [kimi]: provider(
+    // Fireworks refuses the system message of tools that the library's table
+    // has it send this model (HTTP 400, live check, Nov 27, 2026), so the
+    // tools go in the request's own field.
+    {
+      ...FIREWORKS_MODELS[kimi],
+      compat: {
+        ...FIREWORKS_MODELS[kimi].compat,
+        supportsMidConvoToolAdditions: false,
+      },
+    },
+    completionsStream,
+    {
+      keyEnv: "FIREWORKS_API_KEY",
+      limit: (r) => [
+        r,
+        "max_completion_tokens" in r ? "max_completion_tokens" : "max_tokens",
+      ],
+      minOutput: 1,
+      session: true,
+      answering: (e) => e.model,
+    },
+  ),
 };
 
 export const architectProvider = (model: ArchitectModel = architectModels[0]) =>
