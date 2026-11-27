@@ -168,17 +168,12 @@ export async function replay(options: {
       lanes.set(key, { games: [], artifacts: new Map(), visible: new Map() });
     lanes.get(key)!.games.push(entry);
   }
-  // Receipts enter the record in tip order whatever order the lanes finish
-  // in, each with the artifact store as the single ordered loop would hold it.
+  // A receipt is recorded as soon as its game ends, so the watcher sees a
+  // missing forecast at once. The artifact store after each game is recorded
+  // separately, in tip order, as the single ordered loop would hold it.
   let artifacts: Artifacts = new Map();
   const finished: (
-    | {
-        id: string;
-        team: string;
-        receipt: object;
-        writes?: Record<string, unknown>;
-      }
-    | undefined
+    { id: string; team: string; writes?: Record<string, unknown> } | undefined
   )[] = [];
   let committed = 0;
   function commit() {
@@ -192,8 +187,7 @@ export async function replay(options: {
           done.team,
           done.writes,
         );
-      record.append("team_game", done.id, {
-        ...done.receipt,
+      record.append("game_artifacts", done.id, {
         artifacts: [...artifacts.values()],
       });
     }
@@ -411,19 +405,15 @@ export async function replay(options: {
       wallClockMs,
     };
     receipts.set(id, receipt);
-    finished[index] = {
-      id,
-      team,
-      writes: written,
-      receipt: {
-        ...receipt,
-        hostPreparationMs,
-        configurationHash: hash,
-        reason,
-        spread,
-        total,
-      },
-    };
+    record.append("team_game", id, {
+      ...receipt,
+      hostPreparationMs,
+      configurationHash: hash,
+      reason,
+      spread,
+      total,
+    });
+    finished[index] = { id, team, writes: written };
     commit();
   }
   try {
