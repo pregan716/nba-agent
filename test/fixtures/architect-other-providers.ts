@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
 
 // Local streaming endpoints in the three wire formats the architect's other
-// providers use: OpenAI Responses, OpenAI-style chat completions (Baseten) and
+// providers use: OpenAI Responses, OpenAI-style chat completions (Fireworks) and
 // Gemini's streamGenerateContent. Each step is one assistant turn.
 type Call = { name: string; input: Record<string, unknown> };
 export type Wire = "responses" | "completions" | "gemini";
