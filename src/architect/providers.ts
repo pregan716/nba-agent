@@ -14,9 +14,11 @@ import { streamSimple as googleStream } from "@earendil-works/pi-ai/api/google-g
 import { ANTHROPIC_MODELS } from "@earendil-works/pi-ai/providers/anthropic.models";
 import { OPENAI_MODELS } from "@earendil-works/pi-ai/providers/openai.models";
 import { GOOGLE_MODELS } from "@earendil-works/pi-ai/providers/google.models";
-import { BASETEN_MODELS } from "@earendil-works/pi-ai/providers/baseten.models";
+import { FIREWORKS_MODELS } from "@earendil-works/pi-ai/providers/fireworks.models";
 import type { MessageCreateParamsNonStreaming } from "@anthropic-ai/sdk/resources/messages";
 import { anthropicProvider } from "../runner/proxy.js";
+
+const kimi = "accounts/fireworks/models/kimi-k3p1-pro";
 
 /** Models the operator may run the architect on. The first is the architect of
  * rounds one and two (user decision, Nov 17, 2026). `claude-opus-4-6` was its
@@ -28,7 +30,7 @@ export const architectModels = [
   "claude-opus-4-6",
   "gpt-6.2-sol",
   "gemini-4-neon",
-  "moonshotai/Kimi-K3.1-Pro",
+  kimi,
 ] as const;
 export type ArchitectModel = (typeof architectModels)[number];
 
@@ -110,23 +112,19 @@ const providers: Record<ArchitectModel, ArchitectProvider> = {
     session: true,
     answering: (e) => e.modelVersion,
   }),
-  "moonshotai/Kimi-K3.1-Pro": provider(
-    BASETEN_MODELS["moonshotai/Kimi-K3.1-Pro"],
-    completionsStream,
-    {
-      keyEnv: "BASETEN_API_KEY",
-      limit: (r) => [
-        r,
-        "max_completion_tokens" in r ? "max_completion_tokens" : "max_tokens",
-      ],
-      minOutput: 1,
-      session: true,
-      // Baseten's replies carry this name (live check, Nov 25, 2026). Its
-      // model list has no model of that name, only this one and Kimi-K3.
-      answersAs: ["moonshotai/Kimi-K3.1"],
-      answering: (e) => e.model,
-    },
-  ),
+  // Kimi K3.1 Pro, served by Fireworks (user decision, Nov 27, 2026). It was
+  // first served by Baseten, whose limit of 100,000 tokens a minute is below
+  // the size of one request late in an iteration.
+  [kimi]: provider(FIREWORKS_MODELS[kimi], completionsStream, {
+    keyEnv: "FIREWORKS_API_KEY",
+    limit: (r) => [
+      r,
+      "max_completion_tokens" in r ? "max_completion_tokens" : "max_tokens",
+    ],
+    minOutput: 1,
+    session: true,
+    answering: (e) => e.model,
+  }),
 };
 
 export const architectProvider = (model: ArchitectModel = architectModels[0]) =>

@@ -184,12 +184,13 @@ Status: Agreed (Nov 25, 2026), except where marked Proposed.
 
 Rounds one and two used one architect model, `claude-opus-5-5`, and a result describes that model only (see Limits). The user decided that the architect is also run on models from other providers.
 
-| Provider     | Architect model                               |
-| ------------ | --------------------------------------------- |
-| OpenAI       | `gpt-6.2-sol`                                 |
-| Google       | `gemini-4-neon`                               |
-| Open weights | `moonshotai/Kimi-K3.1-Pro`, served by Baseten |
+| Provider     | Architect model                                                                 |
+| ------------ | ------------------------------------------------------------------------------- |
+| OpenAI       | `gpt-6.2-sol`                                                                   |
+| Google       | `gemini-4-neon`                                                                 |
+| Open weights | Kimi K3.1 Pro, served by Fireworks as `accounts/fireworks/models/kimi-k3p1-pro` |
 
+- **Fireworks replaces Baseten (Agreed Nov 27, 2026).** Kimi K3.1 Pro was first served by Baseten. Its first iteration there failed on Baseten's limit of 100,000 tokens a minute, which is below the size of one request late in an iteration. The user moved open-weights models to Fireworks. The failed pool is discarded and the model starts again in a new one.
 - **What the decision covers.** The architect only. The game-loop model list and the reviewer are unchanged.
 - **Rounds one and two are unchanged.** Their architect stays `claude-opus-5-5`, and their pools, nominees and results stand as they are.
 - **Starts from nothing.** Each new architect runs under round one's terms: the round-one prompt, an empty draft, no notes, no hypothesis list and no archive from any other architect. It is told nothing of rounds one or two.
@@ -244,7 +245,7 @@ Status: Proposed. Every model on the allowed list, the architect and the reviewe
 **Exception for the architect (Agreed Nov 17, 2026).** The architect is `claude-opus-5-5`, whose training data runs past the 2025–26 season. It is not probed and would not pass. The user accepted this after a side-by-side run of four iterations each (SPO-908, SPO-925), in which it studied where the reference loses before building and made larger changes than `claude-opus-4-6` did. That run was exploratory. Its results are not evidence and its configurations are not candidates for nomination.
 
 - The exception covers the architect only. The reviewer and every game-loop model must still pass the probe.
-- **Extended to the other architects (Agreed Nov 25, 2026).** `gpt-6.2-sol`, `gemini-4-neon` and `moonshotai/Kimi-K3.1-Pro` are exempt in the same way, as architects only. None has been probed, so it is not known whether any of them has seen the 2025–26 season. Each is treated as if it had.
+- **Extended to the other architects (Agreed Nov 25, 2026).** `gpt-6.2-sol`, `gemini-4-neon` and Kimi K3.1 Pro are exempt in the same way, as architects only. None has been probed, so it is not known whether any of them has seen the 2025–26 season. Each is treated as if it had.
 - The architect writes a system and never a forecast, so what it remembers can reach a forecast only through the configuration it submits. The leakage rule and the review are the guard: the automated scan for names, ids and dates of the season, and the reviewer's reading of every submission, which rejects content tied to particular players, teams or games.
 - The review cannot catch a general fact about the season written as an ordinary setting, such as a league-wide trend expressed as one tuned number. The test teams do not catch it either, because they played in the same season. This is stated under Limits.
 
@@ -385,7 +386,7 @@ Carried in form. Added per iteration: the configuration and its hash, the review
 | Decision       | Resolution                                                                                                                                          |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Other models   | The architect is also run on models from OpenAI, Google and an open-weights model (SPO-938).                                                        |
-| Model versions | `gpt-6.2-sol`, `gemini-4-neon`, and `moonshotai/Kimi-K3.1-Pro` served by Baseten.                                                                   |
+| Model versions | `gpt-6.2-sol`, `gemini-4-neon`, and Kimi K3.1 Pro served by Fireworks (first Baseten; changed Nov 27, 2026).                                        |
 | Contamination  | Each is exempt from the probe, as `claude-opus-5-5` is. The exemption covers the architect role only.                                               |
 | Terms of a run | Each new architect starts from nothing, has the budgets used for `claude-opus-5-5`, and ends in a final evaluation on Denver and Memphis (SPO-940). |
 

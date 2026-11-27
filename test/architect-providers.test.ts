@@ -71,15 +71,20 @@ const cases: {
       ),
   },
   {
-    model: "moonshotai/Kimi-K3.1-Pro",
+    model: "accounts/fireworks/models/kimi-k3p1-pro",
     wire: "completions",
-    keyEnv: "BASETEN_API_KEY",
+    keyEnv: "FIREWORKS_API_KEY",
     price: { input: 2, cached: 0.2, output: 10 },
     hold: { input: 2, output: 10 },
-    limit: (b) => b.max_tokens,
+    limit: (b) => b.max_completion_tokens,
     effort: (b) => b.reasoning_effort,
+    // The library sends this model its tools in a system message.
     tools: (b) =>
-      b.tools.map((t: { function: { name: string } }) => t.function.name),
+      b.messages
+        .flatMap(
+          (m: { tools?: { function: { name: string } }[] }) => m.tools ?? [],
+        )
+        .map((t: { function: { name: string } }) => t.function.name),
   },
 ];
 
@@ -158,7 +163,12 @@ test("the permitted architect models and the price tables the holds use", () => 
   });
   assert.ok(sameModel("gpt-6.2-sol", "gpt-6.2-sol-2026-11-03"));
   assert.ok(sameModel("gemini-4-neon", "models/gemini-4-neon"));
-  assert.ok(sameModel("moonshotai/Kimi-K3.1-Pro", "moonshotai/kimi-k3.1-pro"));
+  assert.ok(
+    sameModel(
+      "accounts/fireworks/models/kimi-k3p1-pro",
+      "accounts/fireworks/models/Kimi-K3p1-Pro",
+    ),
+  );
   assert.ok(!sameModel("gpt-6.2-sol", "gpt-6.2-solar"));
   assert.ok(!sameModel("gpt-6.2-sol", "gpt-6.1-sol"));
 });
@@ -282,10 +292,9 @@ const names: Record<string, { same: string[]; other: string }> = {
     same: ["models/gemini-4-neon", "gemini-4-neon-001"],
     other: "gemini-4-argon",
   },
-  // Baseten's own name for the model (live check, Nov 25, 2026).
-  "moonshotai/Kimi-K3.1-Pro": {
-    same: ["moonshotai/Kimi-K3.1"],
-    other: "moonshotai/Kimi-K3",
+  "accounts/fireworks/models/kimi-k3p1-pro": {
+    same: ["accounts/fireworks/models/kimi-k3p1-pro"],
+    other: "accounts/fireworks/models/kimi-k3",
   },
 };
 for (const c of cases)
