@@ -517,6 +517,142 @@ test(
     );
     for (const s of limited.scores.values())
       if (s.status === "no_forecast") assert.deepEqual(s.agent, s.reference);
+
+    // SPO-941: without league artifacts each team runs in a lane of its own,
+    // and the record holds what the single ordered loop would have written.
+    const teamOnly = {
+      ...pkg,
+      artifacts: { note: "team" },
+      files: {
+        "main.py": `def run(ctx, arg):
+    if arg is None:
+        return dict(type="agent",name="reader",state=None,input=ctx["artifacts"])
+    seen = ctx["artifacts"].get("note", []) + [ctx["gameId"]]
+    return dict(type="finish",forecast=ctx["reference"],writes={"note": seen})`,
+        "inspect.py": pkg.files["inspect.py"],
+      },
+    } satisfies Package;
+    async function lanes(name: string, artifacts: Package["artifacts"]) {
+      let running = 0,
+        peak = 0;
+      const seen: unknown[] = [];
+      const result = await replay({
+        ...base,
+        root: join(parent, name),
+        games: source.schedule,
+        package: { ...teamOnly, artifacts },
+        runAgent: async (call) => {
+          peak = Math.max(peak, ++running);
+          seen.push([call.input.teamId, call.input.gameId, call.input.task]);
+          const boston = call.input.teamId === BOS;
+          // Boston is slow, so the other team's lane gets ahead of it.
+          await new Promise((r) => setTimeout(r, boston ? 1500 : 0));
+          call.reserve(0.5)(boston ? 0.25 : 0.125);
+          running--;
+          return "done";
+        },
+      });
+      const r = new RecordStore(join(parent, name));
+      try {
+        const timeless = ({
+          hostPreparationMs,
+          wallClockMs,
+          configurationHash,
+          ...rest
+        }: Record<string, unknown>) => rest;
+        return {
+          peak,
+          usd: result.usd,
+          seen: seen.map((x) => JSON.stringify(x)).sort(),
+          receipts: r
+            .events("team_game")
+            .map((e) => [e.scope, timeless(e.data)]),
+          scores: r
+            .events("game_score")
+            .map((e) => [e.scope, timeless(e.data)])
+            .sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
+        };
+      } finally {
+        r.close();
+      }
+    }
+    const { peak: lanePeak, ...laned } = await lanes(
+      "lanes",
+      teamOnly.artifacts,
+    );
+    // A declared league artifact, even one never written, keeps one loop.
+    const { peak: loopPeak, ...looped } = await lanes("loop", {
+      ...teamOnly.artifacts,
+      latest: "league",
+    });
+    assert.equal(lanePeak, 2);
+    assert.equal(loopPeak, 1);
+    assert.deepEqual(laned, looped);
+    assert.equal(laned.usd, 3 * 0.25 + 2 * 0.125);
+    assert.deepEqual(
+      laned.receipts.map(([scope]) => scope),
+      source.schedule.map((g) => JSON.stringify([g.teamId, g.gameId])),
+    );
+    const last = laned.receipts.at(-1)![1] as { artifacts: unknown };
+    assert.deepEqual(last.artifacts, [
+      { name: "note", team: BOS, value: ["current", "last", "fifth"] },
+      { name: "note", team: teamB, value: ["current", "future"] },
+    ]);
+    // Clearing artifacts before every game removes the dependence too.
+    let cleared = 0,
+      clearedPeak = 0;
+    await replay({
+      ...base,
+      root: join(parent, "cleared-lanes"),
+      games: source.schedule,
+      clearArtifacts: true,
+      runAgent: async () => {
+        clearedPeak = Math.max(clearedPeak, ++cleared);
+        await new Promise((r) => setTimeout(r, 300));
+        cleared--;
+        return "done";
+      },
+    });
+    assert.equal(clearedPeak, 2);
+    assert.ok(
+      read(join(parent, "cleared-lanes")).every(
+        (r) => r.reason === null && r.artifacts.length <= 3,
+      ),
+    );
+    // A failure in one lane ends the replay and stops the other lane's game.
+    let stopped = false;
+    await assert.rejects(
+      replay({
+        ...base,
+        root: join(parent, "lane-failure"),
+        games: source.schedule,
+        package: teamOnly,
+        source: {
+          ...source,
+          async projection(g) {
+            if (g.teamId === teamB && g.gameId === "future")
+              throw Error("Planted lane failure");
+            return source.projection(g);
+          },
+        },
+        runAgent: async (call) => {
+          if (call.input.teamId === BOS)
+            await new Promise<void>((resolve) =>
+              call.signal.addEventListener("abort", () => {
+                stopped = true;
+                resolve();
+              }),
+            );
+          return "done";
+        },
+      }),
+      /Planted lane failure/,
+    );
+    assert.ok(stopped);
+    assert.deepEqual(
+      read(join(parent, "lane-failure")).map((r) => r.reason),
+      [],
+    );
   },
 );
 

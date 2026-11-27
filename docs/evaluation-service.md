@@ -64,7 +64,7 @@ npm run evaluation -- refusals POOL_DIR PINNED_SANDBOX PINNED_PROJECTION
 
 Use the repository's data-store credentials and pinned image references. Live specialists read their credentials from `ANTHROPIC_API_KEY` and `TYPESAFE_API_KEY` in the host process. The service prints JSON to stdout.
 
-The separate operator command `final POOL_DIR PINNED_SANDBOX PINNED_PROJECTION NOMINATED_RUN_ID` closes development and evaluates an eligible nomination on all 164 Denver and Memphis team-games. It runs the nominee, the agents-off ablation if agents are declared, and the per-game artifact reset ablation. Final runs are outside the development pool and archive. The amended brief retains ceiling scores and drops player-prop market tests and big-over picks.
+The separate operator command `final POOL_DIR PINNED_SANDBOX PINNED_PROJECTION NOMINATED_RUN_ID` closes development and evaluates an eligible nomination on all 164 Denver and Memphis team-games. It runs the nominee, the agents-off ablation if agents are declared, and the per-game artifact reset ablation. The runs still to do go side by side in one process; a run whose record already exists is not run again. If one run fails, the others are left to finish before the failure is reported. Final runs are outside the development pool and archive. The amended brief retains ceiling scores and drops player-prop market tests and big-over picks.
 
 ### Leakage reviews
 

@@ -346,12 +346,18 @@ test("development requests stay on the pinned games, final mode is separate, rep
     schedule: [middle, opening, ...final],
     async projection(g) {
       calls.push(g.gameId);
+      peak = Math.max(peak, ++preparing);
+      await new Promise((resolve) => setImmediate(resolve));
+      preparing--;
       return { roster, reference: forecast(g, 7) };
     },
     async outcomes(g) {
       return outcome(g);
     },
   };
+  // How many team-games are being prepared at once.
+  let preparing = 0,
+    peak = 0;
   const profile = structuredClone(evaluationProfile);
   profile.replay.usdPerTeamGame = 0;
   profile.windows.middle.count = profile.windows.opening.count = 1;
@@ -469,12 +475,22 @@ test("development requests stay on the pinned games, final mode is separate, rep
 
   assert.equal(s.budget().nominee, full.id);
   assert.equal(calls.length, afterRecovery);
+  // Development on one team prepares one team-game at a time.
+  assert.equal(peak, 1);
   const result = await finalEvaluation(host, full.id);
   assert.deepEqual(Object.keys(result.runs), [
     "nominated",
     "agents-off",
     "clear-artifacts",
   ]);
+  // The three runs go side by side, each with a lane for Denver and one for
+  // Memphis (SPO-941).
+  assert.equal(peak, 6);
+  for (const run of Object.values(result.runs))
+    assert.deepEqual(
+      run.archive.forecasts.map((f) => [f.game?.teamId, f.game?.gameId]),
+      finalGames(source.schedule).map((g) => [g.teamId, g.gameId]),
+    );
   assert.equal(finalReviewCalls, 0);
   host.review = fixtureReview;
   assert.equal(result.runs.nominated.archive.scores.length, 164);

@@ -39,6 +39,15 @@ An artifact value can occupy up to 256 KiB. The sum of retained values can reach
 
 The default run allowance is $2 times the number of team-games. The game safeguards are $10 and 45 minutes. Pass a budget profile to override them. Set `agentsOff` to refuse all agent calls or `clearArtifacts` to start each team-game with an empty store. A model request reserves from both remaining allowances. A response settles its usage. An ambiguous failure keeps its reservation against the caps and records the amount separately from confirmed spend.
 
+## Order of team-games
+
+A team-game depends on another team's games only through league artifacts: a league value written by one team is visible to every team from the next tip. So the replay runs in one of two ways.
+
+- **A package that declares a league artifact** (written or not) runs every team-game in one loop, in tip order.
+- **A package with only team artifacts, or any package under `clearArtifacts`**, runs each team in a lane of its own. A lane takes its team's games in tip order; the lanes run side by side.
+
+Both ways give each team-game the same context, and so the same forecast, score and spend. Team-game receipts are still recorded in tip order, each with the artifact store the single loop would hold at that point. Other events from different lanes interleave. The run allowance is shared by all lanes and cannot be overspent. When it runs out, which team-games fall back to the reference can differ between the two ways, because the lanes reach it in a different order. A failure in one lane stops the games in progress in the others and ends the replay.
+
 The run directory contains the package and manifest plus the hash-chained SQLite record. Each team-game records the reference, freeze or failure reason, current artifacts, and spend. Agent events include rendered instructions, task, transcript, reservations, settlements and result. After release the host scores valid forecasts and substitutes the reference for missing forecasts. A fresh replay requires a new directory.
 
 The Docker acceptance fixture runs with `FORECAST_SANDBOX_IMAGE` set to a pinned research image. Set `GAME_LOOP_LONG_STREAM=1` to hold the scripted Claude response open for more than five minutes.

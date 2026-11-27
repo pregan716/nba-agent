@@ -16,7 +16,13 @@ export function archiveRun(root: string) {
     const ended = record.events("replay_end");
     if (ended.length !== 1 || receipts.size !== games.length)
       throw Error("Incomplete evaluation record");
-    const scores: ScoredGame[] = record.events("game_score").map((e) => {
+    // Listed in the manifest's tip order, not the order they were recorded
+    // in: lanes record scores in an order that varies from run to run.
+    const order = new Map([...gameScopes.keys()].map((k, i) => [k, i]));
+    const scored = record
+      .events("game_score")
+      .sort((a, b) => (order.get(a.scope) ?? 0) - (order.get(b.scope) ?? 0));
+    const scores: ScoredGame[] = scored.map((e) => {
       const game = gameScopes.get(e.scope);
       if (!game) throw Error("Unknown scored team-game");
       // scoreGame is the typed, non-market scoring boundary used by the loop.
