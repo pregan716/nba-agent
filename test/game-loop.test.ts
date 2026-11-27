@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fixtureCorpus, BOS, cutoff } from "./fixtures/session/corpus.js";
@@ -14,6 +14,7 @@ import {
   type ReplaySource,
 } from "../src/game-loop/replay.js";
 import { RecordStore } from "../src/runner/record.js";
+import { inspectPool } from "../src/architect/watch.js";
 import type { Range } from "../src/projection/forecast.js";
 
 const loop = `def run(ctx, arg):
@@ -141,6 +142,107 @@ test("artifact limits count retained UTF-8 JSON values per owner after replaceme
     stageArtifacts(store, declarations, BOS, { extra: 0, team0: "" }),
   );
 });
+test("a lane's missing forecast reaches the watcher while an earlier game in another lane is still running", async (t) => {
+  const f = fixtureCorpus();
+  const parent = mkdtempSync(join(tmpdir(), "game-loop-lanes-"));
+  t.after(() => rmSync(parent, { recursive: true, force: true }));
+  const teamB = f.source.teams[1].team_id;
+  const games = [
+    { gameId: "first", teamId: BOS, tip: cutoff },
+    { gameId: "second", teamId: teamB, tip: "2025-11-04T23:00:00Z" },
+    { gameId: "third", teamId: teamB, tip: "2025-11-08T23:00:00Z" },
+  ];
+  const range: Range = [0, 1, 2, 3, 4, 5, 6];
+  let release!: () => void;
+  const blocked = new Promise<void>((resolve) => (release = resolve));
+  let reachedThird!: () => void;
+  const third = new Promise<void>((resolve) => (reachedThird = resolve));
+  const source: ReplaySource = {
+    schedule: games,
+    data: f.source,
+    async projection(g) {
+      if (g.gameId === "first") await blocked;
+      if (g.gameId === "third") reachedThird();
+      return {
+        roster: [{ playerId: "p", inactive: false }],
+        reference: {
+          gameId: g.gameId,
+          version: "forecast-v1",
+          players: [
+            {
+              playerId: "p",
+              p_start: 0.3,
+              p_play: 0.8,
+              minutes: range,
+              points: range,
+              assists: range,
+              rebounds: range,
+              fantasy_points: range,
+            },
+          ],
+        },
+      };
+    },
+    async outcomes(g) {
+      return {
+        gameId: g.gameId,
+        tip: g.tip,
+        release: releaseTime(g.tip),
+        season: "2025-26",
+        boston: g.teamId === BOS,
+        players: [
+          {
+            teamId: g.teamId,
+            playerId: "p",
+            played: true,
+            starter: false,
+            inactive: false,
+            minutes: 4,
+            points: 2,
+            assists: 1,
+            rebounds: 0,
+            fantasy_points: 4,
+          },
+        ],
+      };
+    },
+  };
+  const run = join(parent, "final", "nominee");
+  mkdirSync(run, { recursive: true });
+  // No allowance: every team-game ends without a forecast and without a sandbox.
+  const done = runReplay({
+    root: join(run, "nominated"),
+    config: f.config,
+    source,
+    games,
+    package: await review(parent, fixtureReview, {
+      ...pkg,
+      artifacts: { note: "team" },
+    }),
+    profile: { usdPerTeamGame: 0, gameUsd: 10, gameMinutes: 1 },
+    runAgent: async () => {
+      throw Error("No provider call expected");
+    },
+  });
+  await third;
+  const seen = inspectPool(parent, { maxUsd: 1, maxAgentErrors: 0 });
+  assert.match(seen.stop!, /No forecast for team-game .*second.*nominated/);
+  assert.deepEqual(
+    seen.active.map((a) => [a.done, a.missing]),
+    [[1, 1]],
+  );
+  release();
+  await done;
+  const record = new RecordStore(join(run, "nominated"));
+  try {
+    assert.deepEqual(
+      record.events("game_artifacts").map((e) => JSON.parse(e.scope)[1]),
+      ["first", "second", "third"],
+    );
+  } finally {
+    record.close();
+  }
+});
 const image = process.env.FORECAST_SANDBOX_IMAGE;
 test(
   "two teams replay a week in isolated sandboxes, including simultaneous tips and ablations",
@@ -260,6 +362,15 @@ test(
         r.close();
       }
     };
+    // The artifact store after each team-game, in tip order.
+    const stores = (root: string) => {
+      const r = new RecordStore(root);
+      try {
+        return r.events("game_artifacts").map((e) => e.data.artifacts);
+      } finally {
+        r.close();
+      }
+    };
     assert.deepEqual(
       read(root).map((r) => r.reason),
       [null, null, null, null, null],
@@ -363,13 +474,14 @@ test(
       },
     });
     const [success, failure] = read(largeRoot);
+    const [kept, unchanged] = stores(largeRoot);
     assert.equal(success.reason, null);
     assert.equal(success.frozen.players.length, 25);
     assert.ok(Buffer.byteLength(JSON.stringify(success.frozen)) > 16 * 1024);
-    assert.equal(success.artifacts[0].value.length, 100 * 1024);
+    assert.equal(kept[0].value.length, 100 * 1024);
     assert.equal(failure.frozen, null);
     assert.match(failure.reason, /note exceeds the 256 KiB/);
-    assert.deepEqual(failure.artifacts, success.artifacts);
+    assert.deepEqual(unchanged, kept);
     const largeLog = new RecordStore(largeRoot);
     try {
       assert.equal(largeLog.events("forecast_freeze").length, 1);
@@ -417,14 +529,19 @@ test(
       },
     });
     assert.equal(offCalls, 0);
-    assert.ok(read(off)[2].frozen);
+    // Cleared artifacts run in lanes, so receipts are found by team-game.
+    const offLog = new RecordStore(off);
+    const offReceipt = (teamId: string, gameId: string) =>
+      offLog.events("team_game", JSON.stringify([teamId, gameId]))[0].data;
+    t.after(() => offLog.close());
+    assert.ok(offReceipt(BOS, "last").frozen);
     const missing = [...ablated.scores.values()].find(
       (s) => s.status === "no_forecast",
     );
     assert.ok(missing && missing.status === "no_forecast");
     assert.deepEqual(missing.agent, missing.reference);
-    assert.ok(read(off)[0].frozen);
-    assert.equal(read(off)[1].frozen, null);
+    assert.ok(offReceipt(BOS, "current").frozen);
+    assert.equal(offReceipt(teamB, "future").frozen, null);
     const preparedRoot = join(parent, "slow-preparation");
     const preparationDelay = 1600;
     const waitForSource = () =>
@@ -517,6 +634,155 @@ test(
     );
     for (const s of limited.scores.values())
       if (s.status === "no_forecast") assert.deepEqual(s.agent, s.reference);
+
+    // SPO-941: without league artifacts each team runs in a lane of its own,
+    // and the record holds what the single ordered loop would have written.
+    const teamOnly = {
+      ...pkg,
+      artifacts: { note: "team" },
+      files: {
+        "main.py": `def run(ctx, arg):
+    if arg is None:
+        return dict(type="agent",name="reader",state=None,input=ctx["artifacts"])
+    seen = ctx["artifacts"].get("note", []) + [ctx["gameId"]]
+    return dict(type="finish",forecast=ctx["reference"],writes={"note": seen})`,
+        "inspect.py": pkg.files["inspect.py"],
+      },
+    } satisfies Package;
+    async function lanes(name: string, artifacts: Package["artifacts"]) {
+      let running = 0,
+        peak = 0;
+      const seen: unknown[] = [];
+      const result = await replay({
+        ...base,
+        root: join(parent, name),
+        games: source.schedule,
+        package: { ...teamOnly, artifacts },
+        runAgent: async (call) => {
+          peak = Math.max(peak, ++running);
+          seen.push([call.input.teamId, call.input.gameId, call.input.task]);
+          const boston = call.input.teamId === BOS;
+          // Boston is slow, so the other team's lane gets ahead of it.
+          await new Promise((r) => setTimeout(r, boston ? 1500 : 0));
+          call.reserve(0.5)(boston ? 0.25 : 0.125);
+          running--;
+          return "done";
+        },
+      });
+      const r = new RecordStore(join(parent, name));
+      try {
+        const timeless = ({
+          hostPreparationMs,
+          wallClockMs,
+          configurationHash,
+          ...rest
+        }: Record<string, unknown>) => rest;
+        return {
+          peak,
+          usd: result.usd,
+          seen: seen.map((x) => JSON.stringify(x)).sort(),
+          // Receipts are recorded as each game ends, so their order varies.
+          receipts: r
+            .events("team_game")
+            .map((e) => [e.scope, timeless(e.data)])
+            .sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
+          stores: r
+            .events("game_artifacts")
+            .map((e) => [e.scope, e.data.artifacts]),
+          scores: r
+            .events("game_score")
+            .map((e) => [e.scope, timeless(e.data)])
+            .sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
+        };
+      } finally {
+        r.close();
+      }
+    }
+    const { peak: lanePeak, ...laned } = await lanes(
+      "lanes",
+      teamOnly.artifacts,
+    );
+    // A declared league artifact, even one never written, keeps one loop.
+    const { peak: loopPeak, ...looped } = await lanes("loop", {
+      ...teamOnly.artifacts,
+      latest: "league",
+    });
+    assert.equal(lanePeak, 2);
+    assert.equal(loopPeak, 1);
+    assert.deepEqual(laned, looped);
+    assert.equal(laned.usd, 3 * 0.25 + 2 * 0.125);
+    assert.deepEqual(
+      laned.stores.map(([scope]) => scope),
+      source.schedule.map((g) => JSON.stringify([g.teamId, g.gameId])),
+    );
+    assert.deepEqual(laned.stores.at(-1)![1], [
+      { name: "note", team: BOS, value: ["current", "last", "fifth"] },
+      { name: "note", team: teamB, value: ["current", "future"] },
+    ]);
+    // Clearing artifacts before every game removes the dependence too.
+    let cleared = 0,
+      clearedPeak = 0;
+    await replay({
+      ...base,
+      root: join(parent, "cleared-lanes"),
+      games: source.schedule,
+      clearArtifacts: true,
+      runAgent: async () => {
+        clearedPeak = Math.max(clearedPeak, ++cleared);
+        await new Promise((r) => setTimeout(r, 300));
+        cleared--;
+        return "done";
+      },
+    });
+    assert.equal(clearedPeak, 2);
+    assert.ok(
+      read(join(parent, "cleared-lanes")).every((r) => r.reason === null),
+    );
+    assert.ok(
+      stores(join(parent, "cleared-lanes")).every(
+        (kept) => kept.length === 2 || kept.length === 3,
+      ),
+    );
+    // A failure in one lane ends the replay and stops the other lane's game.
+    let stopped = false;
+    await assert.rejects(
+      replay({
+        ...base,
+        root: join(parent, "lane-failure"),
+        games: source.schedule,
+        package: teamOnly,
+        source: {
+          ...source,
+          async projection(g) {
+            if (g.teamId === teamB && g.gameId === "future")
+              throw Error("Planted lane failure");
+            return source.projection(g);
+          },
+        },
+        runAgent: async (call) => {
+          if (call.input.teamId === BOS)
+            await new Promise<void>((resolve) =>
+              call.signal.addEventListener("abort", () => {
+                stopped = true;
+                resolve();
+              }),
+            );
+          return "done";
+        },
+      }),
+      /Planted lane failure/,
+    );
+    assert.ok(stopped);
+    // Only the other team's first game ended; the stopped game has no receipt.
+    const failed = new RecordStore(join(parent, "lane-failure"));
+    try {
+      assert.deepEqual(
+        failed.events("team_game").map((e) => e.scope),
+        [JSON.stringify([teamB, "current"])],
+      );
+    } finally {
+      failed.close();
+    }
   },
 );
 

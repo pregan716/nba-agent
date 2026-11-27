@@ -149,9 +149,50 @@ export async function replay(options: {
     }
   >();
   const meter = new ReplayMeter(games.length * profile.usdPerTeamGame);
+  // A team-game depends on another team's games only through league
+  // artifacts, which a later tip can read. Without them, or when artifacts are
+  // cleared before every game, each team runs in a lane of its own (SPO-941).
+  const independent =
+    !!options.clearArtifacts ||
+    !Object.values(pkg.artifacts).includes("league");
+  type Lane = {
+    games: [number, TeamGame][];
+    artifacts: Artifacts;
+    visible: Artifacts;
+    priorTip?: string;
+  };
+  const lanes = new Map<string, Lane>();
+  for (const entry of games.entries()) {
+    const key = independent ? entry[1].teamId : "";
+    if (!lanes.has(key))
+      lanes.set(key, { games: [], artifacts: new Map(), visible: new Map() });
+    lanes.get(key)!.games.push(entry);
+  }
+  // A receipt is recorded as soon as its game ends, so the watcher sees a
+  // missing forecast at once. The artifact store after each game is recorded
+  // separately, in tip order, as the single ordered loop would hold it.
   let artifacts: Artifacts = new Map();
-  let priorTip: string | undefined;
-  let visibleArtifacts = new Map(artifacts);
+  const finished: (
+    { id: string; team: string; writes?: Record<string, unknown> } | undefined
+  )[] = [];
+  let committed = 0;
+  function commit() {
+    for (let done; (done = finished[committed]); committed++) {
+      finished[committed] = undefined;
+      if (options.clearArtifacts) artifacts.clear();
+      if (done.writes)
+        artifacts = stageArtifacts(
+          artifacts,
+          pkg.artifacts,
+          done.team,
+          done.writes,
+        );
+      record.append("game_artifacts", done.id, {
+        artifacts: [...artifacts.values()],
+      });
+    }
+  }
+  const halt = new AbortController();
   async function prepare(g: TeamGame) {
     const p = await source.projection(g);
     const pre = {
@@ -201,169 +242,197 @@ export async function replay(options: {
       record.append("game_score", id, result);
     }
   }
-  try {
-    for (const [index, g] of games.entries()) {
-      const preparationStart = performance.now();
-      const id = scope(g),
-        team = g.teamId;
-      if (options.clearArtifacts) artifacts.clear();
-      if (options.clearArtifacts || !priorTip || compare(priorTip, g.tip) !== 0)
-        visibleArtifacts = new Map(artifacts);
-      priorTip = g.tip;
-      const { pre, reference, spread, total } = await prepare(g);
-      let hostPreparationMs: number;
-      let wallClockMs = 0;
-      const gameMeter = meter.game(profile.gameUsd, record, id);
-      let frozen: Forecast | null = null,
-        reason: string | null = null;
-      if (meter.available <= 0) {
-        reason = "run_budget_exhausted";
-        hostPreparationMs = performance.now() - preparationStart;
-      } else {
-        const history = source.schedule
-          .filter((h) => h.teamId === team && before(releaseTime(h.tip), g.tip))
-          .sort((a, b) => compare(a.tip, b.tip));
-        for (const h of history) await released(h, g.tip);
-        const previous = source.schedule
-          .filter((h) => h.teamId === team && before(h.tip, g.tip))
-          .sort((a, b) => compare(b.tip, a.tip))[0];
-        const ctx = {
-          teamId: team,
-          ...pre,
-          reference,
-          spread,
-          total,
-          referenceHistory: history.map((h) => priorReferences.get(scope(h))),
-          scores: history.flatMap((h) => {
-            const score = scores.get(scope(h));
-            return score ? [score] : [];
-          }),
-          feedback: previous ? (scores.get(scope(previous)) ?? null) : null,
-          artifacts: Object.fromEntries(
-            [...visibleArtifacts.values()]
-              .filter((a) => a.team === null || a.team === team)
-              .map((a) => [a.name, a.value]),
-          ),
-        };
-        const box = gameSandbox(
-          config,
-          source.data,
-          {
-            gameId: g.gameId,
-            scheduledStart: g.tip,
-            index,
-            development,
-            release: releaseTime(g.tip),
-          },
-          pkg,
-          ctx,
-          root,
-          (entry) => record.append("sandbox_step", id, entry),
-          options.trainedModels,
-        );
-        const duration = profile.gameMinutes * 60000;
-        const controller = new AbortController();
-        const { signal } = controller;
-        let started: number | undefined;
-        let timeout: ReturnType<typeof setTimeout> | undefined;
-        try {
-          await box.prepare();
-          let deadline: number;
-          const remainingSeconds = () =>
-            Math.max(0, (deadline - performance.now()) / 1000);
-          const invoke = (file: string, input: unknown) =>
-            box.invoke(file, input, remainingSeconds(), signal);
-          const call = agentDispatcher(
-            pkg,
-            g,
-            id,
-            record,
-            gameMeter,
-            !!options.agentsOff,
-            options.runAgent,
-            signal,
-            invoke,
-          );
-          started = performance.now();
-          deadline = started + duration;
-          timeout = setTimeout(
-            () => controller.abort(),
-            Math.ceil(duration),
-          ).unref();
-          let argument: unknown = null;
-          for (;;) {
-            signal.throwIfAborted();
-            const step = action.parse(await invoke(pkg.entry, argument));
-            if (step.type === "finish") {
-              const next = stageArtifacts(
-                artifacts,
-                pkg.artifacts,
-                team,
-                step.writes,
-              );
-              const frozenAt = Temporal.Instant.from(g.tip)
-                .subtract({ nanoseconds: 1 })
-                .toString();
-              const result = lockForecast(
-                pre,
-                step.forecast,
-                () => ({
-                  phase: "pregame",
-                  now:
-                    remainingSeconds() > 0 && !signal.aborted
-                      ? frozenAt
-                      : g.tip,
-                }),
-                (f) => {
-                  record.append("forecast_freeze", id, {
-                    configurationHash: hash,
-                    at: frozenAt,
-                    forecast: f,
-                  });
-                  frozen = f;
-                  return true;
-                },
-              );
-              if (!result.ok) throw Error(result.reason);
-              artifacts = next;
-              break;
-            }
-            const reply = await call(step.name, step.input);
-            argument = { state: step.state, reply };
-          }
-        } catch (error) {
-          reason =
-            signal.aborted ||
-            (started !== undefined && performance.now() - started >= duration)
-              ? "wall_clock"
-              : String(error);
-        } finally {
-          const end = performance.now();
-          hostPreparationMs = (started ?? end) - preparationStart;
-          if (started !== undefined) wallClockMs = end - started;
-          clearTimeout(timeout);
-          await box.close();
-        }
-      }
-      const receipt = {
-        pre,
+  async function play(lane: Lane, index: number, g: TeamGame) {
+    const preparationStart = performance.now();
+    const id = scope(g),
+      team = g.teamId;
+    if (options.clearArtifacts) lane.artifacts.clear();
+    if (
+      options.clearArtifacts ||
+      !lane.priorTip ||
+      compare(lane.priorTip, g.tip) !== 0
+    )
+      lane.visible = new Map(lane.artifacts);
+    lane.priorTip = g.tip;
+    const { pre, reference, spread, total } = await prepare(g);
+    let hostPreparationMs: number;
+    let wallClockMs = 0;
+    const gameMeter = meter.game(profile.gameUsd, record, id);
+    let frozen: Forecast | null = null,
+      reason: string | null = null,
+      written: Record<string, unknown> | undefined;
+    if (meter.available <= 0) {
+      reason = "run_budget_exhausted";
+      hostPreparationMs = performance.now() - preparationStart;
+    } else {
+      const history = source.schedule
+        .filter((h) => h.teamId === team && before(releaseTime(h.tip), g.tip))
+        .sort((a, b) => compare(a.tip, b.tip));
+      for (const h of history) await released(h, g.tip);
+      const previous = source.schedule
+        .filter((h) => h.teamId === team && before(h.tip, g.tip))
+        .sort((a, b) => compare(b.tip, a.tip))[0];
+      const ctx = {
+        teamId: team,
+        ...pre,
         reference,
-        frozen,
-        costUsd: gameMeter.usd,
-        unresolvedUsd: gameMeter.unresolvedUsd,
-        wallClockMs,
-      };
-      receipts.set(id, receipt);
-      record.append("team_game", id, {
-        ...receipt,
-        hostPreparationMs,
-        configurationHash: hash,
-        reason,
         spread,
         total,
-        artifacts: [...artifacts.values()],
-      });
+        referenceHistory: history.map((h) => priorReferences.get(scope(h))),
+        scores: history.flatMap((h) => {
+          const score = scores.get(scope(h));
+          return score ? [score] : [];
+        }),
+        feedback: previous ? (scores.get(scope(previous)) ?? null) : null,
+        artifacts: Object.fromEntries(
+          [...lane.visible.values()]
+            .filter((a) => a.team === null || a.team === team)
+            .map((a) => [a.name, a.value]),
+        ),
+      };
+      const box = gameSandbox(
+        config,
+        source.data,
+        {
+          gameId: g.gameId,
+          scheduledStart: g.tip,
+          index,
+          development,
+          release: releaseTime(g.tip),
+        },
+        pkg,
+        ctx,
+        root,
+        (entry) => record.append("sandbox_step", id, entry),
+        options.trainedModels,
+      );
+      const duration = profile.gameMinutes * 60000;
+      const controller = new AbortController();
+      const { signal } = controller;
+      // Another lane's failure ends the replay, so this game stops too.
+      const stop = () => controller.abort();
+      halt.signal.addEventListener("abort", stop);
+      let started: number | undefined;
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      try {
+        halt.signal.throwIfAborted();
+        await box.prepare();
+        let deadline: number;
+        const remainingSeconds = () =>
+          Math.max(0, (deadline - performance.now()) / 1000);
+        const invoke = (file: string, input: unknown) =>
+          box.invoke(file, input, remainingSeconds(), signal);
+        const call = agentDispatcher(
+          pkg,
+          g,
+          id,
+          record,
+          gameMeter,
+          !!options.agentsOff,
+          options.runAgent,
+          signal,
+          invoke,
+        );
+        started = performance.now();
+        deadline = started + duration;
+        timeout = setTimeout(
+          () => controller.abort(),
+          Math.ceil(duration),
+        ).unref();
+        let argument: unknown = null;
+        for (;;) {
+          signal.throwIfAborted();
+          const step = action.parse(await invoke(pkg.entry, argument));
+          if (step.type === "finish") {
+            const next = stageArtifacts(
+              lane.artifacts,
+              pkg.artifacts,
+              team,
+              step.writes,
+            );
+            const frozenAt = Temporal.Instant.from(g.tip)
+              .subtract({ nanoseconds: 1 })
+              .toString();
+            const result = lockForecast(
+              pre,
+              step.forecast,
+              () => ({
+                phase: "pregame",
+                now:
+                  remainingSeconds() > 0 && !signal.aborted ? frozenAt : g.tip,
+              }),
+              (f) => {
+                record.append("forecast_freeze", id, {
+                  configurationHash: hash,
+                  at: frozenAt,
+                  forecast: f,
+                });
+                frozen = f;
+                return true;
+              },
+            );
+            if (!result.ok) throw Error(result.reason);
+            lane.artifacts = next;
+            written = step.writes;
+            break;
+          }
+          const reply = await call(step.name, step.input);
+          argument = { state: step.state, reply };
+        }
+      } catch (error) {
+        reason =
+          signal.aborted ||
+          (started !== undefined && performance.now() - started >= duration)
+            ? "wall_clock"
+            : String(error);
+      } finally {
+        const end = performance.now();
+        hostPreparationMs = (started ?? end) - preparationStart;
+        if (started !== undefined) wallClockMs = end - started;
+        clearTimeout(timeout);
+        halt.signal.removeEventListener("abort", stop);
+        await box.close();
+      }
     }
+    // A game cut short by another lane's failure is not a result.
+    halt.signal.throwIfAborted();
+    const receipt = {
+      pre,
+      reference,
+      frozen,
+      costUsd: gameMeter.usd,
+      unresolvedUsd: gameMeter.unresolvedUsd,
+      wallClockMs,
+    };
+    receipts.set(id, receipt);
+    record.append("team_game", id, {
+      ...receipt,
+      hostPreparationMs,
+      configurationHash: hash,
+      reason,
+      spread,
+      total,
+    });
+    finished[index] = { id, team, writes: written };
+    commit();
+  }
+  try {
+    const ended = await Promise.allSettled(
+      [...lanes.values()].map(async (lane) => {
+        try {
+          for (const [index, g] of lane.games) {
+            halt.signal.throwIfAborted();
+            await play(lane, index, g);
+          }
+        } catch (error) {
+          halt.abort(error);
+          throw error;
+        }
+      }),
+    );
+    // The first failure, not the aborts it caused in the other lanes.
+    if (halt.signal.aborted) throw halt.signal.reason;
+    for (const lane of ended) if (lane.status === "rejected") throw lane.reason;
     for (const g of games)
       await released(
         g,

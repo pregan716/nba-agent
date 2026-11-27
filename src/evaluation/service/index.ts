@@ -331,17 +331,32 @@ export async function finalEvaluation(host: EvaluationHost, id: string) {
     const pkg = await approveNomination(host, pool, id);
     const dir = join(host.root, "final", id);
     mkdirSync(dir, { recursive: true });
-    const runs: Record<string, ReturnType<typeof results>> = {};
-    for (const mode of [
+    const modes = [
       "nominated",
       ...(Object.keys(pkg.agents).length ? ["agents-off"] : []),
       "clear-artifacts",
-    ]) {
-      const root = join(dir, mode);
-      if (!existsSync(join(root, "record.sqlite")))
-        await execute(host, pool, root, pkg, games, false, mode);
-      runs[mode] = results(root);
-    }
+    ];
+    // The runs are independent replays with their own records, so the ones
+    // still to do run side by side (SPO-941). The weights are read once
+    // first: pool.models is not safe to call for a missing hash from several
+    // runs at once.
+    if (pkg.training.length)
+      await pool.models(readPackage(pkg).hash, () =>
+        buildModels(host.config, pkg, host.training, host.root),
+      );
+    const ended = await Promise.allSettled(
+      modes
+        .map((mode) => [mode, join(dir, mode)])
+        .filter(([, root]) => !existsSync(join(root, "record.sqlite")))
+        .map(([mode, root]) =>
+          execute(host, pool, root, pkg, games, false, mode),
+        ),
+    );
+    // Every run is left to finish before a failure is reported: a completed
+    // run is kept and is not paid for again.
+    for (const run of ended) if (run.status === "rejected") throw run.reason;
+    const runs: Record<string, ReturnType<typeof results>> = {};
+    for (const mode of modes) runs[mode] = results(join(dir, mode));
     return {
       runs,
       ...(baseline
